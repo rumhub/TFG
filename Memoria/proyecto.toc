@@ -1,0 +1,23 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {chapter}{\numberline {1}Introduccion}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Machine Learning}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Deep Learning}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Tipos de aprendizaje}{1}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Aprendizaje Supervisado}{1}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Aprendizaje No Supervisado}{1}{subsection.1.3.2}%
+\contentsline {subsection}{\numberline {1.3.3}Aprendizaje Por Refuerzo}{1}{subsection.1.3.3}%
+\contentsline {section}{\numberline {1.4}Tipos de problemas en machine learning}{1}{section.1.4}%
+\contentsline {section}{\numberline {1.5}División de datos en entrenamiento y test}{1}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Entrenamiento}{1}{section.1.6}%
+\contentsline {chapter}{\numberline {2}Redes Neuronales Totalmente Conectadas}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Estructura}{3}{section.2.1}%
+\contentsline {section}{\numberline {2.2}ForwardPropagation}{3}{section.2.2}%
+\contentsline {section}{\numberline {2.3}BackPropagation}{3}{section.2.3}%
+\contentsline {chapter}{\numberline {3}Redes Neuronales Convolucionales}{5}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Estructura}{5}{section.3.1}%
+\contentsline {section}{\numberline {3.2}ForwardPropagation}{5}{section.3.2}%
+\contentsline {section}{\numberline {3.3}BackPropagation}{5}{section.3.3}%
+\contentsline {chapter}{\numberline {4}GPU}{7}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Introducción GPU}{7}{section.4.1}%
+\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Totalmente Conectadas}{7}{section.4.2}%
+\contentsline {section}{\numberline {4.3}GPU en Redes Neuronales Convolucionales}{7}{section.4.3}%
