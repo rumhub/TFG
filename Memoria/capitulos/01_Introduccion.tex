@@ -1,4 +1,4 @@
-\chapter{Introduccion}
+\chapter{Introducción}
 
 \section{Machine Learning}
 
@@ -36,7 +36,10 @@ En este caso tampoco existe un $y_i$ 'correcto' asociado a cada $x_i$. En su lug
 
 \section{División de datos en entrenamiento y test}
 
+En aprendizaje supervisado, al disponer de N ejemplos se dice que se dispone de una muestra D = $\{d_1 = (x_1, y_1), d_2 = (x_2, y_2), ..., d_N = (x_N, y_N)\}$.
 
+Dicho conjunto de datos D se suele dividir en 2 subconjuntos, entrenamiento y test. El objetivo de ello es comprobar si realmente el programa 'aprende' o solo memoriza.\\
+El procedimiento consiste en entrenar una red determinada empleando exclusivamente los datos del conjunto de entrenamiento. Una vez terminado todo el entrenamiento y nunca antes de ello, se accede al subconjunto test y se comparan las predicciones sobre este con los valores reales que se encuentran en cada $y_i$ correspondiente. De esta forma, se observa el comportamiento de la red 'fuera de la muestra' y da una idea de como generaliza. Es decir, si ha aprendido o por el contrario simplemente ha logrado memorizar todos los ejemplos con los que se entrenó.
 
 \section{Entrenamiento}
 

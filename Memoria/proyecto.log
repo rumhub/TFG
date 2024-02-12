@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  12 FEB 2024 18:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  12 FEB 2024 18:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -730,12 +730,12 @@ LaTeX Info: Redefining \. on input line 22.
 LaTeX Info: Redefining \% on input line 22.
 )
 Package rerunfilecheck Info: File `proyecto.out' has not changed.
-(rerunfilecheck)             Checksum: 240EA1D15ACE3FB040D77210157C999D;3954.
+(rerunfilecheck)             Checksum: 13EFAC3A6C58961D944850AD271F6ECC;3957.
  ) 
 Here is how much of TeX's memory you used:
  12814 strings out of 476331
  208807 string characters out of 5787765
- 1859660 words of memory out of 5000000
+ 1860660 words of memory out of 5000000
  32980 multiletter control sequences out of 15000+600000
  519669 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -752,7 +752,7 @@ ll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Us
 ers/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.p
 fb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
 /cmti10.pfb>
-Output written on proyecto.pdf (33 pages, 284834 bytes).
+Output written on proyecto.pdf (33 pages, 286223 bytes).
 PDF statistics:
  333 PDF objects out of 1000 (max. 8388607)
  54 named destinations out of 1000 (max. 500000)
