@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  12 FEB 2024 18:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  12 FEB 2024 18:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -626,7 +626,18 @@ LaTeX Info: Redefining \% on input line 1.
 
 ] (capitulos/01_Introduccion.tex
 Cap\'{\i }tulo 1.
-) (capitulos/02_FullyConnected.tex
+LaTeX Font Info:    Trying to load font information for OML+cmr on input line 6
+.
+(C:\Users\Troll\AppData\Local\Programs\MiKTeX\tex/latex/base\omlcmr.fd
+File: omlcmr.fd 2022/07/10 v2.5l Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 6.
+)
+(capitulos/02_FullyConnected.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
@@ -635,14 +646,15 @@ l.1 \chapter
             {Redes Neuronales Totalmente Conectadas} [1
 
 ]
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 \chapter
-            {Redes Neuronales Totalmente Conectadas} [2
-
-]
+            {Redes Neuronales Totalmente Conectadas} [2]
 Cap\'{\i }tulo 2.
 ) (capitulos/03_CNN.tex
 pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
@@ -650,7 +662,9 @@ been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 \chapter
-            {Redes Neuronales Convolucionales} [3]
+            {Redes Neuronales Convolucionales} [3
+
+]
 pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
 been already used, duplicate ignored
 <to be read again> 
@@ -718,23 +732,24 @@ Package rerunfilecheck Info: File `proyecto.out' has not changed.
 (rerunfilecheck)             Checksum: A3A58E9A7022C0D891EE9D60AB7B3525;3714.
  ) 
 Here is how much of TeX's memory you used:
- 12784 strings out of 476331
- 208288 string characters out of 5787765
+ 12805 strings out of 476331
+ 208673 string characters out of 5787765
  1859660 words of memory out of 5000000
- 32955 multiletter control sequences out of 15000+600000
+ 32973 multiletter control sequences out of 15000+600000
  519669 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,6n,76p,342b,484s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,76p,707b,484s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmbx10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmbx12.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/amsfonts/cm/cmbxti10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fo
 nts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Troll/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Troll/AppData/Local/
-Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on proyecto.pdf (33 pages, 243886 bytes).
+/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Troll/AppData/Local
+/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Troll/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on proyecto.pdf (33 pages, 254052 bytes).
 PDF statistics:
- 298 PDF objects out of 1000 (max. 8388607)
+ 305 PDF objects out of 1000 (max. 8388607)
  52 named destinations out of 1000 (max. 500000)
  192 words of extra memory for PDF output out of 10000 (max. 10000000)
 
