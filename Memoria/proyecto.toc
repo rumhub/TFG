@@ -7,6 +7,8 @@
 \contentsline {subsection}{\numberline {1.3.2}Aprendizaje No Supervisado}{2}{subsection.1.3.2}%
 \contentsline {subsection}{\numberline {1.3.3}Aprendizaje Por Refuerzo}{2}{subsection.1.3.3}%
 \contentsline {section}{\numberline {1.4}Tipos de problemas en machine learning}{2}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Clasificación}{2}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Regresión}{2}{subsection.1.4.2}%
 \contentsline {section}{\numberline {1.5}División de datos en entrenamiento y test}{2}{section.1.5}%
 \contentsline {section}{\numberline {1.6}Entrenamiento}{2}{section.1.6}%
 \contentsline {chapter}{\numberline {2}Redes Neuronales Totalmente Conectadas}{3}{chapter.2}%
