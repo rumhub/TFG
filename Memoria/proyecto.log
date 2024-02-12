@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  12 FEB 2024 18:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  12 FEB 2024 18:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -633,19 +633,20 @@ File: omlcmr.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OML/cmm/m/it' tried instead on input line 6.
-)
-(capitulos/02_FullyConnected.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Underfull \hbox (badness 10000) in paragraph at lines 17--20
+
+ []
 
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \chapter
-            {Redes Neuronales Totalmente Conectadas} [1
+l.24 
+      [1
 
-]
+]) (capitulos/02_FullyConnected.tex
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
 
@@ -732,10 +733,10 @@ Package rerunfilecheck Info: File `proyecto.out' has not changed.
 (rerunfilecheck)             Checksum: A3A58E9A7022C0D891EE9D60AB7B3525;3714.
  ) 
 Here is how much of TeX's memory you used:
- 12805 strings out of 476331
- 208673 string characters out of 5787765
+ 12810 strings out of 476331
+ 208739 string characters out of 5787765
  1859660 words of memory out of 5000000
- 32973 multiletter control sequences out of 15000+600000
+ 32978 multiletter control sequences out of 15000+600000
  519669 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,11n,76p,707b,484s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -745,11 +746,15 @@ fonts/cm/cmbx12.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/amsfonts/cm/cmbxti10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fo
 nts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Troll/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Troll/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Troll/AppDa
-ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on proyecto.pdf (33 pages, 254052 bytes).
+/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/Troll/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Tro
+ll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Us
+ers/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.p
+fb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
+/cmti10.pfb>
+Output written on proyecto.pdf (33 pages, 283542 bytes).
 PDF statistics:
- 305 PDF objects out of 1000 (max. 8388607)
+ 323 PDF objects out of 1000 (max. 8388607)
  52 named destinations out of 1000 (max. 500000)
  192 words of extra memory for PDF output out of 10000 (max. 10000000)
 

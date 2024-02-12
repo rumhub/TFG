@@ -14,15 +14,20 @@ Este enfoque ha contribuido en el avance de áreas como reconocimiento de voz, v
 
 \subsection{Aprendizaje Supervisado}
 
-
+Es el que se empleará en este proyecto. 
+Se caracteriza por la presencia de una etiqueta 'correcta' $y_i$ asociada a cada dato de entrada $x_i$. Posteriormente, la red empleará ambos valores para, a partir de $x_i$, tratar de deducir $y_i$. \cite{Learning_From_Data} \\
+Aunque se tratará de impedirlo, siempre hay ruido en los datos empleados, implicando que algunas etiquetas de Y=$\{y_1, y_2, ..., y_N\}$ pueden ser erróneas. \\
 
 \subsection{Aprendizaje No Supervisado}
 
+En este tipo de aprendizaje, los datos no contienen ninguna información respecto a lo que debe predecir la red. De esta forma, el conjunto de datos D se compone exclusivamente de valores X=$\{x_1, x_2, ..., x_N\}$. \cite{Learning_From_Data}
 
 \subsection{Aprendizaje Por Refuerzo}
 
+En este caso tampoco existe un $y_i$ 'correcto' asociado a cada $x_i$. En su lugar, se asocia a cada $x_i$ una etiqueta con un valor posible de $y_i$, además de una medida que indica como de bueno es el mismo. \cite{Learning_From_Data}
 
 \section{Tipos de problemas en machine learning}
+
 
 
 \section{División de datos en entrenamiento y test}
@@ -30,5 +35,4 @@ Este enfoque ha contribuido en el avance de áreas como reconocimiento de voz, v
 
 
 \section{Entrenamiento}
-
 
