@@ -3,12 +3,12 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: proyecto.aux
 Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: unsrt.bst
-Reallocating 'name_of_file' (item size: 1) to 27 items.
-Database file #1: /bibliografia/bibliografia.bib
+Reallocating 'name_of_file' (item size: 1) to 26 items.
+Database file #1: bibliografia/bibliografia.bib
 Warning--empty publisher in Learning_From_Data
 You've used 2 entries,
             1791 wiz_defined-function locations,
-            459 strings with 3924 characters,
+            459 strings with 3923 characters,
 and the built_in function-call counts, 337 in all, are:
 = -- 29
 > -- 8
