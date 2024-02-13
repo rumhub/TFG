@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  13 FEB 2024 16:37
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  13 FEB 2024 18:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -744,39 +744,46 @@ l.34
       [3
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 38--40
+Underfull \hbox (badness 10000) in paragraph at lines 42--44
 
  []
 
-
-Underfull \vbox (badness 1132) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 56.
-LaTeX Info: Redefining \% on input line 56.
+LaTeX Info: Redefining \. on input line 54.
+LaTeX Info: Redefining \% on input line 54.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.56 \end{gather}
-                  [4 <./imagenes/nn_1_capa.jpg>]) (capitulos/03_CNN.tex
-LaTeX Info: Redefining \. on input line 1.
-LaTeX Info: Redefining \% on input line 1.
+l.54 \begin{gather}
+                    [4 <./imagenes/nn_1_capa.jpg>]
+Overfull \hbox (17.0672pt too wide) detected at line 95
+[]
+ []
+
+LaTeX Info: Redefining \. on input line 95.
+LaTeX Info: Redefining \% on input line 95.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.5}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \chapter
-            {Redes Neuronales Convolucionales} [5]
+l.95 \end{gather}
+                  [5]
+Overfull \hbox (14.99791pt too wide) detected at line 104
+[]
+ []
+
+) (capitulos/03_CNN.tex
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.6}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 \chapter
-            {Redes Neuronales Convolucionales} [6
-
-]
+            {Redes Neuronales Convolucionales} [6]
 Cap\'{\i }tulo 3.
 ) (capitulos/04_GPU.tex
 pdfTeX warning (ext4): destination with the same identifier (name{page.7}) has 
@@ -784,7 +791,9 @@ been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 \chapter
-            {GPU} [7]
+            {GPU} [7
+
+]
 pdfTeX warning (ext4): destination with the same identifier (name{page.8}) has 
 been already used, duplicate ignored
 <to be read again> 
@@ -830,13 +839,13 @@ Package rerunfilecheck Info: File `proyecto.out' has not changed.
 (rerunfilecheck)             Checksum: 0178E82BCE3674DD47E69899691F89CF;4918.
  ) 
 Here is how much of TeX's memory you used:
- 13619 strings out of 476331
- 220125 string characters out of 5787765
- 1864660 words of memory out of 5000000
+ 13628 strings out of 476331
+ 220252 string characters out of 5787765
+ 1870660 words of memory out of 5000000
  33739 multiletter control sequences out of 15000+600000
  520343 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,76p,707b,496s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,12n,76p,707b,504s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmbx10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmbx12.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/p
@@ -848,13 +857,14 @@ ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Tr
 oll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/
 Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.
 pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
-fonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts
-/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on proyecto.pdf (35 pages, 353901 bytes).
+m/cmr6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/pub
+lic/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on proyecto.pdf (35 pages, 373268 bytes).
 PDF statistics:
- 408 PDF objects out of 1000 (max. 8388607)
- 77 named destinations out of 1000 (max. 500000)
+ 424 PDF objects out of 1000 (max. 8388607)
+ 86 named destinations out of 1000 (max. 500000)
  261 words of extra memory for PDF output out of 10000 (max. 10000000)
 

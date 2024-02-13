@@ -32,6 +32,10 @@ $\hat{y}$ = predicción
 	\label{fig:nn_1_capa}
 \end{figure}
 
+La Figura 2.1 se compone de puntos y líneas, representando neuronas y pesos que las conectan respectivamente. Cada punto es una neurona, y cada línea un peso. \\
+El peso $W_{ip}$ referencia al peso que une las neuronas $X_i$ y $h_p$.\\
+El peso $W_{p\hat{y}}$ representa el peso que conecta las neuronas $h_p$ y $\hat{y}$.
+
 
 \subsubsection{Capa output}
 
@@ -66,6 +70,37 @@ Parte derecha:
 Finalmente, se obtiene: 
 \begin{gather}
     \frac{dH(x)}{d\hat{y}_{out_i}} = - \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ]
+\end{gather}
+
+\subsubsection{Función activación de la capa output}
+En la capa output se emplea la función de activación sigmoide. 
+
+\begin{gather}
+	sigmoide(x) = \frac{1}{1+e^{-x}} \\
+	sigmoide'(x) = \frac{sigmoide(x)}{1-sigmoide(x)}
+\end{gather}
+
+De esta forma,
+
+\begin{gather}
+	\frac{d\hat{y}_{out}}{d\hat{y}_{in}} = \frac{d sigmoide(\hat{y}_{in})}{d\hat{y}_{in}} = sigmoide(\hat{y}_{in})*(1-sigmoide(\hat{y}_{in}))
+\end{gather}
+
+Ahora, podemos calcular el gradiente completo hasta la capa output antes de aplicar su función de activación.
+
+\begin{gather}
+	grad\_output = \frac{dH(x)}{d\hat{y}_{out}} * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} =
+	    - \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ] * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} \\
+	    grad\_output = - \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ] * sigmoide(\hat{y}_{in})*(1-sigmoide(\hat{y}_{in}))
+\end{gather}
+
+\subsubsection{Pesos capas h1-output}
+
+Una vez calculado el gradiente hasta la capa output, se puede calcular el gradiente respecto a cada peso que se encuentra conectado a esta desde la capa anterior. Es decir, para cada $h_p\in h1$, se calcula $\frac{dH(x)}{dW_{p\hat{y}}}$. Usando la regla de la cadena, equivale a realizar lo siguiente:
+
+\begin{gather}
+	\frac{d\hat{y}_{in}}{dW_{p\hat{y}}} = \frac{dh_{1out_p} * W_{p\hat{y}}}{dW_{p\hat{y}}} = h_{1out_p} \\
+		\frac{dH(x)}{dW_{p\hat{y}}} = \frac{dH(x)}{d\hat{y}_{out}} * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} * \frac{d\hat{y}_{in}}{dW_{p\hat{y}}} =  grad\_output * \frac{d\hat{y}_{in}}{dW_{p\hat{y}}} = grad\_output * h_{1out_p}
 \end{gather}
 
 \subsubsection{Capa oculta h1}
