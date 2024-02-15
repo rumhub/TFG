@@ -10,7 +10,7 @@
 	\label{fig:nn_1_capa}
 \end{figure}
 
-La Figura 2.1 se compone de puntos y líneas, representando neuronas y pesos que las conectan respectivamente. Cada punto es una neurona, y cada línea un peso. \\
+La Figura 3.1 se compone de puntos y líneas, representando neuronas y pesos que las conectan respectivamente. Cada punto es una neurona, y cada línea un peso. \\
 El peso $W_{ip}$ referencia al peso que une las neuronas $X_i$ y $h_p$.\\
 El peso $W_{p\hat{y}}$ representa el peso que conecta las neuronas $h_p$ y $\hat{y}$.
 
@@ -26,7 +26,7 @@ De esta forma, la función de pérdida (2.1) se convierte en:
 	H(x) = - \frac{1}{N} \sum_{i=1}^{N}  [y_i * log( \hat{y}_{out_i}) + (1-y_i)*log(1-\hat{y}_{out_i})]
 \end{gather}
 
-Para realizar el descenso del gradiente, se debe empezar calculando la derivada de la función de pérdida respecto a la predicción obtenida. Es decir, la derivada de la fórmula (2.2) respecto de las neuronas en la última capa de la red tras aplicar sus respectivas funciones de activación, que en este caso corresponde a $\hat{y}_{out}$. \\
+Para realizar el descenso del gradiente, se debe empezar calculando la derivada de la función de pérdida respecto a la predicción obtenida. Es decir, la derivada de la fórmula (3.1) respecto de las neuronas en la última capa de la red tras aplicar sus respectivas funciones de activación, que en este caso corresponde a $\hat{y}_{out}$. \\
 Por simplicidad, podemos dividir esta derivada en 2 partes. \\
 Parte izquierda:
 \begin{gather}
@@ -77,10 +77,38 @@ Ahora, podemos calcular el gradiente completo hasta la capa output antes de apli
 Una vez calculado el gradiente hasta la capa output, se puede calcular el gradiente respecto a cada peso que se encuentra conectado a esta desde la capa anterior. Es decir, para cada $h_p\in h1$, se calcula $\frac{dH(x)}{dW_{p\hat{y}}}$. Usando la regla de la cadena, equivale a realizar lo siguiente:
 
 \begin{gather}
-	\frac{d\hat{y}_{in}}{dW_{p\hat{y}}} = \frac{dh_{1out_p} * W_{p\hat{y}}}{dW_{p\hat{y}}} = h_{1out_p} \\
-	\frac{dH(x)}{dW_{p\hat{y}}} = \frac{dH(x)}{d\hat{y}_{out}} * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} * \frac{d\hat{y}_{in}}{dW_{p\hat{y}}} =  grad\_output * \frac{d\hat{y}_{in}}{dW_{p\hat{y}}} = grad\_output * h_{1out_p}
+	\frac{d\hat{y}_{in}}{dW_{p\hat{y}_{in} }} = \frac{dh_{1out_p} * W_{p\hat{y}_{in} }}{dW_{p\hat{y}_{in} }} = h_{1out_p} \\
+	\frac{dH(x)}{dW_{p\hat{y}_{in} }} = \frac{dH(x)}{d\hat{y}_{out}} * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} * \frac{d\hat{y}_{in}}{dW_{p\hat{y}_{in} }} =  grad\_output * \frac{d\hat{y}_{in}}{dW_{p\hat{y}_{in} }} = grad\_output * h_{1out_p}
 \end{gather}
 
 \subsubsection{Capa oculta h1}
 
+\begin{gather}
+	\frac{d\hat{y}_{in}}{dh_{1out_p}} = \frac{dh_{1out_p} * dW_{p\hat{y}_{in}} }{dh_{1out_p} } = dW_{p\hat{y}_{in}} \\
+	\frac{dh_{1out_p} }{dh_{1in_p} } = \frac{drelu(h_{1in_p} )}{dh_{1in_p} } = 0\ si\ h_{1in_p} <= 0,\ 1\ en\ caso\ contrario = deriv\_relu(h_{1in_p}) \\
+	\frac{dH(x) }{dh_{1in_p} } = grad\_output* \frac{d\hat{y}_{in} }{dh_{1{out}_p} } * \frac{dh_{1out_p} }{dh_{1in_p} } = grad\_output * W_{p\hat{y}_{in} } * deriv\_relu(h_{1in_p}) \\
+	\frac{dH(x) }{dh_{1in_p} } = grad\_h1p\_output
+\end{gather}
+
+\subsubsection{Pesos capas input-h1}
+
+\begin{gather}
+	\frac{h_{1in_p} }{W_{ip} } = \frac{dX_i * W_{ip} }{dW_{ip} } = X_i \\
+	\frac{dH(x) }{dW_{ip} } = grad\_h1p\_output * \frac{dh_{1in_p} }{dW{ip} } = grad\_h1p\_output * X_i
+\end{gather}
+
+
 \subsubsection{Capa input}
+
+\begin{gather}
+	\frac{dh_{1in_p} }{dX_{out_i} } = \frac{dX_{out_i} * W_{ip} }{dX_{out_i} } = W_{ip} \\
+	\frac{dX_{out_i} }{dX_{in_i} } = 1
+\end{gather}
+
+Ahora se realiza una sumatoria con todos los 'caminos posibles' hacia la misma neurona
+\begin{gather}
+	\frac{dH(x) }{dX_{in_i} } = \sum_{p=0}^{h_1.size()} grad\_h1p\_output * \frac{dh_{1in_p} }{dX_{out_i} } * \frac{dX_{out_i} }{dX_{in_i} }  \\
+	\frac{dH(x) }{dX_{in_i} } = \sum_{p=0}^{h_1.size()}  grad\_h1p\_output * W_{ip}
+\end{gather}
+
+\subsection{BackPropagation con 2 capas ocultas}

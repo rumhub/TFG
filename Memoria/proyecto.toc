@@ -33,8 +33,10 @@
 \contentsline {subsubsection}{Capa output}{7}{section*.8}%
 \contentsline {subsubsection}{Función activación de la capa output}{8}{section*.9}%
 \contentsline {subsubsection}{Pesos capas h1-output}{9}{section*.10}%
-\contentsline {subsubsection}{Capa oculta h1}{9}{section*.11}%
-\contentsline {subsubsection}{Capa input}{9}{section*.12}%
+\contentsline {subsubsection}{Capa oculta h1}{10}{section*.11}%
+\contentsline {subsubsection}{Pesos capas input-h1}{10}{section*.12}%
+\contentsline {subsubsection}{Capa input}{10}{section*.13}%
+\contentsline {subsection}{\numberline {3.1.2}BackPropagation con 2 capas ocultas}{10}{subsection.3.1.2}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{11}{chapter.4}%
 \contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{11}{section.4.1}%
 \contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{11}{section.4.2}%

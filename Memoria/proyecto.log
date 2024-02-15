@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  15 FEB 2024 15:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  15 FEB 2024 19:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -803,28 +803,36 @@ Overfull \hbox (17.0672pt too wide) detected at line 73
  []
 
 
-Overfull \hbox (14.99791pt too wide) detected at line 82
+Overfull \hbox (32.35388pt too wide) detected at line 82
 []
  []
 
-) (capitulos/04_Adaptacion_GPU.tex
-LaTeX Info: Redefining \. on input line 1.
-LaTeX Info: Redefining \% on input line 1.
+
+Overfull \hbox (38.40686pt too wide) detected at line 91
+[]
+ []
+
+
+Underfull \vbox (badness 6725) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 91.
+LaTeX Info: Redefining \% on input line 91.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.9}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \chapter
-            {Adaptación GPU} [9]
+l.91 \end{gather}
+                  [9]) (capitulos/04_Adaptacion_GPU.tex
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.10}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 \chapter
-            {Adaptación GPU} [10
-
-]
+            {Adaptación GPU} [10]
 Cap\'{\i }tulo 4.
 ) (capitulos/05_Plataformas.tex
 pdfTeX warning (ext4): destination with the same identifier (name{page.11}) has
@@ -832,7 +840,9 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.11}) has
 <to be read again> 
                    \relax 
 l.1 \chapter
-            {Comparación con distintas plataformas} [11]
+            {Comparación con distintas plataformas} [11
+
+]
 pdfTeX warning (ext4): destination with the same identifier (name{page.12}) has
  been already used, duplicate ignored
 <to be read again> 
@@ -853,14 +863,20 @@ LaTeX Info: Redefining \% on input line 22.
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package rerunfilecheck Info: File `proyecto.out' has not changed.
-(rerunfilecheck)             Checksum: 3448A316B13177AEEF5A21C3E446D799;6094.
+
+Package rerunfilecheck Warning: File `proyecto.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `proyecto.out':
+(rerunfilecheck)             Before: 3448A316B13177AEEF5A21C3E446D799;6094
+(rerunfilecheck)             After:  EFBD23C7BEBB5C5349D669309EA03BF3;6343.
  ) 
 Here is how much of TeX's memory you used:
- 13654 strings out of 476331
- 220883 string characters out of 5787765
- 1867660 words of memory out of 5000000
- 33751 multiletter control sequences out of 15000+600000
+ 13671 strings out of 476331
+ 221126 string characters out of 5787765
+ 1868660 words of memory out of 5000000
+ 33756 multiletter control sequences out of 15000+600000
  520652 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,13n,76p,712b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -881,9 +897,9 @@ blic/amsfonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/t
 ype1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Progra
 ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on proyecto.pdf (39 pages, 388158 bytes).
+Output written on proyecto.pdf (39 pages, 394445 bytes).
 PDF statistics:
- 479 PDF objects out of 1000 (max. 8388607)
- 96 named destinations out of 1000 (max. 500000)
+ 493 PDF objects out of 1000 (max. 8388607)
+ 108 named destinations out of 1000 (max. 500000)
  309 words of extra memory for PDF output out of 10000 (max. 10000000)
 
