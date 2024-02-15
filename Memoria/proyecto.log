@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  13 FEB 2024 18:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  15 FEB 2024 15:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -554,7 +554,7 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 ))
 (portada/portada.tex
 \centeroffset=\skip73
-<imagenes/logo_ugr.jpg, id=123, 777.90625pt x 231.86626pt>
+<imagenes/logo_ugr.jpg, id=147, 777.90625pt x 231.86626pt>
 File: imagenes/logo_ugr.jpg Graphic file (type jpg)
 <use imagenes/logo_ugr.jpg>
 Package pdftex.def Info: imagenes/logo_ugr.jpg  used on input line 12.
@@ -564,7 +564,7 @@ Overfull \hbox (24.0pt too wide) in paragraph at lines 9--23
 | $[]$ 
  []
 
-<imagenes/etsiit_logo.png, id=124, 110.814pt x 40.4712pt>
+<imagenes/etsiit_logo.png, id=148, 110.814pt x 40.4712pt>
 File: imagenes/etsiit_logo.png Graphic file (type png)
 <use imagenes/etsiit_logo.png>
 Package pdftex.def Info: imagenes/etsiit_logo.png  used on input line 31.
@@ -584,18 +584,18 @@ ogo_ugr.jpg> <./imagenes/etsiit_logo.png>]) (prefacios/prefacio.tex [2
 (portada/portada_2.tex [3] [4
 
 ]
-<imagenes/logo.png, id=149, 123.46124pt x 45.92157pt>
+<imagenes/logo.png, id=173, 123.46124pt x 45.92157pt>
 File: imagenes/logo.png Graphic file (type png)
 <use imagenes/logo.png>
 Package pdftex.def Info: imagenes/logo.png  used on input line 21.
 (pdftex.def)             Requested size: 123.46092pt x 45.92145pt.
 
-Overfull \hbox (24.0pt too wide) in paragraph at lines 8--31
+Overfull \hbox (24.0pt too wide) in paragraph at lines 8--30
 | $[]$ 
  []
 
 
-Overfull \hbox (24.0pt too wide) in paragraph at lines 33--47
+Overfull \hbox (24.0pt too wide) in paragraph at lines 32--45
 | $[]$
  []
 
@@ -604,7 +604,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.49 \end{titlepage}
+l.47 \end{titlepage}
                      [1 <./imagenes/logo.png>])
 pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has 
 been already used, duplicate ignored
@@ -668,22 +668,33 @@ Underfull \hbox (badness 10000) in paragraph at lines 73--74
 ] (proyecto.toc
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
-)
+ [1
+
+])
 \tf@toc=\write4
 \openout4 = `proyecto.toc'.
 
- [1
 
-] [2
 
-] (proyecto.lof
+LaTeX Font Warning: Font shape `OT1/cmr/bx/sc' undefined
+(Font)              using `OT1/cmr/bx/n' instead on input line 179.
+
+
+Package spanish Warning: Replacing `OT1/cmr/bx/sc' by 
+(spanish)                faked small caps on input line 179.
+
+LaTeX Info: Redefining \. on input line 179.
+LaTeX Info: Redefining \% on input line 179.
+[2] (proyecto.lof
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
 )
 \tf@lof=\write5
 \openout5 = `proyecto.lof'.
 
- [3] [4
+ [3
+
+] [4
 
 ] (proyecto.lot
 LaTeX Info: Redefining \. on input line 1.
@@ -694,177 +705,185 @@ LaTeX Info: Redefining \% on input line 1.
 
  [5] [6
 
-] (capitulos/01_Introduccion.tex
+]
+(capitulos/01_Introduccion.tex
 Cap\'{\i }tulo 1.
-LaTeX Font Info:    Trying to load font information for OML+cmr on input line 6
+) (capitulos/02_Conceptos_Previos.tex
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.1 \chapter
+            {Conceptos previos} [1
+
+]
+pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.1 \chapter
+            {Conceptos previos} [2
+
+]
+Cap\'{\i }tulo 2.
+LaTeX Font Info:    Trying to load font information for OML+cmr on input line 7
 .
 (C:\Users\Troll\AppData\Local\Programs\MiKTeX\tex/latex/base\omlcmr.fd
 File: omlcmr.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 6.
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 7.
 
 Underfull \hbox (badness 10000) in paragraph at lines 19--22
 
  []
 
 
-pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
-been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.26 
-      [1
-
-]) (capitulos/02_FullyConnected.tex
-LaTeX Info: Redefining \. on input line 1.
-LaTeX Info: Redefining \% on input line 1.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has 
-been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.1 \chapter
-            {Redes Neuronales Totalmente Conectadas} [2]
-Cap\'{\i }tulo 2.
-<imagenes/nn_1_capa.jpg, id=277, 448.67625pt x 364.36125pt>
-File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
-<use imagenes/nn_1_capa.jpg>
-Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 30.
-(pdftex.def)             Requested size: 157.03903pt x 127.52834pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.34 
-      [3
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 42--44
-
- []
-
-LaTeX Info: Redefining \. on input line 54.
-LaTeX Info: Redefining \% on input line 54.
+l.26 
+      [3]
+LaTeX Info: Redefining \. on input line 59.
+LaTeX Info: Redefining \% on input line 59.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.54 \begin{gather}
-                    [4 <./imagenes/nn_1_capa.jpg>]
-Overfull \hbox (17.0672pt too wide) detected at line 95
-[]
- []
-
-LaTeX Info: Redefining \. on input line 95.
-LaTeX Info: Redefining \% on input line 95.
+l.59 \begin{gather}
+                    [4]) (capitulos/03_Aportaciones.tex
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.5}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.95 \end{gather}
-                  [5]
-Overfull \hbox (14.99791pt too wide) detected at line 104
-[]
- []
-
-) (capitulos/03_CNN.tex
-LaTeX Info: Redefining \. on input line 1.
-LaTeX Info: Redefining \% on input line 1.
-
+l.1 \chapter
+            {Aportaciones} [5]
 pdfTeX warning (ext4): destination with the same identifier (name{page.6}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 \chapter
-            {Redes Neuronales Convolucionales} [6]
+            {Aportaciones} [6
+
+]
 Cap\'{\i }tulo 3.
-) (capitulos/04_GPU.tex
+<imagenes/nn_1_capa.jpg, id=323, 448.67625pt x 364.36125pt>
+File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
+<use imagenes/nn_1_capa.jpg>
+Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 8.
+(pdftex.def)             Requested size: 157.03903pt x 127.52834pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--22
+
+ []
+
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.7}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \chapter
-            {GPU} [7
+l.25 \begin{gather}
+                    [7 <./imagenes/nn_1_capa.jpg>]
+LaTeX Info: Redefining \. on input line 59.
+LaTeX Info: Redefining \% on input line 59.
 
-]
 pdfTeX warning (ext4): destination with the same identifier (name{page.8}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \chapter
-            {GPU} [8
+l.59 \end{gather}
+                  [8]
+Overfull \hbox (17.0672pt too wide) detected at line 73
+[]
+ []
 
-]
-Cap\'{\i }tulo 4.
-) (proyecto.bbl
+
+Overfull \hbox (14.99791pt too wide) detected at line 82
+[]
+ []
+
+) (capitulos/04_Adaptacion_GPU.tex
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.9}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \begin{thebibliography}{1}
-                               [9]
+l.1 \chapter
+            {Adaptación GPU} [9]
 pdfTeX warning (ext4): destination with the same identifier (name{page.10}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \begin{thebibliography}{1}
-                               [10
+l.1 \chapter
+            {Adaptación GPU} [10
 
-])
+]
+Cap\'{\i }tulo 4.
+) (capitulos/05_Plataformas.tex
 pdfTeX warning (ext4): destination with the same identifier (name{page.11}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.223 \chapter
-              *{} [11]
+l.1 \chapter
+            {Comparación con distintas plataformas} [11]
 pdfTeX warning (ext4): destination with the same identifier (name{page.12}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.223 \chapter
-              *{} [12
+l.1 \chapter
+            {Comparación con distintas plataformas} [12
 
-] [13] (proyecto.aux
+]
+Cap\'{\i }tulo 5.
+) (proyecto.bbl [13] [14
+
+]) [15] [16
+
+] [17] (proyecto.aux
 LaTeX Info: Redefining \. on input line 22.
 LaTeX Info: Redefining \% on input line 22.
 )
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
 Package rerunfilecheck Info: File `proyecto.out' has not changed.
-(rerunfilecheck)             Checksum: 0178E82BCE3674DD47E69899691F89CF;4918.
+(rerunfilecheck)             Checksum: 3448A316B13177AEEF5A21C3E446D799;6094.
  ) 
 Here is how much of TeX's memory you used:
- 13628 strings out of 476331
- 220252 string characters out of 5787765
- 1870660 words of memory out of 5000000
- 33739 multiletter control sequences out of 15000+600000
- 520343 words of font info for 59 fonts, out of 8000000 for 9000
+ 13654 strings out of 476331
+ 220883 string characters out of 5787765
+ 1867660 words of memory out of 5000000
+ 33751 multiletter control sequences out of 15000+600000
+ 520652 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,12n,76p,707b,504s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,13n,76p,712b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmbx10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmbx12.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmbxti10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fo
-nts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Troll/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Troll/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Troll/AppD
-ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/Tr
-oll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/
-Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.
+ublic/amsfonts/cm/cmbx8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmbxti10.pfb><C:/Users/Troll/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Troll/AppData/Local/
+Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Troll/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Tr
+oll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/
+Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.
 pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmr6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
-fonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/pub
-lic/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTe
-X/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on proyecto.pdf (35 pages, 373268 bytes).
+m/cmr10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmr6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+Output written on proyecto.pdf (39 pages, 388158 bytes).
 PDF statistics:
- 424 PDF objects out of 1000 (max. 8388607)
- 86 named destinations out of 1000 (max. 500000)
- 261 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 479 PDF objects out of 1000 (max. 8388607)
+ 96 named destinations out of 1000 (max. 500000)
+ 309 words of extra memory for PDF output out of 10000 (max. 10000000)
 

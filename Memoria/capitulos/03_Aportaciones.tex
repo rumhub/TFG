@@ -1,29 +1,7 @@
-\chapter{Redes Neuronales Totalmente Conectadas}
+\chapter{Aportaciones}
 
-\section{Estructura}
-
-\subsection{Neurona}
-\subsection{Conexión entre capas}
-\subsection{Función de activación}
-
-RELU para capas intermedias, sigmoide para última capa.
-
-\subsection{Función de error o pérdida}
-% https://medium.com/mlearning-ai/understanding-loss-functions-for-classification-81c19ee72c2a
-
-Como solo tenemos dos clases y estamos en clasificación binaria, usaremos Sigmoid Cross Entropy Loss.
-
-\begin{gather}
-   H(x) = - \frac{1}{N} \sum_{i=1}^{N}  [y_i * log( \hat{y}_i) + (1-y_i)*log(1-\hat{y_i})]
-\end{gather}
-
-y = etiqueta real \\
-$\hat{y}$ = predicción 
-
-\section{ForwardPropagation}
-\section{Descenso del gradiente}
-\section{BackPropagation}
-\subsection{1 capa oculta}
+\section{Redes Neuronales Totalmente Conectadas}
+\subsection{BackPropagation con 1 capa oculta}
 
 \begin{figure}[H]
 	\centering
@@ -45,7 +23,7 @@ De esta forma, si la última capa es $\hat{y}$ y solo tiene una neurona, $\hat{y
 De esta forma, la función de pérdida (2.1) se convierte en:
 
 \begin{gather}
-    H(x) = - \frac{1}{N} \sum_{i=1}^{N}  [y_i * log( \hat{y}_{out_i}) + (1-y_i)*log(1-\hat{y}_{out_i})]
+	H(x) = - \frac{1}{N} \sum_{i=1}^{N}  [y_i * log( \hat{y}_{out_i}) + (1-y_i)*log(1-\hat{y}_{out_i})]
 \end{gather}
 
 Para realizar el descenso del gradiente, se debe empezar calculando la derivada de la función de pérdida respecto a la predicción obtenida. Es decir, la derivada de la fórmula (2.2) respecto de las neuronas en la última capa de la red tras aplicar sus respectivas funciones de activación, que en este caso corresponde a $\hat{y}_{out}$. \\
@@ -69,7 +47,7 @@ Parte derecha:
 
 Finalmente, se obtiene: 
 \begin{gather}
-    \frac{dH(x)}{d\hat{y}_{out_i}} = - \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ]
+	\frac{dH(x)}{d\hat{y}_{out_i}} = - \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ]
 \end{gather}
 
 \subsubsection{Función activación de la capa output}
@@ -90,8 +68,8 @@ Ahora, podemos calcular el gradiente completo hasta la capa output antes de apli
 
 \begin{gather}
 	grad\_output = \frac{dH(x)}{d\hat{y}_{out}} * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} =
-	    - \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ] * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} \\
-	    grad\_output = - \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ] * sigmoide(\hat{y}_{in})*(1-sigmoide(\hat{y}_{in}))
+	- \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ] * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} \\
+	grad\_output = - \frac{1}{N} \sum_{i=1}^{N}  [ \frac{y_i}{\hat{y}_{out_i}} - \frac{1-y_i}{1-\hat{y}_{out_i}} ] * sigmoide(\hat{y}_{in})*(1-sigmoide(\hat{y}_{in}))
 \end{gather}
 
 \subsubsection{Pesos capas h1-output}
@@ -100,7 +78,7 @@ Una vez calculado el gradiente hasta la capa output, se puede calcular el gradie
 
 \begin{gather}
 	\frac{d\hat{y}_{in}}{dW_{p\hat{y}}} = \frac{dh_{1out_p} * W_{p\hat{y}}}{dW_{p\hat{y}}} = h_{1out_p} \\
-		\frac{dH(x)}{dW_{p\hat{y}}} = \frac{dH(x)}{d\hat{y}_{out}} * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} * \frac{d\hat{y}_{in}}{dW_{p\hat{y}}} =  grad\_output * \frac{d\hat{y}_{in}}{dW_{p\hat{y}}} = grad\_output * h_{1out_p}
+	\frac{dH(x)}{dW_{p\hat{y}}} = \frac{dH(x)}{d\hat{y}_{out}} * \frac{d\hat{y}_{out}}{d\hat{y}_{in}} * \frac{d\hat{y}_{in}}{dW_{p\hat{y}}} =  grad\_output * \frac{d\hat{y}_{in}}{dW_{p\hat{y}}} = grad\_output * h_{1out_p}
 \end{gather}
 
 \subsubsection{Capa oculta h1}

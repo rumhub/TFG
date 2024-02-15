@@ -1,45 +1,5 @@
 \chapter{Introducción}
 
-\section{Machine Learning}
-
-Se entiende como el campo de las ciencias de computación que en vez de enfocarse en el diseño de algoritmos explícitos, optan por el estudio de técnicas de aprendizaje. Este enfoque tiene un gran éxito en tareas computacionales donde no es factible diseñar un algoritmo de forma explícita. \cite{Programming_Massively} \\
-En vez de averiguar las distintas reglas a seguir para llegar a una solución, esta alternativa permite simplemente suministrar ejemplos de lo que debería pasar en distintas situaciones, y dejar que la máquina aprenda y extraiga ella misma sus propias conclusiones. De esta forma, el procedimiento en aprendizaje supervisado consiste en 'entrenar' con una muestra de N ejemplos, extraer información de ellos, y posteriormente poder evaluar de forma 'correcta' (bajo un margen de error controlado) otra muestra de M ejemplos, siendo M \textgreater N. \cite{Learning_From_Data} \\
-Este enfoque ha contribuido en el avance de áreas como reconocimiento de voz, visión por ordenador, procesamiento de lenguaje natural, etc.
-
-
-\section{Deep Learning}
-
-\section{Tipos de aprendizaje}
-
-
-\subsection{Aprendizaje Supervisado}
-
-% \cite{Learning_From_Data} página 24
-
-Es el que se empleará en este proyecto. 
-Se caracteriza por la presencia de una etiqueta 'correcta' $y_i$ asociada a cada dato de entrada $x_i$. Posteriormente, la red empleará ambos valores para, a partir de $x_i$, tratar de deducir $y_i$. \cite{Learning_From_Data} \\
-Aunque se tratará de impedirlo, siempre hay ruido en los datos empleados, implicando que algunas etiquetas de Y=$\{y_1, y_2, ..., y_N\}$ pueden ser erróneas. \\
-
-\subsection{Aprendizaje No Supervisado}
-
-En este tipo de aprendizaje, los datos no contienen ninguna información respecto a lo que debe predecir la red. De esta forma, el conjunto de datos D se compone exclusivamente de valores X=$\{x_1, x_2, ..., x_N\}$. \cite{Learning_From_Data}
-
-\subsection{Aprendizaje Por Refuerzo}
-
-En este caso tampoco existe un $y_i$ 'correcto' asociado a cada $x_i$. En su lugar, se asocia a cada $x_i$ una etiqueta con un valor posible de $y_i$, además de una medida que indica como de bueno es el mismo. \cite{Learning_From_Data}
-
-\section{Tipos de problemas en machine learning}
-
-\subsection{Clasificación}
-
-\subsection{Regresión}
-
-\section{División de datos en entrenamiento y test}
-
-En aprendizaje supervisado, al disponer de N ejemplos se dice que se dispone de una muestra D = $\{d_1 = (x_1, y_1), d_2 = (x_2, y_2), ..., d_N = (x_N, y_N)\}$.
-
-Dicho conjunto de datos D se suele dividir en 2 subconjuntos, entrenamiento y test. El objetivo de ello es comprobar si realmente el programa 'aprende' o solo memoriza.\\
-El procedimiento consiste en entrenar una red determinada empleando exclusivamente los datos del conjunto de entrenamiento. Una vez terminado todo el entrenamiento y nunca antes de ello, se accede al subconjunto test y se comparan las predicciones sobre este con los valores reales que se encuentran en cada $y_i$ correspondiente. De esta forma, se observa el comportamiento de la red 'fuera de la muestra' y da una idea de como generaliza. Es decir, si ha aprendido o por el contrario simplemente ha logrado memorizar todos los ejemplos con los que se entrenó.
-
-\section{Entrenamiento}
-
+\section{Resumen}
+\section{Estado del arte}
+\section{Objetivos}
