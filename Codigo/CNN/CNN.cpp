@@ -125,8 +125,6 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
     }
 
     this->fully = new FullyConnected_H(capas_fully, lr);
-    
-
 }
 
 void CNN::leer_imagenes()

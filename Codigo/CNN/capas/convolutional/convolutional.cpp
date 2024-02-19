@@ -233,8 +233,44 @@ void Convolutional::mostrar_grad()
 // La salida es una imagen 2D, un canal de profundidad
 void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output)
 {
-    // Forward Propagation se implementa como una correlación (tipo valid) entre el volumen de entrada y los kernels de pesos correspondientes
-    conv_corr(input, output, this->w, true, false);
+    // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
+    vector<vector<vector<float>>> input_copy;
+    vector<vector<float>> conv_imagen;
+    vector<float> conv_fila;
+    
+    // nº de kernels, nº de "capas 2D" por kernel, nº de filas del kernel, nº de columnas del kernel a aplicar
+    int M = this->w.size(), depth_k = pesos[0].size(), K = pesos[0][0].size();
+
+    // nº de "capas 2D",   nº de filas del volumen de entrada
+    int C = input.size(), fils_img = input[0].size();
+
+    // nº de veces que se deslizará el kernel sobre el volumen de entrada input
+    // Suponemos nº filas = nº columnas
+    int n_veces = fils_img - K + 1;
+
+    if(C != depth_k)
+    {
+        cout << "Error. La profundidad del volumen del entrada no coincide con la profundidad de los kernels proporcionados. " << endl;
+        exit(-1);
+    }
+        
+
+    // Por cada kernel M 
+    for(int img_out=0; img_out<M; img_out++)
+        for(int i=0; i<n_veces; i++)    
+            for(int j=0; j<n_veces; j++)  
+            {
+                output[img_out][i][j] = 0.0;
+                
+                // Realizar convolución 3D
+                for(int c=0; c<C; c++)
+                    for(int i_k=0; i_k<K; i_k++)
+                        for(int j_k=0; j_k<K; j_k++)
+                            output[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];                            
+
+                // Sumamos bias a la suma ponderada obtenida
+                output[img_out][i][j] = activationFunction(output[img_out][i][j] + this->bias[img_out]);
+            }
 };
 
 void Convolutional::flip_w(vector<vector<vector<vector<float>>>> &w_flipped)
@@ -259,83 +295,6 @@ void Convolutional::flip_w(vector<vector<vector<vector<float>>>> &w_flipped)
         }
     }
 
-    
-};
-
-// La salida es una imagen 2D, un canal de profundidad
-// Capa convolución o correlación
-void Convolutional::conv_corr(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, 
-vector<vector<vector<vector<float>>>> pesos, bool valid, bool conv)
-{
-    // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
-    vector<vector<vector<float>>> input_copy;
-    vector<vector<float>> conv_imagen;
-    vector<float> conv_fila;
-    
-    // nº de kernels, nº de "capas 2D" por kernel, nº de filas del kernel, nº de columnas del kernel a aplicar
-    int M = pesos.size(), depth_k = pesos[0].size(), K = pesos[0][0].size();
-
-    // nº de "capas 2D", nº de filas, nº de columnas del volumen de entrada
-    int C = input.size(), fils_img = input[0].size(), cols_img = input[0][0].size();
-
-    // nº de veces que se deslizará el kernel sobre el volumen de entrada input
-    int H_out = fils_img - K + 1;
-    int W_out = cols_img - K + 1;
-    //cout << "y: " << M << "x" << H_out << "x" << W_out << endl;
-
-
-    if(C != depth_k)
-        cout << "Error. La profundidad del volumen del entrada no coincide con la profundidad de los kernels proporcionados. " << endl;
-
-    
-    input_copy = input;
-
-    // Si es una capa de convolución, equivale a una correlación pero con los pesos rotados 180º
-    if(conv == true)
-        flip_w(pesos);
-
-    // Puede ser o valid o full
-    if(valid == false)
-    {
-
-        aplicar_padding(input_copy, K-1);
-        //mostrar_imagenes_2D(input_copy);
-        
-        fils_img = input_copy.size(), cols_img = input_copy[0].size();
-        H_out = fils_img - K  + 1;
-        W_out = cols_img - K + 1;
-    }
-
-
-    // Por cada kernel M 
-    for(int m=0; m<M; m++)
-    {
-        // Recorremos el volumen input con el kernel m
-        for(int h=0; h<H_out; h++)
-        {
-            for(int w=0; w<W_out; w++)  
-            {
-                output[m][h][w] = 0.0;
-                
-                // Realizar convolución 3D
-                for(int c=0; c<C; c++)
-                {
-                    for(int p=0; p<K; p++)
-                    {
-                        for(int q=0; q<K; q++)
-                        {
-                            output[m][h][w] += input_copy[c][h+p][w+q] * pesos[m][c][p][q];                            
-                        }  
-                    }
-                }
-
-                // Sumamos bias a la suma ponderada obtenida
-                output[m][h][w] = activationFunction(output[m][h][w] + this->bias[m]);
-            }
-
-        }
-
-    }
     
 };
 
@@ -500,7 +459,6 @@ void Convolutional::backPropagation_sin_padding(vector<vector<vector<float>>> &i
 
     // Suponemos filas = columnas
     int n = input[0].size() - output[0].size() + 1;
-    float sum;
 
     // Número de "imágenes 2D" de la salida es igual al número de filtros que tengamos en la capa anterior, tam_output
     // tam_input se refiere al número de canales o "imágenes 2D" que tiene la imagen input

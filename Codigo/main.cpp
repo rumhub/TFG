@@ -38,8 +38,8 @@ int main()
     int n_imagenes;
     leer_imagen(input);
 
-    vector<vector<int>> capas_conv = {{6,5,5}, {10,5,5}, {16,5,5}}, capas_pool={{2,2}, {2,2}, {2,2}};
-    vector<int> capas_fully = {100, 50, 25}, padding = {2, 2, 2};
+    vector<vector<int>> capas_conv = {{32,5,5}, {32,3,3}}, capas_pool={{2,2}, {2,2}};
+    vector<int> capas_fully = {100, 50, 25}, padding = {2, 2};
     CNN cnn(capas_conv, capas_pool, padding, capas_fully, input, 0.1);
     
     cnn.leer_imagenes();

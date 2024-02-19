@@ -21,27 +21,21 @@ void Flatten::forwardPropagation(const vector<vector<vector<float>>> &input, vec
 
     float max = 0.0;
     for(int i=0; i<n1; i++)
-    {
         for(int j=0; j<n2; j++)
-        {
             for(int k=0; k<n3; k++)
             {
                 out[cont] = input[i][j][k];
                 
-                if(max < out[cont])
-                    max = out[cont]; 
+                //if(max < out[cont])
+                //    max = out[cont]; 
 
                 cont++;
             }
-        }
-    }
 
     // Normalizar entre 0 y 1 -------------------------------------------------------------
-    for(int i=0; i<cont; i++)
-    {
-        
-        out[i] = out[i]/max;  
-    }
+    //for(int i=0; i<cont; i++)
+    //    out[i] = out[i]/max;  
+    
 
     output = out;
 };
