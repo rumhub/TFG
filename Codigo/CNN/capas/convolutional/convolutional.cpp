@@ -102,9 +102,8 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
     // Un bias por filtro, https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
 
     for(int i=0; i<n_kernels; i++)
-    {
         this->bias.push_back((float) (rand()) / (RAND_MAX));
-    }
+    
 
     // Grad Bias
     this->grad_bias = this->bias;
@@ -141,28 +140,19 @@ void Convolutional::aplicar_padding(vector<vector<vector<float>>> &imagen_3D, in
         {
             // Añadimos padding lateral izquierdo
             for(int t=0; t<pad; t++)
-            {
                 fila_aux.push_back(0.0);
-            }
-            
 
             // Dejamos casillas centrales igual que en la imagen original
             for(int k=0; k<imagen_3D[i][j].size(); k++)
-            {
                 fila_aux.push_back(imagen_3D[i][j][k]);
-            }
-
             
             // Añadimos padding lateral derecho
             for(int t=0; t<pad; t++)
-            {
                 fila_aux.push_back(0.0);
-            }
             
             // Añadimos fila construida a la imagen
             imagen_aux.push_back(fila_aux);
             fila_aux.clear();
-            
         }
         
         // Añadimos padding inferior
@@ -188,22 +178,18 @@ void Convolutional::mostrar_pesos()
 {
     
     for(int n=0; n<this->n_kernels; n++)
-    {
         for(int d=0; d<this->kernel_depth; d++)
         {
             for(int i=0; i<this->kernel_fils; i++)
             {
                 for(int j=0; j<this->kernel_cols; j++)
-                {
                     cout << this->w[n][d][i][j] << " ";
-                }
+                
                 cout << endl;
             }
             cout << "Bias kernel " << n << ": " << this->bias[n] << endl;
             cout << endl << endl;
         }
-        
-    }
 
     cout << endl; 
 }
@@ -212,20 +198,14 @@ void Convolutional::mostrar_grad()
 {
     
     for(int n=0; n<this->n_kernels; n++)
-    {
         for(int d=0; d<this->kernel_depth; d++)
-        {
             for(int i=0; i<this->kernel_fils; i++)
             {
                 for(int j=0; j<this->kernel_cols; j++)
-                {
                     cout << this->grad_w[n][d][i][j] << " ";
-                }
+                
                 cout << endl;
             }
-        }
-        
-    }
 
     cout << endl; 
 }
@@ -279,22 +259,10 @@ void Convolutional::flip_w(vector<vector<vector<vector<float>>>> &w_flipped)
 
     // Por cada kernel
     for(int k=0; k<w.size(); k++)
-    {
-        // Por cada canal del kernel
-        for(int d=0; d<w[k].size(); d++)
-        {
-
-            // Por cada fila
-            for(int j=w[k][d].size()-1, j_w=0; j>=0; j--, j_w++)
-            {
+        for(int d=0; d<w[k].size(); d++)    // Por cada canal del kernel
+            for(int j=w[k][d].size()-1, j_w=0; j>=0; j--, j_w++)    // Por cada fila
                 for(int c=w[k][d][j].size()-1, c_w=0; c>=0; c--, c_w++)
-                {
                     w_flipped[k][d][j_w][c_w] = w[k][d][j][c];
-                }
-            }
-        }
-    }
-
     
 };
 
@@ -304,24 +272,15 @@ void Convolutional::reset_gradients()
     
     // Reset gradiende del bias
     for(int k=0; k<this->n_kernels; k++)
-    {
         this->grad_bias[k] = 0;
-    }
 
     // Reset del gradiente de cada peso
     for(int i=0; i<this->grad_w.size(); i++)
-    {
         for(int j=0; j<this->grad_w[0].size(); j++)
-        {
             for(int k=0; k<this->grad_w[0][0].size(); k++)
-            {
                 for(int l=0; l<this->grad_w[0][0][0].size(); l++)
-                {
                     this->grad_w[i][j][k][l] = 0;
-                }
-            }
-        }
-    }  
+                
 }
 
 
@@ -445,14 +404,9 @@ void Convolutional::backPropagation_sin_padding(vector<vector<vector<float>>> &i
 
         // https://towardsdatascience.com/backpropagation-in-a-convolutional-layer-24c8d64d8509
         for(int j=0; j<output[k].size(); j++)
-        {
             for(int p=0; p<output[k][j].size(); p++)
-            {
-                this->grad_bias[k] += output[k][j][p];
-            }
-        } 
+                this->grad_bias[k] += output[k][j][p]; 
     }
-
     
     // Cálculo del gradiente de pesos --------------------------------------
     int n_imgs_sep, tam_fil=this->w[0][0].size(), tam_col=this->w[0][0][0].size(), fil, col;
@@ -478,27 +432,9 @@ void Convolutional::backPropagation_sin_padding(vector<vector<vector<float>>> &i
     
     // Reset gradiente respecto a input
     for(int i=0; i<input.size(); i++)
-    {
         for(int j=0; j<input[0].size(); j++)
-        {
             for(int k=0; k<input[0][0].size(); k++)
-            {
-                input[i][j][k] = 1;
-            }
-        }
-    } 
-
-    // Reset gradiente respecto a input
-    for(int i=0; i<input.size(); i++)
-    {
-        for(int j=0; j<input[0].size(); j++)
-        {
-            for(int k=0; k<input[0][0].size(); k++)
-            {
                 input[i][j][k] = 0;
-            }
-        }
-    } 
 
     // Invertimos los pesos
     vector<vector<vector<vector<float>>>> w_flipped;
@@ -538,14 +474,9 @@ void Convolutional::backPropagation_con_padding(vector<vector<vector<float>>> &i
 
         // https://towardsdatascience.com/backpropagation-in-a-convolutional-layer-24c8d64d8509
         for(int j=0; j<output[k].size(); j++)
-        {
             for(int p=0; p<output[k][j].size(); p++)
-            {
                 this->grad_bias[k] += output[k][j][p];
-            }
-        } 
     }
-
     
     // Cálculo del gradiente de pesos --------------------------------------
     int n_imgs_sep, tam_fil=this->w[0][0].size(), tam_col=this->w[0][0][0].size(), fil, col;
@@ -611,20 +542,13 @@ void Convolutional::backPropagation_con_padding(vector<vector<vector<float>>> &i
 
         }
 
-
     // Gradiente respecto a input -----------------------------
 
     // Reset gradiente respecto a input
     for(int i=0; i<input.size(); i++)
-    {
         for(int j=0; j<input[0].size(); j++)
-        {
             for(int k=0; k<input[0][0].size(); k++)
-            {
                 input[i][j][k] = 0;
-            }
-        }
-    } 
 
     // Invertimos los pesos
     vector<vector<vector<vector<float>>>> w_flipped;
@@ -634,7 +558,6 @@ void Convolutional::backPropagation_con_padding(vector<vector<vector<float>>> &i
     vector<vector<vector<float>>> output_con_pad;
     output_con_pad = output;
     aplicar_padding(output_con_pad, tam_fil-1);
-
 
     n = input[0].size();
 
@@ -668,44 +591,25 @@ void Convolutional::actualizar_grads(int n_datos)
     //cout << "Paso 1: " << this->grad_w[0][0][0][0] << endl;
     // Realizar la media de los gradientes de pesos
     for(int i=0; i<this->grad_w.size(); i++)
-    {
         for(int j=0; j<this->grad_w[i].size(); j++)
-        {
             for(int k=0; k<this->grad_w[i][j].size(); k++)
-            {
                 for(int l=0; l<this->grad_w[i][j][k].size(); l++)
                     this->grad_w[i][j][k][l] = -this->grad_w[i][j][k][l] / n_datos;
-            }
-        }
-    }
-
-    //cout << "Paso 2: "<< this->grad_w[0][0][0][0] << endl;
 
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
-    {
         for(int k=0; k<this->w[j].size(); k++)
-        {
             for(int p=0; p<this->w[j][k].size(); p++)
-            {
                 for(int l=0; l<this->grad_w[j][k][p].size(); l++)
                     this->w[j][k][p][l] += this->lr * this->grad_w[j][k][p][l];
-            }
-        }
-    }
 
     // Realizar la media de los gradientes de bias
     for(int i=0; i<this->grad_bias.size(); i++)
-    {
         this->grad_bias[i] = -this->grad_bias[i] / n_datos;
-    }
-
     
     // Actualizar bias
     for(int i=0; i<this->bias.size(); i++)
-    {
         this->bias[i] += this->lr * this->grad_bias[i];
-    }
     
 }
 

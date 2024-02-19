@@ -251,9 +251,8 @@ void CNN::train(int epocas, int mini_batch)
 
     // Inicializar vector de índices
     for(int i=0; i<n; i++)
-    {
         indices[i] = i;
-    }
+    
 
 
     for(int ep=0; ep<epocas; ep++)
@@ -284,9 +283,8 @@ void CNN::train(int epocas, int mini_batch)
             n_imgs_batch = batch.size();
             // Crear batch de labels
             for(int j=0; j<n_imgs_batch; j++)
-            {
                 batch_labels.push_back({this->train_labels[batch[j]]});
-            }
+            
             
             ini += mini_batch;
             fin += mini_batch;
@@ -356,15 +354,9 @@ void CNN::train(int epocas, int mini_batch)
                 this->convs[0].backPropagation(img_aux, convs_out[0], this->padding[0]);
             }
 
-
-
             // Actualizar pesos de capas convolucionales 
             for(int i=0; i<this->n_capas_conv; i++)
-            {
                 this->convs[i].actualizar_grads(batch.size());
-            }       
-            
-
             
         }
 

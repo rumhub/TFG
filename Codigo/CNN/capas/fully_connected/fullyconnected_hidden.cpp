@@ -27,24 +27,15 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
 
     grad_x.clear();
 
-
     // Inicializar gradiente de pesos a 0 --------------------------
     for(int i=0; i<this->w.size(); i++)
-    {
         for(int j=0; j<this->w[i].size(); j++)
-        {
             for(int k=0; k<this->w[i][j].size(); k++)
-            {
                 this->grad_w[i][j][k] = 0;
-            }
-        }
-    }
 
     // Inicializar gradiente bias a 0 ------------------------------
     for(int i=0; i<this->grad_bias.size(); i++)
-    {
         this->grad_bias[i] = 0;
-    }
 
     // Backpropagation ----------------------------------------------
     // Hay 2 o más capas ocultas
@@ -58,9 +49,7 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
         // Por cada neurona j de i_last_h, sumamos i_last_h(out_j) * el peso que lo conecta con la capa output
         // Es decir, queremos obtener O_in (solo hay una neurona en la capa output)
         for(int j=0; j<this->neuronas[i_last_h].size(); j++)
-        {
             o_in += this->neuronas[i_last_h][j] * this->w[i_last_h][j][0];
-        }
         
         o_in += this->bias[i_last_h];
 
@@ -70,21 +59,13 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
 
         // Grad_x --> Hasta Oout / Oin
         grad_x_output = grad_x_output * (sig_o_in * (1-sig_o_in+epsilon));
-        
 
         // Pesos h_last - Oin
         
         // Por cada neurona de la capa output
         for(int i_o=0; i_o<this->neuronas[i_output].size(); i_o++)
-        {
-            // Por cada neurona de la capa h_last
-            for(int j=0; j<this->neuronas[i_last_h].size(); j++)
-            {
-                // Calcular gradiente de peso
-                                                // grad_output * hlast_out_j
-                this->grad_w[i_last_h][j][i_o] += grad_x_output* this->neuronas[i_last_h][j];
-            }
-        }
+            for(int j=0; j<this->neuronas[i_last_h].size(); j++)    // Por cada neurona de la capa h_last                                
+                this->grad_w[i_last_h][j][i_o] += grad_x_output* this->neuronas[i_last_h][j];   // grad_output * hlast_out_j
         
         // Actualizar grad_bias capa h_last
         this->grad_bias[i_last_h] += grad_x_output;
@@ -99,34 +80,22 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
             h_in = 0.0;
             
             for(int j=0; j<this->neuronas[i_ant].size(); j++)
-            {
                 h_in += this->neuronas[i_ant][j] * this->w[i_ant][j][p];
-            }
             
             h_in += this->bias[i_ant];
-            
-            
             grads_output_h[p] = grad_x_output * this->w[i_last_h][p][0] * deriv_relu(h_in);
         }
-
-
 
         // Actualizar pesos penúltima capa oculta - última capa oculta
         for(int p=0; p<this->neuronas[i_act].size(); p++)
         {
             // Por cada neurona de la capa h_last
             for(int k=0; k<this->neuronas[i_ant].size(); k++)
-            {
-                // Calcular gradiente de peso
-                                                // grad_output * hlast_out_j
-                this->grad_w[i_ant][k][p] += grads_output_h[p]* this->neuronas[i_ant][k];
-            }
+                this->grad_w[i_ant][k][p] += grads_output_h[p]* this->neuronas[i_ant][k];   // grad_output * hlast_out_j
+            
 
             this->grad_bias[i_act] += grads_output_h[p];
         }
-
-        
-
 
         // Capas ocultas repetitivas --------------------------------
         for(int l=i_output-2; l>0; l--)
@@ -139,9 +108,7 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
                 h_in = 0.0;
                 
                 for(int j=0; j<this->neuronas[i_ant].size(); j++)
-                {
                     h_in += this->neuronas[i_ant][j] * this->w[i_ant][j][k];
-                }
                 
                 h_in += this->bias[i_ant];
                 
@@ -150,8 +117,6 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
                     sum += grads_output_h[p] * this->w[i_act][k][p];
                 
                 grads_output_h[k] = sum * deriv_relu(h_in);
-
-                //this->grad_bias[i_act] += grads_output_h[k];
             }
         }
         
@@ -173,39 +138,24 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
 
     // Realizar la media de los gradientes de pesos
     for(int i=0; i<this->w.size(); i++)
-    {
         for(int j=0; j<this->w[i].size(); j++)
-        {
             for(int k=0; k<this->w[i][j].size(); k++)
-            {
                 this->grad_w[i][j][k] = -this->grad_w[i][j][k] / n_datos;
-            }
-        }
-    }
-
+            
     // Realizar la media de los gradientes de bias
     for(int i=0; i<this->grad_bias.size(); i++)
-    {
         this->grad_bias[i] = -this->grad_bias[i] / n_datos;
-    }
-
+    
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
-    {
         for(int k=0; k<this->w[j].size(); k++)
-        {
             for(int p=0; p<this->w[j][k].size(); p++)
-            {
                 this->w[j][k][p] -= this->lr * this->grad_w[j][k][p];
-            }
-        }
-    }
 
     // Actualizar bias
     for(int i=0; i<this->bias.size(); i++)
-    {
         this->bias[i] -= this->lr * this->grad_bias[i];
-    }
+    
 }
 
 /*
