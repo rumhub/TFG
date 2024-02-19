@@ -1,0 +1,31 @@
+#include <iostream>
+#include "capas/convolutional/convolutional.cpp"
+#include "capas/flatten/flatten.cpp"
+#include "capas/fully_connected/fullyconnected_hidden.cpp"
+#include "capas/pooling_max/poolingMax.cpp"
+#include "auxiliar/leer_imagenes.cpp"
+#include <vector>
+
+class CNN
+{
+    private:
+        Convolutional * convs;   // Capas convolucionales
+        PoolingMax * plms;          // Capas MaxPool
+        FullyConnected_H *fully;        // Red Fullyconnected
+        Flatten * flat;             // Capa flatten
+        vector<vector<vector<vector<float>>>> train_imgs;   // Imágenes de entrenamiento
+        vector<vector<vector<vector<float>>>> outputs;      // Imágenes con las dimensiones del output de capas conv y pooling
+        vector<float> train_labels;             // Etiqueta de cada imagen de training
+        vector<int> padding;
+        float lr;                           // Learning rate
+        int n_capas_conv;
+    public:
+        CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding, vector<int> &capas_fully, const vector<vector<vector<vector<float>>>> &input, const float &lr);
+
+        void leer_imagenes();
+
+        void mostrar_arquitectura();
+
+        void train(int epocas, int mini_batch);
+        void accuracy();
+};

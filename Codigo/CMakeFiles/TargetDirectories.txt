@@ -1,0 +1,3 @@
+/home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/CMakeFiles/main.dir
+/home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/CMakeFiles/edit_cache.dir
+/home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/CMakeFiles/rebuild_cache.dir
