@@ -19,24 +19,23 @@ void Flatten::forwardPropagation(const vector<vector<vector<float>>> &input, vec
     int n1 = input.size(), n2 = input[0].size(), n3 = input[0][0].size(), n_out = n1*n2*n3, cont=0;
     vector<float> out(n_out);
 
-    float max = 0.0;
+    this->max = 1.0;
     for(int i=0; i<n1; i++)
         for(int j=0; j<n2; j++)
             for(int k=0; k<n3; k++)
             {
                 out[cont] = input[i][j][k];
                 
-                //if(max < out[cont])
-                //    max = out[cont]; 
+                if(this->max < out[cont])
+                    this->max = out[cont]; 
 
                 cont++;
             }
 
     // Normalizar entre 0 y 1 -------------------------------------------------------------
-    //for(int i=0; i<cont; i++)
-    //    out[i] = out[i]/max;  
-    
-
+    for(int i=0; i<cont; i++)
+        out[i] = out[i]/this->max;  
+        
     output = out;
 };
 
@@ -47,7 +46,7 @@ void Flatten::backPropagation(vector<vector<vector<float>>> &errores_matriz, con
     vector<float> v_1D(this->cols);
     vector<vector<float>> v_2D(this->filas);
     vector<vector<vector<float>>> v_3D(this->canales);
-    
+
     // Para cada canal de cada imagen
     for(int i=0; i<this->canales; i++)
     {
@@ -141,7 +140,7 @@ int main()
     mostrar_imagenes_2D(imagenes_2D);
 
     
-    Flatten flt(imagenes_2D.size(), imagenes_2D[0].size(), imagenes_2D[0][0].size());
+    Flatten flt(imagenes_2D);
     flt.forwardPropagation(imagenes_2D, output);
 
     cout << "------------ Forward Propagation de la capa Flatten -------------" << endl;

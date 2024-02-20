@@ -10,7 +10,7 @@ using namespace std;
 */
 CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding,  vector<int> &capas_fully, const vector<vector<vector<vector<float>>>> &input, const float &lr)
 {
-    vector<vector<vector<float>>> img_in, img_out;
+    vector<vector<vector<float>>> img_in, img_out, img_in_copy;
     vector<float> flat_out;
     int H_out, W_out;
 
@@ -22,7 +22,6 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
 
     this->n_capas_conv = capas_conv.size();
     this->lr = lr;
-    this->train_imgs = input;
     this->convs = new Convolutional[this->n_capas_conv];
     this->plms = new PoolingMax[this->n_capas_conv];
     img_in = input[0];
@@ -64,8 +63,6 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
         
         this->outputs.push_back(img_out);
 
-        //cout << "x: " << this->outputs[i*2].size() << "x" << this->outputs[i*2][0].size() << "x" << this->outputs[i*2][0][0].size() << endl;
-
         // Capas convolucionales ------------------------------------------------
         //                  nºkernels          filas_kernel      cols_kernel
         Convolutional conv(capas_conv[i][0], capas_conv[i][1], capas_conv[i][2], img_in, lr); 
@@ -81,30 +78,26 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
 
 
         v_1D.clear();
-        for(int j=0; j<W_out; j++)
-        {
-            v_1D.push_back(0.0);
-        }
         v_2D.clear();
-        for(int j=0; j<H_out; j++)
-        {
-            v_2D.push_back(v_1D);
-        }
-
         img_out.clear();
+
+        for(int j=0; j<W_out; j++)
+            v_1D.push_back(0.0);
+
+        for(int j=0; j<H_out; j++)
+            v_2D.push_back(v_1D);
+
         for(int j=0; j<capas_conv[i][0]; j++)
-        {
             img_out.push_back(v_2D);
-        }
         
         this->outputs.push_back(img_out);
 
         // Capas MaxPool -----------------------------------------------------------
         //           filas_kernel_pool  cols_kernel_pool
         PoolingMax plm(tams_pool[i][0], tams_pool[i][1], img_in);
-    
+        img_in_copy = img_in;
         this->plms[i] = plm;
-        this->plms[i].forwardPropagation(img_in, img_out);
+        this->plms[i].forwardPropagation(img_in, img_out, img_in_copy);
         img_in = img_out;
         
     }
@@ -141,7 +134,7 @@ void CNN::leer_imagenes()
     {
         // Leemos perros
 
-        string ruta_ini = "fotos/training_set/dogs/dog.";
+        string ruta_ini = "../fotos/training_set/dogs/dog.";
         string ruta = ruta_ini + to_string(p) + ".jpg";
 
         Mat image2 = imread(ruta), image;
@@ -171,7 +164,7 @@ void CNN::leer_imagenes()
 
         
         // Leemos gatos
-        ruta_ini = "fotos/training_set/cats/cat.";
+        ruta_ini = "../fotos/training_set/cats/cat.";
         ruta = ruta_ini + to_string(p) + ".jpg";
 
         image2 = imread(ruta), image;
@@ -205,7 +198,7 @@ void CNN::leer_imagenes()
 
 void CNN::mostrar_arquitectura()
 {
-    vector<vector<vector<float>>> img_in, img_out;
+    vector<vector<vector<float>>> img_in, img_out, img_in_copy;
     vector<float> flat_out;
 
     img_in = this->train_imgs[0];
@@ -221,7 +214,8 @@ void CNN::mostrar_arquitectura()
         cout << "Dimensiones tras " << this->convs[i].get_n_kernels() << " capas convolucionales de " << this->convs[i].get_kernel_fils() << "x" << this->convs[i].get_kernel_cols() << ": " << this->outputs[i*2].size() << "x" << this->outputs[i*2][0].size() << "x" << this->outputs[i*2][0][0].size() << endl;
 
         // Capas MaxPool -----------------------------------------------------------
-        this->plms[i].forwardPropagation(img_in, this->outputs[i*2+1]);
+        img_in_copy = img_in;
+        this->plms[i].forwardPropagation(img_in, this->outputs[i*2+1], img_in_copy);
         cout << "Dimensiones tras una capa MaxPool de " << this->plms[i].get_kernel_fils() << "x" << this->plms[i].get_kernel_cols() << ": " << this->outputs[i*2+1].size() << "x" << this->outputs[i*2+1][0].size() << "x" << this->outputs[i*2+1][0][0].size() << endl;
         img_in = this->outputs[i*2+1];
     }
@@ -233,6 +227,7 @@ void CNN::mostrar_arquitectura()
 
 void CNN::train(int epocas, int mini_batch)
 {
+    
     int n=this->train_imgs.size(), n_imgs_batch;
     int ini, fin;
     vector<int> indices(n);
@@ -241,8 +236,8 @@ void CNN::train(int epocas, int mini_batch)
     
 
     // Almacenar inputs y outputs de cada capa
-    vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch);       // Input y output de cada capa (por cada imagen de training)
-    vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv), plms_out(this->n_capas_conv); // Input y Output de cada capa convolucional y de pooling
+    vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch), plms_in_copys(mini_batch);       // Input y output de cada capa (por cada imagen de training)
+    vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv), plms_out(this->n_capas_conv), plms_in_copy(this->n_capas_conv); // Input y Output de cada capa convolucional y de pooling
     vector<float> flat_out; 
 
     // Paso a la siguiente capa
@@ -300,7 +295,9 @@ void CNN::train(int epocas, int mini_batch)
 
                 // Realizar los cálculos
                 this->convs[0].forwardPropagation(this->train_imgs[batch[img]], convs_out[0]);
-                this->plms[0].forwardPropagation(convs_out[0], plms_out[0]);
+                
+                plms_in_copy[0] = convs_out[0];
+                this->plms[0].forwardPropagation(convs_out[0], plms_out[0], plms_in_copy[0]);
 
                 
                 // Resto de capas convolucionales y maxpool ----------------------------
@@ -314,7 +311,8 @@ void CNN::train(int epocas, int mini_batch)
                     this->convs[i].forwardPropagation(plms_out[i-1], convs_out[i]);
 
                     // Capa MaxPool 
-                    this->plms[i].forwardPropagation(convs_out[i], plms_out[i]);
+                    plms_in_copy[i] = convs_out[i];
+                    this->plms[i].forwardPropagation(convs_out[i], plms_out[i], plms_in_copy[i]);
 
                 }
                 
@@ -322,10 +320,12 @@ void CNN::train(int epocas, int mini_batch)
                 
                 convs_outs[img] = convs_out;
                 plms_outs[img] = plms_out;
+                plms_in_copys[img] = plms_in_copy;
                 flat_outs[img] = flat_out;
                 
             }
 
+            
             (*this->fully).train(flat_outs, batch_labels, grad_x_fully);
             
             
@@ -337,21 +337,31 @@ void CNN::train(int epocas, int mini_batch)
             for(int img=0; img<n_imgs_batch; img++)
             {
                 (*this->flat).backPropagation(grad_x, grad_x_fully[img]);
-                for(int i=this->n_capas_conv-1; i>=1; i--)
+                
+                // Última capa, su output no tiene padding
+                int i_c=this->n_capas_conv-1;
+
+                // Capa MaxPool 
+                this->plms[i_c].backPropagation(convs_outs[img][i_c], plms_outs[img][i_c], plms_in_copys[img][i_c], 0);
+                
+                // Capa convolucional 
+                this->convs[i_c].backPropagation(plms_outs[img][i_c-1], convs_outs[img][i_c], this->padding[i_c]);
+                
+
+                for(int i=this->n_capas_conv-2; i>=1; i--)
                 {
                     // Capa MaxPool 
-                    this->plms[i].backPropagation(convs_outs[img][i], plms_outs[img][i], grad_x);
+                    this->plms[i].backPropagation(convs_outs[img][i], plms_outs[img][i], plms_in_copys[img][i], this->padding[i+1]);
 
                     // Capa convolucional 
-                    grad_x = plms_outs[img][i-1];
-
-                    this->convs[i].backPropagation(grad_x, convs_outs[img][i], this->padding[i]);
+                    this->convs[i].backPropagation(plms_outs[img][i-1], convs_outs[img][i], 0);
                 }
-
-                this->plms[0].backPropagation(convs_out[0], plms_out[0], grad_x);
+                
+                this->plms[0].backPropagation(convs_out[0], plms_out[0], plms_in_copys[img][0], this->padding[1]);
                 img_aux = this->train_imgs[batch[img]];
 
-                this->convs[0].backPropagation(img_aux, convs_out[0], this->padding[0]);
+                this->convs[0].backPropagation(img_aux, convs_out[0], 0);
+                
             }
 
             // Actualizar pesos de capas convolucionales 
@@ -364,15 +374,17 @@ void CNN::train(int epocas, int mini_batch)
         accuracy();  
         
     }
+    
 }
 
 
 // Accuracy sobre training 
 void CNN::accuracy()
 {
+    
     int n=this->train_imgs.size();
 
-    vector<vector<vector<float>>> img_in;
+    vector<vector<vector<float>>> img_in, img_in_copy;
     vector<vector<float>> flat_outs(n);
     vector<float> flat_out; 
 
@@ -388,7 +400,8 @@ void CNN::accuracy()
             img_in = this->outputs[i*2];
 
             // Capa MaxPool 
-            this->plms[i].forwardPropagation(img_in, this->outputs[i*2+1]);
+            img_in_copy = img_in;
+            this->plms[i].forwardPropagation(img_in, this->outputs[i*2+1], img_in_copy);
             img_in = this->outputs[i*2+1];
         }
         
@@ -400,5 +413,5 @@ void CNN::accuracy()
 
     cout << "Accuracy: " << (*this->fully).accuracy(flat_outs,this->train_labels) << " %" << endl << endl;
     cout << "binary_loss: " << (*this->fully).binary_loss(flat_outs, this->train_labels) << endl;
-
+    
 }

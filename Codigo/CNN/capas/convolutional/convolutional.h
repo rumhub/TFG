@@ -27,6 +27,8 @@ class Convolutional
 
 		float activationFunction(float x);
 
+        float deriv_activationFunction(float x);
+
         void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad);
 
         void forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output);
@@ -35,11 +37,11 @@ class Convolutional
 
         void backPropagation_libro(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output);
 
-        void backPropagation_sin_padding(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output);
+        void backPropagation_sin_padding(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output);
 
-        void backPropagation_con_padding(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, const int &pad);
+        void backPropagation_con_padding(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad);
 
-        void backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, const int &pad);
+        void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad);
 
         void mostrar_pesos();
 
@@ -60,4 +62,7 @@ class Convolutional
         int get_kernel_cols(){return this->kernel_cols;};
         int get_kernel_depth(){return this->kernel_depth;};
         int get_n_kernels(){return this->n_kernels;};
+
+        // Debug ---------
+        void w_a_1();
 };

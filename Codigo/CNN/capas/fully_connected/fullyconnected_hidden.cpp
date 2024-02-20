@@ -42,8 +42,8 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
     for(int i=0; i<n_datos; i++)
     {
         forwardPropagation(x[i]);
-        prediccion = this->neuronas[i_output][0];
-        
+        prediccion = this->neuronas[i_output][0];   
+
         o_in = 0;
 
         // Por cada neurona j de i_last_h, sumamos i_last_h(out_j) * el peso que lo conecta con la capa output
@@ -118,8 +118,9 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
                 
                 grads_output_h[k] = sum * deriv_relu(h_in);
             }
+
         }
-        
+
         // Capa input
         for(int i_=0; i_<this->neuronas[0].size(); i_++)
         {

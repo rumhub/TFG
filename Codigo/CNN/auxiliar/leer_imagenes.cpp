@@ -79,4 +79,3 @@ void mostrar_vector_como_imagen(const vector<vector<vector<float>>> &v)
     // Esperar hasta que se presione una tecla
     waitKey(0);
 };
-

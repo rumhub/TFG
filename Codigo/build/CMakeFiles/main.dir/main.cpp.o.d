@@ -1,7 +1,8 @@
-CMakeFiles/cnn.dir/CNN.cpp.o: \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/CNN.cpp \
+CMakeFiles/main.dir/main.cpp.o: \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/main.cpp \
  /usr/include/stdc-predef.h \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/CNN.h \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/CNN.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/CNN.h \
  /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -153,8 +154,8 @@ CMakeFiles/cnn.dir/CNN.cpp.o: \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
  /usr/include/c++/11/bits/istream.tcc \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/convolutional.cpp \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/convolutional.h \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/convolutional/convolutional.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/convolutional/convolutional.h \
  /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
@@ -184,13 +185,15 @@ CMakeFiles/cnn.dir/CNN.cpp.o: \
  /usr/include/c++/11/tr1/riemann_zeta.tcc /usr/include/c++/11/chrono \
  /usr/include/c++/11/ratio /usr/include/c++/11/ctime \
  /usr/include/c++/11/bits/parse_numbers.h \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/flatten.cpp \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/flatten.h \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/fullyconnected.cpp \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/fullyconnected.h \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/poolingMax.cpp \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/poolingMax.h \
- /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/leer_imagenes/leer_imagenes.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.h \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected_hidden.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected_hidden.h \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.h \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.h \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/leer_imagenes.cpp \
  /usr/local/include/opencv4/opencv2/opencv.hpp \
  /usr/local/include/opencv4/opencv2/opencv_modules.hpp \
  /usr/local/include/opencv4/opencv2/core.hpp \

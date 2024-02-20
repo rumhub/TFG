@@ -1,4 +1,4 @@
-# Install script for directory: /home/david/Escritorio/ugr/tfg_referencias/CNN_cmake
+# Install script for directory: /home/david/Escritorio/ugr/github/TFG/Codigo
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/david/Escritorio/ugr/tfg_referencias/CNN_cmake/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/david/Escritorio/ugr/github/TFG/Codigo/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
