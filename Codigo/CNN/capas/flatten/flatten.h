@@ -10,7 +10,7 @@ class Flatten
         int canales;
         int filas;
         int cols;
-        int max;
+        float max;
 
     public:
         Flatten(const vector<vector<vector<float>>> &input);

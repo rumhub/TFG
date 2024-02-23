@@ -11,11 +11,11 @@ void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input)
     imagenes_input.clear();
 
     // Leer imagen
-    string ruta = "../fotos/training_set/dogs/dog.1.jpg";
+    string ruta = "../fotos/gatos_perros/training_set/dogs/dog.1.jpg";
 
     Mat image2 = imread(ruta), image;
     
-    resize(image2, image, Size(32, 32));
+    resize(image2, image, Size(28, 28));
 
     // Cargamos la imagen en un vector 3D
     cargar_imagen_en_vector(image, imagen_k1);
@@ -34,20 +34,43 @@ void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input)
 
 int main()
 {
+    
     vector<vector<vector<vector<float>>>> input;
     vector<float> output;
     int n_imagenes;
     leer_imagen(input);
 
-    vector<vector<int>> capas_conv = {{5,5,5}, {5,3,3}, {5,3,3}, {6,3,3}}, capas_pool={{2,2}, {2,2}, {2,2}, {2,2}, {2,2}};
-    vector<int> capas_fully = {100, 50, 10}, padding = {3, 2, 2, 2};
-    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input, 0.1);
+    vector<vector<int>> capas_conv = {{5,7,7}, {6,5,5}}, capas_pool={{2,2}, {2,2}};
+    vector<int> capas_fully = {50}, padding = {4, 3};
+    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.01);
     
-    cnn.leer_imagenes();
+    cnn.leer_imagenes_mnist();
     cnn.mostrar_arquitectura();
+    cnn.train(10000, 32);
     
-    cnn.train(10000, 64);
     
+    /*
+    // PRUEBAS ----------------------------------------
+    vector<vector<vector<float>>> input;
+    vector<vector<int>> capas_conv = {{1,2,2}}, capas_pool={{2,2}};
+    vector<int> capas_fully = {2}, padding = {1};
+
+    // Crear img de entrada 8x8
+    vector<float> v1D;
+    vector<vector<float>> v2D;
+    for(int k=0; k<4; k++)
+        v1D.push_back(2.0);
+
+    for(int j=0; j<4; j++)
+        v2D.push_back(v1D);
+
+    input.push_back(v2D);
+
+
+    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input, 0.1);
+    cnn.prueba();
+    cnn.train(1, 1);
+    */
 
     return 0;
 }

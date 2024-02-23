@@ -378,4 +378,6 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/local/include/opencv4/opencv2/stitching/detail/camera.hpp \
  /usr/local/include/opencv4/opencv2/video.hpp \
  /usr/local/include/opencv4/opencv2/video/tracking.hpp \
- /usr/local/include/opencv4/opencv2/video/background_segm.hpp
+ /usr/local/include/opencv4/opencv2/video/background_segm.hpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/auxiliar.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/auxiliar.h

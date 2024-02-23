@@ -1,5 +1,6 @@
 #include "poolingMax.h"
 #include <iostream>
+#include <limits>
 
 using namespace std;
 
@@ -38,14 +39,15 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
         for(int k=0; k<input_copy[0][0].size(); k++)
             input_copy[i][j][k] = 0.0;
 
-
     int i_m, j_m;
+    bool encontrado;
+
     for(int m=0; m<M; m++) // Para cada canal
         for(int h=0; h<n_veces_fils; h++) // Se calcula el nº de desplazamientos del kernel a lo largo del volumen de entrada 3D
             for(int w=0; w<n_veces_cols; w++)  
             {
-                max = 0.0;
-
+                max = numeric_limits<float>::min();
+                encontrado = false;
                 // Para cada subregión, realizar el pooling
                 for(int p=0; p<K; p++)
                     for(int q=0; q<K; q++)
@@ -55,12 +57,15 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
                             max = input[m][h*K + p][w*K + q];
                             i_m = h*K + p;
                             j_m = w*K + q;
+                            encontrado = true;
                         }
                             
                     }
                 
                 output[m][h][w] = max;
-                input_copy[m][i_m][j_m] = 1.0;
+
+                if(encontrado)
+                    input_copy[m][i_m][j_m] = 1.0;
             }
 };
 
@@ -192,6 +197,63 @@ int main()
 
     cout << "Input\n";
     mostrar_imagen(imagenes_2D);
+
+    return 0;
+}
+*/
+
+/*
+int main() 
+{
+    
+    // Ejemplo de uso
+    vector<vector<float>> imagen = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12},
+        {13, 14, 15, 16}
+    };
+    
+    vector<vector<vector<float>>> imagenes_2D, output, v_3D, input_copy;
+    vector<vector<float>> v_2D;
+    vector<float> v_1D;
+
+    // Imágenes input con dimensiones sin padding
+    imagenes_2D.push_back(imagen);
+    imagenes_2D.push_back(imagen);
+
+    int H_out = imagenes_2D[0].size() / 2;
+
+    output.clear();
+    v_1D.clear();
+    v_2D.clear();
+    for(int j=0; j<H_out; j++)
+    {
+        v_1D.push_back(0.0);
+    }
+
+    for(int j=0; j<H_out; j++)
+    {
+        v_2D.push_back(v_1D);
+    }
+
+
+    for(int j=0; j<imagenes_2D.size(); j++)
+    {
+        output.push_back(v_2D);
+    }
+
+    Aux *aux = new Aux();
+    cout << "------------ Imagen inicial: ------------" << endl;
+    aux->mostrar_imagen(imagenes_2D);
+    input_copy = imagenes_2D;
+
+    PoolingMax plm1(2, 2, imagenes_2D);
+
+    plm1.forwardPropagation(imagenes_2D, output, input_copy);
+
+    cout << "Output \n";
+    aux->mostrar_imagen(output);
 
     return 0;
 }

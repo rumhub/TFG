@@ -2,6 +2,7 @@
 #ifndef FULLYCONNECTED_INCLUDED
 #define FULLYCONNECTED_INCLUDED
 
+#include "../../auxiliar/leer_imagenes.cpp"
 #include <vector>
 
 using namespace std;
@@ -48,6 +49,8 @@ class FullyConnected
         void generarDatos(vector<vector<float>> &x, vector<float> &y);
 
         void setLR(float lr);
+
+        void leer_imagenes_mnist(vector<vector<float>> &x, vector<float> &y);
 
 };
 

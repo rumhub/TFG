@@ -4,6 +4,8 @@
 #include "capas/fully_connected/fullyconnected_hidden.cpp"
 #include "capas/pooling_max/poolingMax.cpp"
 #include "auxiliar/leer_imagenes.cpp"
+#include "auxiliar/auxiliar.cpp"
+
 #include <vector>
 
 class CNN
@@ -19,13 +21,21 @@ class CNN
         vector<int> padding;
         float lr;                           // Learning rate
         int n_capas_conv;
+
     public:
-        CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding, vector<int> &capas_fully, const vector<vector<vector<vector<float>>>> &input, const float &lr);
+        CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding, vector<int> &capas_fully, const vector<vector<vector<float>>> &input, const float &lr);
 
         void leer_imagenes();
+        void leer_imagenes_mnist();
 
         void mostrar_arquitectura();
 
         void train(int epocas, int mini_batch);
         void accuracy();
+
+        // DEBUG ----------------------------------------
+        void prueba();
+        void train_debug(int epocas, int mini_batch);
+
+
 };

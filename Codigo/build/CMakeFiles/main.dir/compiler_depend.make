@@ -232,8 +232,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   ../CNN/capas/fully_connected/fullyconnected_hidden.h \
   ../CNN/capas/fully_connected/fullyconnected.cpp \
   ../CNN/capas/fully_connected/fullyconnected.h \
-  ../CNN/capas/pooling_max/poolingMax.cpp \
-  ../CNN/capas/pooling_max/poolingMax.h \
   ../CNN/auxiliar/leer_imagenes.cpp \
   /usr/local/include/opencv4/opencv2/opencv.hpp \
   /usr/local/include/opencv4/opencv2/opencv_modules.hpp \
@@ -439,8 +437,15 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   /usr/local/include/opencv4/opencv2/stitching/detail/camera.hpp \
   /usr/local/include/opencv4/opencv2/video.hpp \
   /usr/local/include/opencv4/opencv2/video/tracking.hpp \
-  /usr/local/include/opencv4/opencv2/video/background_segm.hpp
+  /usr/local/include/opencv4/opencv2/video/background_segm.hpp \
+  ../CNN/capas/pooling_max/poolingMax.cpp \
+  ../CNN/capas/pooling_max/poolingMax.h \
+  ../CNN/auxiliar/leer_imagenes.cpp \
+  ../CNN/auxiliar/auxiliar.cpp \
+  ../CNN/auxiliar/auxiliar.h
 
+
+../CNN/auxiliar/auxiliar.h:
 
 /usr/local/include/opencv4/opencv2/video/tracking.hpp:
 
@@ -686,15 +691,7 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
 
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
-
 /usr/include/c++/11/bits/cxxabi_forced.h:
-
-/usr/include/c++/11/bits/shared_ptr_base.h:
-
-/usr/include/linux/limits.h:
-
-/usr/include/c++/11/bits/basic_string.h:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
 
@@ -892,6 +889,14 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/ratio:
 
+/usr/include/c++/11/bits/shared_ptr_base.h:
+
+/usr/include/c++/11/bits/basic_string.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
 /usr/include/c++/11/bits/exception_ptr.h:
 
 /usr/include/c++/11/ext/string_conversions.h:
@@ -927,6 +932,10 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/include/x86_64-linux-gnu/bits/stdlib.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
+
+../CNN/capas/pooling_max/poolingMax.cpp:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
 
 /usr/local/include/opencv4/opencv2/core.hpp:
 
@@ -1134,6 +1143,8 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/bits/stl_vector.h:
 
+../CNN/auxiliar/auxiliar.cpp:
+
 /usr/local/include/opencv4/opencv2/core/mat.inl.hpp:
 
 /usr/include/c++/11/ios:
@@ -1259,10 +1270,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/local/include/opencv4/opencv2/core/cuda.hpp:
 
 /usr/local/include/opencv4/opencv2/opencv.hpp:
-
-/usr/include/x86_64-linux-gnu/sys/cdefs.h:
-
-../CNN/capas/pooling_max/poolingMax.cpp:
 
 ../CNN/auxiliar/leer_imagenes.cpp:
 

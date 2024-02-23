@@ -2,6 +2,7 @@
 #include "flatten.h"
 #include <iostream>
 #include <chrono>
+#include <limits>
 
 using namespace std::chrono;
 using namespace std;
@@ -11,6 +12,7 @@ Flatten::Flatten(const vector<vector<vector<float>>> &input)
     this->canales = input.size();
     this->filas = input[0].size();
     this->cols = input[0][0].size();
+    this->max = numeric_limits<float>::max();
 };
 
 // input --> volumen 3D
@@ -19,23 +21,19 @@ void Flatten::forwardPropagation(const vector<vector<vector<float>>> &input, vec
     int n1 = input.size(), n2 = input[0].size(), n3 = input[0][0].size(), n_out = n1*n2*n3, cont=0;
     vector<float> out(n_out);
 
-    this->max = 1.0;
     for(int i=0; i<n1; i++)
         for(int j=0; j<n2; j++)
-            for(int k=0; k<n3; k++)
-            {
+            for(int k=0; k<n3; k++, cont++)
                 out[cont] = input[i][j][k];
-                
-                if(this->max < out[cont])
-                    this->max = out[cont]; 
+            
+    //cout << endl << out[1] << endl;
 
-                cont++;
-            }
-
+    /*
     // Normalizar entre 0 y 1 -------------------------------------------------------------
     for(int i=0; i<cont; i++)
         out[i] = out[i]/this->max;  
-        
+    */
+
     output = out;
 };
 

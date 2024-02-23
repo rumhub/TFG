@@ -17,7 +17,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
         // Por cada neurona de cada capa
         for(int j=0; j<capas[i]; j++)
         {
-            neuronas_capa.push_back((float) rand() / float(RAND_MAX));
+            neuronas_capa.push_back((float) rand() / float(RAND_MAX) - 0.5);
         }
 
         this->neuronas.push_back(neuronas_capa);
@@ -28,7 +28,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     neuronas_capa.clear();
 
     // Capa output. Solo 1 neurona de salida
-    neuronas_capa.push_back((float) rand() / float(RAND_MAX));
+    neuronas_capa.push_back((float) rand() / float(RAND_MAX) -0.5);
 
     this->neuronas.push_back(neuronas_capa);
 
@@ -45,7 +45,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
             {
                 // Añadimos un peso. 
                 // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
-                w_1D.push_back((float) rand() / float(RAND_MAX));
+                w_1D.push_back((float) rand() / float(RAND_MAX) -0.5);
             }
             
             // Si no estamos en última capa, añadimos un peso respecto a bias (un peso por neurona de la capa actual)
@@ -62,7 +62,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
         this->w.push_back(w_2D);
         w_2D.clear();
 
-        this->bias.push_back((float) rand() / float(RAND_MAX));
+        this->bias.push_back((float) rand() / float(RAND_MAX) -0.5);
     }    
 
     // Learning Rate
@@ -878,6 +878,71 @@ void FullyConnected::generarDatos(vector<vector<float>> &x, vector<float> &y)
 void FullyConnected::setLR(float lr)
 {
     this->lr = lr;
+}
+
+
+void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<float> &y)
+{
+    vector<vector<vector<float>>> imagen_k1;
+    vector<float> v1D;
+
+    //n_imagenes = 4000;
+    int n_imagenes = 2000;
+
+    x.clear();
+    y.clear();
+
+    // Leer imágenes
+    for(int p=1; p<n_imagenes; p++)
+    {
+
+        // Leemos 0s
+        string ruta_ini = "../../../fotos/mnist/training/0/";
+        string ruta = ruta_ini + to_string(p) + ".jpg";
+
+        Mat image2 = imread(ruta), image;
+
+        image = image2;
+
+        // Cargamos la imagen en un vector 3D
+        cargar_imagen_en_vector(image, imagen_k1);
+
+        // Normalizar imagen y pasar a 1D (solo queremos 1 canal porque son en blanco y negro)
+
+        v1D.clear();
+        for(int j=0; j<imagen_k1[0].size(); j++)
+            for(int k=0; k<imagen_k1[0][0].size(); k++)
+            {
+                //imagen_k1[0][j][k] = imagen_k1[0][j][k] / 255;
+                v1D.push_back(imagen_k1[0][j][k]);
+            }
+        x.push_back(v1D);
+        y.push_back(0);
+
+
+        // Leemos 1s
+        ruta_ini = "../../../fotos/mnist/training/0/";
+        ruta = ruta_ini + to_string(p) + ".jpg";
+
+        image2 = imread(ruta), image;
+
+        image = image2;
+
+        // Cargamos la imagen en un vector 3D
+        cargar_imagen_en_vector(image, imagen_k1);
+
+        // Normalizar imagen y pasar a 1D (solo queremos 1 canal porque son en blanco y negro)
+
+        v1D.clear();
+        for(int j=0; j<imagen_k1[0].size(); j++)
+            for(int k=0; k<imagen_k1[0][0].size(); k++)
+            {
+                imagen_k1[0][j][k] = imagen_k1[0][j][k] / 255;
+                v1D.push_back(imagen_k1[0][j][k]);
+            }
+        x.push_back(v1D);
+        y.push_back(1);
+    }  
 }
 
 /*

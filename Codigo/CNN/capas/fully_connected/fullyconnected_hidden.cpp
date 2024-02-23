@@ -134,6 +134,7 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
             grad_x_i[i_] = sum;
         }
 
+
         grad_x.push_back(grad_x_i); 
     }
 
@@ -159,45 +160,49 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
     
 }
 
-/*
+
 int main()
 {
     // Solo se meten capa input y capas ocultas, la capa output siempre tiene 1 neurona
     
     //vector<int> capas{4, 4, 2, 2};
-    vector<int> capas{4, 8, 2};
     vector<vector<float>> x, grad_x; 
     vector<float> y;
+    vector<int> capas1{4, 8, 2};
+    FullyConnected_H n1(capas1, 0.1);
 
-    FullyConnected_H n(capas, 0.001);
-
-    n.generarDatos(x, y);
+    n1.leer_imagenes_mnist(x, y);
+    
+    //n1.generarDatos(x, y);
     //n.mostrarNeuronas();
 
+    vector<int> capas{(int) x[0].size(), 10, 10};
+    FullyConnected_H n(capas, 0.0001);
 
+    
     //int n_epocas = 28000;
     int n_epocas = 100000;
     //vector<float> do_back;
 
     for(int i=0; i<n_epocas; i++)
     {
-        if(i % 1000 == 0)
+        if(i % 20 == 0)
         {
             cout << "Después de entrenar " << i << " épocas -----------------------------------" << endl;
             cout << "binary_loss: " << n.binary_loss(x, y) << endl;
             cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
         }
+        
         //n.train(x, y, grad_x, do_back);
         n.train(x, y, grad_x);
-        
     }
     cout << "Después de entrenar " << n_epocas << " épocas -----------------------------------" << endl;
     cout << "binary_loss: " << n.binary_loss(x, y) << endl;
     cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
-
-
-    n.generarDatos(x, y);
-    cout << endl << "Accuracy en TEST: " << n.accuracy(x,y) << " %" << endl;
+    
+    /*
+    //n.generarDatos(x, y);
+    //cout << endl << "Accuracy en TEST: " << n.accuracy(x,y) << " %" << endl;
 
     float sum;
     for(int k=496; k<506; k++)
@@ -214,13 +219,23 @@ int main()
         n.mostrar_prediccion_vs_verdad(x[k], y[k]);
         cout << "----------------------------" << endl;
     }
-        
+    */
 
     //n.mostrarNeuronas();
     //n.mostrarpesos();
 
     //cout << "Grad_x.size() = " << grad_x.size() << endl;
 
+    /*
+    cout << "Gradiente: " << endl;
+    for(int i=0; i<grad_x.size(); i++)
+    {
+        for(int j=0; j<grad_x[0].size(); j++)
+            cout << grad_x[i][j] << " ";
+        cout << endl;
+    }
+    */
+
+
     return 0;
 }
-*/
