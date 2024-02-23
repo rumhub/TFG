@@ -28,20 +28,23 @@ En este tipo de aprendizaje, los datos no contienen ninguna información respect
 
 En este caso tampoco existe un $y_i$ 'correcto' asociado a cada $x_i$. En su lugar, se asocia a cada $x_i$ una etiqueta con un valor posible de $y_i$, además de una medida que indica como de bueno es el mismo. \cite{Learning_From_Data}
 
+
 \section{Tipos de problemas en machine learning}
 
 \subsection{Clasificación}
 \subsection{Regresión}
 
+\section{Componentes necesarios para el aprendizaje supervisado}
+
+Datos de entrada X y de salida Y que el modelo empleará para aprender y tomar decisiones. Ambos se unen para formar un dataset de entradas-salidas D=\{($x_1, y_1$), ($x_2, y_2$), ..., ($x_N, y_N$)\}. Para que el aprendizaje sea posible, debe existir una función F: X $\rightarrow$ Y tal que $y_i$ = F($x_i$) para i$\in$\{1...N\}. De esta forma, en función del dataset D, el modelo tratará de encontrar una función G que aproxime F para dicho conjunto. Además, se suelen aplicar técnicas que permitan una mejor generalización del modelo, expandiendo las capacidades del mismo y permitiendo que su conocimiento pueda ser útil incluso fuera de la muestra de datos inicial. \cite{Learning_From_Data}
+
+\section{Entrenamiento}
 
 \section{División de datos en entrenamiento y test}
 
-En aprendizaje supervisado, al disponer de N ejemplos se dice que se dispone de una muestra D = $\{d_1 = (x_1, y_1), d_2 = (x_2, y_2), ..., d_N = (x_N, y_N)\}$.
+Para permitir la generalización del modelo, D se suele dividir en 2 subconjuntos, (entrenamiento y test) de forma que se pueda estimar si realmente 'aprende' o solo memoriza.\\
+Una vez realizada la división, se entrena el modelo con los datos del conjunto de entrenamiento. Una vez finalizado, se accede al conjunto test y se visualiza el rendimiento del modelo sobre el mismo. Como los datos de test no se emplearon en todo el proceso de entrenamiento, aportan una estimación sobre la generalización del modelo fuera de la muestra con la que se entrenó.
 
-Dicho conjunto de datos D se suele dividir en 2 subconjuntos, entrenamiento y test. El objetivo de ello es comprobar si realmente el programa 'aprende' o solo memoriza.\\
-El procedimiento consiste en entrenar una red determinada empleando exclusivamente los datos del conjunto de entrenamiento. Una vez terminado todo el entrenamiento y nunca antes de ello, se accede al subconjunto test y se comparan las predicciones sobre este con los valores reales que se encuentran en cada $y_i$ correspondiente. De esta forma, se observa el comportamiento de la red 'fuera de la muestra' y da una idea de como generaliza. Es decir, si ha aprendido o por el contrario simplemente ha logrado memorizar todos los ejemplos con los que se entrenó.
-
-\section{Entrenamiento}
 
 \section{Redes Neuronales Totalmente Conectadas}
 
@@ -66,6 +69,8 @@ $\hat{y}$ = predicción
 
 \subsection{ForwardPropagation}
 \subsection{Descenso del gradiente}
+Es un método de optimización que busca el mínimo local en una función diferenciable.
+
 \subsection{BackPropagation}
 Regla de la cadena
 

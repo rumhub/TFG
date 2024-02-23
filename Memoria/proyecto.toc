@@ -13,20 +13,21 @@
 \contentsline {section}{\numberline {2.4}Tipos de problemas en machine learning}{4}{section.2.4}%
 \contentsline {subsection}{\numberline {2.4.1}Clasificación}{4}{subsection.2.4.1}%
 \contentsline {subsection}{\numberline {2.4.2}Regresión}{4}{subsection.2.4.2}%
-\contentsline {section}{\numberline {2.5}División de datos en entrenamiento y test}{4}{section.2.5}%
+\contentsline {section}{\numberline {2.5}Componentes necesarios para el aprendizaje supervisado}{4}{section.2.5}%
 \contentsline {section}{\numberline {2.6}Entrenamiento}{4}{section.2.6}%
-\contentsline {section}{\numberline {2.7}Redes Neuronales Totalmente Conectadas}{4}{section.2.7}%
-\contentsline {subsection}{\numberline {2.7.1}Neurona}{4}{subsection.2.7.1}%
-\contentsline {subsection}{\numberline {2.7.2}Estructura por capas}{4}{subsection.2.7.2}%
-\contentsline {subsection}{\numberline {2.7.3}Función de activación}{4}{subsection.2.7.3}%
-\contentsline {subsection}{\numberline {2.7.4}Función de error o pérdida}{5}{subsection.2.7.4}%
-\contentsline {subsection}{\numberline {2.7.5}ForwardPropagation}{5}{subsection.2.7.5}%
-\contentsline {subsection}{\numberline {2.7.6}Descenso del gradiente}{5}{subsection.2.7.6}%
-\contentsline {subsection}{\numberline {2.7.7}BackPropagation}{5}{subsection.2.7.7}%
-\contentsline {section}{\numberline {2.8}Redes Neuronales Convolucionales}{5}{section.2.8}%
-\contentsline {subsection}{\numberline {2.8.1}Tipos de capas}{5}{subsection.2.8.1}%
+\contentsline {section}{\numberline {2.7}División de datos en entrenamiento y test}{4}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Redes Neuronales Totalmente Conectadas}{5}{section.2.8}%
+\contentsline {subsection}{\numberline {2.8.1}Neurona}{5}{subsection.2.8.1}%
 \contentsline {subsection}{\numberline {2.8.2}Estructura por capas}{5}{subsection.2.8.2}%
-\contentsline {subsection}{\numberline {2.8.3}ForwardPropagation}{5}{subsection.2.8.3}%
+\contentsline {subsection}{\numberline {2.8.3}Función de activación}{5}{subsection.2.8.3}%
+\contentsline {subsection}{\numberline {2.8.4}Función de error o pérdida}{5}{subsection.2.8.4}%
+\contentsline {subsection}{\numberline {2.8.5}ForwardPropagation}{5}{subsection.2.8.5}%
+\contentsline {subsection}{\numberline {2.8.6}Descenso del gradiente}{5}{subsection.2.8.6}%
+\contentsline {subsection}{\numberline {2.8.7}BackPropagation}{5}{subsection.2.8.7}%
+\contentsline {section}{\numberline {2.9}Redes Neuronales Convolucionales}{5}{section.2.9}%
+\contentsline {subsection}{\numberline {2.9.1}Tipos de capas}{5}{subsection.2.9.1}%
+\contentsline {subsection}{\numberline {2.9.2}Estructura por capas}{5}{subsection.2.9.2}%
+\contentsline {subsection}{\numberline {2.9.3}ForwardPropagation}{5}{subsection.2.9.3}%
 \contentsline {chapter}{\numberline {3}Aportaciones}{7}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Redes Neuronales Totalmente Conectadas}{7}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}BackPropagation con 1 capa oculta}{7}{subsection.3.1.1}%

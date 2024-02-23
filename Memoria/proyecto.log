@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  22 FEB 2024 21:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  23 FEB 2024 20:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -554,7 +554,7 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 ))
 (portada/portada.tex
 \centeroffset=\skip73
-<imagenes/logo_ugr.jpg, id=151, 777.90625pt x 231.86626pt>
+<imagenes/logo_ugr.jpg, id=155, 777.90625pt x 231.86626pt>
 File: imagenes/logo_ugr.jpg Graphic file (type jpg)
 <use imagenes/logo_ugr.jpg>
 Package pdftex.def Info: imagenes/logo_ugr.jpg  used on input line 12.
@@ -564,7 +564,7 @@ Overfull \hbox (24.0pt too wide) in paragraph at lines 9--23
 | $[]$ 
  []
 
-<imagenes/etsiit_logo.png, id=152, 110.814pt x 40.4712pt>
+<imagenes/etsiit_logo.png, id=156, 110.814pt x 40.4712pt>
 File: imagenes/etsiit_logo.png Graphic file (type png)
 <use imagenes/etsiit_logo.png>
 Package pdftex.def Info: imagenes/etsiit_logo.png  used on input line 31.
@@ -584,7 +584,7 @@ ogo_ugr.jpg> <./imagenes/etsiit_logo.png>]) (prefacios/prefacio.tex [2
 (portada/portada_2.tex [3] [4
 
 ]
-<imagenes/logo.png, id=177, 123.46124pt x 45.92157pt>
+<imagenes/logo.png, id=181, 123.46124pt x 45.92157pt>
 File: imagenes/logo.png Graphic file (type png)
 <use imagenes/logo.png>
 Package pdftex.def Info: imagenes/logo.png  used on input line 21.
@@ -745,15 +745,24 @@ been already used, duplicate ignored
                    \relax 
 l.26 
       [3]
-LaTeX Info: Redefining \. on input line 59.
-LaTeX Info: Redefining \% on input line 59.
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 3
+9.
+
+(C:\Users\Troll\AppData\Local\Programs\MiKTeX\tex/latex/base\omscmr.fd
+File: omscmr.fd 2022/07/10 v2.5l Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 39.
+LaTeX Info: Redefining \. on input line 57.
+LaTeX Info: Redefining \% on input line 57.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.59 \begin{gather}
-                    [4]) (capitulos/03_Aportaciones.tex
+l.57 \subsection
+                {Función de error o pérdida} [4])
+(capitulos/03_Aportaciones.tex
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
 
@@ -772,7 +781,7 @@ l.1 \chapter
 
 ]
 Cap\'{\i }tulo 3.
-<imagenes/nn_1_capa.jpg, id=330, 490.83376pt x 369.38pt>
+<imagenes/nn_1_capa.jpg, id=336, 490.83376pt x 369.38pt>
 File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 8.
@@ -849,17 +858,17 @@ Package rerunfilecheck Warning: File `proyecto.out' has changed.
 (rerunfilecheck)                or use package `bookmark'.
 
 Package rerunfilecheck Info: Checksums for `proyecto.out':
-(rerunfilecheck)             Before: EFBD23C7BEBB5C5349D669309EA03BF3;6343
-(rerunfilecheck)             After:  3448A316B13177AEEF5A21C3E446D799;6094.
+(rerunfilecheck)             Before: B1885124095103588F4A68CC91235E96;6683
+(rerunfilecheck)             After:  F861ED96433CAD0394DB4D0F587B167D;6434.
  ) 
 Here is how much of TeX's memory you used:
- 13677 strings out of 476331
- 221210 string characters out of 5787765
+ 13699 strings out of 476331
+ 221610 string characters out of 5787765
  1869660 words of memory out of 5000000
- 33760 multiletter control sequences out of 15000+600000
+ 33778 multiletter control sequences out of 15000+600000
  520652 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,13n,76p,712b,758s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,13n,76p,835b,774s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{figure.3.2} has been referenced but does not exist,
  replaced by a fixed one
@@ -885,9 +894,9 @@ ic/amsfonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/typ
 e1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on proyecto.pdf (39 pages, 396627 bytes).
+Output written on proyecto.pdf (39 pages, 398468 bytes).
 PDF statistics:
- 504 PDF objects out of 1000 (max. 8388607)
- 110 named destinations out of 1000 (max. 500000)
- 317 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 510 PDF objects out of 1000 (max. 8388607)
+ 111 named destinations out of 1000 (max. 500000)
+ 325 words of extra memory for PDF output out of 10000 (max. 10000000)
 
