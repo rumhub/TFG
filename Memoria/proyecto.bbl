@@ -12,4 +12,24 @@ Hsuan-Tien~Lin Yaser S. Abu-Mostafa, Malik Magdon-Ismail.
 \newblock California Institute of Technology Pasadena, CA 91125, USA, 1
   edition, 2012.
 
+\bibitem{ReLU}
+Douglas Karr.
+\newblock Unidad lineal rectificada, 2024.
+\newblock \url{https://es.martech.zone/acronym/relu/} [Accessed:25/02/2024].
+
+\bibitem{Sigmoide}
+Javi.
+\newblock La función sigmoide: Una herramienta clave en redes neuronales,
+  2023.
+\newblock
+  \url{https://jacar.es/la-funcion-sigmoide-una-herramienta-clave-en-redes-neuronales/}
+  [Accessed:25/02/2024].
+
+\bibitem{SoftMax_MLM}
+Jason Brownlee.
+\newblock Softmax activation function with python, 2020.
+\newblock
+  \url{https://machinelearningmastery.com/softmax-activation-function-with-python/}
+  [Accessed:24/02/2024].
+
 \end{thebibliography}

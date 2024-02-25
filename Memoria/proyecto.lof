@@ -1,7 +1,12 @@
 \babel@toc {spanish}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Imagen de una neurona}}{5}{figure.2.1}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Imagen de una capa de neuronas}}{5}{figure.2.2}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Imagen de la función de activación ReLU}}{6}{figure.2.3}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Imagen de la función de activación Sigmoide}}{7}{figure.2.4}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{7}{figure.2.5}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{7}{figure.3.1}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{9}{figure.3.1}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

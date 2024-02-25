@@ -43,16 +43,79 @@ Datos de entrada X y de salida Y que el modelo empleará para aprender y tomar d
 \section{División de datos en entrenamiento y test}
 
 Para permitir la generalización del modelo, D se suele dividir en 2 subconjuntos, (entrenamiento y test) de forma que se pueda estimar si realmente 'aprende' o solo memoriza.\\
-Una vez realizada la división, se entrena el modelo con los datos del conjunto de entrenamiento. Una vez finalizado, se accede al conjunto test y se visualiza el rendimiento del modelo sobre el mismo. Como los datos de test no se emplearon en todo el proceso de entrenamiento, aportan una estimación sobre la generalización del modelo fuera de la muestra con la que se entrenó.
+Una vez realizada la división, se entrena el modelo con los datos del conjunto de entrenamiento. Una vez finalizado, se accede al conjunto test y se visualiza el rendimiento del modelo sobre el mismo. Como los datos de test no se emplearon en todo el proceso de entrenamiento, aportan una estimación sobre la generalización del modelo fuera de la muestra con la que se entrenó. 
 
 
 \section{Redes Neuronales Totalmente Conectadas}
 
 \subsection{Neurona}
-\subsection{Estructura por capas}
-\subsection{Función de activación}
 
-RELU para capas intermedias, sigmoide para última capa.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/neurona.jpg}  
+	\caption{Imagen de una neurona}
+	\label{fig:neurona}
+\end{figure}
+
+Una neurona se compone de una serie de datos de entrada X=\{$x_1$, $x_2$, ..., $x_N$\} tal que cada $x_i$$\in${X} se encuentra asociado a un peso $w_i\in{W}$. \\
+La neurona los emplea para realizar una suma ponderada y posteriormente añadir un bias b, además de aplicar una función de activación f sobre el resultado obtenido. 
+
+\subsection{Estructura por capas}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/capa_neuronas.jpg}  
+	\caption{Imagen de una capa de neuronas}
+	\label{fig:capa_neuronas}
+\end{figure}
+
+Las neuronas se suelen agrupas por capas, de tal forma que la salida de una compone la entrada de la siguiente, formando así modelos más sofisticados.
+
+\subsection{Funciones de activación}
+
+\subsubsection{ReLU}
+
+\begin{gather}
+	ReLU(x) = max(0, x)
+\end{gather}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.45]{imagenes/ReLU.jpg}  
+	\caption{Imagen de la función de activación ReLU}
+	\label{fig:ReLU}
+\end{figure}
+
+A cambio de un bajo coste computacional, aporta no linealidad a la neurona, permitiendo a esta aprender funciones de mayor complejidad. \\
+Como su gradiente es 0 o 1, evita una reducción excesiva del mismo para valores positivos, mitigando así el problema del desvanecimiento del gradiente, caracterizado por la presencia de gradientes muy pequeños en backpropagation y provocar un aprendizaje lento. \cite{ReLU}
+
+\subsubsection{Sigmoide}
+
+\begin{gather}
+	sigmoide(x) = \frac{1}{1+e^{-x}}
+\end{gather}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.45]{imagenes/sigmoide.jpg}  
+	\caption{Imagen de la función de activación Sigmoide}
+	\label{fig:Sigmoide}
+\end{figure}
+
+Se trata de una función interesante en el ámbito de la clasificación binaria, pues se caracteriza por transformar un valor de entrada en una salida comprendida en el rango [0-1]. \\
+Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a saturarse con valores extremos (positivos o negativos). Por tanto, su aplicación dependerá del caso concreto a tratar. \cite{Sigmoide}
+
+\subsubsection{SoftMax}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/softmax.jpg}  
+	\caption{Imagen de la función de activación SoftMax}
+	\label{fig:SoftMax}
+\end{figure}
+
+Para n entradas, produce n salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, se pueden interpretar como la probabilidad de pertenencia a cada clase, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
+\subsection{One-hot encoding}
 
 \subsection{Función de error o pérdida}
 % https://medium.com/mlearning-ai/understanding-loss-functions-for-classification-81c19ee72c2a

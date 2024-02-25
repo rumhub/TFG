@@ -6,45 +6,45 @@ The style file: unsrt.bst
 Reallocating 'name_of_file' (item size: 1) to 26 items.
 Database file #1: bibliografia/bibliografia.bib
 Warning--empty publisher in Learning_From_Data
-You've used 2 entries,
+You've used 5 entries,
             1791 wiz_defined-function locations,
-            459 strings with 3923 characters,
-and the built_in function-call counts, 337 in all, are:
-= -- 29
-> -- 8
+            477 strings with 4413 characters,
+and the built_in function-call counts, 718 in all, are:
+= -- 59
+> -- 20
 < -- 0
-+ -- 4
-- -- 2
-* -- 16
-:= -- 58
-add.period$ -- 6
-call.type$ -- 2
-change.case$ -- 2
++ -- 10
+- -- 5
+* -- 19
+:= -- 115
+add.period$ -- 15
+call.type$ -- 5
+change.case$ -- 5
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 20
-empty$ -- 39
-format.name$ -- 2
-if$ -- 76
+cite$ -- 6
+duplicate$ -- 35
+empty$ -- 93
+format.name$ -- 5
+if$ -- 166
 int.to.chr$ -- 0
-int.to.str$ -- 2
+int.to.str$ -- 5
 missing$ -- 4
-newline$ -- 13
-num.names$ -- 2
-pop$ -- 11
+newline$ -- 28
+num.names$ -- 5
+pop$ -- 32
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 4
+skip$ -- 13
 stack$ -- 0
 substring$ -- 0
-swap$ -- 2
+swap$ -- 5
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 2
-width$ -- 3
-write$ -- 25
+while$ -- 5
+width$ -- 6
+write$ -- 55
 (There was 1 warning)
