@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  25 FEB 2024 19:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  26 FEB 2024 17:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -753,7 +753,7 @@ File: omscmr.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 39.
-<imagenes/neurona.jpg, id=340, 662.475pt x 442.65375pt>
+<imagenes/neurona.jpg, id=342, 662.475pt x 442.65375pt>
 File: imagenes/neurona.jpg Graphic file (type jpg)
 <use imagenes/neurona.jpg>
 Package pdftex.def Info: imagenes/neurona.jpg  used on input line 55.
@@ -767,7 +767,7 @@ been already used, duplicate ignored
                    \relax 
 l.59 
       [4]
-<imagenes/capa_neuronas.jpg, id=344, 689.57625pt x 542.025pt>
+<imagenes/capa_neuronas.jpg, id=346, 689.57625pt x 542.025pt>
 File: imagenes/capa_neuronas.jpg Graphic file (type jpg)
 <use imagenes/capa_neuronas.jpg>
 Package pdftex.def Info: imagenes/capa_neuronas.jpg  used on input line 67.
@@ -781,12 +781,12 @@ been already used, duplicate ignored
                    \relax 
 l.73 
       [5 <./imagenes/neurona.jpg> <./imagenes/capa_neuronas.jpg>]
-<imagenes/ReLU.jpg.png, id=348, 380.8629pt x 310.761pt>
+<imagenes/ReLU.jpg.png, id=350, 380.8629pt x 310.761pt>
 File: imagenes/ReLU.jpg.png Graphic file (type png)
 <use imagenes/ReLU.jpg.png>
 Package pdftex.def Info: imagenes/ReLU.jpg.png  used on input line 84.
 (pdftex.def)             Requested size: 171.3867pt x 139.84116pt.
-<imagenes/sigmoide.jpg, id=350, 380.8629pt x 310.761pt>
+<imagenes/sigmoide.jpg, id=352, 380.8629pt x 310.761pt>
 File: imagenes/sigmoide.jpg Graphic file (type jpg)
 <use imagenes/sigmoide.jpg>
 Package pdftex.def Info: imagenes/sigmoide.jpg  used on input line 100.
@@ -803,7 +803,7 @@ been already used, duplicate ignored
                    \relax 
 l.104 
        [6 <./imagenes/ReLU.jpg.png>]
-<imagenes/softmax.jpg, id=362, 681.54625pt x 197.73875pt>
+<imagenes/softmax.jpg, id=364, 681.54625pt x 197.73875pt>
 File: imagenes/softmax.jpg Graphic file (type jpg)
 <use imagenes/softmax.jpg>
 Package pdftex.def Info: imagenes/softmax.jpg  used on input line 112.
@@ -821,7 +821,13 @@ been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.128 \end{gather}
-                   [7 <./imagenes/sigmoide.jpg> <./imagenes/softmax.jpg>])
+                   [7 <./imagenes/sigmoide.jpg> <./imagenes/softmax.jpg>]
+<imagenes/sgd.jpg, id=373, 388.0899pt x 310.761pt>
+File: imagenes/sgd.jpg Graphic file (type jpg)
+<use imagenes/sgd.jpg>
+Package pdftex.def Info: imagenes/sgd.jpg  used on input line 138.
+(pdftex.def)             Requested size: 155.2332pt x 124.30219pt.
+)
 (capitulos/03_Aportaciones.tex
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
@@ -831,9 +837,9 @@ been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.1 \chapter
-            {Aportaciones} [8]
+            {Aportaciones} [8 <./imagenes/sgd.jpg>]
 Cap\'{\i }tulo 3.
-<imagenes/nn_1_capa.jpg, id=376, 490.83376pt x 369.38pt>
+<imagenes/nn_1_capa.jpg, id=386, 490.83376pt x 369.38pt>
 File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 8.
@@ -919,6 +925,47 @@ Underfull \hbox (badness 10000) in paragraph at lines 29--34
 r/m/n/10.95 [Ac-ces-
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--40
+[]\OT1/cmr/m/n/10.95 Descenso del gra-dien-te, 2024.  []$\OT1/cmtt/m/n/10.95 ht
+tps : / / es . wikipedia . org /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--40
+\OT1/cmtt/m/n/10.95 wiki / Descenso _ del _ gradiente# : [] : text = El % 20des
+censo % 20del %
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--40
+\OT1/cmtt/m/n/10.95 20gradiente % 20o ,[] en % 20direcci % C3 % B3n % 20contrar
+ia % 20al %
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--51
+[]\OT1/cmr/m/n/10.95 Robert Kwiat-kows-ki.  Gra-dient des-cent al-go-rithm | a
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--51
+\OT1/cmr/m/n/10.95 deep di-ve, 2021.  []$\OT1/cmtt/m/n/10.95 https : / / toward
+sdatascience . com /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--51
+\OT1/cmtt/m/n/10.95 gradient-[]descent-[]algorithm-[]a-[]deep-[]dive-[]cf04e811
+5f21# : [] :
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--51
+\OT1/cmtt/m/n/10.95 text = Gradient % 20descent % 20(GD ) %20is % 20an ,[] e . 
+g . %20in % 20a %
+ []
+
 ) [17] [18
 
 ] [19] (proyecto.aux
@@ -938,10 +985,10 @@ Package rerunfilecheck Info: Checksums for `proyecto.out':
 (rerunfilecheck)             After:  CEACB60763898D161F79413956007AA9;6586.
  ) 
 Here is how much of TeX's memory you used:
- 13767 strings out of 476331
- 222908 string characters out of 5787765
+ 13782 strings out of 476331
+ 223120 string characters out of 5787765
  1869660 words of memory out of 5000000
- 33823 multiletter control sequences out of 15000+600000
+ 33833 multiletter control sequences out of 15000+600000
  520820 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,13n,76p,835b,774s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -971,9 +1018,9 @@ e1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/
 fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Programs
 /MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/Troll/AppData/Local
 /Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (41 pages, 532507 bytes).
+Output written on proyecto.pdf (41 pages, 556252 bytes).
 PDF statistics:
- 565 PDF objects out of 1000 (max. 8388607)
- 127 named destinations out of 1000 (max. 500000)
- 358 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 584 PDF objects out of 1000 (max. 8388607)
+ 131 named destinations out of 1000 (max. 500000)
+ 363 words of extra memory for PDF output out of 10000 (max. 10000000)
 

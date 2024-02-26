@@ -32,4 +32,21 @@ Jason Brownlee.
   \url{https://machinelearningmastery.com/softmax-activation-function-with-python/}
   [Accessed:24/02/2024].
 
+\bibitem{SGD_1}
+Descenso del gradiente, 2024.
+\newblock
+  \url{https://es.wikipedia.org/wiki/Descenso_del_gradiente#:~:text=El%20descenso%20del%20gradiente%20o,en%20direcci%C3%B3n%20contraria%20al%20gradiente.}
+  [Accessed:26/02/2024].
+
+\bibitem{Gradiente}
+Gradiente, 2024.
+\newblock \url{https://es.wikipedia.org/wiki/Gradiente} [Accessed:26/02/2024].
+
+\bibitem{SGD_2}
+Robert Kwiatkowski.
+\newblock Gradient descent algorithm — a deep dive, 2021.
+\newblock
+  \url{https://towardsdatascience.com/gradient-descent-algorithm-a-deep-dive-cf04e8115f21#:~:text=Gradient%20descent%20(GD)%20is%20an,e.g.%20in%20a%20linear%20regression).}
+  [Accessed:26/02/2024].
+
 \end{thebibliography}

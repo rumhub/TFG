@@ -132,7 +132,18 @@ $\hat{y}$ = predicción
 
 \subsection{ForwardPropagation}
 \subsection{Descenso del gradiente}
-Es un método de optimización que busca el mínimo local en una función diferenciable.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.4]{imagenes/sgd.jpg}  
+	\caption{Ejemplo de funcionamiento del descenso del gradiente}
+	\label{fig:SGD}
+\end{figure}
+
+
+Es un método de optimización iterativo que busca el mínimo local en una función diferenciable.
+Su nombre viene del término 'gradiente', siendo este una generalización multivariable de la derivada y denominado por el símbolo $\nabla$. Para una función f y un punto p, este indica la dirección y ritmo del máximo incremento en la misma. El descenso del gradiente usa esta información para, una vez obtenido el gradiente, desplazarse en dirección contraria, es decir, en dirección del mínimo. \cite{SGD_1} \cite{Gradiente} \cite{SGD_2}
+
 
 \subsection{BackPropagation}
 Regla de la cadena
