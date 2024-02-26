@@ -37,12 +37,12 @@
 \contentsline {subsection}{\numberline {3.1.1}BackPropagation con 1 capa oculta}{9}{subsection.3.1.1}%
 \contentsline {subsubsection}{Capa output}{10}{section*.11}%
 \contentsline {subsubsection}{Función activación de la capa output}{11}{section*.12}%
-\contentsline {subsubsection}{Pesos capas h1-output}{11}{section*.13}%
+\contentsline {subsubsection}{Pesos capas h1-output}{12}{section*.13}%
 \contentsline {subsubsection}{Capa oculta h1}{12}{section*.14}%
-\contentsline {subsubsection}{Pesos capas input-h1}{12}{section*.15}%
-\contentsline {subsubsection}{Capa input}{12}{section*.16}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{13}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{13}{section.4.1}%
-\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{13}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{15}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{15}{section.5.1}%
+\contentsline {subsubsection}{Pesos capas input-h1}{13}{section*.15}%
+\contentsline {subsubsection}{Capa input}{14}{section*.16}%
+\contentsline {chapter}{\numberline {4}Adaptación GPU}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{15}{section.4.1}%
+\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{15}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{17}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{17}{section.5.1}%

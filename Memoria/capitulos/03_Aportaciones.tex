@@ -19,6 +19,13 @@ Además, se denotará como $\hat{y}$ a la última neurona de la red, pues conten
 
 \subsubsection{Capa output}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/nn_1_capa_output.jpg}  
+	\caption{Imagen de backpropagation en la capa output}
+	\label{fig:nn_1_capa_output}
+\end{figure}
+
 Sea la neurona $n^i_j$, se define como $a^i_j$ el valor de dicha neurona antes de aplicar sobre ella su función de activación asociada, y $z^i_j$ el obtenido tras aplicarla. De forma adicional, se usará $\hat{a}$ y $\hat{z}$ para $\hat{y}$.
 
 Así, la función de pérdida \ref{loss_func} se convierte en:
@@ -76,6 +83,13 @@ Ahora, podemos calcular el gradiente completo hasta la capa output antes de apli
 
 \subsubsection{Pesos capas h1-output}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/nn_1_capa_pesos_h1_output.jpg}  
+	\caption{Imagen de backpropagation en los pesos entre la capa oculta y la capa output}
+	\label{fig:nn_1_pesos_h1_output}
+\end{figure}
+
 Una vez calculado el gradiente hasta la capa output, se puede calcular el gradiente respecto a cada peso que se encuentra conectado a esta desde la capa anterior. Es decir, para cada $h^1_p\in h_1$, se calcula $\frac{dH(x)}{dW^1_{p\hat{y}}}$. Usando la regla de la cadena, equivale a realizar lo siguiente:
 
 \begin{gather}
@@ -84,6 +98,13 @@ Una vez calculado el gradiente hasta la capa output, se puede calcular el gradie
 \end{gather}
 
 \subsubsection{Capa oculta h1}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/nn_1_capa_h1.jpg}  
+	\caption{Imagen de backpropagation en la capa oculta h1}
+	\label{fig:nn_1_capa_h1}
+\end{figure}
 
 \begin{gather}
 	\frac{\partial \hat{y}}{\partial n^1_p} = \frac{\partial n^1_p * \partial W^1 _{p\hat{y}} }{\partial n^1_p } = \partial W^1_{p\hat{y}} \\
@@ -95,6 +116,14 @@ Una vez calculado el gradiente hasta la capa output, se puede calcular el gradie
 
 \subsubsection{Pesos capas input-h1}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/nn_1_capa_pesos_input_h1.jpg}  
+	\caption{Imagen de backpropagation en los pesos entre la capa input y la capa oculta}
+	\label{fig:nn_1_pesos_input_h1}
+\end{figure}
+
+
 \begin{gather}
 	\frac{\partial n^1_p }{\partial W^0_{ip} } = \frac{\partial n^0_i * W^0_{ip} }{\partial W^0_{ip} } = n^0_i \\
 	\frac{\partial H(x) }{\partial W^0_{ip} } = gradient\_n^1_p * \frac{\partial n^1_p }{\partial W^0_{ip} } = gradient\_n^1_p * n^0_i 
@@ -102,6 +131,13 @@ Una vez calculado el gradiente hasta la capa output, se puede calcular el gradie
 
 
 \subsubsection{Capa input}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/nn_1_capa_input.jpg}  
+	\caption{Imagen de backpropagation en la capa input}
+	\label{fig:nn_1_capa_input}
+\end{figure}
 
 \begin{gather}
 	\frac{\partial n^1_p }{\partial n^0_i } = \frac{\partial n^0_i * W^0_{ip} }{\partial n^0_i } = W^0_{ip} \\
