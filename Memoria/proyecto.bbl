@@ -49,4 +49,10 @@ Robert Kwiatkowski.
   \url{https://towardsdatascience.com/gradient-descent-algorithm-a-deep-dive-cf04e8115f21#:~:text=Gradient%20descent%20(GD)%20is%20an,e.g.%20in%20a%20linear%20regression).}
   [Accessed:26/02/2024].
 
+\bibitem{SGD_act_params}
+ml4a.
+\newblock How neural networks are trained, 2020.
+\newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
+  [Accessed:27/02/2024].
+
 \end{thebibliography}

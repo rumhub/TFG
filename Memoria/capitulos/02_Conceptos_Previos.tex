@@ -38,8 +38,6 @@ En este caso tampoco existe un $y_i$ 'correcto' asociado a cada $x_i$. En su lug
 
 Datos de entrada X y de salida Y que el modelo empleará para aprender y tomar decisiones. Ambos se unen para formar un dataset de entradas-salidas D=\{($x_1, y_1$), ($x_2, y_2$), ..., ($x_N, y_N$)\}. Para que el aprendizaje sea posible, debe existir una función F: X $\rightarrow$ Y tal que $y_i$ = F($x_i$) para i$\in$\{1...N\}. De esta forma, en función del dataset D, el modelo tratará de encontrar una función G que aproxime F para dicho conjunto. Además, se suelen aplicar técnicas que permitan una mejor generalización del modelo, expandiendo las capacidades del mismo y permitiendo que su conocimiento pueda ser útil incluso fuera de la muestra de datos inicial. \cite{Learning_From_Data}
 
-\section{Entrenamiento}
-
 \section{División de datos en entrenamiento y test}
 
 Para permitir la generalización del modelo, D se suele dividir en 2 subconjuntos, (entrenamiento y test) de forma que se pueda estimar si realmente 'aprende' o solo memoriza.\\
@@ -141,8 +139,24 @@ $\hat{y}$ = predicción
 \end{figure}
 
 Es un método de optimización iterativo que busca el mínimo local en una función diferenciable. En la figura \ref{fig:SGD} se muestra un ejemplo del mismo, donde cada punto representa una iteración del algoritmo. \\
-Su nombre viene del término 'gradiente', siendo este una generalización multivariable de la derivada y denominado por el símbolo $\nabla$. Para una función f y un punto p, este indica la dirección y ritmo del máximo incremento en la misma. El descenso del gradiente usa esta información para, una vez obtenido el gradiente, desplazarse en dirección contraria, es decir, en dirección del mínimo. \cite{SGD_1} \cite{Gradiente} \cite{SGD_2}
+Su nombre viene del término 'gradiente', siendo este una generalización multivariable de la derivada y denominado por el símbolo $\nabla$. Para una función f y un punto p, este indica la dirección del máximo incremento en la misma. El descenso del gradiente usa esta información para, una vez obtenido el gradiente, desplazarse en dirección contraria, es decir, en dirección del mínimo. Además, la distancia que se recorre en cada iteración viene dada por un hiperparámetro denominado ``learning rate'' o $\alpha$. \cite{SGD_1} \cite{Gradiente} \cite{SGD_2} \\
 
+
+\subsubsection{Entrenamiento}
+De esta forma, el procedimiento para entrenar una red neuronal consiste en, para una entrada $x_i$ y una etiqueta asociada $y_i$, emplear $x_i$ para producir una predicción $\hat{y}_i$ (\textbf{ForwardPropagation}) que posteriormente se podrá comparar con $y_i$ mediante una función de error H(x) y obtener una medida de lo buena o mala que fue la misma. Una vez obtenido dicho ``error'', se aplica el algoritmo del descenso del gradiente para cada parámetro de la red (\textbf{BackPropagation}). \\
+
+\begin{gather}
+	W_{t+1} = W_{t} - \alpha * \frac{\partial H(x)}{\partial W_{t}} 
+	\label{act_pesos}
+\end{gather}
+
+\begin{gather}
+	b_{t+1} = b_{t} - \alpha * \frac{\partial H(x)}{\partial b_{t}}
+	\label{act_bias}
+\end{gather}
+
+
+Así, se actualizarán los parámetros de la red neuronal según las fórmulas \ref{act_pesos} y \ref{act_bias}. En ellas, $W_t$ y $b_t$ indican los valores del peso W y bias b en el instante o iteración t, de la misma forma que $W_{t+1}$ y $b_{t+1}$ representan los valores de los mismos en el instante t+1. \cite{SGD_act_params}
 
 \subsection{BackPropagation}
 Regla de la cadena
