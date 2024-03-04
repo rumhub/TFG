@@ -167,7 +167,20 @@ Así, se actualizarán los parámetros de la red neuronal según las fórmulas \
 
 En el campo de machine learning existen varios tipos de codificaciones. De esta forma, para codificar 3 clases distintas se podrían codificar o bien mediante \{1, 2, 3\} (codificación de etiquetas), o mediante \{100, 010, 001\} (codificación one-hot), por ejemplo. En este proyecto se empleará la codificación one-hot, pues aporta unas ventajas que se contemplarán con detalle en secciones posteriores.
 
+\subsection{Propagación hacia delante con softmax}
 
+Suponemos que para un $x_i$ dado, se obtiene S($\hat{y}$) = [ S($\hat{y}_1)$, S($\hat{y}_2)$, S($\hat{y}_3)$ ] = [0.04, 0.7, 0.26 ] \\
+Para dicho $x_i$, $y_i$ = [0, 0, 1] \\
+En este caso, el modelo cree que $x_i$ pertenece a la clase 2 (0.7 es el mayor número del vector S($\hat{y})$). Sin embargo, $y_i$ indica que $x_i$ pertenece a la clase 3. \\
+
+Se calcula el error de entropía cruzada: \\
+
+\begin{gather}
+	 E(y, S(\hat{y})) = - (0*log(0.04) + 0*log(0.7) + 1*log(0.26)) \\
+	 E(y, S(\hat{y})) = -log(0.26) = 0.585
+\end{gather}
+
+\cite{Cross_entropy_backprop}
 
 
 \section{Redes Neuronales Convolucionales}
