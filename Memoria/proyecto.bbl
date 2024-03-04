@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{Programming_Massively}
 Izzat El~Hajj Wen-emi W.Hwu, David~B.kirk.
@@ -32,6 +32,13 @@ Jason Brownlee.
   \url{https://machinelearningmastery.com/softmax-activation-function-with-python/}
   [Accessed:24/02/2024].
 
+\bibitem{Cross_entropy}
+Saurav Maheshkar.
+\newblock What is cross entropy loss? a tutorial with code, 2023.
+\newblock
+  \url{https://wandb.ai/sauravmaheshkar/cross-entropy/reports/What-Is-Cross-Entropy-Loss-A-Tutorial-With-Code--VmlldzoxMDA5NTMx#:~:text=Cross%20entropy%20loss%20is%20a,close%20to%200%20as%20possible.}
+  [Accessed:29/02/2024].
+
 \bibitem{SGD_1}
 Descenso del gradiente, 2024.
 \newblock
@@ -54,5 +61,12 @@ ml4a.
 \newblock How neural networks are trained, 2020.
 \newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
   [Accessed:27/02/2024].
+
+\bibitem{Cross_entropy_backprop}
+mehran@mldawn.com.
+\newblock Back-propagation through cross-entropy softmax, 2021.
+\newblock
+  \url{https://www.mldawn.com/back-propagation-with-cross-entropy-and-softmax/}
+  [Accessed:29/02/2024].
 
 \end{thebibliography}

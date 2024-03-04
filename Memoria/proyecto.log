@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  27 FEB 2024 20:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  4 MAR 2024 17:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -554,7 +554,7 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 ))
 (portada/portada.tex
 \centeroffset=\skip73
-<imagenes/logo_ugr.jpg, id=155, 777.90625pt x 231.86626pt>
+<imagenes/logo_ugr.jpg, id=143, 777.90625pt x 231.86626pt>
 File: imagenes/logo_ugr.jpg Graphic file (type jpg)
 <use imagenes/logo_ugr.jpg>
 Package pdftex.def Info: imagenes/logo_ugr.jpg  used on input line 12.
@@ -564,7 +564,7 @@ Overfull \hbox (24.0pt too wide) in paragraph at lines 9--23
 | $[]$ 
  []
 
-<imagenes/etsiit_logo.png, id=156, 110.814pt x 40.4712pt>
+<imagenes/etsiit_logo.png, id=144, 110.814pt x 40.4712pt>
 File: imagenes/etsiit_logo.png Graphic file (type png)
 <use imagenes/etsiit_logo.png>
 Package pdftex.def Info: imagenes/etsiit_logo.png  used on input line 31.
@@ -584,7 +584,7 @@ ogo_ugr.jpg> <./imagenes/etsiit_logo.png>]) (prefacios/prefacio.tex [2
 (portada/portada_2.tex [3] [4
 
 ]
-<imagenes/logo.png, id=181, 123.46124pt x 45.92157pt>
+<imagenes/logo.png, id=169, 123.46124pt x 45.92157pt>
 File: imagenes/logo.png Graphic file (type png)
 <use imagenes/logo.png>
 Package pdftex.def Info: imagenes/logo.png  used on input line 21.
@@ -733,107 +733,103 @@ File: omlcmr.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OML/cmm/m/it' tried instead on input line 7.
-
-Underfull \hbox (badness 10000) in paragraph at lines 19--22
-
- []
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
-been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.26 
-      [3]
-LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 3
-9.
+LaTeX Font Info:    Trying to load font information for OMS+cmr on input line 1
+2.
 
 (C:\Users\Troll\AppData\Local\Programs\MiKTeX\tex/latex/base\omscmr.fd
 File: omscmr.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 39.
-<imagenes/neurona.jpg, id=349, 662.475pt x 442.65375pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 12.
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.18 
+      [3]
+<imagenes/neurona.jpg, id=336, 662.475pt x 442.65375pt>
 File: imagenes/neurona.jpg Graphic file (type jpg)
 <use imagenes/neurona.jpg>
-Package pdftex.def Info: imagenes/neurona.jpg  used on input line 53.
+Package pdftex.def Info: imagenes/neurona.jpg  used on input line 45.
 (pdftex.def)             Requested size: 231.86972pt x 154.93112pt.
-LaTeX Info: Redefining \. on input line 57.
-LaTeX Info: Redefining \% on input line 57.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 49.
+LaTeX Info: Redefining \% on input line 49.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.4}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.57 
+l.49 
       [4]
-<imagenes/capa_neuronas.jpg, id=353, 689.57625pt x 542.025pt>
+<imagenes/capa_neuronas.jpg, id=340, 689.57625pt x 542.025pt>
 File: imagenes/capa_neuronas.jpg Graphic file (type jpg)
 <use imagenes/capa_neuronas.jpg>
-Package pdftex.def Info: imagenes/capa_neuronas.jpg  used on input line 65.
+Package pdftex.def Info: imagenes/capa_neuronas.jpg  used on input line 57.
 (pdftex.def)             Requested size: 241.3553pt x 189.71158pt.
-LaTeX Info: Redefining \. on input line 71.
-LaTeX Info: Redefining \% on input line 71.
+LaTeX Info: Redefining \. on input line 63.
+LaTeX Info: Redefining \% on input line 63.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.5}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.71 
+l.63 
       [5 <./imagenes/neurona.jpg> <./imagenes/capa_neuronas.jpg>]
-<imagenes/ReLU.jpg.png, id=357, 380.8629pt x 310.761pt>
+<imagenes/ReLU.jpg.png, id=344, 380.8629pt x 310.761pt>
 File: imagenes/ReLU.jpg.png Graphic file (type png)
 <use imagenes/ReLU.jpg.png>
-Package pdftex.def Info: imagenes/ReLU.jpg.png  used on input line 82.
+Package pdftex.def Info: imagenes/ReLU.jpg.png  used on input line 74.
 (pdftex.def)             Requested size: 171.3867pt x 139.84116pt.
-<imagenes/sigmoide.jpg, id=359, 380.8629pt x 310.761pt>
+<imagenes/sigmoide.jpg, id=346, 380.8629pt x 310.761pt>
 File: imagenes/sigmoide.jpg Graphic file (type jpg)
 <use imagenes/sigmoide.jpg>
-Package pdftex.def Info: imagenes/sigmoide.jpg  used on input line 98.
+Package pdftex.def Info: imagenes/sigmoide.jpg  used on input line 90.
 (pdftex.def)             Requested size: 171.3867pt x 139.84116pt.
 
 Underfull \vbox (badness 2426) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 102.
-LaTeX Info: Redefining \% on input line 102.
+LaTeX Info: Redefining \. on input line 94.
+LaTeX Info: Redefining \% on input line 94.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.6}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.102 
-       [6 <./imagenes/ReLU.jpg.png>]
-<imagenes/softmax.jpg, id=371, 681.54625pt x 197.73875pt>
+l.94 
+      [6 <./imagenes/ReLU.jpg.png>]
+<imagenes/softmax.jpg, id=358, 681.54625pt x 197.73875pt>
 File: imagenes/softmax.jpg Graphic file (type jpg)
 <use imagenes/softmax.jpg>
-Package pdftex.def Info: imagenes/softmax.jpg  used on input line 110.
+Package pdftex.def Info: imagenes/softmax.jpg  used on input line 102.
 (pdftex.def)             Requested size: 238.54475pt x 69.2096pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 115--116
+Underfull \hbox (badness 10000) in paragraph at lines 107--108
 
  []
 
-LaTeX Info: Redefining \. on input line 126.
-LaTeX Info: Redefining \% on input line 126.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 117.
+LaTeX Info: Redefining \% on input line 117.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.7}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.126 \end{gather}
+l.117 \end{gather}
                    [7 <./imagenes/sigmoide.jpg> <./imagenes/softmax.jpg>]
-<imagenes/sgd.jpg, id=380, 388.0899pt x 310.761pt>
+<imagenes/sgd.jpg, id=368, 388.0899pt x 310.761pt>
 File: imagenes/sgd.jpg Graphic file (type jpg)
 <use imagenes/sgd.jpg>
-Package pdftex.def Info: imagenes/sgd.jpg  used on input line 136.
+Package pdftex.def Info: imagenes/sgd.jpg  used on input line 141.
 (pdftex.def)             Requested size: 155.2332pt x 124.30219pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 141--143
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 146--147
+Underfull \hbox (badness 10000) in paragraph at lines 146--148
 
  []
 
@@ -844,55 +840,116 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.8}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.148 \begin{gather}
-                     [8 <./imagenes/sgd.jpg>]) (capitulos/03_Aportaciones.tex
-LaTeX Info: Redefining \. on input line 1.
-LaTeX Info: Redefining \% on input line 1.
+l.148 
+       [8 <./imagenes/sgd.jpg>]
+Underfull \hbox (badness 10000) in paragraph at lines 151--152
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--174
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 175--176
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 177--178
+
+ []
+
+LaTeX Info: Redefining \. on input line 178.
+LaTeX Info: Redefining \% on input line 178.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.9}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \chapter
-            {Aportaciones} [9]
+l.178 
+       [9]
+Underfull \hbox (badness 10000) in paragraph at lines 190--192
+
+ []
+
+<imagenes/NN_softmax.jpg, id=399, 620.3175pt x 218.8175pt>
+File: imagenes/NN_softmax.jpg Graphic file (type jpg)
+<use imagenes/NN_softmax.jpg>
+Package pdftex.def Info: imagenes/NN_softmax.jpg  used on input line 195.
+(pdftex.def)             Requested size: 248.1226pt x 87.52544pt.
+LaTeX Info: Redefining \. on input line 213.
+LaTeX Info: Redefining \% on input line 213.
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.10}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1 \chapter
-            {Aportaciones} [10
+l.213 \end{gather}
+                   [10 <./imagenes/NN_softmax.jpg>]
+Underfull \hbox (badness 10000) in paragraph at lines 215--216
 
-]
-Cap\'{\i }tulo 3.
-<imagenes/nn_1_capa.jpg, id=408, 490.83376pt x 369.38pt>
-File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
-<use imagenes/nn_1_capa.jpg>
-Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 8.
-(pdftex.def)             Requested size: 171.79439pt x 129.28493pt.
-<imagenes/nn_1_capa_output.jpg, id=410, 379.4175pt x 284.06125pt>
-File: imagenes/nn_1_capa_output.jpg Graphic file (type jpg)
-<use imagenes/nn_1_capa_output.jpg>
-Package pdftex.def Info: imagenes/nn_1_capa_output.jpg  used on input line 24.
-(pdftex.def)             Requested size: 132.79811pt x 99.42291pt.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--239
+
+ []
+
+LaTeX Info: Redefining \. on input line 241.
+LaTeX Info: Redefining \% on input line 241.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.11}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.28 
-      [11 <./imagenes/nn_1_capa.jpg>]
-Underfull \vbox (badness 8038) has occurred while \output is active []
+l.241 \end{gather}
+                   [11]
+Underfull \hbox (badness 10000) in paragraph at lines 243--244
 
-LaTeX Info: Redefining \. on input line 55.
-LaTeX Info: Redefining \% on input line 55.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 249--250
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 258--259
+
+ []
+
+) (capitulos/03_Aportaciones.tex
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.12}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.55 \end{gather}
-                  [12 <./imagenes/nn_1_capa_output.jpg>]
-<imagenes/nn_1_capa_pesos_h1_output.jpg, id=425, 379.4175pt x 284.06125pt>
+l.1 \chapter
+            {Aportaciones} [12]
+Cap\'{\i }tulo 3.
+<imagenes/nn_1_capa.jpg, id=446, 490.83376pt x 369.38pt>
+File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
+<use imagenes/nn_1_capa.jpg>
+Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 8.
+(pdftex.def)             Requested size: 171.79439pt x 129.28493pt.
+<imagenes/nn_1_capa_output.jpg, id=448, 379.4175pt x 284.06125pt>
+File: imagenes/nn_1_capa_output.jpg Graphic file (type jpg)
+<use imagenes/nn_1_capa_output.jpg>
+Package pdftex.def Info: imagenes/nn_1_capa_output.jpg  used on input line 24.
+(pdftex.def)             Requested size: 132.79811pt x 99.42291pt.
+[13
+
+ <./imagenes/nn_1_capa.jpg>]
+Underfull \vbox (badness 8038) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 55.
+LaTeX Info: Redefining \% on input line 55.
+ [14 <./imagenes/nn_1_capa_output.jpg>]
+<imagenes/nn_1_capa_pesos_h1_output.jpg, id=465, 379.4175pt x 284.06125pt>
 File: imagenes/nn_1_capa_pesos_h1_output.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_pesos_h1_output.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_pesos_h1_output.jpg  used on input 
@@ -900,8 +957,8 @@ line 88.
 (pdftex.def)             Requested size: 132.79811pt x 99.42291pt.
 LaTeX Info: Redefining \. on input line 92.
 LaTeX Info: Redefining \% on input line 92.
- [13]
-<imagenes/nn_1_capa_h1.jpg, id=441, 379.4175pt x 284.06125pt>
+ [15]
+<imagenes/nn_1_capa_h1.jpg, id=482, 379.4175pt x 284.06125pt>
 File: imagenes/nn_1_capa_h1.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_h1.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_h1.jpg  used on input line 104.
@@ -911,14 +968,14 @@ Underfull \vbox (badness 7613) has occurred while \output is active []
 
 LaTeX Info: Redefining \. on input line 115.
 LaTeX Info: Redefining \% on input line 115.
- [14 <./imagenes/nn_1_capa_pesos_h1_output.jpg> <./imagenes/nn_1_capa_h1.jpg>]
-<imagenes/nn_1_capa_pesos_input_h1.jpg, id=452, 379.4175pt x 284.06125pt>
+ [16 <./imagenes/nn_1_capa_pesos_h1_output.jpg> <./imagenes/nn_1_capa_h1.jpg>]
+<imagenes/nn_1_capa_pesos_input_h1.jpg, id=491, 379.4175pt x 284.06125pt>
 File: imagenes/nn_1_capa_pesos_input_h1.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_pesos_input_h1.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_pesos_input_h1.jpg  used on input l
 ine 121.
 (pdftex.def)             Requested size: 132.79811pt x 99.42291pt.
-<imagenes/nn_1_capa_input.jpg, id=453, 379.4175pt x 284.06125pt>
+<imagenes/nn_1_capa_input.jpg, id=492, 379.4175pt x 284.06125pt>
 File: imagenes/nn_1_capa_input.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_input.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_input.jpg  used on input line 137.
@@ -928,19 +985,43 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Info: Redefining \. on input line 141.
 LaTeX Info: Redefining \% on input line 141.
- [15 <./imagenes/nn_1_capa_pesos_input_h1.jpg>]) (capitulos/04_Adaptacion_GPU.t
-ex
+ [17 <./imagenes/nn_1_capa_pesos_input_h1.jpg>]
+<imagenes/nn_2_capas.jpg, id=505, 517.935pt x 352.31625pt>
+File: imagenes/nn_2_capas.jpg Graphic file (type jpg)
+<use imagenes/nn_2_capas.jpg>
+Package pdftex.def Info: imagenes/nn_2_capas.jpg  used on input line 157.
+(pdftex.def)             Requested size: 181.27995pt x 123.31253pt.
+LaTeX Info: Redefining \. on input line 167.
+LaTeX Info: Redefining \% on input line 167.
+ [18 <./imagenes/nn_1_capa_input.jpg> <./imagenes/nn_2_capas.jpg>]
+Overfull \hbox (17.0672pt too wide) detected at line 184
+[]
+ []
+
+
+Overfull \hbox (32.35388pt too wide) detected at line 191
+[]
+ []
+
+
+Overfull \hbox (38.40686pt too wide) detected at line 200
+[]
+ []
+
+LaTeX Info: Redefining \. on input line 207.
+LaTeX Info: Redefining \% on input line 207.
+[19]) (capitulos/04_Adaptacion_GPU.tex
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
- [16 <./imagenes/nn_1_capa_input.jpg>]
+ [20]
 Cap\'{\i }tulo 4.
-) (capitulos/05_Plataformas.tex [17
+) (capitulos/05_Plataformas.tex [21
 
-] [18
+] [22
 
 ]
 Cap\'{\i }tulo 5.
-) (proyecto.bbl [19] [20
+) (proyecto.bbl [23] [24
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 21--27
@@ -954,7 +1035,7 @@ tps : / / jacar . es /
  []
 
 
-Overfull \hbox (17.452pt too wide) in paragraph at lines 21--27
+Overfull \hbox (22.927pt too wide) in paragraph at lines 21--27
 \OT1/cmtt/m/n/10.95 la-[]funcion-[]sigmoide-[]una-[]herramienta-[]clave-[]en-[]
 redes-[]neuronales/$[]
  []
@@ -977,101 +1058,142 @@ r/m/n/10.95 [Ac-ces-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 36--40
+Underfull \hbox (badness 10000) in paragraph at lines 36--41
+[]\OT1/cmr/m/n/10.95 Saurav Mahesh-kar.  What is cross en-tropy
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--41
+\OT1/cmr/m/n/10.95 loss? a tu-to-rial with co-de, 2023.  []$\OT1/cmtt/m/n/10.95
+ https : / /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--41
+\OT1/cmtt/m/n/10.95 wandb . ai / sauravmaheshkar / cross-[]entropy / reports /
+ []
+
+
+Overfull \hbox (52.67044pt too wide) in paragraph at lines 36--41
+\OT1/cmtt/m/n/10.95 What-[]Is-[]Cross-[]Entropy-[]Loss-[]A-[]Tutorial-[]With-[]
+Code-[]-[]VmlldzoxMDA5NTMx# :
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--41
+[] \OT1/cmtt/m/n/10.95 : text = Cross % 20entropy % 20loss % 20is % 20a ,[] clo
+se % 20to % 200 %
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--47
 []\OT1/cmr/m/n/10.95 Descenso del gra-dien-te, 2024.  []$\OT1/cmtt/m/n/10.95 ht
 tps : / / es . wikipedia . org /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 36--40
+Underfull \hbox (badness 10000) in paragraph at lines 43--47
 \OT1/cmtt/m/n/10.95 wiki / Descenso _ del _ gradiente# : [] : text = El % 20des
 censo % 20del %
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 36--40
+Underfull \hbox (badness 10000) in paragraph at lines 43--47
 \OT1/cmtt/m/n/10.95 20gradiente % 20o ,[] en % 20direcci % C3 % B3n % 20contrar
 ia % 20al %
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--51
+Underfull \hbox (badness 10000) in paragraph at lines 53--58
 []\OT1/cmr/m/n/10.95 Robert Kwiat-kows-ki.  Gra-dient des-cent al-go-rithm | a
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--51
+Underfull \hbox (badness 10000) in paragraph at lines 53--58
 \OT1/cmr/m/n/10.95 deep di-ve, 2021.  []$\OT1/cmtt/m/n/10.95 https : / / toward
 sdatascience . com /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--51
+Underfull \hbox (badness 10000) in paragraph at lines 53--58
 \OT1/cmtt/m/n/10.95 gradient-[]descent-[]algorithm-[]a-[]deep-[]dive-[]cf04e811
 5f21# : [] :
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--51
+Underfull \hbox (badness 10000) in paragraph at lines 53--58
 \OT1/cmtt/m/n/10.95 text = Gradient % 20descent % 20(GD ) %20is % 20an ,[] e . 
 g . %20in % 20a %
  []
 
-) [21] [22
+[25]
+Underfull \hbox (badness 3780) in paragraph at lines 60--64
+[]\OT1/cmr/m/n/10.95 ml4a.  How neu-ral net-works are trai-ned, 2020.  []$\OT1/
+cmtt/m/n/10.95 https : / /
+ []
 
-] [23] (proyecto.aux
+
+Underfull \hbox (badness 10000) in paragraph at lines 66--71
+[]\OT1/cmr/m/n/10.95 mehran@mldawn.com.  Back-propagation th-rough cross-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 66--71
+\OT1/cmr/m/n/10.95 entropy soft-max, 2021.  []$\OT1/cmtt/m/n/10.95 https : / / 
+www . mldawn . com /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 66--71
+\OT1/cmtt/m/n/10.95 back-[]propagation-[]with-[]cross-[]entropy-[]and-[]softmax
+/$[] \OT1/cmr/m/n/10.95 [Ac-ces-
+ []
+
+)
+LaTeX Info: Redefining \. on input line 224.
+LaTeX Info: Redefining \% on input line 224.
+ [26] [27
+
+] (proyecto.aux
 LaTeX Info: Redefining \. on input line 22.
 LaTeX Info: Redefining \% on input line 22.
 )
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-Package rerunfilecheck Warning: File `proyecto.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `proyecto.out':
-(rerunfilecheck)             Before: FB8526259F60D59AF3FFBFD6C762089C;6715
-(rerunfilecheck)             After:  918698F01258EB5E3A60DE8F5E50001F;6466.
+Package rerunfilecheck Info: File `proyecto.out' has not changed.
+(rerunfilecheck)             Checksum: BDED5C60703C146BE7F389590BD57F89;6307.
  ) 
 Here is how much of TeX's memory you used:
- 13836 strings out of 476331
- 224590 string characters out of 5787765
- 1867660 words of memory out of 5000000
- 33870 multiletter control sequences out of 15000+600000
+ 13914 strings out of 476331
+ 225871 string characters out of 5787765
+ 1872660 words of memory out of 5000000
+ 33883 multiletter control sequences out of 15000+600000
  520820 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,13n,76p,835b,774s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{figure.3.7} has been referenced but does not exist,
- replaced by a fixed one
-
-
-pdfTeX warning (dest): name{subsection.3.1.2} has been referenced but does not 
-exist, replaced by a fixed one
-
-<C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cm
-bx10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
-nts/cm/cmbx12.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/pub
-lic/amsfonts/cm/cmbx8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/t
-ype1/public/amsfonts/cm/cmbxti10.pfb><C:/Users/Troll/AppData/Local/Programs/MiK
-TeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Troll/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Troll/AppData
-/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Trol
-l/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Us
-ers/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pf
-b><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
-cmr10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
-onts/cm/cmr6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/publ
-ic/amsfonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/typ
-e1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/
-fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Programs
-/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/Troll/AppData/Local
-/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (45 pages, 690314 bytes).
+ 75i,13n,76p,835b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
+cmbx10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmbx12.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmbx8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmbxti10.pfb><C:/Users/Troll/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Troll/AppData/Local/
+Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Troll/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmex8.pfb><C:/User
+s/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
+mmi6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
+nts/cm/cmmi8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/publ
+ic/amsfonts/cm/cmr10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/ty
+pe1/public/amsfonts/cm/cmr6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/P
+rograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData
+/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/Trol
+l/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on proyecto.pdf (49 pages, 801939 bytes).
 PDF statistics:
- 625 PDF objects out of 1000 (max. 8388607)
- 143 named destinations out of 1000 (max. 500000)
- 380 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 720 PDF objects out of 1000 (max. 8388607)
+ 206 named destinations out of 1000 (max. 500000)
+ 366 words of extra memory for PDF output out of 10000 (max. 10000000)
 

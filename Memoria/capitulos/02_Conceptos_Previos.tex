@@ -7,8 +7,14 @@ Se entiende como el campo de las ciencias de computación que en vez de enfocars
 En vez de averiguar las distintas reglas a seguir para llegar a una solución, esta alternativa permite simplemente suministrar ejemplos de lo que debería pasar en distintas situaciones, y dejar que la máquina aprenda y extraiga ella misma sus propias conclusiones. De esta forma, el procedimiento en aprendizaje supervisado consiste en 'entrenar' con una muestra de N ejemplos, extraer información de ellos, y posteriormente poder evaluar de forma 'correcta' (bajo un margen de error controlado) otra muestra de M ejemplos, siendo M \textgreater N. \cite{Learning_From_Data} \\
 Este enfoque ha contribuido en el avance de áreas como reconocimiento de voz, visión por ordenador, procesamiento de lenguaje natural, etc.
 
+\section{Componentes necesarios para el aprendizaje supervisado}
 
-\section{Deep Learning}
+Datos de entrada X y de salida Y que el modelo empleará para aprender y tomar decisiones. Ambos se unen para formar un dataset de entradas-salidas D=\{($x_1, y_1$), ($x_2, y_2$), ..., ($x_N, y_N$)\}. Para que el aprendizaje sea posible, debe existir una función F: X $\rightarrow$ Y tal que $y_i$ = F($x_i$) para i$\in$\{1...N\}. De esta forma, en función del dataset D, el modelo tratará de encontrar una función G que aproxime F para dicho conjunto. Además, se suelen aplicar técnicas que permitan una mejor generalización del modelo, expandiendo las capacidades del mismo y permitiendo que su conocimiento pueda ser útil incluso fuera de la muestra de datos inicial. \cite{Learning_From_Data}
+
+\section{División de datos en entrenamiento y test}
+
+Para visualizar la generalización del modelo, el conjunto de datos D se suele dividir en 2 subconjuntos, (entrenamiento y test) de forma que se pueda estimar si realmente 'aprende' o solo memoriza.\\
+Una vez realizada la división, se entrena el modelo con los datos del conjunto de entrenamiento. Cuando se termina el entrenamiento, se accede al conjunto test y se visualiza el rendimiento del modelo sobre el mismo. Como los datos de test no se emplearon en ningún momento, aportan una estimación sobre la generalización del modelo fuera de la muestra con la que se entrenó. 
 
 \section{Tipos de aprendizaje}
 
@@ -18,30 +24,16 @@ Este enfoque ha contribuido en el avance de áreas como reconocimiento de voz, v
 
 Es el que se empleará en este proyecto. 
 Se caracteriza por la presencia de una etiqueta 'correcta' $y_i$ asociada a cada dato de entrada $x_i$. Posteriormente, la red empleará ambos valores para, a partir de $x_i$, tratar de deducir $y_i$. \cite{Learning_From_Data} \\
-Aunque se tratará de impedirlo, siempre hay ruido en los datos empleados, implicando que algunas etiquetas de Y=$\{y_1, y_2, ..., y_N\}$ pueden ser erróneas. \\
+Aunque se trate de impedir, la existencia de ruido en los datos es inevitable, implicando que algunas etiquetas de Y=$\{y_1, y_2, ..., y_N\}$ puedan ser erróneas. \\
+Este tipo de aprendizaje se divide a su vez en problemas de clasificación y regresión, centrándose en predecir etiquetas o valores numéricos, respectivamente.
 
 \subsection{Aprendizaje No Supervisado}
 
-En este tipo de aprendizaje, los datos no contienen ninguna información respecto a lo que debe predecir la red. De esta forma, el conjunto de datos D se compone exclusivamente de valores X=$\{x_1, x_2, ..., x_N\}$. \cite{Learning_From_Data}
+En este tipo de aprendizaje los datos no contienen ninguna información respecto a Y. De esta forma, el conjunto de datos D se compone exclusivamente de valores X=$\{x_1, x_2, ..., x_N\}$. \cite{Learning_From_Data}
 
 \subsection{Aprendizaje Por Refuerzo}
 
 En este caso tampoco existe un $y_i$ 'correcto' asociado a cada $x_i$. En su lugar, se asocia a cada $x_i$ una etiqueta con un valor posible de $y_i$, además de una medida que indica como de bueno es el mismo. \cite{Learning_From_Data}
-
-
-\section{Tipos de problemas en machine learning}
-
-\subsection{Clasificación}
-\subsection{Regresión}
-
-\section{Componentes necesarios para el aprendizaje supervisado}
-
-Datos de entrada X y de salida Y que el modelo empleará para aprender y tomar decisiones. Ambos se unen para formar un dataset de entradas-salidas D=\{($x_1, y_1$), ($x_2, y_2$), ..., ($x_N, y_N$)\}. Para que el aprendizaje sea posible, debe existir una función F: X $\rightarrow$ Y tal que $y_i$ = F($x_i$) para i$\in$\{1...N\}. De esta forma, en función del dataset D, el modelo tratará de encontrar una función G que aproxime F para dicho conjunto. Además, se suelen aplicar técnicas que permitan una mejor generalización del modelo, expandiendo las capacidades del mismo y permitiendo que su conocimiento pueda ser útil incluso fuera de la muestra de datos inicial. \cite{Learning_From_Data}
-
-\section{División de datos en entrenamiento y test}
-
-Para permitir la generalización del modelo, D se suele dividir en 2 subconjuntos, (entrenamiento y test) de forma que se pueda estimar si realmente 'aprende' o solo memoriza.\\
-Una vez realizada la división, se entrena el modelo con los datos del conjunto de entrenamiento. Una vez finalizado, se accede al conjunto test y se visualiza el rendimiento del modelo sobre el mismo. Como los datos de test no se emplearon en todo el proceso de entrenamiento, aportan una estimación sobre la generalización del modelo fuera de la muestra con la que se entrenó. 
 
 
 \section{Redes Neuronales Totalmente Conectadas}
@@ -55,8 +47,8 @@ Una vez realizada la división, se entrena el modelo con los datos del conjunto 
 	\label{fig:neurona}
 \end{figure}
 
-Una neurona se compone de una serie de datos de entrada X=\{$x_1$, $x_2$, ..., $x_N$\} tal que cada $x_i$$\in${X} se encuentra asociado a un peso $w_i\in{W}$. \\
-La neurona los emplea para realizar una suma ponderada y posteriormente añadir un bias b, además de aplicar una función de activación f sobre el resultado obtenido. 
+Una neurona parte de una serie de datos de entrada X=\{$x_1$, $x_2$, ..., $x_N$\} tal que cada $x_i$$\in${X} se encuentra asociado a un peso $w_i\in{W}$. \\
+Esta los emplea para realizar una suma ponderada y posteriormente añadir un sesgo b, además de aplicar una función de activación f sobre el resultado obtenido. 
 
 \subsection{Estructura por capas}
 
@@ -116,19 +108,32 @@ Para n entradas, produce n salidas con valores en el rango [0-1] que mantienen l
 \subsection{One-hot encoding}
 
 \subsection{Función de error o pérdida}
-% https://medium.com/mlearning-ai/understanding-loss-functions-for-classification-81c19ee72c2a
 
-Como solo tenemos dos clases y estamos en clasificación binaria, usaremos Sigmoid Cross Entropy Loss.
+\subsubsection{Entropía Cruzada}
 
 \begin{gather}
-   H(x) = - \frac{1}{N} \sum_{i=1}^{N}  [y_i * log( \hat{y}_i) + (1-y_i)*log(1-\hat{y_i})]
-   \label{loss_func}
+	E(y, \hat{y}) = - \sum_{i=1}^{H}  [y_i * log( \hat{y}_i)]
+	\label{loss_func_softmax}
+\end{gather}
+
+Es una métrica empleada en aprendizaje automático para medir qué tan bien se desempeña un modelo de clasificación. La pérdida o error se mide como un valor en el rango [0-1], siendo 0 un modelo perfecto y 1 otro totalmente erróneo. \cite{Cross_entropy}
+
+H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$.
+
+
+% https://medium.com/mlearning-ai/understanding-loss-functions-for-classification-81c19ee72c2a
+
+\subsubsection{Sigmoid Cross Entropy Loss}
+Es un caso particular de entropía cruzada caracterizado por la presencia de un número de clases igual a 2.
+
+\begin{gather}
+	E(x) = - \frac{1}{N} \sum_{i=1}^{N}  [y_i * log( \hat{y}_i) + (1-y_i)*log(1-\hat{y_i})]
+	\label{loss_func}
 \end{gather}
 
 y = etiqueta real \\
 $\hat{y}$ = predicción 
 
-\subsection{ForwardPropagation}
 \subsection{Descenso del gradiente}
 
 \begin{figure}[H]
@@ -143,7 +148,7 @@ Su nombre viene del término 'gradiente', siendo este una generalización multiv
 
 
 \subsubsection{Entrenamiento}
-De esta forma, el procedimiento para entrenar una red neuronal consiste en, para una entrada $x_i$ y una etiqueta asociada $y_i$, emplear $x_i$ para producir una predicción $\hat{y}_i$ (\textbf{ForwardPropagation}) que posteriormente se podrá comparar con $y_i$ mediante una función de error H(x) y obtener una medida de lo buena o mala que fue la misma. Una vez obtenido dicho ``error'', se aplica el algoritmo del descenso del gradiente para cada parámetro de la red (\textbf{BackPropagation}). \\
+De esta forma, el procedimiento para entrenar una red neuronal consiste en, para una entrada $x_i$ y una etiqueta asociada $y_i$, emplear $x_i$ para producir una predicción $\hat{y}_i$ (\textbf{ForwardPropagation} o Propagación hacia delante) que posteriormente se podrá comparar con $y_i$ mediante una función de error H(x) y obtener una medida de lo buena o mala que fue la misma. Una vez obtenido dicho ``error'', se aplica el algoritmo del descenso del gradiente para cada parámetro de la red (\textbf{BackPropagation} o retropropagacion). \cite{Cross_entropy} \\
 
 \begin{gather}
 	W_{t+1} = W_{t} - \alpha * \frac{\partial H(x)}{\partial W_{t}} 
@@ -158,8 +163,6 @@ De esta forma, el procedimiento para entrenar una red neuronal consiste en, para
 
 Así, se actualizarán los parámetros de la red neuronal según las fórmulas \ref{act_pesos} y \ref{act_bias}. En ellas, $W_t$ y $b_t$ indican los valores del peso W y bias b en el instante o iteración t, de la misma forma que $W_{t+1}$ y $b_{t+1}$ representan los valores de los mismos en el instante t+1. \cite{SGD_act_params}
 
-\subsection{BackPropagation}
-Regla de la cadena
 
 \section{Redes Neuronales Convolucionales}
 
