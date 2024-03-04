@@ -7,14 +7,12 @@
 \contentsline {figure}{\numberline {2.4}{\ignorespaces Imagen de la función de activación Sigmoide}}{7}{figure.2.4}%
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{7}{figure.2.5}%
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{8}{figure.2.6}%
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Estructura de una red con softmax}}{10}{figure.2.7}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{13}{figure.3.1}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Imagen de backpropagation en la capa output}}{14}{figure.3.2}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa output}}{16}{figure.3.3}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{16}{figure.3.4}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta}}{17}{figure.3.5}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa input}}{18}{figure.3.6}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{18}{figure.3.7}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{11}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Imagen de backpropagation en la capa output}}{12}{figure.3.2}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa output}}{14}{figure.3.3}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{14}{figure.3.4}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta}}{15}{figure.3.5}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa input}}{16}{figure.3.6}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  4 MAR 2024 17:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.4) (preloaded format=pdflatex 2023.9.18)  4 MAR 2024 17:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -554,7 +554,7 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 ))
 (portada/portada.tex
 \centeroffset=\skip73
-<imagenes/logo_ugr.jpg, id=143, 777.90625pt x 231.86626pt>
+<imagenes/logo_ugr.jpg, id=131, 777.90625pt x 231.86626pt>
 File: imagenes/logo_ugr.jpg Graphic file (type jpg)
 <use imagenes/logo_ugr.jpg>
 Package pdftex.def Info: imagenes/logo_ugr.jpg  used on input line 12.
@@ -564,7 +564,7 @@ Overfull \hbox (24.0pt too wide) in paragraph at lines 9--23
 | $[]$ 
  []
 
-<imagenes/etsiit_logo.png, id=144, 110.814pt x 40.4712pt>
+<imagenes/etsiit_logo.png, id=132, 110.814pt x 40.4712pt>
 File: imagenes/etsiit_logo.png Graphic file (type png)
 <use imagenes/etsiit_logo.png>
 Package pdftex.def Info: imagenes/etsiit_logo.png  used on input line 31.
@@ -584,7 +584,7 @@ ogo_ugr.jpg> <./imagenes/etsiit_logo.png>]) (prefacios/prefacio.tex [2
 (portada/portada_2.tex [3] [4
 
 ]
-<imagenes/logo.png, id=169, 123.46124pt x 45.92157pt>
+<imagenes/logo.png, id=157, 123.46124pt x 45.92157pt>
 File: imagenes/logo.png Graphic file (type png)
 <use imagenes/logo.png>
 Package pdftex.def Info: imagenes/logo.png  used on input line 21.
@@ -748,7 +748,7 @@ been already used, duplicate ignored
                    \relax 
 l.18 
       [3]
-<imagenes/neurona.jpg, id=336, 662.475pt x 442.65375pt>
+<imagenes/neurona.jpg, id=317, 662.475pt x 442.65375pt>
 File: imagenes/neurona.jpg Graphic file (type jpg)
 <use imagenes/neurona.jpg>
 Package pdftex.def Info: imagenes/neurona.jpg  used on input line 45.
@@ -765,7 +765,7 @@ been already used, duplicate ignored
                    \relax 
 l.49 
       [4]
-<imagenes/capa_neuronas.jpg, id=340, 689.57625pt x 542.025pt>
+<imagenes/capa_neuronas.jpg, id=321, 689.57625pt x 542.025pt>
 File: imagenes/capa_neuronas.jpg Graphic file (type jpg)
 <use imagenes/capa_neuronas.jpg>
 Package pdftex.def Info: imagenes/capa_neuronas.jpg  used on input line 57.
@@ -779,12 +779,12 @@ been already used, duplicate ignored
                    \relax 
 l.63 
       [5 <./imagenes/neurona.jpg> <./imagenes/capa_neuronas.jpg>]
-<imagenes/ReLU.jpg.png, id=344, 380.8629pt x 310.761pt>
+<imagenes/ReLU.jpg.png, id=325, 380.8629pt x 310.761pt>
 File: imagenes/ReLU.jpg.png Graphic file (type png)
 <use imagenes/ReLU.jpg.png>
 Package pdftex.def Info: imagenes/ReLU.jpg.png  used on input line 74.
 (pdftex.def)             Requested size: 171.3867pt x 139.84116pt.
-<imagenes/sigmoide.jpg, id=346, 380.8629pt x 310.761pt>
+<imagenes/sigmoide.jpg, id=327, 380.8629pt x 310.761pt>
 File: imagenes/sigmoide.jpg Graphic file (type jpg)
 <use imagenes/sigmoide.jpg>
 Package pdftex.def Info: imagenes/sigmoide.jpg  used on input line 90.
@@ -801,7 +801,7 @@ been already used, duplicate ignored
                    \relax 
 l.94 
       [6 <./imagenes/ReLU.jpg.png>]
-<imagenes/softmax.jpg, id=358, 681.54625pt x 197.73875pt>
+<imagenes/softmax.jpg, id=339, 681.54625pt x 197.73875pt>
 File: imagenes/softmax.jpg Graphic file (type jpg)
 <use imagenes/softmax.jpg>
 Package pdftex.def Info: imagenes/softmax.jpg  used on input line 102.
@@ -823,7 +823,7 @@ been already used, duplicate ignored
                    \relax 
 l.117 \end{gather}
                    [7 <./imagenes/sigmoide.jpg> <./imagenes/softmax.jpg>]
-<imagenes/sgd.jpg, id=368, 388.0899pt x 310.761pt>
+<imagenes/sgd.jpg, id=349, 388.0899pt x 310.761pt>
 File: imagenes/sgd.jpg Graphic file (type jpg)
 <use imagenes/sgd.jpg>
 Package pdftex.def Info: imagenes/sgd.jpg  used on input line 141.
@@ -846,110 +846,57 @@ Underfull \hbox (badness 10000) in paragraph at lines 151--152
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 173--174
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 175--176
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 177--178
-
- []
-
-LaTeX Info: Redefining \. on input line 178.
-LaTeX Info: Redefining \% on input line 178.
+) (capitulos/03_Aportaciones.tex
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.9}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.178 
-       [9]
-Underfull \hbox (badness 10000) in paragraph at lines 190--192
-
- []
-
-<imagenes/NN_softmax.jpg, id=399, 620.3175pt x 218.8175pt>
-File: imagenes/NN_softmax.jpg Graphic file (type jpg)
-<use imagenes/NN_softmax.jpg>
-Package pdftex.def Info: imagenes/NN_softmax.jpg  used on input line 195.
-(pdftex.def)             Requested size: 248.1226pt x 87.52544pt.
-LaTeX Info: Redefining \. on input line 213.
-LaTeX Info: Redefining \% on input line 213.
+l.1 \chapter
+            {Aportaciones} [9]
+LaTeX Info: Redefining \. on input line 1.
+LaTeX Info: Redefining \% on input line 1.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.10}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.213 \end{gather}
-                   [10 <./imagenes/NN_softmax.jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 215--216
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 237--239
-
- []
-
-LaTeX Info: Redefining \. on input line 241.
-LaTeX Info: Redefining \% on input line 241.
+l.1 \chapter
+            {Aportaciones} [10]
+Cap\'{\i }tulo 3.
+<imagenes/nn_1_capa.jpg, id=382, 490.83376pt x 369.38pt>
+File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
+<use imagenes/nn_1_capa.jpg>
+Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 8.
+(pdftex.def)             Requested size: 171.79439pt x 129.28493pt.
+<imagenes/nn_1_capa_output.jpg, id=384, 379.4175pt x 284.06125pt>
+File: imagenes/nn_1_capa_output.jpg Graphic file (type jpg)
+<use imagenes/nn_1_capa_output.jpg>
+Package pdftex.def Info: imagenes/nn_1_capa_output.jpg  used on input line 24.
+(pdftex.def)             Requested size: 132.79811pt x 99.42291pt.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.11}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.241 \end{gather}
-                   [11]
-Underfull \hbox (badness 10000) in paragraph at lines 243--244
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 249--250
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 258--259
-
- []
-
-) (capitulos/03_Aportaciones.tex
-LaTeX Info: Redefining \. on input line 1.
-LaTeX Info: Redefining \% on input line 1.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.12}) has
- been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.1 \chapter
-            {Aportaciones} [12]
-Cap\'{\i }tulo 3.
-<imagenes/nn_1_capa.jpg, id=446, 490.83376pt x 369.38pt>
-File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
-<use imagenes/nn_1_capa.jpg>
-Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 8.
-(pdftex.def)             Requested size: 171.79439pt x 129.28493pt.
-<imagenes/nn_1_capa_output.jpg, id=448, 379.4175pt x 284.06125pt>
-File: imagenes/nn_1_capa_output.jpg Graphic file (type jpg)
-<use imagenes/nn_1_capa_output.jpg>
-Package pdftex.def Info: imagenes/nn_1_capa_output.jpg  used on input line 24.
-(pdftex.def)             Requested size: 132.79811pt x 99.42291pt.
-[13
+l.28 
+      [11
 
  <./imagenes/nn_1_capa.jpg>]
 Underfull \vbox (badness 8038) has occurred while \output is active []
 
 LaTeX Info: Redefining \. on input line 55.
 LaTeX Info: Redefining \% on input line 55.
- [14 <./imagenes/nn_1_capa_output.jpg>]
-<imagenes/nn_1_capa_pesos_h1_output.jpg, id=465, 379.4175pt x 284.06125pt>
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.12}) has
+ been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.55 \end{gather}
+                  [12 <./imagenes/nn_1_capa_output.jpg>]
+<imagenes/nn_1_capa_pesos_h1_output.jpg, id=399, 379.4175pt x 284.06125pt>
 File: imagenes/nn_1_capa_pesos_h1_output.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_pesos_h1_output.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_pesos_h1_output.jpg  used on input 
@@ -957,8 +904,8 @@ line 88.
 (pdftex.def)             Requested size: 132.79811pt x 99.42291pt.
 LaTeX Info: Redefining \. on input line 92.
 LaTeX Info: Redefining \% on input line 92.
- [15]
-<imagenes/nn_1_capa_h1.jpg, id=482, 379.4175pt x 284.06125pt>
+ [13]
+<imagenes/nn_1_capa_h1.jpg, id=415, 379.4175pt x 284.06125pt>
 File: imagenes/nn_1_capa_h1.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_h1.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_h1.jpg  used on input line 104.
@@ -968,14 +915,14 @@ Underfull \vbox (badness 7613) has occurred while \output is active []
 
 LaTeX Info: Redefining \. on input line 115.
 LaTeX Info: Redefining \% on input line 115.
- [16 <./imagenes/nn_1_capa_pesos_h1_output.jpg> <./imagenes/nn_1_capa_h1.jpg>]
-<imagenes/nn_1_capa_pesos_input_h1.jpg, id=491, 379.4175pt x 284.06125pt>
+ [14 <./imagenes/nn_1_capa_pesos_h1_output.jpg> <./imagenes/nn_1_capa_h1.jpg>]
+<imagenes/nn_1_capa_pesos_input_h1.jpg, id=426, 379.4175pt x 284.06125pt>
 File: imagenes/nn_1_capa_pesos_input_h1.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_pesos_input_h1.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_pesos_input_h1.jpg  used on input l
 ine 121.
 (pdftex.def)             Requested size: 132.79811pt x 99.42291pt.
-<imagenes/nn_1_capa_input.jpg, id=492, 379.4175pt x 284.06125pt>
+<imagenes/nn_1_capa_input.jpg, id=427, 379.4175pt x 284.06125pt>
 File: imagenes/nn_1_capa_input.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_input.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_input.jpg  used on input line 137.
@@ -985,43 +932,19 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Info: Redefining \. on input line 141.
 LaTeX Info: Redefining \% on input line 141.
- [17 <./imagenes/nn_1_capa_pesos_input_h1.jpg>]
-<imagenes/nn_2_capas.jpg, id=505, 517.935pt x 352.31625pt>
-File: imagenes/nn_2_capas.jpg Graphic file (type jpg)
-<use imagenes/nn_2_capas.jpg>
-Package pdftex.def Info: imagenes/nn_2_capas.jpg  used on input line 157.
-(pdftex.def)             Requested size: 181.27995pt x 123.31253pt.
-LaTeX Info: Redefining \. on input line 167.
-LaTeX Info: Redefining \% on input line 167.
- [18 <./imagenes/nn_1_capa_input.jpg> <./imagenes/nn_2_capas.jpg>]
-Overfull \hbox (17.0672pt too wide) detected at line 184
-[]
- []
-
-
-Overfull \hbox (32.35388pt too wide) detected at line 191
-[]
- []
-
-
-Overfull \hbox (38.40686pt too wide) detected at line 200
-[]
- []
-
-LaTeX Info: Redefining \. on input line 207.
-LaTeX Info: Redefining \% on input line 207.
-[19]) (capitulos/04_Adaptacion_GPU.tex
+ [15 <./imagenes/nn_1_capa_pesos_input_h1.jpg>]) (capitulos/04_Adaptacion_GPU.t
+ex
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
- [20]
+ [16 <./imagenes/nn_1_capa_input.jpg>]
 Cap\'{\i }tulo 4.
-) (capitulos/05_Plataformas.tex [21
+) (capitulos/05_Plataformas.tex [17
 
-] [22
+] [18
 
 ]
 Cap\'{\i }tulo 5.
-) (proyecto.bbl [23] [24
+) (proyecto.bbl [19] [20
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 21--27
@@ -1126,7 +1049,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 53--58
 g . %20in % 20a %
  []
 
-[25]
+[21]
 Underfull \hbox (badness 3780) in paragraph at lines 60--64
 []\OT1/cmr/m/n/10.95 ml4a.  How neu-ral net-works are trai-ned, 2020.  []$\OT1/
 cmtt/m/n/10.95 https : / /
@@ -1152,7 +1075,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 66--71
 )
 LaTeX Info: Redefining \. on input line 224.
 LaTeX Info: Redefining \% on input line 224.
- [26] [27
+ [22] [23
 
 ] (proyecto.aux
 LaTeX Info: Redefining \. on input line 22.
@@ -1162,13 +1085,13 @@ LaTeX Info: Redefining \% on input line 22.
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package rerunfilecheck Info: File `proyecto.out' has not changed.
-(rerunfilecheck)             Checksum: BDED5C60703C146BE7F389590BD57F89;6307.
+(rerunfilecheck)             Checksum: F236DBB2817F62C09CAB551DEBD5D131;5737.
  ) 
 Here is how much of TeX's memory you used:
- 13914 strings out of 476331
- 225871 string characters out of 5787765
- 1872660 words of memory out of 5000000
- 33883 multiletter control sequences out of 15000+600000
+ 13830 strings out of 476331
+ 224519 string characters out of 5787765
+ 1867660 words of memory out of 5000000
+ 33866 multiletter control sequences out of 15000+600000
  520820 words of font info for 61 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,13n,76p,835b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1179,21 +1102,20 @@ ublic/amsfonts/cm/cmbx8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts
 /type1/public/amsfonts/cm/cmbxti10.pfb><C:/Users/Troll/AppData/Local/Programs/M
 iKTeX/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Troll/AppData/Local/
 Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/Troll/AppDa
-ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cmextra/cmex8.pfb><C:/User
-s/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
-mmi6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
-nts/cm/cmmi8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/publ
-ic/amsfonts/cm/cmr10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/ty
-pe1/public/amsfonts/cm/cmr6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/P
-rograms/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData
-/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/Trol
-l/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (49 pages, 801939 bytes).
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Tr
+oll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/
+Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.
+pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
+m/cmr10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmr6.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmr8.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTeX/fonts/t
+ype1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Troll/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Troll/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Users/Troll/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on proyecto.pdf (45 pages, 694185 bytes).
 PDF statistics:
- 720 PDF objects out of 1000 (max. 8388607)
- 206 named destinations out of 1000 (max. 500000)
- 366 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 607 PDF objects out of 1000 (max. 8388607)
+ 141 named destinations out of 1000 (max. 500000)
+ 332 words of extra memory for PDF output out of 10000 (max. 10000000)
 

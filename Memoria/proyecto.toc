@@ -24,33 +24,22 @@
 \contentsline {subsubsection}{Sigmoid Cross Entropy Loss}{8}{section*.12}%
 \contentsline {subsection}{\numberline {2.5.6}Descenso del gradiente}{8}{subsection.2.5.6}%
 \contentsline {subsubsection}{Entrenamiento}{9}{section*.13}%
-\contentsline {subsection}{\numberline {2.5.7}Codificación One-Hot}{9}{subsection.2.5.7}%
-\contentsline {subsection}{\numberline {2.5.8}Propagación hacia delante}{9}{subsection.2.5.8}%
-\contentsline {subsection}{\numberline {2.5.9}Retropopagación}{10}{subsection.2.5.9}%
-\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_i}$}{11}{section*.14}%
-\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_j}$}{11}{section*.15}%
-\contentsline {section}{\numberline {2.6}Redes Neuronales Convolucionales}{12}{section.2.6}%
-\contentsline {subsection}{\numberline {2.6.1}Tipos de capas}{12}{subsection.2.6.1}%
-\contentsline {subsection}{\numberline {2.6.2}Estructura por capas}{12}{subsection.2.6.2}%
-\contentsline {subsection}{\numberline {2.6.3}ForwardPropagation}{12}{subsection.2.6.3}%
-\contentsline {chapter}{\numberline {3}Aportaciones}{13}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Redes Neuronales Totalmente Conectadas}{13}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}BackPropagation con 1 capa oculta}{13}{subsection.3.1.1}%
-\contentsline {subsubsection}{Capa output}{14}{section*.16}%
-\contentsline {subsubsection}{Función activación de la capa output}{15}{section*.17}%
-\contentsline {subsubsection}{Pesos capas h1-output}{16}{section*.18}%
-\contentsline {subsubsection}{Capa oculta h1}{16}{section*.19}%
-\contentsline {subsubsection}{Pesos capas input-h1}{17}{section*.20}%
-\contentsline {subsubsection}{Capa input}{18}{section*.21}%
-\contentsline {subsection}{\numberline {3.1.2}BackPropagation con 2 capas ocultas}{18}{subsection.3.1.2}%
-\contentsline {subsubsection}{Capa output}{19}{section*.22}%
-\contentsline {subsubsection}{Función activación de la capa output}{19}{section*.23}%
-\contentsline {subsubsection}{Pesos capas h1-h2}{19}{section*.24}%
-\contentsline {subsubsection}{Capa oculta h2}{19}{section*.25}%
-\contentsline {subsubsection}{Pesos capas h1-h2}{20}{section*.26}%
-\contentsline {subsubsection}{Capa oculta h1}{20}{section*.27}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{21}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{21}{section.4.1}%
-\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{21}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{23}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{23}{section.5.1}%
+\contentsline {subsection}{\numberline {2.5.7}Tipos de codificaciones}{9}{subsection.2.5.7}%
+\contentsline {section}{\numberline {2.6}Redes Neuronales Convolucionales}{10}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Tipos de capas}{10}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Estructura por capas}{10}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}ForwardPropagation}{10}{subsection.2.6.3}%
+\contentsline {chapter}{\numberline {3}Aportaciones}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Redes Neuronales Totalmente Conectadas}{11}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}BackPropagation con 1 capa oculta}{11}{subsection.3.1.1}%
+\contentsline {subsubsection}{Capa output}{12}{section*.14}%
+\contentsline {subsubsection}{Función activación de la capa output}{13}{section*.15}%
+\contentsline {subsubsection}{Pesos capas h1-output}{14}{section*.16}%
+\contentsline {subsubsection}{Capa oculta h1}{14}{section*.17}%
+\contentsline {subsubsection}{Pesos capas input-h1}{15}{section*.18}%
+\contentsline {subsubsection}{Capa input}{16}{section*.19}%
+\contentsline {chapter}{\numberline {4}Adaptación GPU}{17}{chapter.4}%
+\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{17}{section.4.1}%
+\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{17}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{19}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{19}{section.5.1}%
