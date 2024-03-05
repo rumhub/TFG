@@ -8,11 +8,12 @@
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{7}{figure.2.5}%
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{8}{figure.2.6}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{11}{figure.3.1}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Imagen de backpropagation en la capa output}}{12}{figure.3.2}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa output}}{14}{figure.3.3}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{14}{figure.3.4}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta}}{15}{figure.3.5}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa input}}{16}{figure.3.6}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red con softmax}}{11}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{14}{figure.3.2}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Imagen de backpropagation en la capa output}}{15}{figure.3.3}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa output}}{17}{figure.3.4}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{18}{figure.3.5}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta}}{18}{figure.3.6}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Imagen de backpropagation en la capa input}}{19}{figure.3.7}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
