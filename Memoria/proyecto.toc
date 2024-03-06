@@ -39,15 +39,14 @@
 \contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_j}$, con i $\neq $ j}{13}{section*.17}%
 \contentsline {subsubsection}{Combinación de casos}{13}{section*.18}%
 \contentsline {subsubsection}{Simplificación One-Hot}{14}{section*.19}%
-\contentsline {subsection}{\numberline {3.1.2}BackPropagation con 1 capa oculta}{14}{subsection.3.1.2}%
-\contentsline {subsubsection}{Capa output}{15}{section*.20}%
-\contentsline {subsubsection}{Función activación de la capa output}{16}{section*.21}%
-\contentsline {subsubsection}{Pesos capas h1-output}{17}{section*.22}%
-\contentsline {subsubsection}{Capa oculta h1}{18}{section*.23}%
-\contentsline {subsubsection}{Pesos capas input-h1}{18}{section*.24}%
-\contentsline {subsubsection}{Capa input}{19}{section*.25}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{21}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{21}{section.4.1}%
-\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{21}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{23}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{23}{section.5.1}%
+\contentsline {subsection}{\numberline {3.1.2}BackPropagation con 1 capa oculta \cite {NN_backpropagation}}{14}{subsection.3.1.2}%
+\contentsline {subsubsection}{Capa SoftMax}{15}{section*.20}%
+\contentsline {subsubsection}{Pesos capas h1-SoftMax}{15}{section*.21}%
+\contentsline {subsubsection}{Capa oculta h1}{16}{section*.22}%
+\contentsline {subsubsection}{Pesos capas input-h1}{17}{section*.23}%
+\contentsline {subsubsection}{Capa input}{18}{section*.24}%
+\contentsline {chapter}{\numberline {4}Adaptación GPU}{19}{chapter.4}%
+\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{19}{section.4.1}%
+\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{19}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{21}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{21}{section.5.1}%

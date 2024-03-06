@@ -1,5 +1,19 @@
 \begin{thebibliography}{10}
 
+\bibitem{Cross_entropy_backprop}
+mehran@mldawn.com.
+\newblock Back-propagation through cross-entropy softmax, 2021.
+\newblock
+  \url{https://www.mldawn.com/back-propagation-with-cross-entropy-and-softmax/}
+  [Accessed:29/02/2024].
+
+\bibitem{Cross_entropy_backprop_grad_input}
+mehran@mldawn.com.
+\newblock The derivative of softmax function wrt z, 2021.
+\newblock
+  \url{https://www.mldawn.com/the-derivative-of-softmaxz-function-w-r-t-z/}
+  [Accessed:05/03/2024].
+
 \bibitem{Programming_Massively}
 Izzat El~Hajj Wen-emi W.Hwu, David~B.kirk.
 \newblock {\em Programming Massively Parallel Processors}.
@@ -62,18 +76,11 @@ ml4a.
 \newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
   [Accessed:27/02/2024].
 
-\bibitem{Cross_entropy_backprop}
-mehran@mldawn.com.
-\newblock Back-propagation through cross-entropy softmax, 2021.
+\bibitem{NN_backpropagation}
+Prakash Jay.
+\newblock Back-propagation is very simple. who made it complicated ?, 2017.
 \newblock
-  \url{https://www.mldawn.com/back-propagation-with-cross-entropy-and-softmax/}
-  [Accessed:29/02/2024].
-
-\bibitem{Cross_entropy_backprop_grad_input}
-mehran@mldawn.com.
-\newblock The derivative of softmax function wrt z, 2021.
-\newblock
-  \url{https://www.mldawn.com/the-derivative-of-softmaxz-function-w-r-t-z/}
-  [Accessed:05/03/2024].
+  \url{https://medium.com/@14prakash/back-propagation-is-very-simple-who-made-it-complicated-97b794c97e5c}
+  [Accessed:06/03/2024].
 
 \end{thebibliography}
