@@ -39,14 +39,31 @@
 \contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_j}$, con i $\neq $ j}{13}{section*.17}%
 \contentsline {subsubsection}{Combinación de casos}{13}{section*.18}%
 \contentsline {subsubsection}{Simplificación One-Hot}{14}{section*.19}%
-\contentsline {subsection}{\numberline {3.1.2}BackPropagation con 1 capa oculta \cite {NN_backpropagation}}{14}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.2}BackPropagation con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2} }{14}{subsection.3.1.2}%
 \contentsline {subsubsection}{Capa SoftMax}{15}{section*.20}%
 \contentsline {subsubsection}{Pesos capas h1-SoftMax}{15}{section*.21}%
-\contentsline {subsubsection}{Capa oculta h1}{16}{section*.22}%
-\contentsline {subsubsection}{Pesos capas input-h1}{17}{section*.23}%
-\contentsline {subsubsection}{Capa input}{18}{section*.24}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{19}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{19}{section.4.1}%
-\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{19}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{21}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{21}{section.5.1}%
+\contentsline {subsubsection}{Sesgos capa softmax}{16}{section*.22}%
+\contentsline {subsubsection}{Capa oculta h1}{16}{section*.23}%
+\contentsline {subsubsection}{Pesos capas input-h1}{18}{section*.24}%
+\contentsline {subsubsection}{Sesgos capa h1}{18}{section*.25}%
+\contentsline {subsubsection}{Capa input}{19}{section*.26}%
+\contentsline {subsection}{\numberline {3.1.3}Retropropagación con 2 capas ocultas}{20}{subsection.3.1.3}%
+\contentsline {subsubsection}{Capa SoftMax}{20}{section*.27}%
+\contentsline {subsubsection}{Pesos capas h2-SoftMax}{21}{section*.28}%
+\contentsline {subsubsection}{Sesgos capa softmax}{21}{section*.29}%
+\contentsline {subsubsection}{Capa oculta h2}{22}{section*.30}%
+\contentsline {subsubsection}{Pesos capas h1-h2}{23}{section*.31}%
+\contentsline {subsubsection}{Sesgos capa h2}{24}{section*.32}%
+\contentsline {subsubsection}{Capa oculta h1}{24}{section*.33}%
+\contentsline {subsubsection}{Pesos capa input-h1}{25}{section*.34}%
+\contentsline {subsubsection}{Sesgos capa h1}{26}{section*.35}%
+\contentsline {subsubsection}{Capa input}{26}{section*.36}%
+\contentsline {subsection}{\numberline {3.1.4}Conclusiones}{27}{subsection.3.1.4}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada}{28}{section*.37}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{28}{section*.38}%
+\contentsline {subsubsection}{Gradiente respecto a sesgos}{29}{section*.39}%
+\contentsline {chapter}{\numberline {4}Adaptación GPU}{31}{chapter.4}%
+\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{31}{section.4.1}%
+\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{31}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{33}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{33}{section.5.1}%

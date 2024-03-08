@@ -23,6 +23,7 @@
 \citation{Cross_entropy_backprop}
 \citation{Cross_entropy_backprop_grad_input}
 \citation{NN_backpropagation}
+\citation{NN_backprop_2}
 \@writefile{toc}{\contentsline {chapter}{\numberline {1}Introducción}{1}{chapter.1}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -109,10 +110,12 @@
 \@writefile{toc}{\contentsline {subsubsection}{Combinación de casos}{13}{section*.18}\protected@file@percent }
 \newlabel{simplificar}{{3.21}{13}{Combinación de casos}{equation.3.1.21}{}}
 \citation{NN_backpropagation}
+\citation{NN_backprop_2}
 \@writefile{toc}{\contentsline {subsubsection}{Simplificación One-Hot}{14}{section*.19}\protected@file@percent }
 \newlabel{one_hot_simplif}{{3.23}{14}{Simplificación One-Hot}{equation.3.1.23}{}}
 \newlabel{gradiente_softmax}{{3.26}{14}{Simplificación One-Hot}{equation.3.1.26}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}BackPropagation con 1 capa oculta \cite  {NN_backpropagation}}{14}{subsection.3.1.2}\protected@file@percent }
+\newlabel{backprop_1_capa}{{3.1.2}{14}{BackPropagation con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2}}{subsection.3.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}BackPropagation con 1 capa oculta \cite  {NN_backpropagation} \cite  {NN_backprop_2} }{14}{subsection.3.1.2}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{14}{figure.3.2}\protected@file@percent }
 \newlabel{fig:nn_1_capa}{{3.2}{14}{Red Neuronal totalmente conectada con 1 capa oculta}{figure.3.2}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Capa SoftMax}{15}{section*.20}\protected@file@percent }
@@ -121,44 +124,100 @@
 \@writefile{toc}{\contentsline {subsubsection}{Pesos capas h1-SoftMax}{15}{section*.21}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa SoftMax}}{15}{figure.3.4}\protected@file@percent }
 \newlabel{fig:nn_1_pesos_h1_output}{{3.4}{15}{Imagen de backpropagation en los pesos entre la capa oculta y la capa SoftMax}{figure.3.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h1}{16}{section*.22}\protected@file@percent }
+\newlabel{grad_w1pk_1}{{3.27}{16}{Pesos capas h1-SoftMax}{equation.3.1.27}{}}
+\newlabel{grad_w1pk_2}{{3.28}{16}{Pesos capas h1-SoftMax}{equation.3.1.28}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa softmax}{16}{section*.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h1}{16}{section*.23}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{16}{figure.3.5}\protected@file@percent }
 \newlabel{nn_caminos_posibles}{{3.5}{16}{Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}{figure.3.5}{}}
-\newlabel{E_total_a1p}{{3.29}{16}{Capa oculta h1}{equation.3.1.29}{}}
-\newlabel{deriv_Zk_z1p}{{3.30}{16}{Capa oculta h1}{equation.3.1.30}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{16}{figure.3.6}\protected@file@percent }
-\newlabel{fig:nn_1_capa_h1}{{3.6}{16}{Imagen de backpropagation en la capa oculta h1}{figure.3.6}{}}
-\newlabel{deriv_z1p_a1p}{{3.33}{17}{Capa oculta h1}{equation.3.1.33}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Pesos capas input-h1}{17}{section*.23}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{17}{figure.3.7}\protected@file@percent }
-\newlabel{fig:nn_1_pesos_input_h1}{{3.7}{17}{Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}{figure.3.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa input}{18}{section*.24}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{18}{figure.3.8}\protected@file@percent }
-\newlabel{nn_caminos_posibles_input}{{3.8}{18}{Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.3.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Imagen de backpropagation en la capa input}}{18}{figure.3.9}\protected@file@percent }
-\newlabel{fig:nn_1_capa_input}{{3.9}{18}{Imagen de backpropagation en la capa input}{figure.3.9}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{19}{chapter.4}\protected@file@percent }
+\newlabel{E_total_a1p}{{3.32}{16}{Capa oculta h1}{equation.3.1.32}{}}
+\newlabel{deriv_Zk_z1p}{{3.33}{17}{Capa oculta h1}{equation.3.1.33}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{17}{figure.3.6}\protected@file@percent }
+\newlabel{fig:nn_1_capa_h1}{{3.6}{17}{Imagen de backpropagation en la capa oculta h1}{figure.3.6}{}}
+\newlabel{deriv_z1p_a1p}{{3.36}{17}{Capa oculta h1}{equation.3.1.36}{}}
+\newlabel{grad_E_a1p}{{3.38}{17}{Capa oculta h1}{equation.3.1.38}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capas input-h1}{18}{section*.24}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{18}{figure.3.7}\protected@file@percent }
+\newlabel{fig:nn_1_pesos_input_h1}{{3.7}{18}{Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}{figure.3.7}{}}
+\newlabel{grad_w0ip}{{3.41}{18}{Pesos capas input-h1}{equation.3.1.41}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h1}{18}{section*.25}\protected@file@percent }
+\newlabel{grad_b1p}{{3.44}{18}{Sesgos capa h1}{equation.3.1.44}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa input}{19}{section*.26}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{19}{figure.3.8}\protected@file@percent }
+\newlabel{nn_caminos_posibles_input}{{3.8}{19}{Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.3.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Imagen de backpropagation en la capa input}}{19}{figure.3.9}\protected@file@percent }
+\newlabel{fig:nn_1_capa_input}{{3.9}{19}{Imagen de backpropagation en la capa input}{figure.3.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Retropropagación con 2 capas ocultas}{20}{subsection.3.1.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{20}{figure.3.10}\protected@file@percent }
+\newlabel{fig:nn_2_capas}{{3.10}{20}{Red Neuronal totalmente conectada con 2 capas ocultas}{figure.3.10}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa SoftMax}{20}{section*.27}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Imagen de backpropagation en la capa softmax}}{20}{figure.3.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capas h2-SoftMax}{21}{section*.28}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta h2 y la capa SoftMax}}{21}{figure.3.12}\protected@file@percent }
+\newlabel{grad_w2pk_1}{{3.49}{21}{Pesos capas h2-SoftMax}{equation.3.1.49}{}}
+\newlabel{grad_w2pk_2}{{3.50}{21}{Pesos capas h2-SoftMax}{equation.3.1.50}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa softmax}{21}{section*.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h2}{22}{section*.30}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{22}{figure.3.13}\protected@file@percent }
+\newlabel{nn_h2_caminos_posibles}{{3.13}{22}{Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}{figure.3.13}{}}
+\newlabel{E_total_a2p}{{3.54}{22}{Capa oculta h2}{equation.3.1.54}{}}
+\newlabel{deriv_Zk_z2p}{{3.55}{22}{Capa oculta h2}{equation.3.1.55}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.14}{\ignorespaces Imagen de backpropagation en la capa oculta h2}}{22}{figure.3.14}\protected@file@percent }
+\newlabel{fig:nn_2_capa_h2}{{3.14}{22}{Imagen de backpropagation en la capa oculta h2}{figure.3.14}{}}
+\newlabel{deriv_z2p_a2p}{{3.58}{23}{Capa oculta h2}{equation.3.1.58}{}}
+\newlabel{grad_E_a2p}{{3.60}{23}{Capa oculta h2}{equation.3.1.60}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capas h1-h2}{23}{section*.31}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.15}{\ignorespaces Imagen de backpropagation en los pesos entre las capas ocultas h1 y h2}}{23}{figure.3.15}\protected@file@percent }
+\newlabel{fig:nn_2_pesos_h1_h2}{{3.15}{23}{Imagen de backpropagation en los pesos entre las capas ocultas h1 y h2}{figure.3.15}{}}
+\newlabel{grad_w1jp}{{3.63}{23}{Pesos capas h1-h2}{equation.3.1.63}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h2}{24}{section*.32}\protected@file@percent }
+\newlabel{grad_b2p}{{3.66}{24}{Sesgos capa h2}{equation.3.1.66}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h1}{24}{section*.33}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{24}{figure.3.16}\protected@file@percent }
+\newlabel{nn_h1_caminos_posibles}{{3.16}{24}{Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}{figure.3.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.17}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{25}{figure.3.17}\protected@file@percent }
+\newlabel{grad_E_a1j}{{3.73}{25}{Capa oculta h1}{equation.3.1.73}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capa input-h1}{25}{section*.34}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.18}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{25}{figure.3.18}\protected@file@percent }
+\newlabel{fig:nn_2_pesos_input_h1}{{3.18}{25}{Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}{figure.3.18}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h1}{26}{section*.35}\protected@file@percent }
+\newlabel{grad_b1j}{{3.79}{26}{Sesgos capa h1}{equation.3.1.79}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa input}{26}{section*.36}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.19}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{26}{figure.3.19}\protected@file@percent }
+\newlabel{nn_2_capas_caminos_posibles_input}{{3.19}{26}{Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.3.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.20}{\ignorespaces Imagen de backpropagation en la capa input}}{27}{figure.3.20}\protected@file@percent }
+\newlabel{fig:nn_2_capa_input}{{3.20}{27}{Imagen de backpropagation en la capa input}{figure.3.20}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.4}Conclusiones}{27}{subsection.3.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a la entrada}{28}{section*.37}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.21}{\ignorespaces Imagen de backpropagation en la capa l}}{28}{figure.3.21}\protected@file@percent }
+\newlabel{fig:conclusion_capa_l}{{3.21}{28}{Imagen de backpropagation en la capa l}{figure.3.21}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{28}{section*.38}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.22}{\ignorespaces Imagen de backpropagation en los pesos entre la capa l-1 y l}}{28}{figure.3.22}\protected@file@percent }
+\newlabel{fig:conclusion_pesos}{{3.22}{28}{Imagen de backpropagation en los pesos entre la capa l-1 y l}{figure.3.22}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a sesgos}{29}{section*.39}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{31}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{19}{section.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{19}{section.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{31}{section.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{31}{section.4.2}\protected@file@percent }
 \bibstyle{unsrt}
 \bibdata{bibliografia/bibliografia}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{21}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{33}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}cuDNN}{21}{section.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}cuDNN}{33}{section.5.1}\protected@file@percent }
 \bibcite{Cross_entropy_backprop}{1}
 \bibcite{Cross_entropy_backprop_grad_input}{2}
-\bibcite{Programming_Massively}{3}
-\bibcite{Learning_From_Data}{4}
-\bibcite{ReLU}{5}
-\bibcite{Sigmoide}{6}
-\bibcite{SoftMax_MLM}{7}
-\bibcite{Cross_entropy}{8}
-\bibcite{SGD_1}{9}
-\bibcite{Gradiente}{10}
-\bibcite{SGD_2}{11}
-\bibcite{SGD_act_params}{12}
-\bibcite{NN_backpropagation}{13}
-\gdef \@abspage@last{47}
+\bibcite{NN_backpropagation}{3}
+\bibcite{Programming_Massively}{4}
+\bibcite{Learning_From_Data}{5}
+\bibcite{ReLU}{6}
+\bibcite{Sigmoide}{7}
+\bibcite{SoftMax_MLM}{8}
+\bibcite{Cross_entropy}{9}
+\bibcite{SGD_1}{10}
+\bibcite{Gradiente}{11}
+\bibcite{SGD_2}{12}
+\bibcite{SGD_act_params}{13}
+\bibcite{NN_backprop_2}{14}
+\gdef \@abspage@last{59}

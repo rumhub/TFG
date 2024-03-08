@@ -5,46 +5,47 @@ Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: unsrt.bst
 Reallocating 'name_of_file' (item size: 1) to 26 items.
 Database file #1: bibliografia/bibliografia.bib
+Warning--I didn't find a database entry for "NN_backpropagation_2"
 Warning--empty publisher in Learning_From_Data
-You've used 13 entries,
+You've used 14 entries,
             1791 wiz_defined-function locations,
-            515 strings with 6073 characters,
-and the built_in function-call counts, 1686 in all, are:
-= -- 135
-> -- 46
+            522 strings with 6286 characters,
+and the built_in function-call counts, 1813 in all, are:
+= -- 145
+> -- 50
 < -- 0
-+ -- 24
-- -- 11
-* -- 27
-:= -- 249
-add.period$ -- 37
-call.type$ -- 13
-change.case$ -- 13
++ -- 26
+- -- 12
+* -- 28
+:= -- 268
+add.period$ -- 40
+call.type$ -- 14
+change.case$ -- 14
 chr.to.int$ -- 0
-cite$ -- 14
-duplicate$ -- 75
-empty$ -- 237
-format.name$ -- 11
-if$ -- 400
+cite$ -- 15
+duplicate$ -- 80
+empty$ -- 255
+format.name$ -- 12
+if$ -- 430
 int.to.chr$ -- 0
-int.to.str$ -- 13
+int.to.str$ -- 14
 missing$ -- 4
-newline$ -- 66
-num.names$ -- 11
-pop$ -- 90
+newline$ -- 71
+num.names$ -- 12
+pop$ -- 97
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 38
+skip$ -- 41
 stack$ -- 0
 substring$ -- 0
-swap$ -- 13
+swap$ -- 14
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 1
-while$ -- 11
-width$ -- 15
-write$ -- 131
-(There was 1 warning)
+while$ -- 12
+width$ -- 16
+write$ -- 141
+(There were 2 warnings)

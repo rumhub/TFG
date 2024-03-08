@@ -14,6 +14,13 @@ mehran@mldawn.com.
   \url{https://www.mldawn.com/the-derivative-of-softmaxz-function-w-r-t-z/}
   [Accessed:05/03/2024].
 
+\bibitem{NN_backpropagation}
+Prakash Jay.
+\newblock Back-propagation is very simple. who made it complicated ?, 2017.
+\newblock
+  \url{https://medium.com/@14prakash/back-propagation-is-very-simple-who-made-it-complicated-97b794c97e5c}
+  [Accessed:06/03/2024].
+
 \bibitem{Programming_Massively}
 Izzat El~Hajj Wen-emi W.Hwu, David~B.kirk.
 \newblock {\em Programming Massively Parallel Processors}.
@@ -76,11 +83,11 @@ ml4a.
 \newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
   [Accessed:27/02/2024].
 
-\bibitem{NN_backpropagation}
-Prakash Jay.
-\newblock Back-propagation is very simple. who made it complicated ?, 2017.
+\bibitem{NN_backprop_2}
+Chamanth mvs.
+\newblock No more confusion on backpropagation, 2022.
 \newblock
-  \url{https://medium.com/@14prakash/back-propagation-is-very-simple-who-made-it-complicated-97b794c97e5c}
-  [Accessed:06/03/2024].
+  \url{https://pub.aimind.so/no-more-confusion-on-backpropagation-7adfc271539f}
+  [Accessed:07/03/2024].
 
 \end{thebibliography}
