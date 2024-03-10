@@ -11,26 +11,19 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     vector<vector<float>> w_2D;
     
     // Neuronas ------------------------------------------------------------------
-    // Por cada capa
+    // Por cada capa 
     for(int i=0; i<capas.size(); i++)
     {
         // Por cada neurona de cada capa
         for(int j=0; j<capas[i]; j++)
         {
-            neuronas_capa.push_back((float) rand() / float(RAND_MAX) - 0.5);
+            neuronas_capa.push_back(0.0);
+            //neuronas_capa.push_back((float) rand() / float(RAND_MAX) - 0.5);
         }
 
         this->neuronas.push_back(neuronas_capa);
         neuronas_capa.clear();
     }
-
-    // Añadir capa output ---------------------------------
-    neuronas_capa.clear();
-
-    // Capa output. Solo 1 neurona de salida
-    neuronas_capa.push_back((float) rand() / float(RAND_MAX) -0.5);
-
-    this->neuronas.push_back(neuronas_capa);
 
     // Pesos -------------------------------------------------------------------
     // Por cada capa
@@ -47,14 +40,6 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
                 // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
                 w_1D.push_back((float) rand() / float(RAND_MAX) -0.5);
             }
-            
-            // Si no estamos en última capa, añadimos un peso respecto a bias (un peso por neurona de la capa actual)
-            /*
-            if(i<neuronas.size()-2)
-            {
-                w_1D.push_back((float) rand() / float(RAND_MAX));
-            }
-            */
 
             w_2D.push_back(w_1D);  
             w_1D.clear();          
@@ -73,27 +58,19 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     for(int i=0; i<this->bias.size(); i++)
         for(int j=0; j<this->bias[i].size(); j++)
             this->bias[i][j] = (float) rand() / float(RAND_MAX) -0.5;
-    
 
     // Inicializar gradiente de pesos a 0
     this->grad_w = w;
     for(int i=0; i<this->w.size(); i++)
-    {
         for(int j=0; j<this->w[i].size(); j++)
-        {
             for(int k=0; k<this->w[i][j].size(); k++)
-            {
                 this->grad_w[i][j][k] = 0;
-            }
-        }
-    }
 
     // Inicializar gradiente de bias a 0
     this->grad_bias = this->bias;
     for(int i=0; i<this->grad_bias.size(); i++)
         for(int j=0; j<this->grad_bias[i].size(); j++)
             this->grad_bias[i][j] = 0.0;
-
 };
 
 void FullyConnected::mostrarpesos()
@@ -187,64 +164,56 @@ void FullyConnected::forwardPropagation(const vector<float> &x)
     for(int i=0; i<x.size(); i++)
         this->neuronas[0][i] = x[i];
     
-    
     // Forward Propagation ------------------------------------------------------------
-
-    // Si no hay capas ocultas (solo una capa input y otra output)
-    if(this->neuronas.size() == 2)
+    // Por cada capa
+    for(int i=0; i<this->neuronas.size()-1; i++)
     {
-        // Reset neurona output
-        this->neuronas[1][0] = 0.0;
 
-        for(int j=0; j<this->neuronas[0].size(); j++)
-            this->neuronas[1][0] += this->neuronas[0][j] * this->w[0][j][0];
-        
-        this->neuronas[1][0] = sigmoid(this->neuronas[1][0] + this->bias[1][0]);
-    }else
-    {
-        // Por cada capa
-        for(int i=0; i<this->neuronas.size()-1; i++)
+        // Por cada neurona de la capa siguiente
+        for(int k=0; k<this->neuronas[i+1].size(); k++)
         {
             // Reset siguiente capa
-            for(int j=0; j<this->neuronas[i+1].size(); j++)
-                this->neuronas[i+1][j] = 0;
-            
-            // Por cada neurona de la capa actual
-            // Añadir valor_neurona * peso
-            for(int j=0; j<this->neuronas[i].size(); j++)
-            {
-                // ForwardPropagation de los pesos -----------------
-                // Por cada neurona de la capa siguiente
-                for(int k=0; k<this->neuronas[i+1].size(); k++)
-                {
-                    // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
-                    this->neuronas[i+1][k] += this->neuronas[i][j] * this->w[i][j][k];
-                }
-                
-            }
+            this->neuronas[i+1][k] = 0.0;
 
-            // Si estamos en la última capa oculta, aplicar sigmoid para obtener output
-            if(i == this->neuronas.size()-2 && i != 0)
-            {
-                // Aplicar función de activación
-                for(int k=0; k<this->neuronas[i+1].size(); k++)
-                    this->neuronas[i+1][k] = sigmoid(this->neuronas[i+1][k] + this->bias[i+1][k]);
-                
+            // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
+            for(int j=0; j<this->neuronas[i].size(); j++)
+                this->neuronas[i+1][k] += this->neuronas[i][j] * this->w[i][j][k];
             
-            // Si estamos en capas ocultas intermedias o en capa input, aplicar relu como función de activación
+            // Aplicar bias o sesgo
+            this->neuronas[i+1][k] += this->bias[i+1][k];
+        }
+
+        // Aplicamos función de activación asociada a la capa actual -------------------------------
+
+        // En capas intermedias (y capa input) se emplea ReLU como función de activación
+        if(i < this->neuronas.size() - 3)
+        {
+            cout << "Hay " << this->neuronas[i].size() << " neuronas y aplico RELU" << endl;
+            for(int k=0; k<this->neuronas[i+1].size(); k++)
+                this->neuronas[i+1][k] = relu(this->neuronas[i+1][k]);
+        }else
+        {
+            // En la última capa oculta se emplea sigmoide como función de activación
+            if(i == this->neuronas.size() - 3)
+            {
+                cout << "Hay " << this->neuronas[i].size() << " neuronas y aplico SIGMOID" << endl;
+                for(int k=0; k<this->neuronas[i+1].size(); k++)
+                    this->neuronas[i+1][k] = sigmoid(this->neuronas[i+1][k]);
             }else
             {
-                // Aplicar función de activación
+                // En la capa output se emplea softmax como función de activación
+                cout << "Hay " << this->neuronas[i].size() << " neuronas y aplico SOFTMAX" << endl;
+
+                sum += 0.0;
+                // Calculamos la suma exponencial de todas las neuronas de la capa output
                 for(int k=0; k<this->neuronas[i+1].size(); k++)
-                    this->neuronas[i+1][k] = relu(this->neuronas[i+1][k] + this->bias[i+1][k]);
-                
-            }        
-            
-        }
+                    sum += exp(this->neuronas[i+1][k]);
+
+                for(int k=0; k<this->neuronas[i+1].size(); k++)
+                    this->neuronas[i+1][k] = exp(this->neuronas[i+1][k]) / sum;
+            }
+        } 
     }
-
-
-    
 }
 
 
@@ -918,14 +887,6 @@ void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<vector
         // Reset todo "y_1D" a 0
         y_1D[c] = 0.0;
     }  
-
-    cout << n_imagenes-1 << " imágenes por clase(" << n_clases << ")" << endl;
-    for(int i=0; i<y.size(); i++)
-    {
-        for(int j=0; j<y[i].size(); j++)
-            cout << y[i][j];
-        cout << " --------------- " << endl;
-    }
 }
 
 /*

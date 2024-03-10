@@ -180,11 +180,15 @@ int main()
     //vector<int> capas{4, 4, 2, 2};
     vector<vector<float>> x, grad_x; 
     vector<vector<float>> y;
-    vector<int> capas1{4, 8, 2};
+    vector<int> capas1{4, 3, 3, 2};
+    //vector<int> capas1{784, 400, 6};
     FullyConnected_H n1(capas1, 0.1);
 
     n1.leer_imagenes_mnist(x, y, 3, 4);
-    
+
+    x[0] = {1, 0, 0, 1};
+    n1.forwardPropagation(x[0]);
+    n1.mostrarNeuronas();
     /*
     //n1.generarDatos(x, y);
     //n.mostrarNeuronas();
