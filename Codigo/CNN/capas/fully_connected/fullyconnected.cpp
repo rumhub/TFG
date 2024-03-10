@@ -259,19 +259,32 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
     return sum;
 }
 
-float FullyConnected::accuracy(vector<vector<float>> x, vector<float> y)
+float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
 {
-    float sum =0.0, prediccion;
-    int n=this->neuronas.size()-1;
+    float sum =0.0, max;
+    int prediccion, n=this->neuronas.size()-1;
 
     for(int i=0; i<x.size(); i++)
     {
         forwardPropagation(x[i]);
-        prediccion = this->neuronas[n][0];
 
-        if((prediccion < 0.5 && y[i] == 0) || (prediccion >= 0.5 && y[i] == 1))
-            sum ++;
+        // Inicialización
+        max = this->neuronas[n][0];
+        prediccion = 0;
 
+        // Obtener valor más alto de la capa output
+        for(int c=1; c<this->neuronas[n].size(); c++)
+        {
+            if(max < this->neuronas[n][c])
+            {
+                max = this->neuronas[n][c];
+                prediccion = c;
+            }
+        }
+
+        // Ver si etiqueta real y predicción coindicen
+        if(y[i][prediccion] == 1)
+            sum++;
     }
 
     sum = sum / x.size() * 100;

@@ -40,7 +40,7 @@ class FullyConnected
 
         void mostrar_prediccion_vs_verdad(vector<float> x, float y);
 
-        float accuracy(vector<vector<float>> x, vector<float> y);
+        float accuracy(vector<vector<float>> x, vector<vector<float>> y);
 
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
