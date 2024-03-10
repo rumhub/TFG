@@ -188,7 +188,6 @@ void FullyConnected::forwardPropagation(const vector<float> &x)
         // En capas intermedias (y capa input) se emplea ReLU como función de activación
         if(i < this->neuronas.size() - 3)
         {
-            cout << "Hay " << this->neuronas[i].size() << " neuronas y aplico RELU" << endl;
             for(int k=0; k<this->neuronas[i+1].size(); k++)
                 this->neuronas[i+1][k] = relu(this->neuronas[i+1][k]);
         }else
@@ -196,15 +195,12 @@ void FullyConnected::forwardPropagation(const vector<float> &x)
             // En la última capa oculta se emplea sigmoide como función de activación
             if(i == this->neuronas.size() - 3)
             {
-                cout << "Hay " << this->neuronas[i].size() << " neuronas y aplico SIGMOID" << endl;
                 for(int k=0; k<this->neuronas[i+1].size(); k++)
                     this->neuronas[i+1][k] = sigmoid(this->neuronas[i+1][k]);
             }else
             {
                 // En la capa output se emplea softmax como función de activación
-                cout << "Hay " << this->neuronas[i].size() << " neuronas y aplico SOFTMAX" << endl;
-
-                sum += 0.0;
+                sum = 0.0;
                 // Calculamos la suma exponencial de todas las neuronas de la capa output
                 for(int k=0; k<this->neuronas[i+1].size(); k++)
                     sum += exp(this->neuronas[i+1][k]);
@@ -241,17 +237,20 @@ void FullyConnected::mostrar_prediccion_vs_verdad(vector<float> x, float y)
 // Ahora x es el conjunto de datos de training
 // x[0] el primer dato training
 // x[0][0] el primer elemento del primer dato training
-float FullyConnected::binary_loss(vector<vector<float>> x, vector<float> y)
+float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y)
 {
-    float sum =0.0, prediccion, epsilon = 0.000000001;
+    float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=this->neuronas.size()-1;
 
     for(int i=0; i<x.size(); i++)
     {
         forwardPropagation(x[i]);
-        prediccion = this->neuronas[n][0];
 
-        sum += y[i]*log(prediccion+epsilon) + (1-y[i])*log(1-prediccion+epsilon);
+        for(int c=0; c<this->neuronas[n].size(); c++)
+            if(y[i][c] == 1)
+                prediccion = this->neuronas[n][c];
+            
+        sum += log(prediccion+epsilon);
     }
 
     sum = -sum / x.size();

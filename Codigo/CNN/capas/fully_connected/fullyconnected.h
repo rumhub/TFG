@@ -42,7 +42,7 @@ class FullyConnected
 
         float accuracy(vector<vector<float>> x, vector<float> y);
 
-        float binary_loss(vector<vector<float>> x, vector<float> y);
+        float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
         virtual void train(const vector<vector<float>> &x, const vector<float> &y, vector<vector<float>> &grad_x);
 
