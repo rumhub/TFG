@@ -61,13 +61,18 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
         }
         this->w.push_back(w_2D);
         w_2D.clear();
-
-        this->bias.push_back((float) rand() / float(RAND_MAX) -0.5);
     }    
 
     // Learning Rate
     this->lr = lr;
 
+    // Bias mismas dimensiones que neuronas, 1 bias por neurona
+    this->bias = this->neuronas;
+
+    // Inicializamos bias con un valor random entre -0.5 y 0.5
+    for(int i=0; i<this->bias.size(); i++)
+        for(int j=0; j<this->bias[i].size(); j++)
+            this->bias[i][j] = (float) rand() / float(RAND_MAX) -0.5;
     
 
     // Inicializar gradiente de pesos a 0
@@ -84,10 +89,10 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     }
 
     // Inicializar gradiente de bias a 0
-    for(int i=0; i<this->bias.size(); i++)
-    {
-        this->grad_bias.push_back(0);
-    }
+    this->grad_bias = this->bias;
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            this->grad_bias[i][j] = 0.0;
 
 };
 
@@ -139,11 +144,10 @@ void FullyConnected::mostrarNeuronas()
 void FullyConnected::mostrarbias()
 {
     cout << "Bias: " << endl;
-
+    
     for(int i=0; i<this->bias.size(); i++)
-    {
-        cout << this->bias[i] << " ";
-    }
+        for(int j=0; j<this->bias[i].size(); j++)
+            cout << this->bias[i][j] << " ";
 
     cout << endl;
 }
@@ -175,16 +179,13 @@ float FullyConnected::sigmoid(float x)
 }
 
 // x --> Input de la red
-void FullyConnected::forwardPropagation(vector<float> x)
+void FullyConnected::forwardPropagation(const vector<float> &x)
 {
     float sum = 0.0;
 
     // Introducimos input -------------------------------------------------------
     for(int i=0; i<x.size(); i++)
-    {
         this->neuronas[0][i] = x[i];
-    }
-    
     
     
     // Forward Propagation ------------------------------------------------------------
@@ -196,10 +197,9 @@ void FullyConnected::forwardPropagation(vector<float> x)
         this->neuronas[1][0] = 0.0;
 
         for(int j=0; j<this->neuronas[0].size(); j++)
-        {
             this->neuronas[1][0] += this->neuronas[0][j] * this->w[0][j][0];
-        }
-        this->neuronas[1][0] = sigmoid(this->neuronas[1][0] + this->bias[0]);
+        
+        this->neuronas[1][0] = sigmoid(this->neuronas[1][0] + this->bias[1][0]);
     }else
     {
         // Por cada capa
@@ -207,10 +207,7 @@ void FullyConnected::forwardPropagation(vector<float> x)
         {
             // Reset siguiente capa
             for(int j=0; j<this->neuronas[i+1].size(); j++)
-            {
                 this->neuronas[i+1][j] = 0;
-            }
-
             
             // Por cada neurona de la capa actual
             // Añadir valor_neurona * peso
@@ -231,19 +228,16 @@ void FullyConnected::forwardPropagation(vector<float> x)
             {
                 // Aplicar función de activación
                 for(int k=0; k<this->neuronas[i+1].size(); k++)
-                {
-                    this->neuronas[i+1][k] = sigmoid(this->neuronas[i+1][k] + this->bias[i]);
-                }
+                    this->neuronas[i+1][k] = sigmoid(this->neuronas[i+1][k] + this->bias[i+1][k]);
+                
             
             // Si estamos en capas ocultas intermedias o en capa input, aplicar relu como función de activación
             }else
             {
                 // Aplicar función de activación
                 for(int k=0; k<this->neuronas[i+1].size(); k++)
-                {
-                    this->neuronas[i+1][k] = relu(this->neuronas[i+1][k] + this->bias[i]);
-                    //cout << "output: " << this->neuronas[i+1][k] << endl; 
-                }
+                    this->neuronas[i+1][k] = relu(this->neuronas[i+1][k] + this->bias[i+1][k]);
+                
             }        
             
         }
@@ -321,6 +315,7 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<float> y)
 
 void FullyConnected::train(const vector<vector<float>> &x, const vector<float> &y, vector<vector<float>> &grad_x)
 {
+    /*
     int n_datos = x.size();
     float sum_b = 0.0, sum_w1 = 0.0, sum_w2 = 0.0, prediccion;
     float grad_w_aux, aux, epsilon = 0.000000001;
@@ -333,30 +328,20 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<float> &
 
     grad_x.clear();
 
-
     for(int i=0; i<this->neuronas[0].size(); i++)
-    {
         grad_x_i.push_back(0);
-    }
-
 
     // Inicializar gradiente de pesos a 0 --------------------------
     for(int i=0; i<this->w.size(); i++)
-    {
         for(int j=0; j<this->w[i].size(); j++)
-        {
             for(int k=0; k<this->w[i][j].size(); k++)
-            {
                 this->grad_w[i][j][k] = 0;
-            }
-        }
-    }
 
     // Inicializar gradiente bias a 0 ------------------------------
     for(int i=0; i<this->grad_bias.size(); i++)
-    {
-        this->grad_bias[i] = 0;
-    }
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            this->grad_bias[i][j] = 0;
+    
 
     // Backpropagation ----------------------------------------------
 
@@ -374,11 +359,9 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<float> &
             // Por cada neurona j de i_last_h, sumamos i_last_h(out_j) * el peso que lo conecta con la capa output
             // Es decir, queremos obtener O_in (solo hay una neurona en la capa output)
             for(int j=0; j<this->neuronas[i_last_h].size(); j++)
-            {
                 o_in += this->neuronas[i_last_h][j] * this->w[i_last_h][j][0];
-            }
             
-            o_in += this->bias[i_last_h];
+            o_in += this->bias[i_output][0];
 
             grad_x_output = (y[i] / prediccion) - (1-y[i])/(1-prediccion);
 
@@ -399,12 +382,14 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<float> &
                     // Calcular gradiente de peso
                     grad_w_aux = this->neuronas[i_last_h][j];    //hlast_out_j
                     this->grad_w[i_last_h][j][i_o] += grad_w_aux * grad_x_output;
+
+                    // Actualizar grad_bias capa h_last
+                    this->grad_bias[i_last_h][j] += grad_x_output;
                 }
+
+
             }
             
-            // Actualizar grad_bias capa h_last
-            this->grad_bias[i_last_h] += grad_x_output;
-
             
             // Pesos entre capas ocultas intermedias
             
@@ -737,7 +722,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<float> &
     }
         
     
-
+    */
 
     
 
@@ -881,6 +866,69 @@ void FullyConnected::setLR(float lr)
 }
 
 
+
+void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<vector<float>> &y, const int n_imagenes, const int n_clases)
+{
+    vector<vector<vector<float>>> imagen_k1;
+    vector<float> v1D, y_1D;
+    string ruta_ini, ruta;
+
+    //n_imagenes = 4000;
+
+    x.clear();
+    y.clear();
+
+    // Crear el vector y
+    for(int i=0; i<n_clases; i++)
+        y_1D.push_back(0.0);
+
+
+
+    // Leer n_imagenes de la clase c
+    for(int c=0; c<n_clases; c++)
+    {
+        // Establecer etiqueta one-hot para la clase i
+        y_1D[c] = 1.0;
+
+        // Leer imágenes
+        for(int p=1; p<n_imagenes; p++)
+        {
+            ruta_ini = "../../../fotos/mnist/training/";
+            ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".jpg";
+
+            Mat image2 = imread(ruta), image;
+
+            image = image2;
+
+            // Cargamos la imagen en un vector 3D
+            cargar_imagen_en_vector(image, imagen_k1);
+
+            // Normalizar imagen y pasar a 1D (solo queremos 1 canal porque son en blanco y negro)
+            v1D.clear();
+            for(int j=0; j<imagen_k1[0].size(); j++)
+                for(int k=0; k<imagen_k1[0][0].size(); k++)
+                {
+                    //imagen_k1[0][j][k] = imagen_k1[0][j][k] / 255;
+                    v1D.push_back(imagen_k1[0][j][k]);
+                }
+            x.push_back(v1D);
+            y.push_back(y_1D);
+        }
+
+        // Reset todo "y_1D" a 0
+        y_1D[c] = 0.0;
+    }  
+
+    cout << n_imagenes-1 << " imágenes por clase(" << n_clases << ")" << endl;
+    for(int i=0; i<y.size(); i++)
+    {
+        for(int j=0; j<y[i].size(); j++)
+            cout << y[i][j];
+        cout << " --------------- " << endl;
+    }
+}
+
+/*
 void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<float> &y)
 {
     vector<vector<vector<float>>> imagen_k1;
@@ -944,6 +992,7 @@ void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<float>
         y.push_back(1);
     }  
 }
+*/
 
 /*
 int main()

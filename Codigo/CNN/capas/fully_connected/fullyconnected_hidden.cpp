@@ -35,7 +35,8 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
 
     // Inicializar gradiente bias a 0 ------------------------------
     for(int i=0; i<this->grad_bias.size(); i++)
-        this->grad_bias[i] = 0;
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            this->grad_bias[i][j] = 0.0;
 
     // Backpropagation ----------------------------------------------
     // Hay 2 o más capas ocultas
@@ -51,7 +52,9 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
         for(int j=0; j<this->neuronas[i_last_h].size(); j++)
             o_in += this->neuronas[i_last_h][j] * this->w[i_last_h][j][0];
         
-        o_in += this->bias[i_last_h];
+        //o_in += this->bias[i_last_h];
+        o_in += this->bias[i_output][0];
+
 
         grad_x_output = ((y[i]+epsilon) / (prediccion + epsilon)) - (1-y[i]+epsilon)/(1-prediccion+epsilon);
 
@@ -64,11 +67,15 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
         
         // Por cada neurona de la capa output
         for(int i_o=0; i_o<this->neuronas[i_output].size(); i_o++)
-            for(int j=0; j<this->neuronas[i_last_h].size(); j++)    // Por cada neurona de la capa h_last                                
+            for(int j=0; j<this->neuronas[i_last_h].size(); j++)    // Por cada neurona de la capa h_last        
+            {
                 this->grad_w[i_last_h][j][i_o] += grad_x_output* this->neuronas[i_last_h][j];   // grad_output * hlast_out_j
+
+                // Actualizar grad_bias capa h_last
+                this->grad_bias[i_last_h][j] += grad_x_output;
+            }                        
         
-        // Actualizar grad_bias capa h_last
-        this->grad_bias[i_last_h] += grad_x_output;
+
 
         // Calcular gradiente hasta última capa oculta
         float h_in;
@@ -82,7 +89,7 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
             for(int j=0; j<this->neuronas[i_ant].size(); j++)
                 h_in += this->neuronas[i_ant][j] * this->w[i_ant][j][p];
             
-            h_in += this->bias[i_ant];
+            h_in += this->bias[i_act][p];
             grads_output_h[p] = grad_x_output * this->w[i_last_h][p][0] * deriv_relu(h_in);
         }
 
@@ -94,7 +101,7 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
                 this->grad_w[i_ant][k][p] += grads_output_h[p]* this->neuronas[i_ant][k];   // grad_output * hlast_out_j
             
 
-            this->grad_bias[i_act] += grads_output_h[p];
+            this->grad_bias[i_act][p] += grads_output_h[p];
         }
 
         // Capas ocultas repetitivas --------------------------------
@@ -110,13 +117,15 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
                 for(int j=0; j<this->neuronas[i_ant].size(); j++)
                     h_in += this->neuronas[i_ant][j] * this->w[i_ant][j][k];
                 
-                h_in += this->bias[i_ant];
+                //h_in += this->bias[i_ant];
+                h_in += this->bias[i_act][k];
                 
                 // Suma del gradiente de la capa siguiente
                 for(int p=0; p<grads_output_h.size(); p++)
                     sum += grads_output_h[p] * this->w[i_act][k][p];
                 
                 grads_output_h[k] = sum * deriv_relu(h_in);
+                this->grad_bias[i_act][k] += grads_output_h[k];
             }
 
         }
@@ -128,7 +137,7 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
             for(int j=0; j<this->neuronas[1].size(); j++)
             {
                 sum += grads_output_h[j] * this->w[0][i_][j];
-                this->grad_bias[0] += grads_output_h[j];
+                this->grad_bias[0][i_] += grads_output_h[j];
             }
 
             grad_x_i[i_] = sum;
@@ -146,7 +155,9 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
             
     // Realizar la media de los gradientes de bias
     for(int i=0; i<this->grad_bias.size(); i++)
-        this->grad_bias[i] = -this->grad_bias[i] / n_datos;
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            this->grad_bias[i][j] = -this->grad_bias[i][j] / n_datos;
+
     
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
@@ -155,8 +166,9 @@ void FullyConnected_H::train(const vector<vector<float>> &x, const vector<float>
                 this->w[j][k][p] -= this->lr * this->grad_w[j][k][p];
 
     // Actualizar bias
-    for(int i=0; i<this->bias.size(); i++)
-        this->bias[i] -= this->lr * this->grad_bias[i];
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            this->bias[i][j] -= this->lr * this->grad_bias[i][j];
     
 }
 
@@ -167,17 +179,18 @@ int main()
     
     //vector<int> capas{4, 4, 2, 2};
     vector<vector<float>> x, grad_x; 
-    vector<float> y;
+    vector<vector<float>> y;
     vector<int> capas1{4, 8, 2};
     FullyConnected_H n1(capas1, 0.1);
 
-    n1.leer_imagenes_mnist(x, y);
+    n1.leer_imagenes_mnist(x, y, 3, 4);
     
+    /*
     //n1.generarDatos(x, y);
     //n.mostrarNeuronas();
 
     vector<int> capas{(int) x[0].size(), 10, 10};
-    FullyConnected_H n(capas, 0.0001);
+    FullyConnected_H n(capas, 0.01);
 
     
     //int n_epocas = 28000;
@@ -199,7 +212,12 @@ int main()
     cout << "Después de entrenar " << n_epocas << " épocas -----------------------------------" << endl;
     cout << "binary_loss: " << n.binary_loss(x, y) << endl;
     cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
-    
+    */
+
+
+
+    // -------------------------------------------------------------------------------
+
     /*
     //n.generarDatos(x, y);
     //cout << endl << "Accuracy en TEST: " << n.accuracy(x,y) << " %" << endl;
@@ -235,7 +253,7 @@ int main()
         cout << endl;
     }
     */
-
+   
 
     return 0;
 }

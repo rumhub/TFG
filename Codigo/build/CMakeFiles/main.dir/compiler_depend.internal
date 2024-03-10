@@ -233,6 +233,8 @@ CMakeFiles/main.dir/main.cpp.o
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected_hidden.h
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.cpp
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.h
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.cpp
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.h
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/leer_imagenes.cpp
  /usr/local/include/opencv4/opencv2/opencv.hpp
  /usr/local/include/opencv4/opencv2/opencv_modules.hpp
@@ -439,9 +441,6 @@ CMakeFiles/main.dir/main.cpp.o
  /usr/local/include/opencv4/opencv2/video.hpp
  /usr/local/include/opencv4/opencv2/video/tracking.hpp
  /usr/local/include/opencv4/opencv2/video/background_segm.hpp
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.cpp
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.h
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/leer_imagenes.cpp
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/auxiliar.cpp
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/auxiliar.h
 

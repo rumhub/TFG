@@ -14,8 +14,8 @@ class FullyConnected
         vector<vector<vector<float>>> w;        // Pesos
         vector<vector<vector<float>>> grad_w;   // Gradiente de los pesos
         vector<vector<float>> neuronas;   // Nº de neuronas por capa. (neuronas.size() es el nº de capas que tiene la red)
-        vector<float> bias;
-        vector<float> grad_bias;
+        vector<vector<float>> bias; // Un bias por neurona
+        vector<vector<float>> grad_bias;
         float lr;
 
     public:
@@ -34,7 +34,7 @@ class FullyConnected
 
         float sigmoid(float x);
 
-        void forwardPropagation(vector<float> x);
+        void forwardPropagation(const vector<float> &x);
 
         void mostrar_prediccion(vector<float> x, float y);
 
@@ -50,7 +50,7 @@ class FullyConnected
 
         void setLR(float lr);
 
-        void leer_imagenes_mnist(vector<vector<float>> &x, vector<float> &y);
+        void leer_imagenes_mnist(vector<vector<float>> &x, vector<vector<float>> &y, const int n_imagenes, const int n_clases);
 
 };
 

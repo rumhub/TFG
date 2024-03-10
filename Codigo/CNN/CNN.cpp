@@ -129,7 +129,7 @@ void CNN::leer_imagenes()
 {
     vector<vector<vector<float>>> imagen_k1;
     //n_imagenes = 4000;
-    int n_imagenes = 500;
+    int n_imagenes = 20;
 
     this->train_imgs.clear();
     this->train_labels.clear();
@@ -144,7 +144,7 @@ void CNN::leer_imagenes()
 
         Mat image2 = imread(ruta), image;
         
-        resize(image2, image, Size(32, 32));
+        resize(image2, image, Size(200, 200));
 
         // Cargamos la imagen en un vector 3D
         cargar_imagen_en_vector(image, imagen_k1);
@@ -177,7 +177,7 @@ void CNN::leer_imagenes()
 
         image2 = imread(ruta), image;
         
-        resize(image2, image, Size(32, 32));
+        resize(image2, image, Size(200, 200));
 
         // Cargamos la imagen en un vector 3D
         cargar_imagen_en_vector(image, imagen_k1);
@@ -353,6 +353,7 @@ void CNN::train(int epocas, int mini_batch)
 
         while(fin <=n)
         {
+            cout << fin << " de " << n << endl;
             // Crear el batch ----------------------
             batch.clear();
             n_imgs_batch = 0;
@@ -458,11 +459,10 @@ void CNN::train(int epocas, int mini_batch)
             
         }
 
-        if(ep % 5 == 0)
-        {
-            cout << "Época: " << ep << endl;
-            accuracy();  
-        }
+
+        cout << "Época: " << ep << endl;
+        accuracy();  
+        
         
     }
     
