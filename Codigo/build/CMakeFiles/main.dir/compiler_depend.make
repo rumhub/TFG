@@ -228,8 +228,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   /usr/include/c++/11/bits/parse_numbers.h \
   ../CNN/capas/flatten/flatten.cpp \
   ../CNN/capas/flatten/flatten.h \
-  ../CNN/capas/fully_connected/fullyconnected_hidden.cpp \
-  ../CNN/capas/fully_connected/fullyconnected_hidden.h \
   ../CNN/capas/fully_connected/fullyconnected.cpp \
   ../CNN/capas/fully_connected/fullyconnected.h \
   ../CNN/capas/pooling_max/poolingMax.cpp \
@@ -690,15 +688,7 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
 
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
-
 /usr/include/c++/11/bits/cxxabi_forced.h:
-
-/usr/include/c++/11/bits/shared_ptr_base.h:
-
-/usr/include/linux/limits.h:
-
-/usr/include/c++/11/bits/basic_string.h:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
 
@@ -896,6 +886,14 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/ratio:
 
+/usr/include/c++/11/bits/shared_ptr_base.h:
+
+/usr/include/c++/11/bits/basic_string.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
 /usr/include/c++/11/bits/exception_ptr.h:
 
 /usr/include/c++/11/ext/string_conversions.h:
@@ -916,7 +914,7 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h:
 
-../CNN/capas/fully_connected/fullyconnected_hidden.h:
+/usr/include/c++/11/exception:
 
 /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h:
 
@@ -1253,10 +1251,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/include/c++/11/bits/istream.tcc:
 
 ../CNN/capas/flatten/flatten.cpp:
-
-/usr/include/c++/11/exception:
-
-../CNN/capas/fully_connected/fullyconnected_hidden.cpp:
 
 /usr/local/include/opencv4/opencv2/core/hal/interface.h:
 

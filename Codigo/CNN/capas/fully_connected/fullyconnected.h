@@ -13,8 +13,12 @@ class FullyConnected
     protected:
         vector<vector<vector<float>>> w;        // Pesos
         vector<vector<vector<float>>> grad_w;   // Gradiente de los pesos
-        vector<vector<float>> neuronas;   // Nº de neuronas por capa. (neuronas.size() es el nº de capas que tiene la red)
-        vector<vector<float>> bias; // Un bias por neurona
+
+        // Neuronas
+        vector<vector<float>> a;    // X*W + B, neurona antes de aplicar función de activación   
+        vector<vector<float>> z;    // f(X*W + B), neurona después de aplicar función de activación
+        vector<vector<float>> grad_a;   // Gradiente respecto a la entrada de la neurona
+        vector<vector<float>> bias; // Un sesgo o bias por neurona
         vector<vector<float>> grad_bias;
         float lr;
 
@@ -44,7 +48,7 @@ class FullyConnected
 
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
-        virtual void train(const vector<vector<float>> &x, const vector<float> &y, vector<vector<float>> &grad_x);
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x);
 
         void generarDatos(vector<vector<float>> &x, vector<float> &y);
 

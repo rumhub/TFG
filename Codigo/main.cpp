@@ -40,13 +40,14 @@ int main()
     int n_imagenes;
     leer_imagen(input);
 
-    vector<vector<int>> capas_conv = {{32,3,3}}, capas_pool={{2,2},};
-    vector<int> capas_fully = {128}, padding = {2};
+    vector<vector<int>> capas_conv = {{3,3,3}, {3,3,3}}, capas_pool={{2,2}, {3,3}};
+    vector<int> capas_fully = {200, 10}, padding = {2, 1};
     CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.001);
     
-    cnn.leer_imagenes();
+    //cnn.leer_imagenes();
+    cnn.leer_imagenes_mnist(50, 10);
     cnn.mostrar_arquitectura();
-    cnn.train(10000, 16);
+    cnn.train(10000, 32);
     
     
     /*

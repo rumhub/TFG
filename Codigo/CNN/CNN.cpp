@@ -122,7 +122,7 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
         exit(-1);
     }
 
-    this->fully = new FullyConnected_H(capas_fully, lr);
+    this->fully = new FullyConnected(capas_fully, lr);
 }
 
 void CNN::leer_imagenes()
@@ -207,84 +207,53 @@ void CNN::leer_imagenes()
 }
 
 
-void CNN::leer_imagenes_mnist()
+void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
 {
     vector<vector<vector<float>>> imagen_k1;
-    //n_imagenes = 4000;
-    int n_imagenes = 100;
+    vector<float> v1D, y_1D;
+    string ruta_ini, ruta;
 
-    this->train_imgs.clear();
-    this->train_labels.clear();
+    // Crear el vector y
+    for(int i=0; i<n_clases; i++)
+        y_1D.push_back(0.0);
 
-    // Leer imágenes
-    for(int p=1; p<n_imagenes; p++)
+    // Leer n_imagenes de la clase c
+    for(int c=0; c<n_clases; c++)
     {
+        // Establecer etiqueta one-hot para la clase i
+        y_1D[c] = 1.0;
 
-        // Leemos 0s
-        string ruta_ini = "../fotos/mnist/training/0/";
-        string ruta = ruta_ini + to_string(p) + ".jpg";
-
-        Mat image2 = imread(ruta), image;
-        
-        resize(image2, image, Size(28, 28));
-
-        // Cargamos la imagen en un vector 3D
-        cargar_imagen_en_vector(image, imagen_k1);
-
-        // Normalizar imagen
-        for(int i=0; i<imagen_k1.size(); i++)
+        // Leer imágenes
+        for(int p=1; p<n_imagenes; p++)
         {
-            for(int j=0; j<imagen_k1[0].size(); j++)
-            {
-                for(int k=0; k<imagen_k1[0][0].size(); k++)
-                {
-                    imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255;
-                }
-            }
+            ruta_ini = "../fotos/mnist/training/";
+            ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".jpg";
+
+            Mat image2 = imread(ruta), image;
+
+            image = image2;
+
+            // Cargamos la imagen en un vector 3D
+            cargar_imagen_en_vector(image, imagen_k1);
+
+            // Normalizar imagen
+            for(int i=0; i<imagen_k1.size(); i++)
+                for(int j=0; j<imagen_k1[0].size(); j++)
+                    for(int k=0; k<imagen_k1[0][0].size(); k++)
+                        imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255;
+
+            // Aplicamos padding a la imagen de entrada
+            this->convs[0].aplicar_padding(imagen_k1, this->padding[0]);
+
+            // Almacenamos las imágenes de entrada de la CNN
+            this->train_imgs.push_back(imagen_k1);
+
+            // Establecemos que la imagen tiene una etiqueta, 1 = perro, 0 = gato
+            this->train_labels.push_back(y_1D);
         }
 
-        // Aplicamos padding a la imagen de entrada
-        this->convs[0].aplicar_padding(imagen_k1, this->padding[0]);
-
-        // Almacenamos las imágenes de entrada de la CNN
-        this->train_imgs.push_back(imagen_k1);
-
-        // Establecemos que la imagen tiene una etiqueta, 1 = perro, 0 = gato
-        this->train_labels.push_back({0});         
-
-        
-        // Leemos 1s
-        ruta_ini = "../fotos/mnist/training/1/";
-        ruta = ruta_ini + to_string(p) + ".jpg";
-
-        image2 = imread(ruta), image;
-        
-        resize(image2, image, Size(28, 28));
-
-        // Cargamos la imagen en un vector 3D
-        cargar_imagen_en_vector(image, imagen_k1);
-
-        // Normalizar imagen
-        for(int i=0; i<imagen_k1.size(); i++)
-        {
-            for(int j=0; j<imagen_k1[0].size(); j++)
-            {
-                for(int k=0; k<imagen_k1[0][0].size(); k++)
-                {
-                    imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255;
-                }
-            }
-        }
-
-        // Aplicamos padding a la imagen de entrada
-        this->convs[0].aplicar_padding(imagen_k1, this->padding[0]);
-
-        // Almacenamos las imágenes de entrada de la CNN
-        this->train_imgs.push_back(imagen_k1);
-
-        // Establecemos que la imagen tiene una etiqueta, 1 = perro, 0 = gato
-        this->train_labels.push_back({1});
-
+        // Reset todo "y_1D" a 0
+        y_1D[c] = 0.0;
     }  
 }
 
@@ -324,7 +293,7 @@ void CNN::train(int epocas, int mini_batch)
     int ini, fin;
     vector<int> indices(n);
     vector<int> batch;
-    vector<float> batch_labels;
+    vector<vector<float>> batch_labels;
     
 
     // Almacenar inputs y outputs de cada capa
@@ -368,9 +337,10 @@ void CNN::train(int epocas, int mini_batch)
 
             batch_labels.clear();
             n_imgs_batch = batch.size();
+            
             // Crear batch de labels
             for(int j=0; j<n_imgs_batch; j++)
-                batch_labels.push_back({this->train_labels[batch[j]]});
+                batch_labels.push_back(this->train_labels[batch[j]]);
             
             
             ini += mini_batch;
@@ -476,7 +446,7 @@ void CNN::train_debug(int epocas, int mini_batch)
     int ini, fin;
     vector<int> indices(n);
     vector<int> batch;
-    vector<float> batch_labels;
+    vector<vector<float>> batch_labels;
     
 
     // Almacenar inputs y outputs de cada capa
@@ -524,7 +494,7 @@ void CNN::train_debug(int epocas, int mini_batch)
             n_imgs_batch = batch.size();
             // Crear batch de labels
             for(int j=0; j<n_imgs_batch; j++)
-                batch_labels.push_back({this->train_labels[batch[j]]});
+                batch_labels.push_back(this->train_labels[batch[j]]);
             
             
             ini += mini_batch;
@@ -782,7 +752,7 @@ void CNN::accuracy()
     }
 
     cout << "Accuracy: " << (*this->fully).accuracy(flat_outs,this->train_labels) << " %" << endl << endl;
-    cout << "binary_loss: " << (*this->fully).binary_loss(flat_outs, this->train_labels) << endl;
+    cout << "Entropía cruzada: " << (*this->fully).cross_entropy(flat_outs, this->train_labels) << endl;
     
 }
 
