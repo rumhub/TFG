@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include "math.h"
+#include "random"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
             {
                 // Añadimos un peso. 
                 // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
-                w_1D.push_back((float) rand() / float(RAND_MAX) -0.5);
+                w_1D.push_back(this->generar_peso(a[i].size()));
             }
 
             w_2D.push_back(w_1D);  
@@ -60,7 +61,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     // Inicializamos bias con un valor random entre -0.5 y 0.5
     for(int i=0; i<this->bias.size(); i++)
         for(int j=0; j<this->bias[i].size(); j++)
-            this->bias[i][j] = (float) rand() / float(RAND_MAX) -0.5;
+            this->bias[i][j] = this->generar_peso(a[i].size());
 
     // Inicializar gradiente de pesos a 0
     this->grad_w = w;
@@ -75,6 +76,17 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
         for(int j=0; j<this->grad_bias[i].size(); j++)
             this->grad_bias[i][j] = 0.0;
 };
+
+
+float FullyConnected::generar_peso(int neuronas_in)
+{
+    // Inicialización He
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<float> distribution(0.0, sqrt(2.0 / neuronas_in)); 
+
+    return distribution(gen);
+}
 
 void FullyConnected::mostrarpesos()
 {
@@ -582,14 +594,14 @@ int main()
     vector<int> capas1{784, 10, 10};
     FullyConnected n1(capas1, 0.1);
 
-    n1.leer_imagenes_mnist(x, y, 100, 10);
+    n1.leer_imagenes_mnist(x, y, 3000, 10);
 
     //x[0] = {1, 0, 0, 1};
     //n1.forwardPropagation(x[0]);
     //n1.mostrarNeuronas();
 
     vector<int> capas{(int) x[0].size(), 256, 256, 10};
-    FullyConnected n(capas, 0.001);
+    FullyConnected n(capas, 0.01);
     n.forwardPropagation(x[0]);
     
     

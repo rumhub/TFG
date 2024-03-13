@@ -1,0 +1,2 @@
+Ambos modelos tienen un lr fijo de 0.01, emplean SGD, inicializan pesos con la inicialización He, y su estructura es {784, 256, 256, 10} (784 porque las imágenes son 28x28).
+Base de datos MNIST, dígitos del 0 al 9, una clase por cada uno. Hay 3000 imágenes de cada clase.
