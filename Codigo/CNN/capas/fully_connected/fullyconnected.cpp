@@ -588,13 +588,14 @@ int main()
     //n1.forwardPropagation(x[0]);
     //n1.mostrarNeuronas();
 
-    vector<int> capas{(int) x[0].size(), 100, 10};
-    FullyConnected n(capas, 0.01);
+    vector<int> capas{(int) x[0].size(), 256, 256, 10};
+    FullyConnected n(capas, 0.001);
     n.forwardPropagation(x[0]);
     
     
     int n_epocas = 100000;
 
+    /*
     for(int i=0; i<n_epocas; i++)
     {
         if(i % 10 == 0)
@@ -609,8 +610,66 @@ int main()
     cout << "Después de entrenar " << n_epocas << " épocas -----------------------------------" << endl;
     cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
     cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
-    
-   
-   
+    */
+
+    // SGD
+    vector<int> indices(x.size());
+    vector<int> batch;
+    vector<vector<float>> batch_labels, grad_x_fully, x_batch;
+    int n_imgs_batch, ini, fin, n_imgs=x.size();
+
+    // Inicializar vector de índices
+    for(int i=0; i<n_imgs; i++)
+        indices[i] = i;
+
+    int mini_batch = 32;
+    for(int ep=0; ep<n_epocas; ep++)
+    {
+        ini = 0;
+        fin = mini_batch;
+
+        // Desordenar vector de índices
+        random_shuffle(indices.begin(), indices.end());
+
+        while(fin <=n_imgs)
+        {
+            //cout << fin << " de " << n_imgs << endl;
+            // Crear el batch ----------------------
+            batch.clear();
+            n_imgs_batch = 0;
+            if(fin <= n_imgs)
+                for(int j=ini; j<fin; j++)
+                    batch.push_back(indices[j]);   
+            else
+                if(ini < n_imgs)
+                    for(int j=ini; j<n_imgs; j++)
+                        batch.push_back(indices[j]);
+            
+
+            batch_labels.clear();
+            n_imgs_batch = batch.size();
+            
+            // Crear batch de labels
+            for(int j=0; j<n_imgs_batch; j++)
+                batch_labels.push_back(y[batch[j]]);
+            
+            // Crear el conjunto de entrenamiento del batch
+            x_batch.clear();
+            for(int j=0; j<n_imgs_batch; j++)
+                x_batch.push_back(x[batch[j]]);
+
+            ini += mini_batch;
+            fin += mini_batch;
+
+            n.train(x_batch, batch_labels, grad_x_fully);
+        }
+
+
+        cout << "Época: " << ep << endl;
+        cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
+        cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
+
+    }
+
     return 0;
 }
