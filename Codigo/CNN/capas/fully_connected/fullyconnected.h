@@ -26,7 +26,7 @@ class FullyConnected
         FullyConnected(const vector<int> &capas, const float & lr=0.1);
         FullyConnected(){};
 
-        float generar_peso(int neuronas_in);
+        void generar_pesos(int capa);
 
         void mostrarpesos();
 

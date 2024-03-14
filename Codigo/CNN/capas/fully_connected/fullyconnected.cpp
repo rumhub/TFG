@@ -42,7 +42,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
             {
                 // Añadimos un peso. 
                 // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
-                w_1D.push_back(this->generar_peso(a[i].size()));
+                w_1D.push_back(0.0);
             }
 
             w_2D.push_back(w_1D);  
@@ -57,6 +57,10 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
 
     // Bias mismas dimensiones que neuronas, 1 bias por neurona
     this->bias = this->a;
+
+    // Inicializar pesos mediante inicialización He
+    for(int i=0; i<a.size()-1; i++)
+        this->generar_pesos(i);
 
     // Inicializamos bias con un valor random entre -0.5 y 0.5
     for(int i=0; i<this->bias.size(); i++)
@@ -79,14 +83,16 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
 };
 
 
-float FullyConnected::generar_peso(int neuronas_in)
+void FullyConnected::generar_pesos(int capa)
 {
     // Inicialización He
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<float> distribution(0.0, sqrt(2.0 / neuronas_in)); 
+    std::normal_distribution<float> distribution(0.0, sqrt(2.0 / this->a[capa].size())); 
 
-    return distribution(gen);
+    for(int i=0; i<this->a[capa].size(); i++)
+        for(int j=0; j<this->a[capa+1].size(); j++)
+            this->w[capa][i][j] = distribution(gen);
 }
 
 void FullyConnected::mostrarpesos()
@@ -601,7 +607,7 @@ int main()
     //n1.forwardPropagation(x[0]);
     //n1.mostrarNeuronas();
 
-    vector<int> capas{(int) x[0].size(), 256, 256, 10};
+    vector<int> capas{(int) x[0].size(), 10, 10};
     FullyConnected n(capas, 0.01);
     n.forwardPropagation(x[0]);
     
