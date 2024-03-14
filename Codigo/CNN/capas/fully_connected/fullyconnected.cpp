@@ -61,7 +61,8 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     // Inicializamos bias con un valor random entre -0.5 y 0.5
     for(int i=0; i<this->bias.size(); i++)
         for(int j=0; j<this->bias[i].size(); j++)
-            this->bias[i][j] = this->generar_peso(a[i].size());
+            this->bias[i][j] = 0.0;
+            //this->bias[i][j] = this->generar_peso(a[i].size());
 
     // Inicializar gradiente de pesos a 0
     this->grad_w = w;
