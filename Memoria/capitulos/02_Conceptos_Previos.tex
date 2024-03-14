@@ -163,6 +163,16 @@ De esta forma, el procedimiento para entrenar una red neuronal consiste en, para
 
 Así, se actualizarán los parámetros de la red neuronal según las fórmulas \ref{act_pesos} y \ref{act_bias}. En ellas, $W_t$ y $b_t$ indican los valores del peso W y bias b en el instante o iteración t, de la misma forma que $W_{t+1}$ y $b_{t+1}$ representan los valores de los mismos en el instante t+1. \cite{SGD_act_params}
 
+\subsection{Inicialización de pesos y sesgos}
+
+\subsubsection{Inicialización de pesos}
+Como función de activación se empleará ReLU. Por tanto, tal y como se indica en la bibliografía, se inicializan los pesos mediante la ``inicialización He'' o ``inicialización Kaiming He''. Esta consiste en, para un peso $w$, inicializarlo según una distribución gaussiana con una media de 0.0 y una desviación típica de $\sqrt{\frac{2}{N\_in}}$, siendo $N\_in$ el número de neuronas en la capa de entrada.
+ \cite{ini_He} \cite{ini_He_2} \cite{ini_He_code}.
+
+\subsubsection{Inicialización de sesgos}
+
+De la misma forma, se sigue la bilbiografía y los sesgos se inicializarán a 0.0 . \cite{ini_bias} \cite{ini_bias_2}
+
 \subsection{Tipos de codificaciones}
 
 En el campo de machine learning existen varios tipos de codificaciones. De esta forma, para codificar 3 clases distintas se podrían codificar o bien mediante \{1, 2, 3\} (codificación de etiquetas), o mediante \{100, 010, 001\} (codificación one-hot), por ejemplo. En este proyecto se empleará la codificación one-hot, pues aporta unas ventajas que se contemplarán con detalle en secciones posteriores.

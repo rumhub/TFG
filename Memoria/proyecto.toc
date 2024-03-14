@@ -24,8 +24,11 @@
 \contentsline {subsubsection}{Sigmoid Cross Entropy Loss}{8}{section*.12}%
 \contentsline {subsection}{\numberline {2.5.6}Descenso del gradiente}{8}{subsection.2.5.6}%
 \contentsline {subsubsection}{Entrenamiento}{9}{section*.13}%
-\contentsline {subsection}{\numberline {2.5.7}Tipos de codificaciones}{9}{subsection.2.5.7}%
-\contentsline {subsection}{\numberline {2.5.8}Propagación hacia delante con softmax}{9}{subsection.2.5.8}%
+\contentsline {subsection}{\numberline {2.5.7}Inicialización de pesos y sesgos}{9}{subsection.2.5.7}%
+\contentsline {subsubsection}{Inicialización de pesos}{9}{section*.14}%
+\contentsline {subsubsection}{Inicialización de sesgos}{10}{section*.15}%
+\contentsline {subsection}{\numberline {2.5.8}Tipos de codificaciones}{10}{subsection.2.5.8}%
+\contentsline {subsection}{\numberline {2.5.9}Propagación hacia delante con softmax}{10}{subsection.2.5.9}%
 \contentsline {section}{\numberline {2.6}Redes Neuronales Convolucionales}{10}{section.2.6}%
 \contentsline {subsection}{\numberline {2.6.1}Tipos de capas}{10}{subsection.2.6.1}%
 \contentsline {subsection}{\numberline {2.6.2}Estructura por capas}{10}{subsection.2.6.2}%
@@ -33,35 +36,35 @@
 \contentsline {chapter}{\numberline {3}Aportaciones}{11}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Redes Neuronales Totalmente Conectadas}{11}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}Gradiente de la función de pérdida respecto a SoftMax, \cite {Cross_entropy_backprop} \cite {Cross_entropy_backprop_grad_input}}{11}{subsection.3.1.1}%
-\contentsline {subsubsection}{Gradiente de la función de error}{11}{section*.14}%
-\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac {\partial O_i}{\partial Z_k}$}{12}{section*.15}%
-\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_i}$}{12}{section*.16}%
-\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_j}$, con i $\neq $ j}{13}{section*.17}%
-\contentsline {subsubsection}{Combinación de casos}{13}{section*.18}%
-\contentsline {subsubsection}{Simplificación One-Hot}{14}{section*.19}%
+\contentsline {subsubsection}{Gradiente de la función de error}{11}{section*.16}%
+\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac {\partial O_i}{\partial Z_k}$}{12}{section*.17}%
+\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_i}$}{12}{section*.18}%
+\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_j}$, con i $\neq $ j}{13}{section*.19}%
+\contentsline {subsubsection}{Combinación de casos}{13}{section*.20}%
+\contentsline {subsubsection}{Simplificación One-Hot}{14}{section*.21}%
 \contentsline {subsection}{\numberline {3.1.2}BackPropagation con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2} }{14}{subsection.3.1.2}%
-\contentsline {subsubsection}{Capa SoftMax}{15}{section*.20}%
-\contentsline {subsubsection}{Pesos capas h1-SoftMax}{15}{section*.21}%
-\contentsline {subsubsection}{Sesgos capa softmax}{16}{section*.22}%
-\contentsline {subsubsection}{Capa oculta h1}{16}{section*.23}%
-\contentsline {subsubsection}{Pesos capas input-h1}{18}{section*.24}%
-\contentsline {subsubsection}{Sesgos capa h1}{18}{section*.25}%
-\contentsline {subsubsection}{Capa input}{19}{section*.26}%
+\contentsline {subsubsection}{Capa SoftMax}{15}{section*.22}%
+\contentsline {subsubsection}{Pesos capas h1-SoftMax}{15}{section*.23}%
+\contentsline {subsubsection}{Sesgos capa softmax}{16}{section*.24}%
+\contentsline {subsubsection}{Capa oculta h1}{16}{section*.25}%
+\contentsline {subsubsection}{Pesos capas input-h1}{18}{section*.26}%
+\contentsline {subsubsection}{Sesgos capa h1}{18}{section*.27}%
+\contentsline {subsubsection}{Capa input}{19}{section*.28}%
 \contentsline {subsection}{\numberline {3.1.3}Retropropagación con 2 capas ocultas}{20}{subsection.3.1.3}%
-\contentsline {subsubsection}{Capa SoftMax}{20}{section*.27}%
-\contentsline {subsubsection}{Pesos capas h2-SoftMax}{21}{section*.28}%
-\contentsline {subsubsection}{Sesgos capa softmax}{21}{section*.29}%
-\contentsline {subsubsection}{Capa oculta h2}{22}{section*.30}%
-\contentsline {subsubsection}{Pesos capas h1-h2}{23}{section*.31}%
-\contentsline {subsubsection}{Sesgos capa h2}{24}{section*.32}%
-\contentsline {subsubsection}{Capa oculta h1}{24}{section*.33}%
-\contentsline {subsubsection}{Pesos capa input-h1}{25}{section*.34}%
-\contentsline {subsubsection}{Sesgos capa h1}{26}{section*.35}%
-\contentsline {subsubsection}{Capa input}{26}{section*.36}%
+\contentsline {subsubsection}{Capa SoftMax}{20}{section*.29}%
+\contentsline {subsubsection}{Pesos capas h2-SoftMax}{21}{section*.30}%
+\contentsline {subsubsection}{Sesgos capa softmax}{21}{section*.31}%
+\contentsline {subsubsection}{Capa oculta h2}{22}{section*.32}%
+\contentsline {subsubsection}{Pesos capas h1-h2}{23}{section*.33}%
+\contentsline {subsubsection}{Sesgos capa h2}{24}{section*.34}%
+\contentsline {subsubsection}{Capa oculta h1}{24}{section*.35}%
+\contentsline {subsubsection}{Pesos capa input-h1}{25}{section*.36}%
+\contentsline {subsubsection}{Sesgos capa h1}{26}{section*.37}%
+\contentsline {subsubsection}{Capa input}{26}{section*.38}%
 \contentsline {subsection}{\numberline {3.1.4}Conclusiones}{27}{subsection.3.1.4}%
-\contentsline {subsubsection}{Gradiente respecto a la entrada}{28}{section*.37}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{28}{section*.38}%
-\contentsline {subsubsection}{Gradiente respecto a sesgos}{29}{section*.39}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada}{28}{section*.39}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{28}{section*.40}%
+\contentsline {subsubsection}{Gradiente respecto a sesgos}{29}{section*.41}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{31}{chapter.4}%
 \contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{31}{section.4.1}%
 \contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{31}{section.4.2}%

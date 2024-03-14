@@ -21,6 +21,13 @@ Prakash Jay.
   \url{https://medium.com/@14prakash/back-propagation-is-very-simple-who-made-it-complicated-97b794c97e5c}
   [Accessed:06/03/2024].
 
+\bibitem{NN_backprop_2}
+Chamanth mvs.
+\newblock No more confusion on backpropagation, 2022.
+\newblock
+  \url{https://pub.aimind.so/no-more-confusion-on-backpropagation-7adfc271539f}
+  [Accessed:07/03/2024].
+
 \bibitem{Programming_Massively}
 Izzat El~Hajj Wen-emi W.Hwu, David~B.kirk.
 \newblock {\em Programming Massively Parallel Processors}.
@@ -83,11 +90,39 @@ ml4a.
 \newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
   [Accessed:27/02/2024].
 
-\bibitem{NN_backprop_2}
-Chamanth mvs.
-\newblock No more confusion on backpropagation, 2022.
+\bibitem{ini_He}
+Jason Brownlee.
+\newblock Weight initialization for deep learning neural networks, 2021.
 \newblock
-  \url{https://pub.aimind.so/no-more-confusion-on-backpropagation-7adfc271539f}
-  [Accessed:07/03/2024].
+  \url{https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/}
+  [Accessed:14/03/2024].
+
+\bibitem{ini_He_2}
+Sandeep Jain.
+\newblock Kaiming initialization in deep learning, 2023.
+\newblock
+  \url{https://www.geeksforgeeks.org/kaiming-initialization-in-deep-learning/ }
+  [Accessed:14/03/2024].
+
+\bibitem{ini_He_code}
+Adrian Rosebrock.
+\newblock Understanding weight initialization for neural networks, 2021.
+\newblock
+  \url{https://pyimagesearch.com/2021/05/06/understanding-weight-initialization-for-neural-networks/}
+  [Accessed:14/03/2024].
+
+\bibitem{ini_bias}
+Yahia Zakaria.
+\newblock Initial bias values for a neural network, 2017.
+\newblock
+  \url{https://stackoverflow.com/questions/44883861/initial-bias-values-for-a-neural-network}
+  [Accessed:14/03/2024].
+
+\bibitem{ini_bias_2}
+Glen Meyerowitz.
+\newblock Bias initialization in a neural network, 2018.
+\newblock
+  \url{https://medium.com/@glenmeyerowitz/bias-initialization-in-a-neural-network-2e5d26fed0f0}
+  [Accessed:14/03/2024].
 
 \end{thebibliography}
