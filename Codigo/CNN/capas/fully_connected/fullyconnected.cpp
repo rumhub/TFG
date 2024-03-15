@@ -587,23 +587,75 @@ void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<vector
     }  
 }
 
+void FullyConnected::leer_atributos(vector<vector<float>> &x, vector<vector<float>> &y, string fichero)
+{
+    ifstream inFile;
+    string dato, s, delimiter = ","; 
+    bool data = false;
+    int n=0;                // Num de características que tenemos sin contar la clase
+    vector<float> nums, y_1D;
+
+    x.clear();
+    y.clear();
+    inFile.open(fichero);
+
+    if(!inFile)
+    {
+        cerr << "No se ha podido abrir el fichero " << fichero;
+        exit(1);
+    }
+
+    // Inicializar y_1D
+    for(int i=0; i<4; i++)
+        y_1D.push_back(0.0);
+    
+    for(int i=0; i<3; i++)  // Hay 3 clases
+    {
+        y_1D[i] = 1.0;
+        for(int j=0; j<50; j++) // Hay 50 ejemplos de cada clase
+        {
+            getline(inFile, s);
+            for(int i=0; i<4; i++)  // Hay 4 números por ejemplo
+            {
+                dato = s.substr(0, s.find(delimiter));
+                s.erase(0, s.find(delimiter)+ delimiter.length());
+                nums.push_back(stof(dato));
+                //cout << dato << " ";
+            }
+            //cout << endl;
+            x.push_back(nums);
+            y.push_back(y_1D);
+            nums.clear();
+            s.clear();
+        }
+        y_1D[i] = 0.0;
+    }
+
+
+    inFile.close();
+}
+
 int main()
 {
     // Solo se meten capa input y capas ocultas, la capa output siempre tiene 1 neurona
     
     vector<vector<float>> x, y, grad_x; 
-    vector<int> capas1{784, 10, 10};
+    vector<int> capas1{784, 10, 10};        // MNIST
     FullyConnected n1(capas1, 0.1);
 
-    n1.leer_imagenes_mnist(x, y, 3000, 10);
+    //n1.leer_imagenes_mnist(x, y, 3000, 10);
 
     //x[0] = {1, 0, 0, 1};
     //n1.forwardPropagation(x[0]);
     //n1.mostrarNeuronas();
 
-    vector<int> capas{(int) x[0].size(), 256, 256, 10};
+    //vector<int> capas{(int) x[0].size(), 256, 256, 10}; // MNIST
+    //vector<int> capas{4, 4, 10, 3};                  // IRIS
+    vector<int> capas{4, 4, 3};                  // IRIS
     FullyConnected n(capas, 0.01);
-    n.forwardPropagation(x[0]);
+    //n.forwardPropagation(x[0]);
+    
+    n.leer_atributos(x, y, "../../../fotos/iris/iris.data");
     
     // SGD
     vector<int> indices(x.size());
@@ -615,7 +667,7 @@ int main()
     for(int i=0; i<n_imgs; i++)
         indices[i] = i;
 
-    int n_epocas = 100000, mini_batch = 32;
+    int n_epocas = 100, mini_batch = 32;
     for(int ep=0; ep<n_epocas; ep++)
     {
         ini = 0;
@@ -663,6 +715,6 @@ int main()
         cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
 
     }
-
+    
     return 0;
 }

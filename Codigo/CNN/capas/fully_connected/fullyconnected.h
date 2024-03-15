@@ -4,6 +4,7 @@
 
 #include "../../auxiliar/leer_imagenes.cpp"
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -27,6 +28,8 @@ class FullyConnected
         FullyConnected(){};
 
         void generar_pesos(int capa);
+
+        void leer_atributos(vector<vector<float>> &x, vector<vector<float>> &y, string fichero);
 
         void mostrarpesos();
 
