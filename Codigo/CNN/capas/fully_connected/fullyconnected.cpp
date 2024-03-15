@@ -66,7 +66,6 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     for(int i=0; i<this->bias.size(); i++)
         for(int j=0; j<this->bias[i].size(); j++)
             this->bias[i][j] = 0.0;
-            //this->bias[i][j] = this->generar_peso(a[i].size());
 
     // Inicializar gradiente de pesos a 0
     this->grad_w = w;
@@ -184,7 +183,7 @@ void FullyConnected::forwardPropagation(const vector<float> &x)
 
     // Introducimos input -------------------------------------------------------
     for(int i=0; i<x.size(); i++)
-        this->a[0][i] = x[i];
+        this->z[0][i] = x[i];
     
     // Forward Propagation ------------------------------------------------------------
     // Por cada capa
@@ -199,7 +198,7 @@ void FullyConnected::forwardPropagation(const vector<float> &x)
 
             // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
             for(int j=0; j<this->a[i].size(); j++)
-                this->a[i+1][k] += this->a[i][j] * this->w[i][j][k];
+                this->a[i+1][k] += this->z[i][j] * this->w[i][j][k];
             
             // Aplicar bias o sesgo
             this->a[i+1][k] += this->bias[i+1][k];
@@ -588,16 +587,11 @@ void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<vector
     }  
 }
 
-
-
 int main()
 {
     // Solo se meten capa input y capas ocultas, la capa output siempre tiene 1 neurona
     
-    //vector<int> capas{4, 4, 2, 2};
-    vector<vector<float>> x, grad_x; 
-    vector<vector<float>> y;
-    //vector<int> capas1{4, 3, 4};
+    vector<vector<float>> x, y, grad_x; 
     vector<int> capas1{784, 10, 10};
     FullyConnected n1(capas1, 0.1);
 
@@ -607,30 +601,10 @@ int main()
     //n1.forwardPropagation(x[0]);
     //n1.mostrarNeuronas();
 
-    vector<int> capas{(int) x[0].size(), 10, 10};
+    vector<int> capas{(int) x[0].size(), 256, 256, 10};
     FullyConnected n(capas, 0.01);
     n.forwardPropagation(x[0]);
     
-    
-    int n_epocas = 100000;
-
-    /*
-    for(int i=0; i<n_epocas; i++)
-    {
-        if(i % 10 == 0)
-        {
-            cout << "Después de entrenar " << i << " épocas -----------------------------------" << endl;
-            cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
-            cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
-        }
-        
-        n.train(x, y, grad_x);
-    }
-    cout << "Después de entrenar " << n_epocas << " épocas -----------------------------------" << endl;
-    cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
-    cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
-    */
-
     // SGD
     vector<int> indices(x.size());
     vector<int> batch;
@@ -641,7 +615,7 @@ int main()
     for(int i=0; i<n_imgs; i++)
         indices[i] = i;
 
-    int mini_batch = 32;
+    int n_epocas = 100000, mini_batch = 32;
     for(int ep=0; ep<n_epocas; ep++)
     {
         ini = 0;
