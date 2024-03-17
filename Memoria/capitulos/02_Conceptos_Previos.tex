@@ -194,8 +194,61 @@ Se calcula el error de entropía cruzada: \\
 
 \section{Redes Neuronales Convolucionales}
 
-\subsection{Tipos de capas}
+\subsection{Capa convolucional}
 
-\subsection{Estructura por capas}
+\subsubsection{Componentes}
 
-\subsection{ForwardPropagation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/conv_nombres.jpg}  
+	\caption{Componentes en una capa convolucional}
+	\label{fig:Componentes_convolucion}
+\end{figure}
+
+Una capa convolucional parte de un volumen de entrada X, un kernel de filtros K y un sesgo B para, mediante una convolución, obtener un volumen de salida Y.
+
+\subsubsection{Propagación hacia delante}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_1.jpg}  
+		\caption{Cálculo $Y_{11}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_2.jpg}  
+		\caption{Cálculo $Y_{12}$}
+	\end{subfigure}
+	
+	\vspace{5mm}
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_3.jpg}  
+		\caption{Cálculo $Y_{21}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_4.jpg}  
+		\caption{Cálculo $Y_{22}$}
+	\end{subfigure}
+	\caption{Propagación hacia delante en una capa convolucional}
+	\label{fig:forward_prop_convolucional}
+\end{figure}
+
+\begin{gather}
+	 Y_{11} = \sum_{i=1}^{3} \sum_{j=1}^{3} [X_{ij}*K_{ij}] + B_{11}
+\end{gather}
+
+
+
+\subsection{Capa de agrupación o pooling}
+
+\subsubsection{Componentes}
+
+\subsubsection{Propagación hacia delante}
+
+\subsection{Capa de aplanado}
+
+\subsubsection{Propagación hacia delante}

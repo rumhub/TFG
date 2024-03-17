@@ -1,34 +1,36 @@
 \babel@toc {spanish}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Imagen de una neurona}}{5}{figure.2.1}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Imagen de una capa de neuronas}}{5}{figure.2.2}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Imagen de la función de activación ReLU}}{6}{figure.2.3}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Imagen de la función de activación Sigmoide}}{7}{figure.2.4}%
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{7}{figure.2.5}%
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{8}{figure.2.6}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Imagen de una neurona}}{5}{figure.caption.8}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Imagen de una capa de neuronas}}{5}{figure.caption.9}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Imagen de la función de activación ReLU}}{6}{figure.caption.11}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Imagen de la función de activación Sigmoide}}{7}{figure.caption.13}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{7}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{8}{figure.caption.18}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Componentes en una capa convolucional}}{11}{figure.caption.23}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Propagación hacia delante en una capa convolucional}}{11}{figure.caption.25}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red con softmax}}{11}{figure.3.1}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{14}{figure.3.2}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Imagen de backpropagation en la capa softmax}}{15}{figure.3.3}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa SoftMax}}{15}{figure.3.4}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{16}{figure.3.5}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{17}{figure.3.6}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{18}{figure.3.7}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{19}{figure.3.8}%
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Imagen de backpropagation en la capa input}}{19}{figure.3.9}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{20}{figure.3.10}%
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Imagen de backpropagation en la capa softmax}}{20}{figure.3.11}%
-\contentsline {figure}{\numberline {3.12}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta h2 y la capa SoftMax}}{21}{figure.3.12}%
-\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{22}{figure.3.13}%
-\contentsline {figure}{\numberline {3.14}{\ignorespaces Imagen de backpropagation en la capa oculta h2}}{22}{figure.3.14}%
-\contentsline {figure}{\numberline {3.15}{\ignorespaces Imagen de backpropagation en los pesos entre las capas ocultas h1 y h2}}{23}{figure.3.15}%
-\contentsline {figure}{\numberline {3.16}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{24}{figure.3.16}%
-\contentsline {figure}{\numberline {3.17}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{25}{figure.3.17}%
-\contentsline {figure}{\numberline {3.18}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{25}{figure.3.18}%
-\contentsline {figure}{\numberline {3.19}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{26}{figure.3.19}%
-\contentsline {figure}{\numberline {3.20}{\ignorespaces Imagen de backpropagation en la capa input}}{27}{figure.3.20}%
-\contentsline {figure}{\numberline {3.21}{\ignorespaces Imagen de backpropagation en la capa l}}{28}{figure.3.21}%
-\contentsline {figure}{\numberline {3.22}{\ignorespaces Imagen de backpropagation en los pesos entre la capa l-1 y l}}{28}{figure.3.22}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red con softmax}}{13}{figure.caption.29}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{16}{figure.caption.36}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Imagen de backpropagation en la capa softmax}}{17}{figure.caption.38}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa SoftMax}}{17}{figure.caption.40}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{18}{figure.caption.43}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{19}{figure.caption.44}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{20}{figure.caption.46}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{21}{figure.caption.49}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Imagen de backpropagation en la capa input}}{21}{figure.caption.50}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{22}{figure.caption.51}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Imagen de backpropagation en la capa softmax}}{22}{figure.caption.53}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta h2 y la capa SoftMax}}{23}{figure.caption.55}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{24}{figure.caption.58}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Imagen de backpropagation en la capa oculta h2}}{24}{figure.caption.59}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Imagen de backpropagation en los pesos entre las capas ocultas h1 y h2}}{25}{figure.caption.61}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{26}{figure.caption.64}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{27}{figure.caption.65}%
+\contentsline {figure}{\numberline {3.18}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{27}{figure.caption.67}%
+\contentsline {figure}{\numberline {3.19}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{28}{figure.caption.70}%
+\contentsline {figure}{\numberline {3.20}{\ignorespaces Imagen de backpropagation en la capa input}}{29}{figure.caption.71}%
+\contentsline {figure}{\numberline {3.21}{\ignorespaces Imagen de backpropagation en la capa l}}{30}{figure.caption.73}%
+\contentsline {figure}{\numberline {3.22}{\ignorespaces Imagen de backpropagation en los pesos entre la capa l-1 y l}}{30}{figure.caption.75}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
