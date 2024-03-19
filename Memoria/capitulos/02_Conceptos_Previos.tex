@@ -238,9 +238,28 @@ Una capa convolucional parte de un volumen de entrada X, un kernel de filtros K 
 	\label{fig:forward_prop_convolucional}
 \end{figure}
 
-
-
-
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_1_1canal.jpg}  
+		\caption{Cálculo $Y_{11}$ con entrada X \\ de 1 canal de profundidad}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_1_2canales.jpg}  
+		\caption{Cálculo $Y_{11}$ con entrada X \\ de 2 canales de profundidad}
+	\end{subfigure}
+	
+	\vspace{5mm}
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_1_3canales.jpg}  
+		\caption{Cálculo $Y_{11}$ con entrada X \\ de 3 canales de profundidad}
+	\end{subfigure}
+	\caption{Propagación hacia delante en una capa convolucional}
+	\label{fig:forward_prop_convolucional_canales_profundidad}
+\end{figure}
 
 
 \subsection{Capa de agrupación o pooling}
