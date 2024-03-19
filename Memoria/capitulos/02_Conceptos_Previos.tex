@@ -292,11 +292,68 @@ Por último, en cada ``paso'' del ``deslizamiento'' se suma un solo sesgo y se a
 Cada convolución entre dos volúmenes 3D produce un volumen de salida 2D. Por tanto, al aplicar N convoluciones entre un volumen de entrada X y una serie de filtros K=$\{K_1, K_2, ..., K_N\}$, se obtendrá un volumen 3D de salida con tantas capas de profundidad como convoluciones se aplicaron (N). \\
 En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como al aplicar N=2 convoluciones sobre la misma entrada X (una con el filtro K y otra con el filtro G) se obtiene un volumen de salida con 2 capas de profundidad. \cite{capa_convolucional_Stanford}
 
-\subsection{Capa de agrupación o pooling}
+\begin{gather}
+	Y^2_{11} = max(X^2_{11}, X^2_{12}, X^2_{21}, X^2_{22})
+\end{gather}
+
+\subsection{Capa de agrupación máxima}
 
 \subsubsection{Componentes}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/pool_nombres.jpg}  
+	\caption{Componentes en una capa de agrupación máxima}
+\end{figure}
+
 \subsubsection{Propagación hacia delante}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/maxpool_1.jpg}  
+		\caption{Cálculo $Y_{11}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/maxpool_2.jpg}  
+		\caption{Cálculo $Y_{12}$}
+	\end{subfigure}
+	
+	\vspace{5mm}
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/maxpool_3.jpg}  
+		\caption{Cálculo $Y_{21}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/maxpool_4.jpg}  
+		\caption{Cálculo $Y_{22}$}
+	\end{subfigure}
+	\caption{Propagación hacia delante en una capa de agrupación máxima}
+	\label{fig:forward_prop_maxpool}
+\end{figure}
+
+\subsubsection{Propagación hacia delante, canales de profundidad}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/maxpool_2capas_1.jpg}  
+		\caption{Cálculo $Y_{11}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/maxpool_2capas_2.jpg}  
+		\caption{Cálculo $Y_{12}$}
+	\end{subfigure}
+	
+	\caption{Propagación hacia delante en una capa de agrupación máxima}
+	\label{fig:forward_prop_maxpool_canales_profundidad}
+\end{figure}
 
 \subsection{Capa de aplanado}
 
