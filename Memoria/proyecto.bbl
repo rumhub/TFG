@@ -132,4 +132,10 @@ Afshine~Amidi y~Shervine~Amidi.
   \url{https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks}
   [Accessed:19/03/2024].
 
+\bibitem{capa_convolucional_Stanford}
+Stanford.
+\newblock Convolutional neural networks (cnns / convnets), 2020.
+\newblock \url{https://cs231n.github.io/convolutional-networks/}
+  [Accessed:19/03/2024].
+
 \end{thebibliography}

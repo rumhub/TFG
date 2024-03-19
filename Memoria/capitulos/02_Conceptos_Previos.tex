@@ -206,7 +206,7 @@ Se calcula el error de entropía cruzada: \\
 	\label{fig:Componentes_convolucion}
 \end{figure}
 
-Una capa convolucional parte de un volumen de entrada X, un kernel de filtros K, un sesgo B y una función de activación para, mediante una convolución, obtener un volumen de salida Y. \cite{capa_convolucional}.
+Una capa convolucional parte de un volumen de entrada X, un kernel de filtros K, un sesgo B y una función de activación para, mediante una convolución, obtener un volumen de salida Y. \cite{capa_convolucional} \cite{capa_convolucional_Stanford}.
 
 \subsubsection{Propagación hacia delante}
 
@@ -241,7 +241,7 @@ Una capa convolucional parte de un volumen de entrada X, un kernel de filtros K,
 Una convolución entre 2 volúmenes de datos X y K, consiste en ``deslizar K sobre X'' tal y como se muestra en la Figura \ref{fig:forward_prop_convolucional}. 
 De esta forma, en cada ``paso'' se recorren ambos volúmenes, multiplicando los elementos de X y K 
 que se encuentren en la misma posición. Posteriormente, se suma cada resultado obtenido, además de un sesgo B y finalmente aplicar una función de activación. \cite{capa_convolucional} \\
-En la Figura \ref{fig:forward_prop_convolucional} se emplea un volumen X con un solo canal de profundidad. Sin embargo, este no es el caso común. Por tanto, se denotará como $X^{c}_{ij}$ al elemento de X que se encuentre en la posición (i,j) del canal de profundidad c.
+En la Figura \ref{fig:forward_prop_convolucional} se emplea un volumen X con un solo canal de profundidad. Sin embargo, este no es el caso común. Por tanto, se denotará como $X^{c}_{ij}$ al elemento de X que se encuentre en la posición (i,j) del canal de profundidad c. \cite{capa_convolucional_Stanford}.
 
 \begin{figure}[H]
 	\centering
