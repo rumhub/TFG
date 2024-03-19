@@ -243,6 +243,8 @@ De esta forma, en cada ``paso'' se recorren ambos volúmenes, multiplicando los 
 que se encuentren en la misma posición. Posteriormente, se suma cada resultado obtenido, además de un sesgo B y finalmente aplicar una función de activación. \cite{capa_convolucional} \\
 En la Figura \ref{fig:forward_prop_convolucional} se emplea un volumen X con un solo canal de profundidad. Sin embargo, este no es el caso común. Por tanto, se denotará como $X^{c}_{ij}$ al elemento de X que se encuentre en la posición (i,j) del canal de profundidad c. \cite{capa_convolucional_Stanford}.
 
+\subsubsection{Propagación hacia delante, canales de profundidad}
+
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}{.5\textwidth}
@@ -262,12 +264,33 @@ En la Figura \ref{fig:forward_prop_convolucional} se emplea un volumen X con un 
 		\includegraphics[width=1.2\linewidth]{imagenes/conv_1_3canales.jpg}  
 		\caption{Cálculo $Y_{11}$ con entrada X \\ de 3 canales de profundidad}
 	\end{subfigure}
-	\caption{Propagación hacia delante en una capa convolucional}
+	\caption{Propagación hacia delante en una capa convolucional con varios canales de profundidad}
 	\label{fig:forward_prop_convolucional_canales_profundidad}
 \end{figure}
 
 De esta forma, en la Figura \ref{fig:forward_prop_convolucional_canales_profundidad} se muestra como una convolución con C canales de profundidad se descompone en la suma de C convoluciones con un canal de profundidad. \\ Para una entrada X con C canales de profundidad, convolución(X,K) = convolución($X^1,K^1$) + convolución($X^2,K^2$) + ... + convolución($X^C,K^C$). \\
 Por último, en cada ``paso'' del ``deslizamiento'' se suma un solo sesgo y se aplica una sola vez la función de activación, independientemente del número de canales de profundidad que presente la entrada X.
+
+\subsubsection{Propagación hacia delante, número de filtros}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_2kernels_1.jpg}  
+		\caption{Cálculo de $Y^1_{11}$ con el filtro K}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{10mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/conv_2kernels_2.jpg}  
+		\caption{Cálculo $Y^2_{11}$ con el filtro G}
+	\end{subfigure}
+	\caption{Propagación hacia delante en una capa convolucional con varios filtros}
+	\label{fig:forward_prop_convolucional_varios_kernels}
+\end{figure}
+
+Cada convolución entre dos volúmenes 3D produce un volumen de salida 2D. Por tanto, al aplicar N convoluciones entre un volumen de entrada X y una serie de filtros K=$\{K_1, K_2, ..., K_N\}$, se obtendrá un volumen 3D de salida con tantas capas de profundidad como convoluciones se aplicaron (N). \\
+En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como al aplicar N=2 convoluciones sobre la misma entrada X (una con el filtro K y otra con el filtro G) se obtiene un volumen de salida con 2 capas de profundidad. \cite{capa_convolucional_Stanford}
 
 \subsection{Capa de agrupación o pooling}
 
