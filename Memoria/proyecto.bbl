@@ -125,4 +125,11 @@ Glen Meyerowitz.
   \url{https://medium.com/@glenmeyerowitz/bias-initialization-in-a-neural-network-2e5d26fed0f0}
   [Accessed:14/03/2024].
 
+\bibitem{capa_convolucional}
+Afshine~Amidi y~Shervine~Amidi.
+\newblock Convolutional neural networks cheatsheet, 2018.
+\newblock
+  \url{https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks}
+  [Accessed:19/03/2024].
+
 \end{thebibliography}
