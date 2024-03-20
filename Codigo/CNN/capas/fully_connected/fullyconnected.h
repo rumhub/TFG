@@ -27,7 +27,9 @@ class FullyConnected
         FullyConnected(const vector<int> &capas, const float & lr=0.1);
         FullyConnected(){};
 
-        void generar_pesos(int capa);
+        void generar_pesos(const int &capa);
+
+        void particion_k_fold(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &k);
 
         void leer_atributos(vector<vector<float>> &x, vector<vector<float>> &y, string fichero);
 
@@ -37,11 +39,11 @@ class FullyConnected
 
         void mostrarbias();
 
-        float deriv_relu(float x);
+        float deriv_relu(const float &x);
 
-        float relu(float x);
+        float relu(const float &x);
 
-        float sigmoid(float x);
+        float sigmoid(const float &x);
 
         void forwardPropagation(const vector<float> &x);
 

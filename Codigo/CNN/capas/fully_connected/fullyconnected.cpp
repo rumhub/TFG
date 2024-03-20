@@ -17,10 +17,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     {
         // Por cada neurona de cada capa
         for(int j=0; j<capas[i]; j++)
-        {
             neuronas_capa.push_back(0.0);
-            //neuronas_capa.push_back((float) rand() / float(RAND_MAX) - 0.5);
-        }
 
         this->a.push_back(neuronas_capa);
         neuronas_capa.clear();
@@ -82,7 +79,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
 };
 
 
-void FullyConnected::generar_pesos(int capa)
+void FullyConnected::generar_pesos(const int &capa)
 {
     // Inicialización He
     std::random_device rd;
@@ -150,7 +147,7 @@ void FullyConnected::mostrarbias()
     cout << endl;
 }
 
-float FullyConnected::relu(float x)
+float FullyConnected::relu(const float &x)
 {
     float result = 0.0;
 
@@ -160,7 +157,7 @@ float FullyConnected::relu(float x)
     return result;
 }
 
-float FullyConnected::deriv_relu(float x)
+float FullyConnected::deriv_relu(const float &x)
 {
     float result = 0.0;
 
@@ -171,7 +168,7 @@ float FullyConnected::deriv_relu(float x)
 }
 
 
-float FullyConnected::sigmoid(float x)
+float FullyConnected::sigmoid(const float &x)
 {
     return 1/(1+exp(-x));
 }
@@ -206,7 +203,7 @@ void FullyConnected::forwardPropagation(const vector<float> &x)
 
         // Aplicamos función de activación asociada a la capa actual -------------------------------
 
-        // En capas ocultas (y capa input) se emplea ReLU como función de activación
+        // En capas ocultas se emplea ReLU como función de activación
         if(i < this->a.size() - 2)
         {
             for(int k=0; k<this->a[i+1].size(); k++)
@@ -330,13 +327,6 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     int i_last_h = i_output-1;  // Índice de la capa h1
     int i_act, i_ant;
 
-    // Ver máximo número de neuronas por capa
-    int max=0;
-
-    for(int i=0; i<this->a.size(); i++)
-        if(a[i].size() > max)
-            max = a[i].size();
-
     // Inicializar gradiente respecto a entrada a 0 --------------------------
     grad_x.clear();
 
@@ -375,10 +365,10 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
                 this->grad_w[i_last_h][p][k] += this->grad_a[i_output][k] * this->z[i_last_h][p];
                 //                                 grad_Zk                  *  z^i_last_h_p
 
-        // Sesgos
+        // Sesgos capa softmax
         for(int k=0; k<this->a[i_output].size(); k++)
             this->grad_bias[i_output][k] += this->grad_a[i_output][k];
-            // bk = sum(grad_Zk)
+            // bk = grad_Zk
 
         // Última capa oculta -----------------------------------------------
         for(int p=0; p<this->a[i_last_h].size(); p++)      
@@ -386,7 +376,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
                 this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(this->a[i_last_h][p]);
                 //this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * sigmoid(this->a[i_last_h][p]) * (1- sigmoid(this->a[i_last_h][p]));
                 //                              grad_Zk           *  w^i_last_h_pk          * ...
-
+                
         // Capas ocultas intermedias
         for(int capa= i_last_h; capa >= 1; capa--)
         {
@@ -420,6 +410,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         for(int j=0; j<this->grad_bias[i].size(); j++)
             this->grad_bias[i][j] = this->grad_bias[i][j] / n_datos;
 
+    /*
     // Gradient clipping --------------------------------------------------------------------
     float max_grad = -2, min_grad = 2;
 
@@ -457,6 +448,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         for(int j=0; j<this->grad_bias[i].size(); j++)
             if(max_grad < this->grad_bias[i][j])
                 2 * ((this->grad_bias[i][j] - min_grad) / (max_grad - min_grad + epsilon)) -1;
+    */
                 
     // Actualizar parámetros ----------------------------------------------------------
     // Actualizar pesos
@@ -587,6 +579,33 @@ void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<vector
     }  
 }
 
+void FullyConnected::particion_k_fold(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &k)
+{
+    int tam_particion = x.size() / k, n = x.size();
+    vector<vector<vector<float>>> particiones_train, particiones_test;
+    vector<vector<float>> datos_particion;
+    vector<float> v_1D(x[0].size());
+
+    for(int i=0; i<tam_particion; i++)
+        datos_particion.push_back(v_1D);
+
+    // Por cada partición
+    for(int i=0; i<k; i++)
+    {
+        for(int j=0; j<k; j++)
+        {
+            for(int k=0; k<tam_particion; k++)
+                datos_particion[k] = x[j*tam_particion + k];
+
+            if(i == j)
+                particiones_test.push_back(datos_particion);
+            else
+                particiones_train.push_back(datos_particion);
+        }
+    }
+}
+
+
 void FullyConnected::leer_atributos(vector<vector<float>> &x, vector<vector<float>> &y, string fichero)
 {
     ifstream inFile;
@@ -714,6 +733,7 @@ int main()
         cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
         cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
 
+        n.mostrarpesos();
     }
     
     return 0;
