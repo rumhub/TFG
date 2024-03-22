@@ -90,6 +90,19 @@ ml4a.
 \newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
   [Accessed:27/02/2024].
 
+\bibitem{sgd_stocastico}
+Wikipedia.
+\newblock Stochastic gradient descent, 2024.
+\newblock \url{https://en.wikipedia.org/wiki/Stochastic_gradient_descent}
+  [Accessed:22/03/2024].
+
+\bibitem{sgd_stocastico_1}
+Aishwarya~V Srinivasan.
+\newblock Stochastic gradient descent — clearly explained !!, 2019.
+\newblock
+  \url{https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31}
+  [Accessed:22/03/2024].
+
 \bibitem{ini_He}
 Jason Brownlee.
 \newblock Weight initialization for deep learning neural networks, 2021.
