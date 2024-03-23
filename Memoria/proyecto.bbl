@@ -151,4 +151,21 @@ Stanford.
 \newblock \url{https://cs231n.github.io/convolutional-networks/}
   [Accessed:19/03/2024].
 
+\bibitem{CNN_parallel_Stanford}
+Vishakh Hegde and Sheema Usmani.
+\newblock Parallel and distributed deep learning.
+\newblock 2016.
+
+\bibitem{CNN_parallel_International_Conference}
+Sunwoo Lee, Dipendra Jha, Ankit Agrawal, Alok Choudhary, and Wei-keng Liao.
+\newblock Parallel deep convolutional neural network training by exploiting the
+  overlapping of computation and communication.
+\newblock In {\em 2017 IEEE 24th International Conference on High Performance
+  Computing (HiPC)}, pages 183--192, 2017.
+
+\bibitem{CNN_parallel_Ome_Weird_Trick}
+Alex Krizhevsky.
+\newblock One weird trick for parallelizing convolutional neural networks.
+\newblock {\em ArXiv}, abs/1404.5997, 2014.
+
 \end{thebibliography}

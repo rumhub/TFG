@@ -74,6 +74,10 @@
 \contentsline {subsubsection}{Gradiente respecto a la entrada}{34}{section*.81}%
 \contentsline {subsubsection}{Gradiente respecto a los pesos}{34}{section*.83}%
 \contentsline {subsubsection}{Gradiente respecto a sesgos}{35}{section*.85}%
+\contentsline {section}{\numberline {3.2}Paralelización en entrenamiento}{35}{section.3.2}%
+\contentsline {subsubsection}{Tipos de paralelismo}{35}{section*.86}%
+\contentsline {subsubsection}{Paralelismo en SGD}{35}{section*.87}%
+\contentsline {subsubsection}{Aprovechamiento del tiempo de comunicación}{36}{section*.88}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{37}{chapter.4}%
 \contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{37}{section.4.1}%
 \contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{37}{section.4.2}%

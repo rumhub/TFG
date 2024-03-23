@@ -6,45 +6,46 @@ The style file: unsrt.bst
 Reallocating 'name_of_file' (item size: 1) to 26 items.
 Database file #1: bibliografia/bibliografia.bib
 Warning--empty publisher in Learning_From_Data
-You've used 23 entries,
+Warning--empty booktitle in CNN_parallel_Stanford
+You've used 26 entries,
             1791 wiz_defined-function locations,
-            561 strings with 7903 characters,
-and the built_in function-call counts, 2956 in all, are:
-= -- 235
-> -- 86
-< -- 0
-+ -- 44
-- -- 21
-* -- 37
-:= -- 439
-add.period$ -- 67
-call.type$ -- 23
-change.case$ -- 23
+            579 strings with 8532 characters,
+and the built_in function-call counts, 3647 in all, are:
+= -- 291
+> -- 115
+< -- 1
++ -- 55
+- -- 29
+* -- 69
+:= -- 541
+add.period$ -- 76
+call.type$ -- 26
+change.case$ -- 26
 chr.to.int$ -- 0
-cite$ -- 24
-duplicate$ -- 125
-empty$ -- 417
-format.name$ -- 21
-if$ -- 700
+cite$ -- 28
+duplicate$ -- 165
+empty$ -- 492
+format.name$ -- 29
+if$ -- 865
 int.to.chr$ -- 0
-int.to.str$ -- 23
-missing$ -- 4
-newline$ -- 116
-num.names$ -- 21
-pop$ -- 160
+int.to.str$ -- 26
+missing$ -- 7
+newline$ -- 131
+num.names$ -- 24
+pop$ -- 175
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 68
+skip$ -- 92
 stack$ -- 0
-substring$ -- 0
-swap$ -- 23
-text.length$ -- 0
+substring$ -- 28
+swap$ -- 36
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 1
-while$ -- 21
-width$ -- 25
-write$ -- 231
-(There was 1 warning)
+warning$ -- 2
+while$ -- 26
+width$ -- 28
+write$ -- 262
+(There were 2 warnings)
