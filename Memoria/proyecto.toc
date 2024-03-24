@@ -42,42 +42,43 @@
 \contentsline {subsubsection}{Propagación hacia delante, canales de profundidad}{15}{section*.35}%
 \contentsline {subsection}{\numberline {2.6.3}Capa de aplanado}{15}{subsection.2.6.3}%
 \contentsline {subsubsection}{Propagación hacia delante}{15}{section*.37}%
+\contentsline {subsubsection}{Propagación hacia detrás}{16}{section*.39}%
 \contentsline {chapter}{\numberline {3}Aportaciones}{17}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Redes Neuronales Totalmente Conectadas}{17}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}Gradiente de la función de pérdida respecto a SoftMax, \cite {Cross_entropy_backprop} \cite {Cross_entropy_backprop_grad_input}}{17}{subsection.3.1.1}%
-\contentsline {subsubsection}{Gradiente de la función de error}{17}{section*.40}%
-\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac {\partial O_i}{\partial Z_k}$}{18}{section*.41}%
-\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_i}$}{18}{section*.42}%
-\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_j}$, con i $\neq $ j}{19}{section*.43}%
-\contentsline {subsubsection}{Combinación de casos}{19}{section*.44}%
-\contentsline {subsubsection}{Simplificación One-Hot}{20}{section*.45}%
+\contentsline {subsubsection}{Gradiente de la función de error}{17}{section*.42}%
+\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac {\partial O_i}{\partial Z_k}$}{18}{section*.43}%
+\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_i}$}{18}{section*.44}%
+\contentsline {subsubsection}{Caso $\frac {S(Z_i)}{Z_j}$, con i $\neq $ j}{19}{section*.45}%
+\contentsline {subsubsection}{Combinación de casos}{19}{section*.46}%
+\contentsline {subsubsection}{Simplificación One-Hot}{20}{section*.47}%
 \contentsline {subsection}{\numberline {3.1.2}BackPropagation con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2} }{20}{subsection.3.1.2}%
-\contentsline {subsubsection}{Capa SoftMax}{21}{section*.47}%
-\contentsline {subsubsection}{Pesos capas h1-SoftMax}{21}{section*.49}%
-\contentsline {subsubsection}{Sesgos capa softmax}{22}{section*.51}%
-\contentsline {subsubsection}{Capa oculta h1}{22}{section*.52}%
-\contentsline {subsubsection}{Pesos capas input-h1}{24}{section*.55}%
-\contentsline {subsubsection}{Sesgos capa h1}{24}{section*.57}%
-\contentsline {subsubsection}{Capa input}{25}{section*.58}%
+\contentsline {subsubsection}{Capa SoftMax}{21}{section*.49}%
+\contentsline {subsubsection}{Pesos capas h1-SoftMax}{21}{section*.51}%
+\contentsline {subsubsection}{Sesgos capa softmax}{22}{section*.53}%
+\contentsline {subsubsection}{Capa oculta h1}{22}{section*.54}%
+\contentsline {subsubsection}{Pesos capas input-h1}{24}{section*.57}%
+\contentsline {subsubsection}{Sesgos capa h1}{24}{section*.59}%
+\contentsline {subsubsection}{Capa input}{25}{section*.60}%
 \contentsline {subsection}{\numberline {3.1.3}Retropropagación con 2 capas ocultas}{26}{subsection.3.1.3}%
-\contentsline {subsubsection}{Capa SoftMax}{26}{section*.62}%
-\contentsline {subsubsection}{Pesos capas h2-SoftMax}{27}{section*.64}%
-\contentsline {subsubsection}{Sesgos capa softmax}{27}{section*.66}%
-\contentsline {subsubsection}{Capa oculta h2}{28}{section*.67}%
-\contentsline {subsubsection}{Pesos capas h1-h2}{29}{section*.70}%
-\contentsline {subsubsection}{Sesgos capa h2}{30}{section*.72}%
-\contentsline {subsubsection}{Capa oculta h1}{30}{section*.73}%
-\contentsline {subsubsection}{Pesos capa input-h1}{31}{section*.76}%
-\contentsline {subsubsection}{Sesgos capa h1}{32}{section*.78}%
-\contentsline {subsubsection}{Capa input}{32}{section*.79}%
+\contentsline {subsubsection}{Capa SoftMax}{26}{section*.64}%
+\contentsline {subsubsection}{Pesos capas h2-SoftMax}{27}{section*.66}%
+\contentsline {subsubsection}{Sesgos capa softmax}{27}{section*.68}%
+\contentsline {subsubsection}{Capa oculta h2}{28}{section*.69}%
+\contentsline {subsubsection}{Pesos capas h1-h2}{29}{section*.72}%
+\contentsline {subsubsection}{Sesgos capa h2}{30}{section*.74}%
+\contentsline {subsubsection}{Capa oculta h1}{30}{section*.75}%
+\contentsline {subsubsection}{Pesos capa input-h1}{31}{section*.78}%
+\contentsline {subsubsection}{Sesgos capa h1}{32}{section*.80}%
+\contentsline {subsubsection}{Capa input}{32}{section*.81}%
 \contentsline {subsection}{\numberline {3.1.4}Conclusiones}{33}{subsection.3.1.4}%
-\contentsline {subsubsection}{Gradiente respecto a la entrada}{34}{section*.82}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{34}{section*.84}%
-\contentsline {subsubsection}{Gradiente respecto a sesgos}{35}{section*.86}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada}{34}{section*.84}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{34}{section*.86}%
+\contentsline {subsubsection}{Gradiente respecto a sesgos}{35}{section*.88}%
 \contentsline {section}{\numberline {3.2}Paralelización en entrenamiento}{35}{section.3.2}%
-\contentsline {subsubsection}{Tipos de paralelismo}{35}{section*.87}%
-\contentsline {subsubsection}{Paralelismo en SGD}{35}{section*.88}%
-\contentsline {subsubsection}{Aprovechamiento del tiempo de comunicación}{36}{section*.89}%
+\contentsline {subsubsection}{Tipos de paralelismo}{35}{section*.89}%
+\contentsline {subsubsection}{Paralelismo en SGD}{35}{section*.90}%
+\contentsline {subsubsection}{Aprovechamiento del tiempo de comunicación}{36}{section*.91}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{39}{chapter.4}%
 \contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{39}{section.4.1}%
 \contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{39}{section.4.2}%

@@ -151,6 +151,13 @@ Stanford.
 \newblock \url{https://cs231n.github.io/convolutional-networks/}
   [Accessed:19/03/2024].
 
+\bibitem{flatten_forward}
+Piotr Skalski.
+\newblock Let’s code convolutional neural network in plain numpy, 2020.
+\newblock
+  \url{https://towardsdatascience.com/lets-code-convolutional-neural-network-in-plain-numpy-ce48e732f5d5}
+  [Accessed:24/03/2024].
+
 \bibitem{CNN_parallel_Stanford}
 Vishakh Hegde and Sheema Usmani.
 \newblock Parallel and distributed deep learning.
