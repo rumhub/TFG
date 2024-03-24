@@ -6,6 +6,8 @@
 #include <vector>
 #include <fstream>
 
+#define THREAD_NUM 4
+
 using namespace std;
 
 // Prueba, una red con una sola capa oculta. Siempre capa output solo 1 neurona. Clasificación binaria

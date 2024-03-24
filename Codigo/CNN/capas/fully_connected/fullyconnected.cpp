@@ -3,6 +3,8 @@
 #include <iostream>
 #include "math.h"
 #include "random"
+#include <stdio.h>
+#include <omp.h>
 
 using namespace std;
 
@@ -654,15 +656,18 @@ void FullyConnected::leer_atributos(vector<vector<float>> &x, vector<vector<floa
     inFile.close();
 }
 
+
+
+
 int main()
-{
+{ 
     // Solo se meten capa input y capas ocultas, la capa output siempre tiene 1 neurona
-    
     vector<vector<float>> x, y, grad_x; 
     vector<int> capas1{784, 10, 10};        // MNIST
     FullyConnected n1(capas1, 0.1);
 
-    //n1.leer_imagenes_mnist(x, y, 3000, 10);
+    //n1.leer_imagenes_mnist(x, y, 100, 10);
+    n1.leer_imagenes_mnist(x, y, 3000, 10);
 
     //x[0] = {1, 0, 0, 1};
     //n1.forwardPropagation(x[0]);
@@ -670,23 +675,78 @@ int main()
 
     //vector<int> capas{(int) x[0].size(), 256, 256, 10}; // MNIST
     //vector<int> capas{4, 4, 10, 3};                  // IRIS
-    vector<int> capas{4, 4, 3};                  // IRIS
-    FullyConnected n(capas, 0.01);
+    //vector<int> capas{4, 4, 3};                  // IRIS
+    FullyConnected n(capas1, 0.01);
     //n.forwardPropagation(x[0]);
     
-    n.leer_atributos(x, y, "../../../fotos/iris/iris.data");
+    //n.leer_atributos(x, y, "../../../fotos/iris/iris.data");
     
     // SGD
     vector<int> indices(x.size());
-    vector<int> batch;
     vector<vector<float>> batch_labels, grad_x_fully, x_batch;
-    int n_imgs_batch, ini, fin, n_imgs=x.size();
+    vector<vector<int>> batches;
+    vector<vector<vector<float>>> batches_x, batches_y;
+    int n_imgs_batch, ini, fin, n_imgs=x.size(), n_epocas = 100, mini_batch = 32;
+    vector<int> batch(mini_batch, 0);
+    vector<float> batch_x(x[0].size(), 0.0), batch_y(y[0].size(), 0.0);
+    vector<vector<float>> batch_x2D, batch_y2D;
+    const int M = n_imgs / mini_batch;
+    const bool hay_ultimo_batch = (n_imgs % mini_batch != 0);
 
     // Inicializar vector de índices
     for(int i=0; i<n_imgs; i++)
         indices[i] = i;
 
-    int n_epocas = 100, mini_batch = 32;
+    // Indices --------------------------------------------
+    // Inicializar tamaño de mini-batches (int)
+    for(int i=0; i<M; i++)
+        batches.push_back(batch);
+    
+    // Último batch puede tener distinto tamaño al resto
+    if(hay_ultimo_batch)
+    {
+        vector<int> last_batch(n_imgs % mini_batch, 0);
+        batches.push_back(last_batch);
+    }
+
+    // X --------------------------------------------------
+    for(int i=0; i<mini_batch; i++)
+        batch_x2D.push_back(batch_x);
+    
+    // Inicializar tamaño de mini-batches X (float)
+    for(int i=0; i<M; i++)
+        batches_x.push_back(batch_x2D);
+    
+    // Último batch puede tener distinto tamaño al resto
+    if(hay_ultimo_batch)
+    {
+        batch_x2D.clear();
+
+        for(int i=0; i<n_imgs % mini_batch; i++)
+            batch_x2D.push_back(batch_x);
+    
+        batches_x.push_back(batch_x2D);
+    }
+
+    // Y --------------------------------------------------
+    for(int i=0; i<mini_batch; i++)
+        batch_y2D.push_back(batch_y);
+    
+    // Inicializar tamaño de mini-batches X (float)
+    for(int i=0; i<M; i++)
+        batches_y.push_back(batch_y2D);
+    
+    // Último batch puede tener distinto tamaño al resto
+    if(hay_ultimo_batch)
+    {
+        batch_y2D.clear();
+
+        for(int i=0; i<n_imgs % mini_batch; i++)
+            batch_y2D.push_back(batch_y);
+    
+        batches_y.push_back(batch_y2D);
+    }
+    
     for(int ep=0; ep<n_epocas; ep++)
     {
         ini = 0;
@@ -695,46 +755,49 @@ int main()
         // Desordenar vector de índices
         random_shuffle(indices.begin(), indices.end());
 
-        while(fin <=n_imgs)
-        {
-            //cout << fin << " de " << n_imgs << endl;
-            // Crear el batch ----------------------
-            batch.clear();
-            n_imgs_batch = 0;
-            if(fin <= n_imgs)
-                for(int j=ini; j<fin; j++)
-                    batch.push_back(indices[j]);   
-            else
-                if(ini < n_imgs)
-                    for(int j=ini; j<n_imgs; j++)
-                        batch.push_back(indices[j]);
-            
+        // Por cada trabajador p
+        //#pragma omp parallel num_threads(THREAD_NUM)
+        //{
 
-            batch_labels.clear();
-            n_imgs_batch = batch.size();
             
-            // Crear batch de labels
-            for(int j=0; j<n_imgs_batch; j++)
-                batch_labels.push_back(y[batch[j]]);
+            // Inicializar mini-batches
+            for(int i=0; i<M; i++)
+                for(int j=0; j<batches[i].size(); j++)
+                    batches[i][j] = indices[i*mini_batch + j];
             
-            // Crear el conjunto de entrenamiento del batch
-            x_batch.clear();
-            for(int j=0; j<n_imgs_batch; j++)
-                x_batch.push_back(x[batch[j]]);
+            // Inicializar último mini-batch
+            if(hay_ultimo_batch != 0)
+            {
+                for(int j=0; j<batches[batches.size()-1].size(); j++)
+                batches[batches.size()-1][j] = indices[M*mini_batch + j];
+            }
 
-            ini += mini_batch;
-            fin += mini_batch;
+            
+            // Inicializar batches X e Y
+            for(int i=0; i<batches.size(); i++)
+                for(int j=0; j<batches[i].size(); j++)
+                {
+                    batches_x[i][j] = x[batches[i][j]];
+                    batches_y[i][j] = y[batches[i][j]];
+                }
 
-            n.train(x_batch, batch_labels, grad_x_fully);
-        }
+            
+            // Por cada mini-batch
+            for(int i=0; i<batches.size(); i++)
+                n.train(batches_x[i], batches_y[i], grad_x_fully);
+
+        //}
+
 
 
         cout << "Época: " << ep << endl;
         cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
         cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
 
-        n.mostrarpesos();
+        //n.mostrarpesos();
     }
+    
+    
     
     return 0;
 }
