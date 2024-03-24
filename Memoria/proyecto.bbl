@@ -151,6 +151,13 @@ Stanford.
 \newblock \url{https://cs231n.github.io/convolutional-networks/}
   [Accessed:19/03/2024].
 
+\bibitem{max_pool_backprop}
+Archana David.
+\newblock Backprop through max-pooling layers?, 2007.
+\newblock
+  \url{https://datascience.stackexchange.com/questions/11699/backprop-through-max-pooling-layers}
+  [Accessed:24/03/2024].
+
 \bibitem{flatten_forward}
 Piotr Skalski.
 \newblock Let’s code convolutional neural network in plain numpy, 2020.
