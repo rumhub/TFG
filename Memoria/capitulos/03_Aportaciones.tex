@@ -574,3 +574,60 @@ Además, \cite{CNN_parallel_International_Conference} propone un nuevo enfoque c
 
 \subsubsection{Aprovechamiento del tiempo de comunicación}
 En la propagación hacia detrás, se calcula el gradiente de la función de error respecto a cada parámetro de la red. Como no hay dependencia de datos entre los gradientes de distintas capas, la comunicación para intercambiar dichos gradientes entre los nodos de cálculo puede ejecutarse de manera concurrente con los cálculos de otras capas.
+
+\begin{algorithm}
+	\caption{Entrenamiento CNN con paralelismo de datos \cite{CNN_parallel_International_Conference}\\
+	(M: número de mini-batches, N:tamaño de cada mini-batch, L: Número de capas, k: número de capas del primer bloque de gradientes, f: número de capas totalmente conectadas que replican el cálculo del gradiente)} 
+	\begin{algorithmic}
+		\State s $\gets$ ID de la primera capa totalmente conectada
+		\For{cada trabajador $p\in\{0, ..., P-1\}$ \textbf{parallel}}
+			\For{cada mini batch $m\in\{ 0, ..., M\}$}
+				\State Obtener mini batch $D^m_p \gets \frac{N}{P}$ imágenes del mini batch m.
+				\State Inicializar la suma del gradiente local, $G^l_p = 0$\\
+				
+				\State // Propagación hacia delante
+				\For{cada capa $l\in\{0, ..., L-1\}$}
+					\If{$l\in\{s, ..., s+f\}\ \textbf{and}\ m \neq 0$}
+						\State Esperar valores de $A^{l-1}$ y $E^l_p$ (enviados en iteración m-1)
+						\State Calcular gradientes de pesos $\Delta W^{[l:l+f]}_p$ para $D^m$ 
+						\State y actualizarlos.
+					\EndIf
+					\State Calcular activaciones $A^l_p$ de $D^m_p$.
+					\If{$l\in{s-1, ..., s+f-1}$}
+						\State Mandar mensaje asíncrono, Allgather $A^l_p$.
+					\EndIf
+				\EndFor \\
+				
+				\State // Propagación hacia detrás
+				\For{cada capa $l\in\{l=L-1, ..., 0\}$}
+					\State Calcular errores $E^l_p$
+					\If{$l \notin \{s, ..., s+f\}$}
+						\State Calcular gradientes de pesos $Delta W^l_p$ para $D^m_p$.
+						\State Añadir gradientes de pesos a la suma local, $G^l_p += \Delta W^l_p$.
+						\If{$l == k$}
+							\State Mandar mensaje asíncrono, Allreduce $G^{[L-k:L-1]}_p$.
+						\EndIf
+					\EndIf
+				\EndFor
+				
+				\State Mandar mensaje asíncrono, Allreduce $G^{[0:L-k-1]}_p$
+				\State Esperar valores de $G^{[L-k:L-1]}$.\\
+				
+				\State // Actualizar parámetros
+				\For{cada capa $l\in\{L-1, ..., 0\}$}
+					\If{$l == L-k$}
+						\State Esperar valores de $G^{[0:L-k-1]}$.
+						\For{cada capa $l\in \{s, ..., s+f\}$}
+							\State Mandar mensaje asíncrono, Allgather $E^l_p$.
+						\EndFor
+					\EndIf
+					
+					\If{$l\notin\{s, ..., s+f\}$}
+						\State Actualizar parámetros, $W^l_p$.
+					\EndIf
+				\EndFor
+			
+			\EndFor
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}

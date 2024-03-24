@@ -78,8 +78,8 @@
 \contentsline {subsubsection}{Tipos de paralelismo}{35}{section*.86}%
 \contentsline {subsubsection}{Paralelismo en SGD}{35}{section*.87}%
 \contentsline {subsubsection}{Aprovechamiento del tiempo de comunicación}{36}{section*.88}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{37}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{37}{section.4.1}%
-\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{37}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{39}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{39}{section.5.1}%
+\contentsline {chapter}{\numberline {4}Adaptación GPU}{39}{chapter.4}%
+\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{39}{section.4.1}%
+\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{39}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{41}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{41}{section.5.1}%
