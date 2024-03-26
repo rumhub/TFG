@@ -409,114 +409,6 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
 }
 
 
-/*
-void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x)
-{
-    int n_datos = x.size();
-    float epsilon = 0.000000001;
-
-    int i_output = this->a.size()-1; // índice de la capa output
-    float sum, o_in, grad_x_output, sig_o_in;
-    int i_last_h = i_output-1;  // Índice de la capa h1
-    int i_act, i_ant;
-
-    // Inicializar gradiente respecto a entrada a 0 --------------------------
-    grad_x.clear();
-
-    // Inicializar gradiente de pesos a 0 --------------------------
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                this->grad_w[i][j][k] = 0.0;
-
-    // Inicializar gradiente bias a 0 ------------------------------
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->grad_bias[i][j] = 0.0;
-
-    // Backpropagation ----------------------------------------------
-    // Hay 2 o más capas ocultas
-    for(int i=0; i<n_datos; i++)
-    {
-        forwardPropagation(x[i]);
-
-        // Inicializar a 0 gradiente respecto a input
-        for(int _i = 0; _i < this->grad_a.size(); _i++)
-            for(int j = 0; j < this->grad_a[_i].size(); j++)
-                this->grad_a[_i][j] = 0.0;
-
-
-        // Capa SoftMax -----------------------------------------------
-        // Se calcula gradiente del error respecto a cada Z_k
-        // grad_Zk = O_k - y_k
-        for(int k=0; k<this->a[i_output].size(); k++)
-            this->grad_a[i_output][k] = this->z[i_output][k] - y[i][k];
-
-        // Pesos h_last - Softmax
-        for(int p=0; p<this->a[i_last_h].size(); p++)
-            for(int k=0; k<this->a[i_output].size(); k++)
-                this->grad_w[i_last_h][p][k] += this->grad_a[i_output][k] * this->z[i_last_h][p];
-                //                                 grad_Zk                  *  z^i_last_h_p
-
-        // Sesgos capa softmax
-        for(int k=0; k<this->a[i_output].size(); k++)
-            this->grad_bias[i_output][k] += this->grad_a[i_output][k];
-            // bk = grad_Zk
-
-        // Última capa oculta -----------------------------------------------
-        for(int p=0; p<this->a[i_last_h].size(); p++)      
-            for(int k=0; k<this->a[i_output].size(); k++)
-                this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(this->a[i_last_h][p]);
-                //this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * sigmoid(this->a[i_last_h][p]) * (1- sigmoid(this->a[i_last_h][p]));
-                //                              grad_Zk           *  w^i_last_h_pk          * ...
-                
-        // Capas ocultas intermedias
-        for(int capa= i_last_h; capa >= 1; capa--)
-        {
-            // Pesos
-            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
-                for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                    this->grad_w[capa-1][i_ant][i_act] += this->grad_a[capa][i_act] * this->z[capa-1][i_ant];
-
-            // Bias
-            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)
-                this->grad_bias[capa][i_act] += this->grad_a[capa][i_act];
-            
-            // Grad input
-            for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
-                    this->grad_a[capa-1][i_ant] += this->grad_a[capa][i_act] * this->w[capa-1][i_ant][i_act] * deriv_relu(this->a[capa-1][i_ant]);
-        }
-
-        grad_x.push_back(this->grad_a[0]);
-    }
-
-    // Realizar medias -----------------------------------------------------------------
-    // Realizar la media de los gradientes de pesos
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                this->grad_w[i][j][k] = this->grad_w[i][j][k] / n_datos;
-            
-    // Realizar la media de los gradientes de bias
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->grad_bias[i][j] = this->grad_bias[i][j] / n_datos;
-                
-    // Actualizar parámetros ----------------------------------------------------------
-    // Actualizar pesos
-    for(int j=0; j<this->w.size(); j++)
-        for(int k=0; k<this->w[j].size(); k++)
-            for(int p=0; p<this->w[j][k].size(); p++)
-                this->w[j][k][p] -= this->lr * this->grad_w[j][k][p];
-
-    // Actualizar bias
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->bias[i][j] -= this->lr * this->grad_bias[i][j];
-}
-*/
-
 void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b)
 {
     // Actualizar pesos
@@ -735,6 +627,153 @@ void FullyConnected::copiar_gradientes(vector<vector<vector<float>>> &grad_w, ve
 }
 
 
+void FullyConnected::train2(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x)
+{
+    int n_datos = x.size();
+    float epsilon = 0.000000001;
+
+    int i_output = this->a.size()-1; // índice de la capa output
+    float sum, o_in, grad_x_output, sig_o_in;
+    int i_last_h = i_output-1;  // Índice de la capa h1
+    int i_act, i_ant;
+
+    // Inicializar gradiente respecto a entrada a 0 --------------------------
+    grad_x.clear();
+
+    // Inicializar gradiente de pesos a 0 --------------------------
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                this->grad_w[i][j][k] = 0.0;
+
+    // Inicializar gradiente bias a 0 ------------------------------
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            this->grad_bias[i][j] = 0.0;
+
+    // Backpropagation ----------------------------------------------
+    // Hay 2 o más capas ocultas
+    for(int i=0; i<n_datos; i++)
+    {
+        forwardPropagation(x[i]);
+
+        // Inicializar a 0 gradiente respecto a input
+        for(int _i = 0; _i < this->grad_a.size(); _i++)
+            for(int j = 0; j < this->grad_a[_i].size(); j++)
+                this->grad_a[_i][j] = 0.0;
+
+
+        // Capa SoftMax -----------------------------------------------
+        // Se calcula gradiente del error respecto a cada Z_k
+        // grad_Zk = O_k - y_k
+        for(int k=0; k<this->a[i_output].size(); k++)
+            this->grad_a[i_output][k] = this->z[i_output][k] - y[i][k];
+
+        // Pesos h_last - Softmax
+        for(int p=0; p<this->a[i_last_h].size(); p++)
+            for(int k=0; k<this->a[i_output].size(); k++)
+                this->grad_w[i_last_h][p][k] += this->grad_a[i_output][k] * this->z[i_last_h][p];
+                //                                 grad_Zk                  *  z^i_last_h_p
+
+        // Sesgos capa softmax
+        for(int k=0; k<this->a[i_output].size(); k++)
+            this->grad_bias[i_output][k] += this->grad_a[i_output][k];
+            // bk = grad_Zk
+
+        // Última capa oculta -----------------------------------------------
+        for(int p=0; p<this->a[i_last_h].size(); p++)      
+            for(int k=0; k<this->a[i_output].size(); k++)
+                this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(this->a[i_last_h][p]);
+                //this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * sigmoid(this->a[i_last_h][p]) * (1- sigmoid(this->a[i_last_h][p]));
+                //                              grad_Zk           *  w^i_last_h_pk          * ...
+                
+        // Capas ocultas intermedias
+        for(int capa= i_last_h; capa >= 1; capa--)
+        {
+            // Pesos
+            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
+                for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
+                    this->grad_w[capa-1][i_ant][i_act] += this->grad_a[capa][i_act] * this->z[capa-1][i_ant];
+
+            // Bias
+            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)
+                this->grad_bias[capa][i_act] += this->grad_a[capa][i_act];
+            
+            // Grad input
+            for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
+                for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
+                    this->grad_a[capa-1][i_ant] += this->grad_a[capa][i_act] * this->w[capa-1][i_ant][i_act] * deriv_relu(this->a[capa-1][i_ant]);
+        }
+
+        grad_x.push_back(this->grad_a[0]);
+    }
+
+    // Realizar medias -----------------------------------------------------------------
+    // Realizar la media de los gradientes de pesos
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                this->grad_w[i][j][k] = this->grad_w[i][j][k] / n_datos;
+            
+    // Realizar la media de los gradientes de bias
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            this->grad_bias[i][j] = this->grad_bias[i][j] / n_datos;
+
+    /*
+    // Gradient clipping --------------------------------------------------------------------
+    float max_grad = -2, min_grad = 2;
+
+    // Normalizar pesos a rango [-1,1]
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+            {
+                if(max_grad < this->grad_w[i][j][k])
+                    max_grad = this->grad_w[i][j][k];
+
+                if(min_grad > this->grad_w[i][j][k])
+                    min_grad = this->grad_w[i][j][k];
+            }
+
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                2 * ((this->grad_w[i][j][k] - min_grad) / (max_grad - min_grad + epsilon)) -1;
+    
+    // Normalizar bias a rango [-1,1]
+    max_grad = -2;
+    min_grad = 2;
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+        {
+            if(max_grad < this->grad_bias[i][j])
+                max_grad = this->grad_bias[i][j];
+            
+            if(min_grad > this->grad_bias[i][j])
+                min_grad = this->grad_bias[i][j];
+        }
+
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            if(max_grad < this->grad_bias[i][j])
+                2 * ((this->grad_bias[i][j] - min_grad) / (max_grad - min_grad + epsilon)) -1;
+    */
+                
+    // Actualizar parámetros ----------------------------------------------------------
+    // Actualizar pesos
+    for(int j=0; j<this->w.size(); j++)
+        for(int k=0; k<this->w[j].size(); k++)
+            for(int p=0; p<this->w[j][k].size(); p++)
+                this->w[j][k][p] -= this->lr * this->grad_w[j][k][p];
+
+    // Actualizar bias
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            this->bias[i][j] -= this->lr * this->grad_bias[i][j];
+}
+
+
 int main()
 { 
     // Solo se meten capa input y capas ocultas, la capa output siempre tiene 1 neurona
@@ -742,17 +781,17 @@ int main()
     vector<int> capas1{784, 10, 10};        // MNIST
     FullyConnected n1(capas1, 0.1);
 
-    //n1.leer_imagenes_mnist(x, y, 10, 10);
+    //n1.leer_imagenes_mnist(x, y, 5, 10);
     n1.leer_imagenes_mnist(x, y, 3000, 10);
 
     //x[0] = {1, 0, 0, 1};
     //n1.forwardPropagation(x[0]);
     //n1.mostrarNeuronas();
 
-    vector<int> capas{(int) x[0].size(), 256, 256, 10}; // MNIST
+    //vector<int> capas{(int) x[0].size(), 256, 256, 10}; // MNIST
     //vector<int> capas{4, 4, 10, 3};                  // IRIS
     //vector<int> capas{4, 4, 3};                  // IRIS
-    FullyConnected n(capas, 0.01);
+    FullyConnected n(capas1, 0.01);
     //n.forwardPropagation(x[0]);
     
     //n.leer_atributos(x, y, "../../../fotos/iris/iris.data");
@@ -761,7 +800,6 @@ int main()
     vector<int> indices(x.size());
     int n_imgs=x.size(), n_epocas = 100, mini_batch = 32;
     vector<int> batch(mini_batch, 0), tam_batches;
-    vector<float> batch_x(x[0].size(), 0.0), batch_y(y[0].size(), 0.0);
     const int M = n_imgs / mini_batch;
     const bool hay_ultimo_batch = (n_imgs % mini_batch != 0);
 
@@ -782,28 +820,41 @@ int main()
     vector<vector<vector<vector<float>>>> grad_pesos(THREAD_NUM);
     vector<vector<vector<float>>> grad_b(THREAD_NUM), grad_x(THREAD_NUM);
 
-    for(int ep=0; ep<n_epocas; ep++)
-    {
-        // Desordenar vector de índices
-        random_shuffle(indices.begin(), indices.end());
+    FullyConnected *fullys = new FullyConnected[THREAD_NUM];
+    for(int i=0; i<THREAD_NUM; i++)
+        fullys[i] = n;
 
-        // Por cada trabajador p
-        #pragma omp parallel num_threads(THREAD_NUM)
+    
+    // ---------------------------------------------------
+    // Por cada trabajador p 
+    #pragma omp parallel num_threads(THREAD_NUM)
+    {
+        int thread_id = omp_get_thread_num();
+
+        for(int ep=0; ep<n_epocas; ep++)
         {
-            int thread_id = omp_get_thread_num();
-            FullyConnected *fully = new FullyConnected(capas, 0.01);    
-            
+            // Desordenar vector de índices
+            #pragma omp single
+            {
+                random_shuffle(indices.begin(), indices.end());
+            }
+            #pragma omp barrier
+
             // Por cada mini-batch
             for(int i=0; i<tam_batches.size(); i++)
             {
-                fully->copiar_parametros(n);
-
+                fullys[thread_id].copiar_parametros(n);
+                
                 // Cada trabajador obtiene N/P imágenes, N = Nº imágenes por mini-batch 
-                int n_imgs_batch = tam_batches[i] / THREAD_NUM; 
+                int n_imgs_batch = tam_batches[i] / THREAD_NUM, n_imgs_batch_ant = n_imgs_batch; 
+
+                if(n_imgs_batch * THREAD_NUM < tam_batches[i] && thread_id == THREAD_NUM-1)
+                    n_imgs_batch = n_imgs_batch + (tam_batches[i] % THREAD_NUM);
+                
                 vector<int> batch_p(n_imgs_batch, 0.0);
                 
                 for(int j=0; j<n_imgs_batch; j++)
-                    batch_p[j] = indices[mini_batch*i + n_imgs_batch*thread_id + j];                
+                    batch_p[j] = indices[mini_batch*i + n_imgs_batch_ant*thread_id + j];   
 
                 // X ---------------------------------------------------
                 vector<vector<float>> batch_xp(n_imgs_batch);
@@ -818,7 +869,7 @@ int main()
                     batch_yp[j] = y[batch_p[j]];              
                 
                 // Realizar backpropagation y acumular gradientes
-                fully->train(batch_xp, batch_yp, grad_pesos[thread_id], grad_b[thread_id], grad_x[thread_id]);
+                fullys[thread_id].train(batch_xp, batch_yp, grad_pesos[thread_id], grad_b[thread_id], grad_x[thread_id]);
 
                 #pragma omp barrier
                 #pragma omp critical
@@ -855,17 +906,21 @@ int main()
                 }
 
                 #pragma omp barrier  
+                
             }
+
+            #pragma omp single
+            {
+                cout << "Época: " << ep << endl;
+                cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
+                cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
+            }
+            #pragma omp barrier 
+
         }
-
-
-
-        cout << "Época: " << ep << endl;
-        cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
-        cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
-
-        //n.mostrarpesos();
     }
+
+    
     
     
     

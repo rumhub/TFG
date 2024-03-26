@@ -58,7 +58,8 @@ class FullyConnected
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
         void train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x);
-        //void train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x);
+
+        void train2(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x);
 
         void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);
 
@@ -73,7 +74,6 @@ class FullyConnected
         void copiar_parametros(FullyConnected &fc);
 
         void copiar_gradientes(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias);
-
 };
 
 #endif
