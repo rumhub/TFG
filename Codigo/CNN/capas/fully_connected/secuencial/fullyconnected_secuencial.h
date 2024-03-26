@@ -6,7 +6,7 @@
 #include <vector>
 #include <fstream>
 
-#define THREAD_NUM 3
+#define THREAD_NUM 4
 
 using namespace std;
 
@@ -57,22 +57,13 @@ class FullyConnected
 
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x);
-        //void train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x);
-
-        void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);
-
-        void inicializar_parametros();
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x);
 
         void generarDatos(vector<vector<float>> &x, vector<float> &y);
 
         void setLR(float lr);
 
         void leer_imagenes_mnist(vector<vector<float>> &x, vector<vector<float>> &y, const int n_imagenes, const int n_clases);
-
-        void copiar_parametros(FullyConnected &fc);
-
-        void copiar_gradientes(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias);
 
 };
 

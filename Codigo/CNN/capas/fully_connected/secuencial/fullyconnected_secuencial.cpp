@@ -1,4 +1,4 @@
-#include "fullyconnected.h"
+#include "fullyconnected_secuencial.h"
 #include <vector>
 #include <iostream>
 #include "math.h"
@@ -319,97 +319,6 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     return sum;
 }
 
-void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x)
-{
-    int n_datos = x.size();
-    float epsilon = 0.000000001;
-
-    int i_output = this->a.size()-1; // índice de la capa output
-    float sum, o_in, grad_x_output, sig_o_in;
-    int i_last_h = i_output-1;  // Índice de la capa h1
-    int i_act, i_ant;
-
-    // Inicializar gradiente respecto a entrada a 0 --------------------------
-    grad_x.clear();
-
-    // Inicializar gradiente de pesos a 0 --------------------------
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                this->grad_w[i][j][k] = 0.0;
-
-    // Inicializar gradiente bias a 0 ------------------------------
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->grad_bias[i][j] = 0.0;
-
-    // Backpropagation ----------------------------------------------
-    // Hay 2 o más capas ocultas
-    for(int i=0; i<n_datos; i++)
-    {
-        forwardPropagation(x[i]);
-
-        // Inicializar a 0 gradiente respecto a input
-        for(int _i = 0; _i < this->grad_a.size(); _i++)
-            for(int j = 0; j < this->grad_a[_i].size(); j++)
-                this->grad_a[_i][j] = 0.0;
-
-
-        // Capa SoftMax -----------------------------------------------
-        // Se calcula gradiente del error respecto a cada Z_k
-        // grad_Zk = O_k - y_k
-        for(int k=0; k<this->a[i_output].size(); k++)
-            this->grad_a[i_output][k] = this->z[i_output][k] - y[i][k];
-
-        // Pesos h_last - Softmax
-        for(int p=0; p<this->a[i_last_h].size(); p++)
-            for(int k=0; k<this->a[i_output].size(); k++)
-                this->grad_w[i_last_h][p][k] += this->grad_a[i_output][k] * this->z[i_last_h][p];
-                //                                 grad_Zk                  *  z^i_last_h_p
-
-        // Sesgos capa softmax
-        for(int k=0; k<this->a[i_output].size(); k++)
-            this->grad_bias[i_output][k] += this->grad_a[i_output][k];
-            // bk = grad_Zk
-
-        // Última capa oculta -----------------------------------------------
-        for(int p=0; p<this->a[i_last_h].size(); p++)      
-            for(int k=0; k<this->a[i_output].size(); k++)
-                this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(this->a[i_last_h][p]);
-                //this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * sigmoid(this->a[i_last_h][p]) * (1- sigmoid(this->a[i_last_h][p]));
-                //                              grad_Zk           *  w^i_last_h_pk          * ...
-                
-        // Capas ocultas intermedias
-        for(int capa= i_last_h; capa >= 1; capa--)
-        {
-            // Pesos
-            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
-                for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                    this->grad_w[capa-1][i_ant][i_act] += this->grad_a[capa][i_act] * this->z[capa-1][i_ant];
-
-            // Bias
-            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)
-                this->grad_bias[capa][i_act] += this->grad_a[capa][i_act];
-            
-            // Grad input
-            for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
-                    this->grad_a[capa-1][i_ant] += this->grad_a[capa][i_act] * this->w[capa-1][i_ant][i_act] * deriv_relu(this->a[capa-1][i_ant]);
-        }
-
-        grad_x.push_back(this->grad_a[0]);
-    }
-
-          
-    // Actualizar parámetros
-    //this->actualizar_parametros();
-
-    grad_pesos = this->grad_w;
-    grad_b = this->grad_bias;
-}
-
-
-/*
 void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x)
 {
     int n_datos = x.size();
@@ -502,6 +411,46 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     for(int i=0; i<this->grad_bias.size(); i++)
         for(int j=0; j<this->grad_bias[i].size(); j++)
             this->grad_bias[i][j] = this->grad_bias[i][j] / n_datos;
+
+    /*
+    // Gradient clipping --------------------------------------------------------------------
+    float max_grad = -2, min_grad = 2;
+
+    // Normalizar pesos a rango [-1,1]
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+            {
+                if(max_grad < this->grad_w[i][j][k])
+                    max_grad = this->grad_w[i][j][k];
+
+                if(min_grad > this->grad_w[i][j][k])
+                    min_grad = this->grad_w[i][j][k];
+            }
+
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                2 * ((this->grad_w[i][j][k] - min_grad) / (max_grad - min_grad + epsilon)) -1;
+    
+    // Normalizar bias a rango [-1,1]
+    max_grad = -2;
+    min_grad = 2;
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+        {
+            if(max_grad < this->grad_bias[i][j])
+                max_grad = this->grad_bias[i][j];
+            
+            if(min_grad > this->grad_bias[i][j])
+                min_grad = this->grad_bias[i][j];
+        }
+
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            if(max_grad < this->grad_bias[i][j])
+                2 * ((this->grad_bias[i][j] - min_grad) / (max_grad - min_grad + epsilon)) -1;
+    */
                 
     // Actualizar parámetros ----------------------------------------------------------
     // Actualizar pesos
@@ -514,21 +463,6 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     for(int i=0; i<this->grad_bias.size(); i++)
         for(int j=0; j<this->grad_bias[i].size(); j++)
             this->bias[i][j] -= this->lr * this->grad_bias[i][j];
-}
-*/
-
-void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b)
-{
-    // Actualizar pesos
-    for(int j=0; j<this->w.size(); j++)
-        for(int k=0; k<this->w[j].size(); k++)
-            for(int p=0; p<this->w[j][k].size(); p++)
-                this->w[j][k][p] -= this->lr * grad_pesos[j][k][p];
-
-    // Actualizar bias
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->bias[i][j] -= this->lr * grad_b[i][j];
 }
 
 void FullyConnected::generarDatos(vector<vector<float>> &x, vector<float> &y)
@@ -722,23 +656,13 @@ void FullyConnected::leer_atributos(vector<vector<float>> &x, vector<vector<floa
     inFile.close();
 }
 
-void FullyConnected::copiar_parametros(FullyConnected &fc)
-{
-    this->w = fc.w;
-    this->bias = fc.bias;
-}
 
-void FullyConnected::copiar_gradientes(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias)
-{
-    this->grad_w = grad_w;
-    this->grad_bias = grad_bias;
-}
 
 
 int main()
 { 
     // Solo se meten capa input y capas ocultas, la capa output siempre tiene 1 neurona
-    vector<vector<float>> x, y; 
+    vector<vector<float>> x, y, grad_x; 
     vector<int> capas1{784, 10, 10};        // MNIST
     FullyConnected n1(capas1, 0.1);
 
@@ -759,9 +683,13 @@ int main()
     
     // SGD
     vector<int> indices(x.size());
+    vector<vector<float>> batch_labels, grad_x_fully, x_batch;
+    vector<vector<int>> batches;
+    vector<vector<vector<float>>> batches_x, batches_y;
     int n_imgs=x.size(), n_epocas = 100, mini_batch = 32;
-    vector<int> batch(mini_batch, 0), tam_batches;
+    vector<int> batch(mini_batch, 0);
     vector<float> batch_x(x[0].size(), 0.0), batch_y(y[0].size(), 0.0);
+    vector<vector<float>> batch_x2D, batch_y2D;
     const int M = n_imgs / mini_batch;
     const bool hay_ultimo_batch = (n_imgs % mini_batch != 0);
 
@@ -772,91 +700,90 @@ int main()
     // Indices --------------------------------------------
     // Inicializar tamaño de mini-batches (int)
     for(int i=0; i<M; i++)
-        tam_batches.push_back(mini_batch);
+        batches.push_back(batch);
     
     // Último batch puede tener distinto tamaño al resto
     if(hay_ultimo_batch)
-        tam_batches.push_back(n_imgs % mini_batch);
+    {
+        vector<int> last_batch(n_imgs % mini_batch, 0);
+        batches.push_back(last_batch);
+    }
 
+    // X --------------------------------------------------
+    for(int i=0; i<mini_batch; i++)
+        batch_x2D.push_back(batch_x);
+    
+    // Inicializar tamaño de mini-batches X (float)
+    for(int i=0; i<M; i++)
+        batches_x.push_back(batch_x2D);
+    
+    // Último batch puede tener distinto tamaño al resto
+    if(hay_ultimo_batch)
+    {
+        batch_x2D.clear();
 
-    vector<vector<vector<vector<float>>>> grad_pesos(THREAD_NUM);
-    vector<vector<vector<float>>> grad_b(THREAD_NUM), grad_x(THREAD_NUM);
+        for(int i=0; i<n_imgs % mini_batch; i++)
+            batch_x2D.push_back(batch_x);
+    
+        batches_x.push_back(batch_x2D);
+    }
 
+    // Y --------------------------------------------------
+    for(int i=0; i<mini_batch; i++)
+        batch_y2D.push_back(batch_y);
+    
+    // Inicializar tamaño de mini-batches X (float)
+    for(int i=0; i<M; i++)
+        batches_y.push_back(batch_y2D);
+    
+    // Último batch puede tener distinto tamaño al resto
+    if(hay_ultimo_batch)
+    {
+        batch_y2D.clear();
+
+        for(int i=0; i<n_imgs % mini_batch; i++)
+            batch_y2D.push_back(batch_y);
+    
+        batches_y.push_back(batch_y2D);
+    }
+    
     for(int ep=0; ep<n_epocas; ep++)
     {
         // Desordenar vector de índices
         random_shuffle(indices.begin(), indices.end());
 
         // Por cada trabajador p
-        #pragma omp parallel num_threads(THREAD_NUM)
-        {
-            int thread_id = omp_get_thread_num();
-            FullyConnected *fully = new FullyConnected(capas, 0.01);    
+        //#pragma omp parallel num_threads(THREAD_NUM)
+        //{
+
+            
+            // Inicializar mini-batches
+            for(int i=0; i<M; i++)
+                for(int j=0; j<batches[i].size(); j++)
+                    batches[i][j] = indices[i*mini_batch + j];
+            
+            // Inicializar último mini-batch
+            if(hay_ultimo_batch != 0)
+            {
+                for(int j=0; j<batches[batches.size()-1].size(); j++)
+                batches[batches.size()-1][j] = indices[M*mini_batch + j];
+            }
+
+            // Inicializar batches X e Y
+            for(int i=0; i<batches.size(); i++)
+                for(int j=0; j<batches[i].size(); j++)
+                {
+                    batches_x[i][j] = x[batches[i][j]];
+                    batches_y[i][j] = y[batches[i][j]];
+                }
+
             
             // Por cada mini-batch
-            for(int i=0; i<tam_batches.size(); i++)
-            {
-                fully->copiar_parametros(n);
+            for(int i=0; i<batches.size(); i++)
+                n.train(batches_x[i], batches_y[i], grad_x_fully);
+            
 
-                // Cada trabajador obtiene N/P imágenes, N = Nº imágenes por mini-batch 
-                int n_imgs_batch = tam_batches[i] / THREAD_NUM; 
-                vector<int> batch_p(n_imgs_batch, 0.0);
-                
-                for(int j=0; j<n_imgs_batch; j++)
-                    batch_p[j] = indices[mini_batch*i + n_imgs_batch*thread_id + j];                
-
-                // X ---------------------------------------------------
-                vector<vector<float>> batch_xp(n_imgs_batch);
-
-                for(int j=0; j<n_imgs_batch; j++)
-                    batch_xp[j] = x[batch_p[j]];
-
-                // Y ---------------------------------------------------
-                vector<vector<float>> batch_yp(n_imgs_batch);
-
-                for(int j=0; j<n_imgs_batch; j++)
-                    batch_yp[j] = y[batch_p[j]];              
-                
-                // Realizar backpropagation y acumular gradientes
-                fully->train(batch_xp, batch_yp, grad_pesos[thread_id], grad_b[thread_id], grad_x[thread_id]);
-
-                #pragma omp barrier
-                #pragma omp critical
-                {
-                    // Sumar gradientes
-                    if(thread_id != 0)
-                    {
-                        for(int c=0; c<grad_pesos[0].size(); c++)
-                            for(int j=0; j<grad_pesos[0][c].size(); j++)
-                                for(int k=0; k<grad_pesos[0][c][j].size(); k++)
-                                    grad_pesos[0][c][j][k] += grad_pesos[thread_id][c][j][k];
-
-                        for(int c=0; c<grad_b[0].size(); c++)
-                            for(int j=0; j<grad_b[0][c].size(); j++)
-                                    grad_b[0][c][j] += grad_b[thread_id][c][j];
-                    }
-                }
-
-                #pragma omp barrier  
-                #pragma omp single
-                {
-                    // Normalizar valores
-                    for(int c=0; c<grad_pesos[0].size(); c++)
-                        for(int j=0; j<grad_pesos[0][c].size(); j++)
-                            for(int k=0; k<grad_pesos[0][c][j].size(); k++)
-                                grad_pesos[0][c][j][k] = grad_pesos[0][c][j][k] / tam_batches[i];
-
-                    for(int c=0; c<grad_b[0].size(); c++)
-                        for(int j=0; j<grad_b[0][c].size(); j++)
-                                grad_b[0][c][j] = grad_b[0][c][j] / tam_batches[i];
-                    
-                    // Actualizar parámetros
-                    n.actualizar_parametros(grad_pesos[0], grad_b[0]);
-                }
-
-                #pragma omp barrier  
-            }
-        }
+        //}
 
 
 
