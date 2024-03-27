@@ -8,15 +8,15 @@
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{7}{figure.caption.15}%
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{8}{figure.caption.18}%
 \contentsline {figure}{\numberline {2.7}{\ignorespaces Componentes en una capa convolucional}}{11}{figure.caption.24}%
-\contentsline {figure}{\numberline {2.8}{\ignorespaces Propagación hacia delante en una capa convolucional}}{11}{figure.caption.26}%
-\contentsline {figure}{\numberline {2.9}{\ignorespaces Propagación hacia delante en una capa convolucional con varios canales de profundidad}}{12}{figure.caption.28}%
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Propagación hacia delante en una capa convolucional con varios filtros}}{13}{figure.caption.30}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Propagación hacia delante en una capa convolucional}}{12}{figure.caption.26}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Propagación hacia delante en una capa convolucional con varios canales de profundidad}}{13}{figure.caption.28}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Propagación hacia delante en una capa convolucional con varios filtros}}{14}{figure.caption.30}%
 \contentsline {figure}{\numberline {2.11}{\ignorespaces Componentes en una capa de agrupación máxima}}{14}{figure.caption.32}%
-\contentsline {figure}{\numberline {2.12}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{14}{figure.caption.34}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{15}{figure.caption.34}%
 \contentsline {figure}{\numberline {2.13}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{15}{figure.caption.36}%
-\contentsline {figure}{\numberline {2.14}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{15}{figure.caption.38}%
-\contentsline {figure}{\numberline {2.15}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{16}{figure.caption.40}%
-\contentsline {figure}{\numberline {2.16}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{17}{figure.caption.42}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{16}{figure.caption.38}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{17}{figure.caption.40}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{18}{figure.caption.42}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red con softmax}}{19}{figure.caption.43}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{22}{figure.caption.50}%

@@ -24,26 +24,26 @@
 \contentsline {subsubsection}{Sigmoid Cross Entropy Loss}{8}{section*.17}%
 \contentsline {subsection}{\numberline {2.5.6}Descenso del gradiente}{8}{subsection.2.5.6}%
 \contentsline {subsubsection}{Entrenamiento}{9}{section*.19}%
-\contentsline {subsubsection}{Descenso del gradiente estocástico}{9}{section*.20}%
+\contentsline {subsubsection}{Descenso del gradiente estocástico}{10}{section*.20}%
 \contentsline {subsection}{\numberline {2.5.7}Inicialización de pesos y sesgos}{10}{subsection.2.5.7}%
 \contentsline {subsubsection}{Inicialización de pesos}{10}{section*.21}%
 \contentsline {subsubsection}{Inicialización de sesgos}{10}{section*.22}%
-\contentsline {subsection}{\numberline {2.5.8}Tipos de codificaciones}{10}{subsection.2.5.8}%
-\contentsline {subsection}{\numberline {2.5.9}Propagación hacia delante con softmax}{10}{subsection.2.5.9}%
+\contentsline {subsection}{\numberline {2.5.8}Tipos de codificaciones}{11}{subsection.2.5.8}%
+\contentsline {subsection}{\numberline {2.5.9}Propagación hacia delante con softmax}{11}{subsection.2.5.9}%
 \contentsline {section}{\numberline {2.6}Redes Neuronales Convolucionales}{11}{section.2.6}%
 \contentsline {subsection}{\numberline {2.6.1}Capa convolucional}{11}{subsection.2.6.1}%
 \contentsline {subsubsection}{Componentes}{11}{section*.23}%
-\contentsline {subsubsection}{Propagación hacia delante}{11}{section*.25}%
-\contentsline {subsubsection}{Propagación hacia delante, canales de profundidad}{12}{section*.27}%
-\contentsline {subsubsection}{Propagación hacia delante, número de filtros}{13}{section*.29}%
+\contentsline {subsubsection}{Propagación hacia delante}{12}{section*.25}%
+\contentsline {subsubsection}{Propagación hacia delante, canales de profundidad}{13}{section*.27}%
+\contentsline {subsubsection}{Propagación hacia delante, número de filtros}{14}{section*.29}%
 \contentsline {subsection}{\numberline {2.6.2}Capa de agrupación máxima}{14}{subsection.2.6.2}%
 \contentsline {subsubsection}{Componentes}{14}{section*.31}%
-\contentsline {subsubsection}{Propagación hacia delante}{14}{section*.33}%
+\contentsline {subsubsection}{Propagación hacia delante}{15}{section*.33}%
 \contentsline {subsubsection}{Propagación hacia delante, canales de profundidad}{15}{section*.35}%
-\contentsline {subsubsection}{Propagación hacia detrás}{15}{section*.37}%
-\contentsline {subsection}{\numberline {2.6.3}Capa de aplanado}{16}{subsection.2.6.3}%
-\contentsline {subsubsection}{Propagación hacia delante}{16}{section*.39}%
-\contentsline {subsubsection}{Propagación hacia detrás}{17}{section*.41}%
+\contentsline {subsubsection}{Propagación hacia detrás}{16}{section*.37}%
+\contentsline {subsection}{\numberline {2.6.3}Capa de aplanado}{17}{subsection.2.6.3}%
+\contentsline {subsubsection}{Propagación hacia delante}{17}{section*.39}%
+\contentsline {subsubsection}{Propagación hacia detrás}{18}{section*.41}%
 \contentsline {chapter}{\numberline {3}Aportaciones}{19}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Redes Neuronales Totalmente Conectadas}{19}{section.3.1}%
 \contentsline {subsection}{\numberline {3.1.1}Gradiente de la función de pérdida respecto a SoftMax, \cite {Cross_entropy_backprop} \cite {Cross_entropy_backprop_grad_input}}{19}{subsection.3.1.1}%
@@ -78,7 +78,7 @@
 \contentsline {subsubsection}{Gradiente respecto a sesgos}{37}{section*.90}%
 \contentsline {section}{\numberline {3.2}Paralelización en entrenamiento}{37}{section.3.2}%
 \contentsline {subsubsection}{Tipos de paralelismo}{37}{section*.91}%
-\contentsline {subsubsection}{Paralelismo en SGD}{37}{section*.92}%
+\contentsline {subsubsection}{Paralelismo en SGD}{38}{section*.92}%
 \contentsline {subsubsection}{Aprovechamiento del tiempo de comunicación}{38}{section*.93}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{41}{chapter.4}%
 \contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{41}{section.4.1}%

@@ -90,6 +90,13 @@ ml4a.
 \newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
   [Accessed:27/02/2024].
 
+\bibitem{SGD_3}
+Sebastian Raschka.
+\newblock How is stochastic gradient descent implemented in the context of
+  machine learning and deep learning?, 2024.
+\newblock \url{https://sebastianraschka.com/faq/docs/sgd-methods.html}
+  [Accessed:27/03/2024].
+
 \bibitem{sgd_stocastico}
 Wikipedia.
 \newblock Stochastic gradient descent, 2024.
@@ -156,6 +163,13 @@ Archana David.
 \newblock Backprop through max-pooling layers?, 2007.
 \newblock
   \url{https://datascience.stackexchange.com/questions/11699/backprop-through-max-pooling-layers}
+  [Accessed:24/03/2024].
+
+\bibitem{max_pool_backprop_2}
+Muhammad Baqir.
+\newblock How to backpropagate through max-pooling layers, 2024.
+\newblock
+  \url{https://www.educative.io/answers/how-to-backpropagate-through-max-pooling-layers}
   [Accessed:24/03/2024].
 
 \bibitem{flatten_forward}

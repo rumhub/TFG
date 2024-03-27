@@ -165,8 +165,27 @@ Así, se actualizarán los parámetros de la red neuronal según las fórmulas \
 
 \subsubsection{Descenso del gradiente estocástico}
 
+\begin{algorithm}[H]
+	\caption{Descenso del gradiente estocástico \cite{SGD_3}} 
+	\begin{algorithmic}
+		\State Datos de entrenamiento $D=\{(x_1, y_1), (x_2, y_2), ..., (x_N, y_N)\}$.
+		\For{época $p\in\{0, ..., P-1\}$}
+			\State Desordenar vector de datos D.
+			
+			\For{$i \in [m_{inicio}, ..., m_{fin}]$}
+				\State Obtener pareja de datos $(x_i, y_i) \in D$
+				\State Realizar propagación hacia delante de $x_i$ y obtener predicción $\hat{y}_i$.
+				\State Evaluar $\hat{y}_i$ con la función de pérdida y calcular el error $e_i$.
+				\State Realizar propagación hacia detrás y obtener gradientes 
+				\State      de cada parámetro del modelo.
+				\State Actualizar parámetros.
+			\EndFor
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+
 Es una variante que sustituye el gradiente real por una estimación del mismo, logrando reducir la carga computacional y tiempo de entrenamiento a cambio de una menor tasa de convergencia. \cite{sgd_stocastico} \cite{sgd_stocastico_1} \\
-Se caracterizada por, en cada época, dividir el conjunto de entrenamiento en varios subconjuntos aleatorios y disjuntos entre ellos (mini-batch), de tal forma que se calcule el gradiente y actualicen los parámetros del modelo en cada uno de ellos.\\ Además, tal y como se explicará posteriormente, al ser cada subconjunto independiente al resto, es un proceso con gran potencial para paralelización. \cite{sgd_stocastico}
+Se caracterizada por, en cada época, dividir el conjunto de entrenamiento en varios subconjuntos aleatorios y disjuntos entre ellos (mini-batch), de tal forma que se calcule el gradiente y actualicen los parámetros del modelo en cada uno de ellos. \cite{sgd_stocastico} \\
 
 \subsection{Inicialización de pesos y sesgos}
 
@@ -384,7 +403,7 @@ En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como
 	\caption{Propagación hacia delante en una capa de agrupación máxima}
 	\label{fig:back_prop_maxpool}
 \end{figure}
-\cite{max_pool_backprop}
+\cite{max_pool_backprop} \cite{max_pool_backprop_2}
 
 \subsection{Capa de aplanado}
 

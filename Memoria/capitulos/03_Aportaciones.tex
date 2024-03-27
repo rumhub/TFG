@@ -569,10 +569,37 @@ A continuación se realiza el cálculo necesario para la retropropagación de un
 El entrenamiento de una red neuronal convolucional (CNN) se puede paralelizar de distintas formas. Si el modelo se reparte entre varios ordenadores que son entrenados con los mismos datos, se denomina \textbf{paralelismo del modelo} (una capa por computador, por ejemplo). Sin embargo, si se distribuyen los datos entre múltiples nodos pero se emplea el mismo modelo para entrenar, se denomina \textbf{paralelismo de datos}. \\
 
 \subsubsection{Paralelismo en SGD}
-Dada la naturaleza iterativa del algoritmo del descenso del gradiente estocástico, puede parecer un obstáculo ante la paralelización del entrenamiento del modelo. Sin embargo, tal y como se indica en \cite{CNN_parallel_Stanford}, \cite{CNN_parallel_International_Conference}, y \cite{CNN_parallel_Ome_Weird_Trick}, esto no tiene por qué ser así, pues en cada iteración se entrena al modelo con M subconjuntos de datos disjuntos entre ellos. Esto permite aplicar una paralelización de datos, de forma que cada subconjunto de M se procese en paralelo con el resto pero sobre el mismo modelo. \\
-Además, \cite{CNN_parallel_International_Conference} propone un nuevo enfoque caracterizado por el aprovechamiento del tiempo de comunicación mediante cómputo en paralelo. \\
+\begin{algorithm}[H]
+	\caption{Descenso del gradiente estocástico \cite{CNN_parallel_International_Conference}} 
+	\begin{algorithmic}
+		\State Datos de entrenamiento $D=\{(x_1, y_1), (x_2, y_2), ..., (x_N, y_N)\}$.
+		
+		\For{época $p\in\{0, ..., P-1\}$}
+			\State Desordenar vector de datos D.
+			\For{$i \in [m_{inicio}, ..., m_{fin}]$}
+				\For{cada trabajador $p \in P$}
+					\State Obtener pareja de datos $(x_i, y_i) \in D$ correspondiente 
+					\State al trabajador p, ($\frac{m_{fin} - m_{inicio}}{P}$ datos).
+					\State Realizar propagación hacia delante de $x_i$ y obtener 
+					\State predicción $\hat{y}_i$.
+					\State Evaluar $\hat{y}_i$ con la función de pérdida y calcular el error $e_i$.
+					\State Realizar propagación hacia detrás y obtener gradientes 
+					\State de cada parámetro del modelo.
+				\EndFor
+				
+				\State Acumular gradientes obtenidos por cada trabajador.
+				\State Actualizar parámetros.
+				
+			\EndFor
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+
+La naturaleza iterativa del algoritmo del descenso del gradiente estocástico puede parecer un obstáculo ante la paralelización del entrenamiento del modelo, pues la iteración i se basa en el resultado obtenido en la iteración i-1. Sin embargo, tal y como se indica en \cite{CNN_parallel_Stanford}, \cite{CNN_parallel_International_Conference}, y \cite{CNN_parallel_Ome_Weird_Trick}, existe una forma de aplicar paralelismo en cada iteración. \\
+En cada época se entrena al modelo con M subconjuntos de $N_m$ datos disjuntos entre ellos de forma que, dados P ``trabajadores'' o procesos paralelos, se puede dividir cada mini-batch a su vez en P subconjuntos de $\frac{N_m}{P}$ datos y asignar cada uno a un trabajador distinto.\\
 
 \subsubsection{Aprovechamiento del tiempo de comunicación}
+\cite{CNN_parallel_International_Conference} Propone un nuevo enfoque caracterizado por el aprovechamiento del tiempo de comunicación mediante cómputo en paralelo. \\
 En la propagación hacia detrás, se calcula el gradiente de la función de error respecto a cada parámetro de la red. Como no hay dependencia de datos entre los gradientes de distintas capas, la comunicación para intercambiar dichos gradientes entre los nodos de cálculo puede ejecutarse de manera concurrente con los cálculos de otras capas.
 
 \begin{algorithm}
