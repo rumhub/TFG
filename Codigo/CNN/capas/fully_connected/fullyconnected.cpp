@@ -319,9 +319,8 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     return sum;
 }
 
-void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x)
+void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x)
 {
-    int n_datos = x.size();
     float epsilon = 0.000000001;
 
     int i_output = this->a.size()-1; // índice de la capa output
@@ -797,11 +796,9 @@ int main()
     //n.leer_atributos(x, y, "../../../fotos/iris/iris.data");
     
     // SGD
-    vector<int> indices(x.size());
+    vector<int> indices(x.size()), tam_batches;
     int n_imgs=x.size(), n_epocas = 100, mini_batch = 32;
-    vector<int> batch(mini_batch, 0), tam_batches;
     const int M = n_imgs / mini_batch;
-    const bool hay_ultimo_batch = (n_imgs % mini_batch != 0);
 
     // Inicializar vector de índices
     for(int i=0; i<n_imgs; i++)
@@ -813,9 +810,8 @@ int main()
         tam_batches.push_back(mini_batch);
     
     // Último batch puede tener distinto tamaño al resto
-    if(hay_ultimo_batch)
-        tam_batches.push_back(n_imgs % mini_batch);
-
+    if(n_imgs % mini_batch != 0)
+        tam_batches.push_back(n_imgs % mini_batch);    
 
     vector<vector<vector<vector<float>>>> grad_pesos(THREAD_NUM);
     vector<vector<vector<float>>> grad_b(THREAD_NUM), grad_x(THREAD_NUM);
@@ -823,13 +819,17 @@ int main()
     FullyConnected *fullys = new FullyConnected[THREAD_NUM];
     for(int i=0; i<THREAD_NUM; i++)
         fullys[i] = n;
-
     
     // ---------------------------------------------------
     // Por cada trabajador p 
     #pragma omp parallel num_threads(THREAD_NUM)
     {
         int thread_id = omp_get_thread_num();
+
+        vector<int> batch_p(mini_batch);
+        vector<vector<float>> batch_xp(mini_batch);
+        vector<vector<float>> batch_yp(mini_batch);
+
 
         for(int ep=0; ep<n_epocas; ep++)
         {
@@ -850,26 +850,20 @@ int main()
 
                 if(n_imgs_batch * THREAD_NUM < tam_batches[i] && thread_id == THREAD_NUM-1)
                     n_imgs_batch = n_imgs_batch + (tam_batches[i] % THREAD_NUM);
-                
-                vector<int> batch_p(n_imgs_batch, 0.0);
-                
+                                
                 for(int j=0; j<n_imgs_batch; j++)
                     batch_p[j] = indices[mini_batch*i + n_imgs_batch_ant*thread_id + j];   
 
                 // X ---------------------------------------------------
-                vector<vector<float>> batch_xp(n_imgs_batch);
-
                 for(int j=0; j<n_imgs_batch; j++)
                     batch_xp[j] = x[batch_p[j]];
 
                 // Y ---------------------------------------------------
-                vector<vector<float>> batch_yp(n_imgs_batch);
-
                 for(int j=0; j<n_imgs_batch; j++)
                     batch_yp[j] = y[batch_p[j]];              
                 
                 // Realizar backpropagation y acumular gradientes
-                fullys[thread_id].train(batch_xp, batch_yp, grad_pesos[thread_id], grad_b[thread_id], grad_x[thread_id]);
+                fullys[thread_id].train(batch_xp, batch_yp, n_imgs_batch, grad_pesos[thread_id], grad_b[thread_id], grad_x[thread_id]);
 
                 #pragma omp barrier
                 #pragma omp critical
@@ -891,7 +885,7 @@ int main()
                 #pragma omp barrier  
                 #pragma omp single
                 {
-                    // Normalizar valores
+                    // Realizar la media
                     for(int c=0; c<grad_pesos[0].size(); c++)
                         for(int j=0; j<grad_pesos[0][c].size(); j++)
                             for(int k=0; k<grad_pesos[0][c][j].size(); k++)
@@ -916,7 +910,6 @@ int main()
                 cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
             }
             #pragma omp barrier 
-
         }
     }
 

@@ -57,7 +57,7 @@ class FullyConnected
 
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x);
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x);
 
         void train2(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x);
 
