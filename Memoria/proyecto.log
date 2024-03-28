@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.11)  28 MAR 2024 15:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.11)  28 MAR 2024 20:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1229,28 +1229,28 @@ LaTeX Info: Redefining \% on input line 455.
 <imagenes/back_flatten_1.jpg, id=587, 1601.985pt x 477.785pt>
 File: imagenes/back_flatten_1.jpg Graphic file (type jpg)
 <use imagenes/back_flatten_1.jpg>
-Package pdftex.def Info: imagenes/back_flatten_1.jpg  used on input line 464.
+Package pdftex.def Info: imagenes/back_flatten_1.jpg  used on input line 465.
 (pdftex.def)             Requested size: 360.0pt x 107.36575pt.
 
-Overfull \hbox (97.07507pt too wide) in paragraph at lines 463--465
+Overfull \hbox (97.07507pt too wide) in paragraph at lines 464--466
 []  [] 
  []
 
 <imagenes/back_flatten_2.jpg, id=588, 1601.985pt x 477.785pt>
 File: imagenes/back_flatten_2.jpg Graphic file (type jpg)
 <use imagenes/back_flatten_2.jpg>
-Package pdftex.def Info: imagenes/back_flatten_2.jpg  used on input line 469.
+Package pdftex.def Info: imagenes/back_flatten_2.jpg  used on input line 470.
 (pdftex.def)             Requested size: 360.0pt x 107.36575pt.
 
-Overfull \hbox (97.07507pt too wide) in paragraph at lines 468--470
+Overfull \hbox (97.07507pt too wide) in paragraph at lines 469--471
 []  [] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 476.
-LaTeX Info: Redefining \% on input line 476.
+LaTeX Info: Redefining \. on input line 477.
+LaTeX Info: Redefining \% on input line 477.
  [17 <./imagenes/flatten_1.jpg> <./imagenes/flatten_2.jpg>])
 (capitulos/03_Aportaciones.tex
 LaTeX Info: Redefining \. on input line 1.
@@ -2062,7 +2062,7 @@ Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/boxyu/
 AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Use
 rs/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt10.pf
 b>
-Output written on proyecto.pdf (71 pages, 3295029 bytes).
+Output written on proyecto.pdf (71 pages, 3295566 bytes).
 PDF statistics:
  1134 PDF objects out of 1200 (max. 8388607)
  332 named destinations out of 1000 (max. 500000)

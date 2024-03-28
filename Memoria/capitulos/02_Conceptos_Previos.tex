@@ -453,7 +453,8 @@ Como el resultado obtenido en cada iteración solo depende del valor máximo de 
 	\label{fig:forward_prop_flatten_canales_profundidad}
 \end{figure}
 
-\cite{flatten_forward}
+La capa de aplanado tiene como objetivo la creación de un ``enlace'' entre las capas de convolución y agrupación con la capas totalmente conectadas. En la propagación hacia delante, parte de un volumen de entrada 3D para, mediante un ``aplanado'', convertirlo en un vector 1D que pueda ser usado como entrada para una red totalmente conectada. \\
+Como solo se modifica la forma en la que se agrupan los datos, no requiere la presencia de parámetros. \cite{flatten_forward}
 
 \subsubsection{Propagación hacia detrás}
 
@@ -473,5 +474,7 @@ Como el resultado obtenido en cada iteración solo depende del valor máximo de 
 	\caption{Propagación hacia delante en una capa de agrupación máxima}
 	\label{fig:back_prop_flatten_canales_profundidad}
 \end{figure}
+
+En la propagación hacia detrás, se parte de un array 1D y se convierte en un volumen 3D que pueda ser usado como entrada para una capa convolucional o de agrupación.
 
 \cite{flatten_forward}
