@@ -326,6 +326,8 @@ En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como
 	\caption{Componentes en una capa de agrupación máxima}
 \end{figure}
 
+Al igual que las capas convolucionales, las capas de agupación máxima también presentan una ``ventana'' que se irá deslizando por el volumen de entrada. Sin embargo, el resultado en cada iteración viene dado por el valor máximo contenido en ella. Por tanto, no presenta parámetros asociados.
+
 \subsubsection{Propagación hacia delante}
 
 \begin{figure}[H]
@@ -356,6 +358,9 @@ En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como
 	\label{fig:forward_prop_maxpool}
 \end{figure}
 
+A diferencia de las capas convolucionales, las capas de agrupación máxima no comparten regiones del volumen de entrada entre distintas iteraciones. Esto se muestra en las figuras \ref{fig:forward_prop_maxpool} y \ref{fig:forward_prop_convolucional}.
+
+
 \subsubsection{Propagación hacia delante, canales de profundidad}
 
 \begin{figure}[H]
@@ -374,6 +379,8 @@ En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como
 	\caption{Propagación hacia delante en una capa de agrupación máxima}
 	\label{fig:forward_prop_maxpool_canales_profundidad}
 \end{figure}
+
+Tal y como se muestra en la figura \ref{fig:forward_prop_maxpool_canales_profundidad}, cada ``ventana'' se desliza sobre el volumen de entrada en un canal de profundidad distinto.
 
 \subsubsection{Propagación hacia detrás}
 
@@ -399,12 +406,33 @@ En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como
 		\hspace{10mm}
 		\includegraphics[width=1.2\linewidth]{imagenes/back_maxpool_4.jpg}  
 		\caption{Cálculo $Y_{12}$}
-	\end{subfigure}
+	\end{subfigure}%
 	\caption{Propagación hacia delante en una capa de agrupación máxima}
 	\label{fig:back_prop_maxpool}
 \end{figure}
-\cite{max_pool_backprop} \cite{max_pool_backprop_2}
 
+Para la primera iteración de la figura \ref{fig:back_prop_maxpool}, en la propagación hacia detrás se calcula el gradiente respecto al volumen de entrada de la siguiente forma:
+
+\begin{gather}
+	\frac{\partial E}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{11}} \\
+	\frac{\partial E}{\partial X^1_{12}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{12}} \\
+	\frac{\partial E}{\partial X^1_{21}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{21}} \\
+	\frac{\partial E}{\partial X^1_{22}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{22}}
+\end{gather}
+
+ 
+Tomando el ejemplo de la figura \ref{fig:back_prop_maxpool} (a), se obtiene que $Y^1_{11} = X^1_{11}$. Por tanto, las fórmulas anteriores se convierten en:
+
+\begin{gather}
+	\frac{\partial E}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} * \frac{\partial X^1_{11}}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} * 1 = \frac{\partial E}{\partial Y} \\
+	\frac{\partial E}{\partial X^1_{12}} = \frac{\partial E}{\partial Y} * \frac{\partial X^1_{11}}{\partial X^1_{12}} = \frac{\partial E}{\partial X^1_{11}} * 0 \\
+	\frac{\partial E}{\partial X^1_{21}} = \frac{\partial E}{\partial Y} * \frac{\partial X^1_{11}}{\partial X^1_{21}} = \frac{\partial E}{\partial X^1_{11}} * 0 \\
+	\frac{\partial E}{\partial X^1_{22}} = \frac{\partial E}{\partial Y} * \frac{\partial X^1_{11}}{\partial X^1_{22}} = \frac{\partial E}{\partial X^1_{11}} * 0
+\end{gather}
+
+
+ 
+Como el resultado obtenido en cada iteración solo depende del valor máximo de la ventana, tiene sentido que la derivada de la salida Y respecto a la entrada X sea igual a 1 solo en dicho caso y 0 en el resto. \cite{max_pool_backprop} \cite{max_pool_backprop_2}
 \subsection{Capa de aplanado}
 
 \subsubsection{Propagación hacia delante}
