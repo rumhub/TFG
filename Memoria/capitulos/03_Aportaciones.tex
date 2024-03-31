@@ -658,3 +658,99 @@ En la propagación hacia detrás, se calcula el gradiente de la función de erro
 		\EndFor
 	\end{algorithmic}
 \end{algorithm}
+
+\section{Redes Neuronales Convolucionales}
+
+\subsection{Propagación hacia detrás}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{imagenes/conv_ejemplo_backprop_1.jpg} 
+	\caption{Ejemplo de propagación hacia delante en una capa convolucional}
+	\label{fig:ejemplo_forward_prop_convolucional}
+\end{figure}
+
+La figura \ref{fig:ejemplo_forward_prop_convolucional} muestra el ejemplo de propagación hacia delante que se empleará en esta sección. En él, C indica el número de canales de profundidad del volumen de entrada X, mientras que $K_x$ y $K_y$ hacen referencia al número de filas y columnas del kernel K empleado, respectivamente.
+
+\subsubsection{Gradiente respecto a los pesos}
+
+Para calcular el gradiente de la función de error respecto a cada peso, se deberá realizar una sumatoria del mismo respecto a cada valor de salida de dicha convolución, pues cada peso $K_{xy}$ se empleó en el cálculo de cada valor $Y_{ij}$. Esto se vio anteriormente en la figura \ref{fig:forward_prop_convolucional}.
+
+\begin{gather}
+	\frac{\partial E}{\partial K^c_{11}} = \sum_{i=1}^{I}\sum_{j=1}^{J}  [\frac{\partial E}{\partial Y^c_{ij}} * \frac{\partial Y^c_{ij}}{\partial K^c_{11}}] 
+\end{gather}
+
+De esta forma, el gradiente de $Y^c_{11}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{11} = X^c_{11} * K^c_{11} + X^c_{12} * K^c_{12} + X^c_{21} * K^c_{21} + X^c_{22} * K^c_{22} \\
+	\frac{\partial Y^c_{11}}{\partial K^c_{xy}} = \frac{\partial (X^c_{11} * K^c_{11} + X^c_{12} * K^c_{12} + X^c_{21} * K^c_{21} + X^c_{22} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{11}}{\partial K^c_{11}} = X^c_{11}\\
+	\frac{\partial Y^c_{11}}{\partial K^c_{12}} = X^c_{12}\\
+	\frac{\partial Y^c_{11}}{\partial K^c_{21}} = X^c_{21}\\
+	\frac{\partial Y^c_{11}}{\partial K^c_{22}} = X^c_{22}
+\end{gather}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{imagenes/conv_ejemplo_backprop_2.jpg} 
+	\caption{Ejemplo de propagación hacia delante en una capa convolucional}
+	\label{fig:ejemplo_2_forward_prop_convolucional}
+\end{figure}
+
+Del mismo modo, se calcula el gradiente de $Y^c_{12}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{12} = X^c_{12} * K^c_{11} + X^c_{13} * K^c_{12} + X^c_{22} * K^c_{21} + X^c_{23} * K^c_{22} \\
+	\frac{\partial Y^c_{12}}{\partial K^c_{xy}} = \frac{\partial (X^c_{11} * K^c_{11} + X^c_{12} * K^c_{12} + X^c_{21} * K^c_{21} + X^c_{22} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{12}}{\partial K^c_{11}} = X^c_{12}\\
+	\frac{\partial Y^c_{12}}{\partial K^c_{12}} = X^c_{13}\\
+	\frac{\partial Y^c_{12}}{\partial K^c_{21}} = X^c_{22}\\
+	\frac{\partial Y^c_{12}}{\partial K^c_{22}} = X^c_{23}
+\end{gather}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{imagenes/conv_ejemplo_backprop_3.jpg} 
+	\caption{Ejemplo de propagación hacia delante en una capa convolucional}
+	\label{fig:ejemplo_3_forward_prop_convolucional}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{21}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{21} = X^c_{12} * K^c_{11} + X^c_{13} * K^c_{12} + X^c_{22} * K^c_{21} + X^c_{23} * K^c_{22} \\
+	\frac{\partial Y^c_{21}}{\partial K^c_{xy}} = \frac{\partial (X^c_{11} * K^c_{11} + X^c_{12} * K^c_{12} + X^c_{21} * K^c_{21} + X^c_{22} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{21}}{\partial K^c_{11}} = X^c_{21}\\
+	\frac{\partial Y^c_{21}}{\partial K^c_{12}} = X^c_{22}\\
+	\frac{\partial Y^c_{21}}{\partial K^c_{21}} = X^c_{31}\\
+	\frac{\partial Y^c_{21}}{\partial K^c_{22}} = X^c_{32}
+\end{gather}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{imagenes/conv_ejemplo_backprop_4.jpg} 
+	\caption{Ejemplo de propagación hacia delante en una capa convolucional}
+	\label{fig:ejemplo_4_forward_prop_convolucional}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{22}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{22} = X^c_{22} * K^c_{11} + X^c_{23} * K^c_{12} + X^c_{32} * K^c_{21} + X^c_{33} * K^c_{22} \\
+	\frac{\partial Y^c_{21}}{\partial K^c_{xy}} = \frac{\partial (X^c_{11} * K^c_{11} + X^c_{12} * K^c_{12} + X^c_{21} * K^c_{21} + X^c_{22} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{21}}{\partial K^c_{11}} = X^c_{22}\\
+	\frac{\partial Y^c_{21}}{\partial K^c_{12}} = X^c_{23}\\
+	\frac{\partial Y^c_{21}}{\partial K^c_{21}} = X^c_{32}\\
+	\frac{\partial Y^c_{21}}{\partial K^c_{22}} = X^c_{33}
+\end{gather}
+
+Finalmente, se calcula la sumatoria y con ello el gradiente de la función de pérdida respecto a cada peso $K_{xy}$.
+
+\begin{gather}
+	\frac{\partial E}{\partial K^c_{11}} = \frac{\partial E}{\partial Y^c_{11}} * X^c_{11} + \frac{\partial E}{\partial Y^c_{12}} * X^c_{12} + \frac{\partial E}{\partial Y^c_{21}} * X^c_{21} + \frac{\partial E}{\partial Y^c_{22}} * X^c_{22} \\
+	\frac{\partial E}{\partial K^c_{12}} = \frac{\partial E}{\partial Y^c_{11}} * X^c_{12} + \frac{\partial E}{\partial Y^c_{12}} * X^c_{13} + \frac{\partial E}{\partial Y^c_{21}} * X^c_{22} + \frac{\partial E}{\partial Y^c_{22}} * X^c_{23} \\	
+	\frac{\partial E}{\partial K^c_{21}} = \frac{\partial E}{\partial Y^c_{11}} * X^c_{21} + \frac{\partial E}{\partial Y^c_{12}} * X^c_{22} + \frac{\partial E}{\partial Y^c_{31}} * X^c_{21} + \frac{\partial E}{\partial Y^c_{22}} * X^c_{32} \\
+	\frac{\partial E}{\partial K^c_{22}} = \frac{\partial E}{\partial Y^c_{11}} * X^c_{22} + \frac{\partial E}{\partial Y^c_{12}} * X^c_{23} + \frac{\partial E}{\partial Y^c_{31}} * X^c_{32} + \frac{\partial E}{\partial Y^c_{22}} * X^c_{33}
+\end{gather}
+
