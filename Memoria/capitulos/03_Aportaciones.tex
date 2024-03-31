@@ -738,11 +738,11 @@ Se calcula el gradiente de $Y^c_{22}$ respecto a cada peso.
 
 \begin{gather}
 	Y^c_{22} = X^c_{22} * K^c_{11} + X^c_{23} * K^c_{12} + X^c_{32} * K^c_{21} + X^c_{33} * K^c_{22} \\
-	\frac{\partial Y^c_{21}}{\partial K^c_{xy}} = \frac{\partial (X^c_{11} * K^c_{11} + X^c_{12} * K^c_{12} + X^c_{21} * K^c_{21} + X^c_{22} * K^c_{22})}{\partial K^c_{xy}} \\
-	\frac{\partial Y^c_{21}}{\partial K^c_{11}} = X^c_{22}\\
-	\frac{\partial Y^c_{21}}{\partial K^c_{12}} = X^c_{23}\\
-	\frac{\partial Y^c_{21}}{\partial K^c_{21}} = X^c_{32}\\
-	\frac{\partial Y^c_{21}}{\partial K^c_{22}} = X^c_{33}
+	\frac{\partial Y^c_{22}}{\partial K^c_{xy}} = \frac{\partial (X^c_{11} * K^c_{11} + X^c_{12} * K^c_{12} + X^c_{21} * K^c_{21} + X^c_{22} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{22}}{\partial K^c_{11}} = X^c_{22}\\
+	\frac{\partial Y^c_{22}}{\partial K^c_{12}} = X^c_{23}\\
+	\frac{\partial Y^c_{22}}{\partial K^c_{21}} = X^c_{32}\\
+	\frac{\partial Y^c_{22}}{\partial K^c_{22}} = X^c_{33}
 \end{gather}
 
 Finalmente, se calcula la sumatoria y con ello el gradiente de la función de pérdida respecto a cada peso $K_{xy}$.
@@ -754,3 +754,33 @@ Finalmente, se calcula la sumatoria y con ello el gradiente de la función de p�
 	\frac{\partial E}{\partial K^c_{22}} = \frac{\partial E}{\partial Y^c_{11}} * X^c_{22} + \frac{\partial E}{\partial Y^c_{12}} * X^c_{23} + \frac{\partial E}{\partial Y^c_{31}} * X^c_{32} + \frac{\partial E}{\partial Y^c_{22}} * X^c_{33}
 \end{gather}
 
+Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución entre la entrada X y el gradiente respecto a la capa de salida Y. Esto se ve con detalle en la figura \ref{fig:conv_backprop_como_convolucion_X_Y}.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-25mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_backprop_1.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{11}}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{5mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_backprop_2.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{12}}$}
+	\end{subfigure}
+	\vspace{5mm}
+	\begin{subfigure}{.5\textwidth}
+	\hspace{-25mm}
+	\includegraphics[width=1.4\linewidth]{imagenes/conv_backprop_3.jpg}  
+	\caption{Cálculo de $\frac{\partial E}{\partial K^1_{21}}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+	\hspace{5mm}
+	\includegraphics[width=1.4\linewidth]{imagenes/conv_backprop_4.jpg}  
+	\caption{Cálculo de $\frac{\partial E}{\partial K^1_{22}}$}
+	\end{subfigure}
+	\caption{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}
+	\label{fig:conv_backprop_como_convolucion_X_Y}
+\end{figure}
+
+En la figura \ref{fig:conv_backprop_como_convolucion_X_Y}, cada subfigura $\{(a), (b), (c), (d)\}$ corresponde al cálculo del gradiente respecto a un peso distinto.

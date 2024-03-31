@@ -44,5 +44,6 @@
 \contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{41}{figure.caption.96}%
 \contentsline {figure}{\numberline {3.25}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.97}%
 \contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.98}%
+\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{44}{figure.caption.99}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
