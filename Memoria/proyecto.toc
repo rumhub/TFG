@@ -82,9 +82,15 @@
 \contentsline {subsubsection}{Aprovechamiento del tiempo de comunicación}{38}{section*.93}%
 \contentsline {section}{\numberline {3.3}Redes Neuronales Convolucionales}{40}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Propagación hacia detrás}{40}{subsection.3.3.1}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{40}{section*.95}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{45}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{45}{section.4.1}%
-\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{45}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{47}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{47}{section.5.1}%
+\contentsline {subsubsection}{Sumatoria de gradientes}{40}{section*.95}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{40}{section*.96}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{41}{section*.97}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{42}{section*.99}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{43}{section*.101}%
+\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{44}{section*.103}%
+\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{45}{section*.105}%
+\contentsline {chapter}{\numberline {4}Adaptación GPU}{49}{chapter.4}%
+\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{49}{section.4.1}%
+\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{49}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{51}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{51}{section.5.1}%

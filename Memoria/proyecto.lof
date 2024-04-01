@@ -41,9 +41,11 @@
 \contentsline {figure}{\numberline {3.21}{\ignorespaces Imagen de backpropagation en la capa l}}{36}{figure.caption.87}%
 \contentsline {figure}{\numberline {3.22}{\ignorespaces Imagen de backpropagation en los pesos entre la capa l-1 y l}}{36}{figure.caption.89}%
 \contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{40}{figure.caption.94}%
-\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{41}{figure.caption.96}%
-\contentsline {figure}{\numberline {3.25}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.97}%
-\contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.98}%
-\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{44}{figure.caption.99}%
+\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{41}{figure.caption.98}%
+\contentsline {figure}{\numberline {3.25}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.100}%
+\contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{43}{figure.caption.102}%
+\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{45}{figure.caption.104}%
+\contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{46}{figure.caption.106}%
+\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{47}{figure.caption.107}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

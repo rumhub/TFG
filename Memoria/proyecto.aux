@@ -219,6 +219,7 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{32}{figure.caption.78}\protected@file@percent }
 \newlabel{nn_h1_caminos_posibles}{{3.16}{32}{Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}{figure.caption.78}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.17}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{33}{figure.caption.79}\protected@file@percent }
+\newlabel{deriv_relu}{{3.70}{33}{Capa oculta h1}{equation.3.1.70}{}}
 \newlabel{grad_E_a1j}{{3.73}{33}{Capa oculta h1}{equation.3.1.73}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Pesos capa input-h1}{33}{section*.80}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.18}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{33}{figure.caption.81}\protected@file@percent }
@@ -256,26 +257,38 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Propagación hacia detrás}{40}{subsection.3.3.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{40}{figure.caption.94}\protected@file@percent }
 \newlabel{fig:ejemplo_forward_prop_convolucional}{{3.23}{40}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.94}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{40}{section*.95}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{41}{figure.caption.96}\protected@file@percent }
-\newlabel{fig:ejemplo_2_forward_prop_convolucional}{{3.24}{41}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.96}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.25}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.97}\protected@file@percent }
-\newlabel{fig:ejemplo_3_forward_prop_convolucional}{{3.25}{42}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.97}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.98}\protected@file@percent }
-\newlabel{fig:ejemplo_4_forward_prop_convolucional}{{3.26}{42}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.98}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{44}{figure.caption.99}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_X_Y}{{3.27}{44}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.99}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{45}{chapter.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Sumatoria de gradientes}{40}{section*.95}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{40}{section*.96}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{41}{section*.97}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{41}{figure.caption.98}\protected@file@percent }
+\newlabel{fig:ejemplo_2_forward_prop_convolucional}{{3.24}{41}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.98}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{42}{section*.99}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.25}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.100}\protected@file@percent }
+\newlabel{fig:ejemplo_3_forward_prop_convolucional}{{3.25}{42}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.100}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{43}{section*.101}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{43}{figure.caption.102}\protected@file@percent }
+\newlabel{fig:ejemplo_4_forward_prop_convolucional}{{3.26}{43}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.102}{}}
+\citation{conv_backprop}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{44}{section*.103}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{45}{figure.caption.104}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_X_Y}{{3.27}{45}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.104}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{45}{section*.105}\protected@file@percent }
+\citation{conv_backprop}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{46}{figure.caption.106}\protected@file@percent }
+\newlabel{fig:flip_W}{{3.28}{46}{Invertir pesos en K tanto horizontal como verticalmente}{figure.caption.106}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{47}{figure.caption.107}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Y_W}{{3.29}{47}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.107}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{49}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{45}{section.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{45}{section.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{49}{section.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{49}{section.4.2}\protected@file@percent }
 \bibstyle{unsrt}
 \bibdata{bibliografia/bibliografia}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{47}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{51}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}cuDNN}{47}{section.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}cuDNN}{51}{section.5.1}\protected@file@percent }
 \bibcite{Cross_entropy_backprop}{1}
 \bibcite{Cross_entropy_backprop_grad_input}{2}
 \bibcite{NN_backpropagation}{3}
@@ -303,7 +316,8 @@
 \bibcite{max_pool_backprop}{25}
 \bibcite{max_pool_backprop_2}{26}
 \bibcite{flatten_forward}{27}
-\bibcite{CNN_parallel_Stanford}{28}
-\bibcite{CNN_parallel_International_Conference}{29}
+\bibcite{CNN_parallel_International_Conference}{28}
+\bibcite{CNN_parallel_Stanford}{29}
 \bibcite{CNN_parallel_Ome_Weird_Trick}{30}
-\gdef \@abspage@last{75}
+\bibcite{conv_backprop}{31}
+\gdef \@abspage@last{79}

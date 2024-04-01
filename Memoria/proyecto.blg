@@ -7,45 +7,45 @@ Reallocating 'name_of_file' (item size: 1) to 26 items.
 Database file #1: bibliografia/bibliografia.bib
 Warning--empty publisher in Learning_From_Data
 Warning--empty booktitle in CNN_parallel_Stanford
-You've used 30 entries,
+You've used 31 entries,
             1791 wiz_defined-function locations,
-            597 strings with 9325 characters,
-and the built_in function-call counts, 4155 in all, are:
-= -- 331
-> -- 131
+            601 strings with 9489 characters,
+and the built_in function-call counts, 4282 in all, are:
+= -- 341
+> -- 135
 < -- 1
-+ -- 63
-- -- 33
-* -- 73
-:= -- 617
-add.period$ -- 88
-call.type$ -- 30
-change.case$ -- 30
++ -- 65
+- -- 34
+* -- 74
+:= -- 636
+add.period$ -- 91
+call.type$ -- 31
+change.case$ -- 31
 chr.to.int$ -- 0
-cite$ -- 32
-duplicate$ -- 185
-empty$ -- 564
-format.name$ -- 33
-if$ -- 985
+cite$ -- 33
+duplicate$ -- 190
+empty$ -- 582
+format.name$ -- 34
+if$ -- 1015
 int.to.chr$ -- 0
-int.to.str$ -- 30
+int.to.str$ -- 31
 missing$ -- 7
-newline$ -- 151
-num.names$ -- 28
-pop$ -- 203
+newline$ -- 156
+num.names$ -- 29
+pop$ -- 210
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 104
+skip$ -- 107
 stack$ -- 0
 substring$ -- 28
-swap$ -- 40
+swap$ -- 41
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 2
-while$ -- 30
-width$ -- 32
-write$ -- 302
+while$ -- 31
+width$ -- 33
+write$ -- 312
 (There were 2 warnings)
