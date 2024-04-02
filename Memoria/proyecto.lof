@@ -62,5 +62,6 @@
 \contentsline {figure}{\numberline {3.39}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{60}{figure.caption.131}%
 \contentsline {figure}{\numberline {3.40}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{61}{figure.caption.133}%
 \contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{62}{figure.caption.135}%
+\contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{63}{figure.caption.136}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

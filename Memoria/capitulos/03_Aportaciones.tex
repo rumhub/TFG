@@ -1194,7 +1194,7 @@ En capas convolucionales usaremos ReLU como función de activación. Por tanto, 
 	\frac{\partial E}{\partial A^c_{22}} = (\frac{\partial E}{\partial Y^c_{22}} * K^c_{22} + \frac{\partial E}{\partial Y^c_{23}} * K^c_{21} + \frac{\partial E}{\partial Y^c_{32}} * K^c_{12} + \frac{\partial E}{\partial Y^c_{33}} * K^c_{11}) * ReLU'(A^c_{22})
 \end{gather}
 
-Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución completa entre el gradiente respecto a la capa de salida Y y los pesos K invertidos tanto horizontal como verticalmente. Esto se ilustra en detalle en la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad}.
+Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución entre el gradiente respecto a la capa de salida Y y los pesos K invertidos tanto horizontal como verticalmente. Esto se ilustra en detalle en la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad}.
 
 \begin{figure}[H]
 	\centering
@@ -1222,3 +1222,24 @@ Tal y como se observa en los cálculos obtenidos, estos coinciden con una convol
 	\caption{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}
 	\label{fig:conv_backprop_como_convolucion_Y_K_pad}
 \end{figure}
+
+Una vez desarrolladas ambas retropropagaciones en una capa convolucional (con y sin relleno), se pueden comparar las figuras \ref{fig:conv_backprop_como_convolucion_Y_W} y \ref{fig:conv_backprop_como_convolucion_Y_K_pad} y ver que, aunque ambas calculan el gradiente de la pérdida respecto al volumen de entrada, en una figura se emplea una convolución completa mientras que en la otra no.
+
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\includegraphics[width=1.4\linewidth]{imagenes/full_vs_normal_conv_1.jpg}  
+		\caption{Retropropagación con un nivel de relleno}
+	\end{subfigure}
+	
+	\vspace{5mm}
+	\begin{subfigure}{.5\textwidth}
+		\includegraphics[width=1.4\linewidth]{imagenes/full_vs_normal_conv_2.jpg}  
+		\caption{Retropropagación con dos niveles de relleno}
+	\end{subfigure}
+	\caption{Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}
+	\label{fig:conv_full_vs_normal}
+\end{figure}
+
+El motivo de ello se presenta en detalle en la figura \ref{fig:conv_full_vs_normal}. Al realizar una convolución total ``desde el principio'', se empiezan a calcular los gradientes comenzando por la esquina superior izquierda de X. Sin embargo, sabiendo que X tiene relleno, no es necesario realizar el cálculo de dichos gradientes pues no se emplean en ningún cálculo posterior.

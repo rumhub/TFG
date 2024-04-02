@@ -103,8 +103,8 @@
 \contentsline {subsubsection}{Gradiente de $Y^c_{33}$}{60}{section*.130}%
 \contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{60}{section*.132}%
 \contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{61}{section*.134}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{63}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{63}{section.4.1}%
-\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{63}{section.4.2}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{65}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{65}{section.5.1}%
+\contentsline {chapter}{\numberline {4}Adaptación GPU}{65}{chapter.4}%
+\contentsline {section}{\numberline {4.1}GPU en Redes Neuronales Totalmente Conectadas}{65}{section.4.1}%
+\contentsline {section}{\numberline {4.2}GPU en Redes Neuronales Convolucionales}{65}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{67}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{67}{section.5.1}%
