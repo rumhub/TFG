@@ -158,6 +158,18 @@ Stanford.
 \newblock \url{https://cs231n.github.io/convolutional-networks/}
   [Accessed:19/03/2024].
 
+\bibitem{padding_1}
+savyakhosla.
+\newblock Cnn | introduction to padding, 2024.
+\newblock \url{https://www.geeksforgeeks.org/cnn-introduction-to-padding/}
+  [Accessed:02/04/2024].
+
+\bibitem{padding_2}
+Avinash Kumar, Sobhangi Sarkar, and Chittaranjan Pradhan.
+\newblock {\em Malaria Disease Detection Using CNN Technique with SGD, RMSprop
+  and ADAM Optimizers}, pages 211--230.
+\newblock 01 2020.
+
 \bibitem{max_pool_backprop}
 Archana David.
 \newblock Backprop through max-pooling layers?, 2007.

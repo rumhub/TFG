@@ -11,41 +11,44 @@
 \contentsline {figure}{\numberline {2.8}{\ignorespaces Propagación hacia delante en una capa convolucional}}{12}{figure.caption.26}%
 \contentsline {figure}{\numberline {2.9}{\ignorespaces Propagación hacia delante en una capa convolucional con varios canales de profundidad}}{13}{figure.caption.28}%
 \contentsline {figure}{\numberline {2.10}{\ignorespaces Propagación hacia delante en una capa convolucional con varios filtros}}{14}{figure.caption.30}%
-\contentsline {figure}{\numberline {2.11}{\ignorespaces Componentes en una capa de agrupación máxima}}{14}{figure.caption.32}%
-\contentsline {figure}{\numberline {2.12}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{15}{figure.caption.34}%
-\contentsline {figure}{\numberline {2.13}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{15}{figure.caption.36}%
-\contentsline {figure}{\numberline {2.14}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{16}{figure.caption.38}%
-\contentsline {figure}{\numberline {2.15}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{17}{figure.caption.40}%
-\contentsline {figure}{\numberline {2.16}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{18}{figure.caption.42}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Relleno sobre un volumen de entrada X}}{15}{figure.caption.32}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Relleno sobre un volumen de entrada X}}{15}{figure.caption.34}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Relleno sobre un volumen de entrada X}}{16}{figure.caption.35}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces Componentes en una capa de agrupación máxima}}{17}{figure.caption.37}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{17}{figure.caption.39}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{18}{figure.caption.41}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{18}{figure.caption.43}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{20}{figure.caption.45}%
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{21}{figure.caption.47}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red con softmax}}{19}{figure.caption.43}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{22}{figure.caption.50}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Imagen de backpropagation en la capa softmax}}{23}{figure.caption.52}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa SoftMax}}{23}{figure.caption.54}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{24}{figure.caption.57}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{25}{figure.caption.58}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{26}{figure.caption.60}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{27}{figure.caption.63}%
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Imagen de backpropagation en la capa input}}{27}{figure.caption.64}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{28}{figure.caption.65}%
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Imagen de backpropagation en la capa softmax}}{28}{figure.caption.67}%
-\contentsline {figure}{\numberline {3.12}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta h2 y la capa SoftMax}}{29}{figure.caption.69}%
-\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{30}{figure.caption.72}%
-\contentsline {figure}{\numberline {3.14}{\ignorespaces Imagen de backpropagation en la capa oculta h2}}{30}{figure.caption.73}%
-\contentsline {figure}{\numberline {3.15}{\ignorespaces Imagen de backpropagation en los pesos entre las capas ocultas h1 y h2}}{31}{figure.caption.75}%
-\contentsline {figure}{\numberline {3.16}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{32}{figure.caption.78}%
-\contentsline {figure}{\numberline {3.17}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{33}{figure.caption.79}%
-\contentsline {figure}{\numberline {3.18}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{33}{figure.caption.81}%
-\contentsline {figure}{\numberline {3.19}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{34}{figure.caption.84}%
-\contentsline {figure}{\numberline {3.20}{\ignorespaces Imagen de backpropagation en la capa input}}{35}{figure.caption.85}%
-\contentsline {figure}{\numberline {3.21}{\ignorespaces Imagen de backpropagation en la capa l}}{36}{figure.caption.87}%
-\contentsline {figure}{\numberline {3.22}{\ignorespaces Imagen de backpropagation en los pesos entre la capa l-1 y l}}{36}{figure.caption.89}%
-\contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{40}{figure.caption.94}%
-\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{41}{figure.caption.98}%
-\contentsline {figure}{\numberline {3.25}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{42}{figure.caption.100}%
-\contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{43}{figure.caption.102}%
-\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{45}{figure.caption.104}%
-\contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{46}{figure.caption.106}%
-\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{47}{figure.caption.107}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red con softmax}}{23}{figure.caption.48}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{26}{figure.caption.55}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Imagen de backpropagation en la capa softmax}}{27}{figure.caption.57}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta y la capa SoftMax}}{27}{figure.caption.59}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{28}{figure.caption.62}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{29}{figure.caption.63}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{30}{figure.caption.65}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{31}{figure.caption.68}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Imagen de backpropagation en la capa input}}{31}{figure.caption.69}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{32}{figure.caption.70}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Imagen de backpropagation en la capa softmax}}{32}{figure.caption.72}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Imagen de backpropagation en los pesos entre la capa oculta h2 y la capa SoftMax}}{33}{figure.caption.74}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{34}{figure.caption.77}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Imagen de backpropagation en la capa oculta h2}}{34}{figure.caption.78}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Imagen de backpropagation en los pesos entre las capas ocultas h1 y h2}}{35}{figure.caption.80}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}}{36}{figure.caption.83}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Imagen de backpropagation en la capa oculta h1}}{37}{figure.caption.84}%
+\contentsline {figure}{\numberline {3.18}{\ignorespaces Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}}{37}{figure.caption.86}%
+\contentsline {figure}{\numberline {3.19}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{38}{figure.caption.89}%
+\contentsline {figure}{\numberline {3.20}{\ignorespaces Imagen de backpropagation en la capa input}}{39}{figure.caption.90}%
+\contentsline {figure}{\numberline {3.21}{\ignorespaces Imagen de backpropagation en la capa l}}{40}{figure.caption.92}%
+\contentsline {figure}{\numberline {3.22}{\ignorespaces Imagen de backpropagation en los pesos entre la capa l-1 y l}}{40}{figure.caption.94}%
+\contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{44}{figure.caption.99}%
+\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{45}{figure.caption.103}%
+\contentsline {figure}{\numberline {3.25}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{46}{figure.caption.105}%
+\contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{47}{figure.caption.107}%
+\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{49}{figure.caption.109}%
+\contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{50}{figure.caption.111}%
+\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{51}{figure.caption.112}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

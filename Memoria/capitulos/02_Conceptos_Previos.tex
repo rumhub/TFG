@@ -316,6 +316,112 @@ Por último, en cada ``paso'' del ``deslizamiento'' se suma un solo sesgo y se a
 Cada convolución entre dos volúmenes 3D produce un volumen de salida 2D. Por tanto, al aplicar N convoluciones entre un volumen de entrada X y una serie de filtros K=$\{K_1, K_2, ..., K_N\}$, se obtendrá un volumen 3D de salida con tantas capas de profundidad como convoluciones se aplicaron (N). \\
 En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como al aplicar N=2 convoluciones sobre la misma entrada X (una con el filtro K y otra con el filtro G) se obtiene un volumen de salida con 2 capas de profundidad. \cite{capa_convolucional_Stanford}
 
+\subsubsection{Relleno o ``Padding''}
+
+En la figura \ref{fig:forward_prop_convolucional} se visualiza como al realizar una convolución entre un volumen X con dimensiones 1x4x4 y un kernel de pesos K con dimensiones 1x3x3, el resultado obtenido es un volumen Y de dimensiones 1x2x2. La reducción de dimensionalidad es un problema pues afecta directamente al número de convoluciones que se pueden aplicar sobre un volumen. \\
+Por tanto, el ``relleno' o ``padding'' se aplica antes de realizar una convolución y es una técnica empleada para conservar las dimensiones espaciales de un volumen de entrada X, expandiendo cada canal del mismo tal y como se muestra en la figura \ref{fig:padding}. \cite{padding_1}.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-15mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/padding_a_1_nivel.jpg}  
+		\caption{1 nivel de relleno}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{5mm}
+		\includegraphics[width=1.2\linewidth]{imagenes/padding_a_2_niveles.jpg}  
+		\caption{2 niveles de relleno}
+	\end{subfigure}
+	\caption{Relleno sobre un volumen de entrada X}
+	\label{fig:padding}
+\end{figure}
+
+De esta forma, un relleno a un nivel sobre un volumen añadirá sobre el mismo dos filas y dos columnas con valores igual a 0. Un relleno a dos niveles añadirá cuatro filas y columnas con valores igual a cero, ..., un relleno a n niveles añadirá 2*n filas y columnas con valores igual a 0.
+
+\subsubsection{Relleno completo}
+
+Se denomina como relleno completo aquel que asegura que cada valor o casilla de X sea visitada el mismo número de veces que el resto. \cite{padding_2}
+
+\begin{figure}[H]
+	\centering
+	\subfloat[1 nivel de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_1.jpg}%
+		\label{fig:sub1}%
+	}\hfill
+	\subfloat[2 niveles de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_2.jpg}%
+		\label{fig:sub2}%
+	}\\
+	\subfloat[1 nivel de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_3.jpg}%
+		\label{fig:sub3}%
+	}\hfill
+	\subfloat[2 niveles de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_4.jpg}%
+		\label{fig:sub4}%
+	}\hfill
+	
+	\caption{Relleno sobre un volumen de entrada X}
+\end{figure}
+
+\begin{figure}[H]\ContinuedFloat
+	\centering
+	\subfloat[1 nivel de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_5.jpg}%
+		\label{fig:sub5}%
+	}\hfill
+	\subfloat[2 niveles de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_6.jpg}%
+		\label{fig:sub6}%
+	}\\
+	\subfloat[1 nivel de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_7.jpg}%
+		\label{fig:sub7}%
+	}\hfill
+	\subfloat[2 niveles de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_8.jpg}%
+		\label{fig:sub8}%
+	}\hfill
+		\subfloat[1 nivel de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_9.jpg}%
+		\label{fig:sub9}%
+	}\hfill
+	\subfloat[2 niveles de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_10.jpg}%
+		\label{fig:sub10}%
+	}\hfill
+		\subfloat[1 nivel de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_11.jpg}%
+		\label{fig:sub11}%
+	}\hfill
+	\subfloat[2 niveles de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_12.jpg}%
+		\label{fig:sub12}%
+	}\hfill
+	\subfloat[1 nivel de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_13.jpg}%
+		\label{fig:sub13}%
+	}\hfill
+	\subfloat[2 niveles de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_14.jpg}%
+		\label{fig:sub14}%
+	}\hfill
+	\subfloat[1 nivel de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_15.jpg}%
+		\label{fig:sub15}%
+	}\hfill
+	\subfloat[2 niveles de relleno]{%
+		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_16.jpg}%
+		\label{fig:sub16}%
+	}\\
+	
+	\caption{Relleno sobre un volumen de entrada X}
+	\label{fig:full_padding}
+\end{figure}
+
+Tal y como se muestra en la figura \ref{fig:full_padding}, se realiza un relleno completo pues en la convolución entre X y K se accede a cada valor de X el mismo número de veces (9).
+
 \subsection{Capa de agrupación máxima}
 
 \subsubsection{Componentes}
