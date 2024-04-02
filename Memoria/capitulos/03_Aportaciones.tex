@@ -925,7 +925,7 @@ A continuación se calcula el gradiente de la función de error respecto de los 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_1.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{11}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{11}$ respecto a cada peso.
@@ -950,7 +950,7 @@ Se calcula el gradiente de $Y^c_{11}$ respecto a cada valor del volumen de entra
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_2.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{12}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{12}$ respecto a cada peso.
@@ -974,7 +974,7 @@ Se calcula el gradiente de $Y^c_{12}$ respecto a cada valor del volumen de entra
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_3.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{13}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{13}$ respecto a cada peso.
@@ -999,7 +999,7 @@ Se calcula el gradiente de $Y^c_{13}$ respecto a cada valor del volumen de entra
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_4.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{21}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{21}$ respecto a cada peso.
@@ -1023,7 +1023,7 @@ Se calcula el gradiente de $Y^c_{21}$ respecto a cada valor del volumen de entra
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_5.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{22}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{22}$ respecto a cada peso.
@@ -1047,7 +1047,7 @@ Se calcula el gradiente de $Y^c_{22}$ respecto a cada valor del volumen de entra
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_6.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{23}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{23}$ respecto a cada peso.
@@ -1071,7 +1071,7 @@ Se calcula el gradiente de $Y^c_{23}$ respecto a cada valor del volumen de entra
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_7.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{31}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{31}$ respecto a cada peso.
@@ -1096,7 +1096,7 @@ Se calcula el gradiente de $Y^c_{31}$ respecto a cada valor del volumen de entra
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_8.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{32}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{32}$ respecto a cada peso.
@@ -1122,7 +1122,7 @@ Se calcula el gradiente de $Y^c_{32}$ respecto a cada valor del volumen de entra
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_9.jpg} 
-	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\caption{Retropropagación de $Y^c_{33}$}
 \end{figure}
 
 Se calcula el gradiente de $Y^c_{33}$ respecto a cada peso.
@@ -1201,25 +1201,25 @@ Tal y como se observa en los cálculos obtenidos, estos coinciden con una convol
 	\begin{subfigure}{.5\textwidth}
 		\hspace{-25mm}
 		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_entrada_pad_1.jpg}  
-		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{11}}$}
+		\caption{Cálculo de $\frac{\partial E}{\partial A^1_{11}}$}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\hspace{5mm}
 		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_entrada_pad_2.jpg}  
-		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{12}}$}
+		\caption{Cálculo de $\frac{\partial E}{\partial A^1_{12}}$}
 	\end{subfigure}
 	\vspace{5mm}
 	\begin{subfigure}{.5\textwidth}
 		\hspace{-25mm}
 		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_entrada_pad_3.jpg}  
-		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{21}}$}
+		\caption{Cálculo de $\frac{\partial E}{\partial A^1_{21}}$}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\hspace{5mm}
 		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_entrada_pad_4.jpg}  
-		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{22}}$}
+		\caption{Cálculo de $\frac{\partial E}{\partial A^1_{22}}$}
 	\end{subfigure}
-	\caption{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}
+	\caption{Cálculo del gradiente de la pérdida respecto de la entrada como convolución}
 	\label{fig:conv_backprop_como_convolucion_Y_K_pad}
 \end{figure}
 
