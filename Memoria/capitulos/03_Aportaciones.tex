@@ -908,3 +908,317 @@ Tal y como se observa en los cálculos obtenidos, estos coinciden con una convol
 	\caption{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}
 	\label{fig:conv_backprop_como_convolucion_Y_W}
 \end{figure}
+
+\subsection{Propagación hacia detrás con relleno}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_intro.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+	\label{fig:conv_back_padding_intro}
+\end{figure}
+
+A continuación se calcula el gradiente de la función de error respecto de los pesos y de los valores de entrada.
+
+\subsubsection{Gradiente de $Y^c_{11}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_1.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{11}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{11} = Z^c_{11} * K^c_{22} \\
+	\frac{\partial Y^c_{11}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{11} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{11}}{\partial K^c_{11}} = 0, \hspace{10mm} \frac{\partial Y^c_{11}}{\partial K^c_{12}} = 0 \hspace{3mm} \\
+	\frac{\partial Y^c_{11}}{\partial K^c_{21}} = 0, \hspace{10mm} \frac{\partial Y^c_{11}}{\partial K^c_{22}} = Z^c_{11}
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{11}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{11}}{\partial Z^c_{11}} = K^c_{22}, \hspace{10mm} \frac{\partial Y^c_{11}}{\partial Z^c_{12}} = 0\\
+	\frac{\partial Y^c_{11}}{\partial Z^c_{21}} = 0, \hspace{14mm} \frac{\partial Y^c_{11}}{\partial Z^c_{22}} = 0
+\end{gather}
+
+
+\subsubsection{Gradiente de $Y^c_{12}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_2.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{12}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{12} = Z^c_{11} * K^c_{21} + Z^c_{12} * K^c_{22} \\
+	\frac{\partial Y^c_{12}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{11} * K^c_{21} + Z^c_{12} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{12}}{\partial K^c_{11}} = 0, \hspace{10mm} \frac{\partial Y^c_{12}}{\partial K^c_{12}} = 0 \\
+	\frac{\partial Y^c_{12}}{\partial K^c_{21}} = Z^c_{11}, \hspace{10mm} \frac{\partial Y^c_{12}}{\partial K^c_{22}} = Z^c_{12}
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{12}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{12}}{\partial Z^c_{11}} = K^c_{21}, \hspace{10mm} \frac{\partial Y^c_{12}}{\partial Z^c_{12}} = K^c_{22}\\
+	\frac{\partial Y^c_{12}}{\partial Z^c_{21}} = 0, \hspace{14mm} \frac{\partial Y^c_{12}}{\partial Z^c_{22}} = 0 \hspace{4mm}
+\end{gather}
+
+\subsubsection{Gradiente de $Y^c_{13}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_3.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{13}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{13} = Z^c_{12} * K^c_{21} \\
+	\frac{\partial Y^c_{13}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{12} * K^c_{21})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{13}}{\partial K^c_{11}} = 0, \hspace{13mm} \frac{\partial Y^c_{13}}{\partial K^c_{12}} = 0 \\
+	\frac{\partial Y^c_{13}}{\partial K^c_{21}} = Z^c_{12}, \hspace{10mm} \frac{\partial Y^c_{13}}{\partial K^c_{22}} = 0
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{13}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{13}}{\partial Z^c_{11}} = 0, \hspace{10mm} \frac{\partial Y^c_{13}}{\partial Z^c_{12}} = K^c_{21}\\
+	\frac{\partial Y^c_{13}}{\partial Z^c_{21}} = 0, \hspace{14mm} \frac{\partial Y^c_{13}}{\partial Z^c_{22}} = 0 \hspace{4mm}
+\end{gather}
+
+
+\subsubsection{Gradiente de $Y^c_{21}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_4.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{21}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{21} = Z^c_{11} * K^c_{12} + Z^c_{21} * K^c_{22} \\
+	\frac{\partial Y^c_{21}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{11} * K^c_{12} + Z^c_{21} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{21}}{\partial K^c_{11}} = 0, \hspace{10mm} \frac{\partial Y^c_{21}}{\partial K^c_{12}} = Z^c_{11} \\
+	\frac{\partial Y^c_{21}}{\partial K^c_{21}} = 0, \hspace{10mm} \frac{\partial Y^c_{21}}{\partial K^c_{22}} = Z^c_{21}
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{21}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{21}}{\partial Z^c_{11}} = K^c_{12}, \hspace{10mm} \frac{\partial Y^c_{21}}{\partial Z^c_{12}} = 0\\
+	\frac{\partial Y^c_{21}}{\partial Z^c_{21}} = K^c_{22}, \hspace{10mm} \frac{\partial Y^c_{21}}{\partial Z^c_{22}} = 0
+\end{gather}
+
+\subsubsection{Gradiente de $Y^c_{22}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_5.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{22}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{22} = Z^c_{11} * K^c_{11} + Z^c_{12} * K^c_{12} + Z^c_{21} * K^c_{21} + Z^c_{22} * K^c_{22} \\
+	\frac{\partial Y^c_{22}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{11} * K^c_{11} + Z^c_{12} * K^c_{12} + Z^c_{21} * K^c_{21} + Z^c_{22} * K^c_{22})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{22}}{\partial K^c_{11}} = Z^c_{11}, \hspace{10mm} \frac{\partial Y^c_{22}}{\partial K^c_{12}} = Z^c_{12} \\
+	\frac{\partial Y^c_{22}}{\partial K^c_{21}} = Z^c_{21}, \hspace{10mm} \frac{\partial Y^c_{22}}{\partial K^c_{22}} = Z^c_{22}
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{22}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{22}}{\partial Z^c_{11}} = K^c_{11}, \hspace{10mm} \frac{\partial Y^c_{22}}{\partial Z^c_{12}} = K^c_{12}\\
+	\frac{\partial Y^c_{22}}{\partial Z^c_{21}} = K^c_{21}, \hspace{10mm} \frac{\partial Y^c_{22}}{\partial Z^c_{22}} = K^c_{22}
+\end{gather}
+
+\subsubsection{Gradiente de $Y^c_{23}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_6.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{23}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{23} = Z^c_{12} * K^c_{11} + Z^c_{22} * K^c_{21} \\
+	\frac{\partial Y^c_{23}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{12} * K^c_{11} + Z^c_{22} * K^c_{21})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{23}}{\partial K^c_{11}} = Z^c_{12}, \hspace{10mm} \frac{\partial Y^c_{23}}{\partial K^c_{12}} = 0 \\
+	\frac{\partial Y^c_{23}}{\partial K^c_{21}} = Z^c_{22}, \hspace{10mm} \frac{\partial Y^c_{23}}{\partial K^c_{22}} = 0
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{23}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{23}}{\partial Z^c_{11}} = 0, \hspace{10mm} \frac{\partial Y^c_{23}}{\partial Z^c_{12}} = K^c_{11}\\
+	\frac{\partial Y^c_{23}}{\partial Z^c_{21}} = 0, \hspace{10mm} \frac{\partial Y^c_{23}}{\partial Z^c_{22}} = K^c_{21}
+\end{gather}
+
+\subsubsection{Gradiente de $Y^c_{31}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_7.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{31}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{31} = Z^c_{21} * K^c_{12} \\
+	\frac{\partial Y^c_{31}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{21} * K^c_{12})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{31}}{\partial K^c_{11}} = 0, \hspace{10mm} \frac{\partial Y^c_{31}}{\partial K^c_{12}} = Z^c_{21} \\
+	\frac{\partial Y^c_{31}}{\partial K^c_{21}} = 0, \hspace{10mm} \frac{\partial Y^c_{31}}{\partial K^c_{22}} = 0 \hspace{4mm}
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{31}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{31}}{\partial Z^c_{11}} = 0, \hspace{14mm} \frac{\partial Y^c_{31}}{\partial Z^c_{12}} = 0\\
+	\frac{\partial Y^c_{31}}{\partial Z^c_{21}} = K^c_{12}, \hspace{10mm} \frac{\partial Y^c_{31}}{\partial Z^c_{22}} = 0
+\end{gather}
+
+
+\subsubsection{Gradiente de $Y^c_{32}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_8.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{32}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{32} = Z^c_{21} * K^c_{11} + Z^c_{22} * K^c_{12} \\
+	\frac{\partial Y^c_{32}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{21} * K^c_{11} + Z^c_{22} * K^c_{12})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{32}}{\partial K^c_{11}} = Z^c_{21}, \hspace{10mm} \frac{\partial Y^c_{32}}{\partial K^c_{12}} = Z^c_{22} \\
+	\frac{\partial Y^c_{32}}{\partial K^c_{21}} = 0, \hspace{14mm} \frac{\partial Y^c_{32}}{\partial K^c_{22}} = 0 \hspace{4mm}
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{32}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{32}}{\partial Z^c_{11}} = 0, \hspace{14mm} \frac{\partial Y^c_{32}}{\partial Z^c_{12}} = 0 \hspace{4mm}\\
+	\frac{\partial Y^c_{32}}{\partial Z^c_{21}} = K^c_{11}, \hspace{10mm} \frac{\partial Y^c_{32}}{\partial Z^c_{22}} = K^c_{12}
+\end{gather}
+
+
+
+\subsubsection{Gradiente de $Y^c_{33}$}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/conv_back_padding_9.jpg} 
+	\caption{Ejemplo de propagación hacia detrás en una capa convolucional con relleno}
+\end{figure}
+
+Se calcula el gradiente de $Y^c_{33}$ respecto a cada peso.
+
+\begin{gather}
+	Y^c_{33} = Z^c_{22} * K^c_{11} \\
+	\frac{\partial Y^c_{33}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{22} * K^c_{11})}{\partial K^c_{xy}} \\
+	\frac{\partial Y^c_{33}}{\partial K^c_{11}} = Z^c_{22}, \hspace{10mm} \frac{\partial Y^c_{33}}{\partial K^c_{12}} = 0 \\
+	\frac{\partial Y^c_{33}}{\partial K^c_{21}} = 0, \hspace{14mm} \frac{\partial Y^c_{33}}{\partial K^c_{22}} = 0 
+\end{gather}
+
+Se calcula el gradiente de $Y^c_{33}$ respecto a cada valor del volumen de entrada.
+
+\begin{gather}
+	\frac{\partial Y^c_{33}}{\partial Z^c_{11}} = 0, \hspace{10mm} \frac{\partial Y^c_{33}}{\partial Z^c_{12}} = 0 \hspace{4mm}\\
+	\frac{\partial Y^c_{33}}{\partial Z^c_{21}} = 0, \hspace{10mm} \frac{\partial Y^c_{33}}{\partial Z^c_{22}} = K^c_{11}
+\end{gather}
+
+
+\subsubsection{Gradiente respecto a pesos como convolución}
+
+Finalmente, se calcula la sumatoria y con ello el gradiente de la función de pérdida respecto a cada peso $K_{xy}$.
+
+\begin{gather}
+	\frac{\partial E}{\partial K^c_{11}} = \frac{\partial E}{\partial Y^c_{22}} * Z^c_{11} + \frac{\partial E}{\partial Y^c_{23}} * Z^c_{12} + \frac{\partial E}{\partial Y^c_{32}} * Z^c_{21} + \frac{\partial E}{\partial Y^c_{33}} * Z^c_{22} \\
+	\frac{\partial E}{\partial K^c_{12}} = \frac{\partial E}{\partial Y^c_{21}} * Z^c_{11} + \frac{\partial E}{\partial Y^c_{22}} * Z^c_{12} + \frac{\partial E}{\partial Y^c_{31}} * Z^c_{21} + \frac{\partial E}{\partial Y^c_{32}} * Z^c_{22}\\
+	\frac{\partial E}{\partial K^c_{21}} = \frac{\partial E}{\partial Y^c_{12}} * Z^c_{11} + \frac{\partial E}{\partial Y^c_{13}} * Z^c_{12} + \frac{\partial E}{\partial Y^c_{22}} * Z^c_{21} + \frac{\partial E}{\partial Y^c_{23}} * Z^c_{22} \\
+	\frac{\partial E}{\partial K^c_{22}} = \frac{\partial E}{\partial Y^c_{11}} * Z^c_{11} + \frac{\partial E}{\partial Y^c_{12}} * Z^c_{12} + \frac{\partial E}{\partial Y^c_{21}} * Z^c_{21} + \frac{\partial E}{\partial Y^c_{22}} * Z^c_{22}
+\end{gather}
+
+Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución entre la entrada X con relleno y el gradiente respecto a la capa de salida Y (figura \ref{fig:conv_backprop_como_convolucion_Xpad_Y}).
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-25mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_pad_1.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{11}}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{5mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_pad_2.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{12}}$}
+	\end{subfigure}
+	\vspace{5mm}
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-25mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_pad_3.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{21}}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{5mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_pad_4.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{22}}$}
+	\end{subfigure}
+	\caption{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}
+	\label{fig:conv_backprop_como_convolucion_Xpad_Y}
+\end{figure}
+
+\subsubsection{Gradiente respecto a entrada como convolución}
+
+En capas convolucionales usaremos ReLU como función de activación. Por tanto, ya se conoce su derivada pues se calculó previamente (\ref{deriv_relu}).
+
+
+\begin{gather}
+	\frac{\partial E}{\partial A^c_{11}} = (\frac{\partial E}{\partial Y^c_{11}} * K^c_{22} + \frac{\partial E}{\partial Y^c_{12}} * K^c_{21} + \frac{\partial E}{\partial Y^c_{21}} * K^c_{12} + \frac{\partial E}{\partial Y^c_{22}} * K^c_{11}) *  ReLU'(A^c_{11}) \\
+	\frac{\partial E}{\partial A^c_{12}} = (\frac{\partial E}{\partial Y^c_{12}} * K^c_{22} + \frac{\partial E}{\partial Y^c_{13}} * K^c_{21} + \frac{\partial E}{\partial Y^c_{22}} * K^c_{12} + \frac{\partial E}{\partial Y^c_{23}} * K^c_{11}) * ReLU'(A^c_{21}) \\
+	\frac{\partial E}{\partial A^c_{21}} = (\frac{\partial E}{\partial Y^c_{21}} * K^c_{22} + \frac{\partial E}{\partial Y^c_{22}} * K^c_{21} + \frac{\partial E}{\partial Y^c_{31}} * K^c_{12} + \frac{\partial E}{\partial Y^c_{32}} * K^c_{11}) * ReLU'(A^c_{21}) \\
+	\frac{\partial E}{\partial A^c_{22}} = (\frac{\partial E}{\partial Y^c_{22}} * K^c_{22} + \frac{\partial E}{\partial Y^c_{23}} * K^c_{21} + \frac{\partial E}{\partial Y^c_{32}} * K^c_{12} + \frac{\partial E}{\partial Y^c_{33}} * K^c_{11}) * ReLU'(A^c_{22})
+\end{gather}
+
+Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución completa entre el gradiente respecto a la capa de salida Y y los pesos K invertidos tanto horizontal como verticalmente. Esto se ilustra en detalle en la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad}.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-25mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_entrada_pad_1.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{11}}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{5mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_entrada_pad_2.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{12}}$}
+	\end{subfigure}
+	\vspace{5mm}
+	\begin{subfigure}{.5\textwidth}
+		\hspace{-25mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_entrada_pad_3.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{21}}$}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\hspace{5mm}
+		\includegraphics[width=1.4\linewidth]{imagenes/conv_back_entrada_pad_4.jpg}  
+		\caption{Cálculo de $\frac{\partial E}{\partial K^1_{22}}$}
+	\end{subfigure}
+	\caption{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}
+	\label{fig:conv_backprop_como_convolucion_Y_K_pad}
+\end{figure}

@@ -50,5 +50,17 @@
 \contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{49}{figure.caption.109}%
 \contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{50}{figure.caption.111}%
 \contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{51}{figure.caption.112}%
+\contentsline {figure}{\numberline {3.30}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{52}{figure.caption.113}%
+\contentsline {figure}{\numberline {3.31}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{52}{figure.caption.115}%
+\contentsline {figure}{\numberline {3.32}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{53}{figure.caption.117}%
+\contentsline {figure}{\numberline {3.33}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{54}{figure.caption.119}%
+\contentsline {figure}{\numberline {3.34}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{55}{figure.caption.121}%
+\contentsline {figure}{\numberline {3.35}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{56}{figure.caption.123}%
+\contentsline {figure}{\numberline {3.36}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{57}{figure.caption.125}%
+\contentsline {figure}{\numberline {3.37}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{58}{figure.caption.127}%
+\contentsline {figure}{\numberline {3.38}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{59}{figure.caption.129}%
+\contentsline {figure}{\numberline {3.39}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{60}{figure.caption.131}%
+\contentsline {figure}{\numberline {3.40}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{61}{figure.caption.133}%
+\contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{62}{figure.caption.135}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
