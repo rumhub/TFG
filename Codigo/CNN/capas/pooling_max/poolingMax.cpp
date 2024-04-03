@@ -1,6 +1,7 @@
 #include "poolingMax.h"
 #include <iostream>
 #include <limits>
+//#include "../../auxiliar/auxiliar.cpp"
 
 using namespace std;
 
@@ -72,10 +73,16 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
 
 void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output)
 {
-    int n_canales = this->image_canales, n_veces_fils = (this->image_fils - 2*pad_output) / kernel_fils, n_veces_cols = (this->image_cols - 2*pad_output) / kernel_cols;
+    int n_canales = this->image_canales, n_veces_fils = this->image_fils / kernel_fils, n_veces_cols = this->image_cols / kernel_cols;
     int fila, columna;
     float max = 0.0;
     int output_fil = 0, output_col = 0;
+
+    // Inicializar imagen de entrada a 0
+    for(int i=0; i<input.size(); i++)
+        for(int j=0; j<input[0].size(); j++)
+            for(int k=0; k<input[0][0].size(); k++)
+                input[i][j][k] = 0.0;
 
     // Para cada imagen 2D
     for(int t=0; t<n_canales; t++)
@@ -95,12 +102,9 @@ void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vec
                 {
                     for(int h=j; h<(j+kernel_cols) && h<this->image_cols; h++)
                     {
-                        // Si no es el valor máximo, asignar un 0.0
                         // Si es el valor máximo, dejarlo como estaba
                         if(input_copy[t][k][h] != 0)
                             input[t][k][h] = max;
-                        else
-                            input[t][k][h] = 0.0;
                     }
                 }
             }
@@ -131,13 +135,12 @@ int main()
     vector<vector<vector<float>>> imagenes_2D, output, v_3D, input_copy;
     vector<vector<float>> v_2D;
     vector<float> v_1D;
-    int pad = 1;
+    int pad = 1;    // Padding se mete en capas convolucionales. Por tanto, si metemos padding de pad, antes de la capa pooling_max (input) hay que quitarlo al hacer backprop
+    Aux *aux = new Aux();
 
     cout << "--------------- SIMULACIÓN GRADIENTE ------------------ " << endl;
     // Simulación. Viene gradiente de una capa convolucional con padding = pad
 
-    // Padding se mete en capas convolucionales. Por tanto, si metemos padding de pad, antes de la capa pooling_max (input) hay que quitarlo al hacer backprop
-    pad=1;
     // Imágenes input con dimensiones sin padding
     imagenes_2D.push_back(imagen);
     //imagenes_2D.push_back(imagen);
@@ -166,85 +169,6 @@ int main()
 
 
     cout << "------------ Imagen inicial: ------------" << endl;
-    mostrar_imagen(imagenes_2D);
-    input_copy = imagenes_2D;
-
-    PoolingMax plm1(2, 2, imagenes_2D);
-
-    plm1.forwardPropagation(imagenes_2D, output, input_copy);
-
-    cout << "Output \n";
-    mostrar_imagen(output);
-
-    // Aplicamos padding al output
-    aplicar_padding(output, pad);
-
-    cout << "Output + padding \n";
-    mostrar_imagen(output);
-
-    cout << "------------ Pooling Max, Back Propagation: ------------" << endl;
-
-    // Cambiamos el output porque contendrá un gradiente desconocido
-    for(int i=0; i<output.size(); i++)
-        for(int j=0; j<output[0].size(); j++)
-            for(int k=0; k<output[0][0].size(); k++)
-                output[i][j][k] = 9;
-
-    cout << "--- Output modificado ---- \n";
-    mostrar_imagen(output);
-
-    plm1.backPropagation(imagenes_2D, output, input_copy, pad);
-
-    cout << "Input\n";
-    mostrar_imagen(imagenes_2D);
-
-    return 0;
-}
-*/
-
-/*
-int main() 
-{
-    
-    // Ejemplo de uso
-    vector<vector<float>> imagen = {
-        {1, 2, 3, 4},
-        {5, 6, 7, 8},
-        {9, 10, 11, 12},
-        {13, 14, 15, 16}
-    };
-    
-    vector<vector<vector<float>>> imagenes_2D, output, v_3D, input_copy;
-    vector<vector<float>> v_2D;
-    vector<float> v_1D;
-
-    // Imágenes input con dimensiones sin padding
-    imagenes_2D.push_back(imagen);
-    imagenes_2D.push_back(imagen);
-
-    int H_out = imagenes_2D[0].size() / 2;
-
-    output.clear();
-    v_1D.clear();
-    v_2D.clear();
-    for(int j=0; j<H_out; j++)
-    {
-        v_1D.push_back(0.0);
-    }
-
-    for(int j=0; j<H_out; j++)
-    {
-        v_2D.push_back(v_1D);
-    }
-
-
-    for(int j=0; j<imagenes_2D.size(); j++)
-    {
-        output.push_back(v_2D);
-    }
-
-    Aux *aux = new Aux();
-    cout << "------------ Imagen inicial: ------------" << endl;
     aux->mostrar_imagen(imagenes_2D);
     input_copy = imagenes_2D;
 
@@ -254,6 +178,28 @@ int main()
 
     cout << "Output \n";
     aux->mostrar_imagen(output);
+
+    // Aplicamos padding al output
+    aplicar_padding(output, pad);
+
+    cout << "Output + padding \n";
+    aux->mostrar_imagen(output);
+
+    cout << "------------ Pooling Max, Back Propagation: ------------" << endl;
+
+    // Cambiamos el output porque contendrá un gradiente desconocido
+    for(int i=0; i<output.size(); i++)
+        for(int j=0; j<output[0].size(); j++)
+            for(int k=0; k<output[0][0].size(); k++)
+                output[i][j][k] = 9;
+
+    //cout << "--- Output modificado ---- \n";
+    //aux->mostrar_imagen(output);
+
+    plm1.backPropagation(imagenes_2D, output, input_copy, pad);
+
+    cout << "Input\n";
+    aux->mostrar_imagen(imagenes_2D);
 
     return 0;
 }
