@@ -484,7 +484,7 @@ void FullyConnected::setLR(float lr)
     this->lr = lr;
 }
 
-
+/*
 void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<vector<float>> &y, const int n_imagenes, const int n_clases)
 {
     vector<vector<vector<float>>> imagen_k1;
@@ -537,6 +537,7 @@ void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<vector
         y_1D[c] = 0.0;
     }  
 }
+*/
 
 void FullyConnected::particion_k_fold(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &k)
 {
@@ -625,154 +626,7 @@ void FullyConnected::copiar_gradientes(vector<vector<vector<float>>> &grad_w, ve
     this->grad_bias = grad_bias;
 }
 
-
-void FullyConnected::train2(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x)
-{
-    int n_datos = x.size();
-    float epsilon = 0.000000001;
-
-    int i_output = this->a.size()-1; // índice de la capa output
-    float sum, o_in, grad_x_output, sig_o_in;
-    int i_last_h = i_output-1;  // Índice de la capa h1
-    int i_act, i_ant;
-
-    // Inicializar gradiente respecto a entrada a 0 --------------------------
-    grad_x.clear();
-
-    // Inicializar gradiente de pesos a 0 --------------------------
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                this->grad_w[i][j][k] = 0.0;
-
-    // Inicializar gradiente bias a 0 ------------------------------
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->grad_bias[i][j] = 0.0;
-
-    // Backpropagation ----------------------------------------------
-    // Hay 2 o más capas ocultas
-    for(int i=0; i<n_datos; i++)
-    {
-        forwardPropagation(x[i]);
-
-        // Inicializar a 0 gradiente respecto a input
-        for(int _i = 0; _i < this->grad_a.size(); _i++)
-            for(int j = 0; j < this->grad_a[_i].size(); j++)
-                this->grad_a[_i][j] = 0.0;
-
-
-        // Capa SoftMax -----------------------------------------------
-        // Se calcula gradiente del error respecto a cada Z_k
-        // grad_Zk = O_k - y_k
-        for(int k=0; k<this->a[i_output].size(); k++)
-            this->grad_a[i_output][k] = this->z[i_output][k] - y[i][k];
-
-        // Pesos h_last - Softmax
-        for(int p=0; p<this->a[i_last_h].size(); p++)
-            for(int k=0; k<this->a[i_output].size(); k++)
-                this->grad_w[i_last_h][p][k] += this->grad_a[i_output][k] * this->z[i_last_h][p];
-                //                                 grad_Zk                  *  z^i_last_h_p
-
-        // Sesgos capa softmax
-        for(int k=0; k<this->a[i_output].size(); k++)
-            this->grad_bias[i_output][k] += this->grad_a[i_output][k];
-            // bk = grad_Zk
-
-        // Última capa oculta -----------------------------------------------
-        for(int p=0; p<this->a[i_last_h].size(); p++)      
-            for(int k=0; k<this->a[i_output].size(); k++)
-                this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(this->a[i_last_h][p]);
-                //this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * sigmoid(this->a[i_last_h][p]) * (1- sigmoid(this->a[i_last_h][p]));
-                //                              grad_Zk           *  w^i_last_h_pk          * ...
-                
-        // Capas ocultas intermedias
-        for(int capa= i_last_h; capa >= 1; capa--)
-        {
-            // Pesos
-            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
-                for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                    this->grad_w[capa-1][i_ant][i_act] += this->grad_a[capa][i_act] * this->z[capa-1][i_ant];
-
-            // Bias
-            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)
-                this->grad_bias[capa][i_act] += this->grad_a[capa][i_act];
-            
-            // Grad input
-            for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
-                    this->grad_a[capa-1][i_ant] += this->grad_a[capa][i_act] * this->w[capa-1][i_ant][i_act] * deriv_relu(this->a[capa-1][i_ant]);
-        }
-
-        grad_x.push_back(this->grad_a[0]);
-    }
-
-    // Realizar medias -----------------------------------------------------------------
-    // Realizar la media de los gradientes de pesos
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                this->grad_w[i][j][k] = this->grad_w[i][j][k] / n_datos;
-            
-    // Realizar la media de los gradientes de bias
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->grad_bias[i][j] = this->grad_bias[i][j] / n_datos;
-
-    /*
-    // Gradient clipping --------------------------------------------------------------------
-    float max_grad = -2, min_grad = 2;
-
-    // Normalizar pesos a rango [-1,1]
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-            {
-                if(max_grad < this->grad_w[i][j][k])
-                    max_grad = this->grad_w[i][j][k];
-
-                if(min_grad > this->grad_w[i][j][k])
-                    min_grad = this->grad_w[i][j][k];
-            }
-
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                2 * ((this->grad_w[i][j][k] - min_grad) / (max_grad - min_grad + epsilon)) -1;
-    
-    // Normalizar bias a rango [-1,1]
-    max_grad = -2;
-    min_grad = 2;
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-        {
-            if(max_grad < this->grad_bias[i][j])
-                max_grad = this->grad_bias[i][j];
-            
-            if(min_grad > this->grad_bias[i][j])
-                min_grad = this->grad_bias[i][j];
-        }
-
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            if(max_grad < this->grad_bias[i][j])
-                2 * ((this->grad_bias[i][j] - min_grad) / (max_grad - min_grad + epsilon)) -1;
-    */
-                
-    // Actualizar parámetros ----------------------------------------------------------
-    // Actualizar pesos
-    for(int j=0; j<this->w.size(); j++)
-        for(int k=0; k<this->w[j].size(); k++)
-            for(int p=0; p<this->w[j][k].size(); p++)
-                this->w[j][k][p] -= this->lr * this->grad_w[j][k][p];
-
-    // Actualizar bias
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->bias[i][j] -= this->lr * this->grad_bias[i][j];
-}
-
-
+/*
 int main()
 { 
     // Solo se meten capa input y capas ocultas, la capa output siempre tiene 1 neurona
@@ -919,3 +773,4 @@ int main()
     
     return 0;
 }
+*/

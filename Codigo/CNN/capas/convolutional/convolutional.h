@@ -37,6 +37,8 @@ class Convolutional
 
         void backPropagation_libro(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output);
 
+        void backPropagation_bibliografia(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad);
+
         void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad);
 
         void mostrar_pesos();

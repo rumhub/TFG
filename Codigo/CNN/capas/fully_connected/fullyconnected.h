@@ -2,7 +2,7 @@
 #ifndef FULLYCONNECTED_INCLUDED
 #define FULLYCONNECTED_INCLUDED
 
-#include "../../auxiliar/leer_imagenes.cpp"
+//#include "../../auxiliar/leer_imagenes.cpp"
 #include <vector>
 #include <fstream>
 
@@ -59,8 +59,6 @@ class FullyConnected
 
         void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x);
 
-        void train2(const vector<vector<float>> &x, const vector<vector<float>> &y, vector<vector<float>> &grad_x);
-
         void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);
 
         void inicializar_parametros();
@@ -69,7 +67,7 @@ class FullyConnected
 
         void setLR(float lr);
 
-        void leer_imagenes_mnist(vector<vector<float>> &x, vector<vector<float>> &y, const int n_imagenes, const int n_clases);
+        //void leer_imagenes_mnist(vector<vector<float>> &x, vector<vector<float>> &y, const int n_imagenes, const int n_clases);
 
         void copiar_parametros(FullyConnected &fc);
 

@@ -189,6 +189,18 @@ CMakeFiles/main.dir/main.cpp.o: \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.h \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.cpp \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.h \
+ /usr/include/c++/11/fstream /usr/include/c++/11/bits/codecvt.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+ /usr/include/c++/11/bits/fstream.tcc /usr/include/c++/11/random \
+ /usr/include/c++/11/bits/random.h \
+ /usr/include/c++/11/bits/uniform_int_dist.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h \
+ /usr/include/c++/11/bits/random.tcc /usr/include/c++/11/numeric \
+ /usr/include/c++/11/bits/stl_numeric.h /usr/include/c++/11/bit \
+ /usr/include/c++/11/pstl/glue_numeric_defs.h \
+ /usr/include/c++/11/pstl/execution_defs.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.cpp \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.h \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/leer_imagenes.cpp \
@@ -220,7 +232,6 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/include/c++/11/bits/algorithmfwd.h \
  /usr/include/c++/11/bits/stl_heap.h \
  /usr/include/c++/11/bits/stl_tempbuf.h \
- /usr/include/c++/11/bits/uniform_int_dist.h \
  /usr/include/c++/11/pstl/glue_algorithm_defs.h \
  /usr/include/c++/11/functional /usr/include/c++/11/tuple \
  /usr/include/c++/11/bits/uses_allocator.h \
@@ -234,7 +245,6 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/include/c++/11/bits/node_handle.h \
  /usr/include/c++/11/bits/unordered_map.h \
  /usr/include/c++/11/bits/erase_if.h \
- /usr/include/c++/11/pstl/execution_defs.h \
  /usr/local/include/opencv4/opencv2/core/cvstd.hpp \
  /usr/include/c++/11/cstring /usr/include/string.h /usr/include/strings.h \
  /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
@@ -242,8 +252,7 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/local/include/opencv4/opencv2/core/cvstd_wrapper.hpp \
  /usr/include/c++/11/memory \
  /usr/include/c++/11/bits/stl_raw_storage_iter.h \
- /usr/include/c++/11/bits/align.h /usr/include/c++/11/bit \
- /usr/include/c++/11/bits/unique_ptr.h \
+ /usr/include/c++/11/bits/align.h /usr/include/c++/11/bits/unique_ptr.h \
  /usr/include/c++/11/bits/shared_ptr.h \
  /usr/include/c++/11/bits/shared_ptr_base.h \
  /usr/include/c++/11/bits/allocated_ptr.h \
@@ -325,8 +334,7 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/include/c++/11/bits/locale_facets_nonio.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/messages_members.h \
- /usr/include/libintl.h /usr/include/c++/11/bits/codecvt.h \
- /usr/include/c++/11/bits/locale_facets_nonio.tcc \
+ /usr/include/libintl.h /usr/include/c++/11/bits/locale_facets_nonio.tcc \
  /usr/include/c++/11/bits/locale_conv.h \
  /usr/include/c++/11/bits/quoted_string.h \
  /usr/local/include/opencv4/opencv2/flann/autotuned_index.h \

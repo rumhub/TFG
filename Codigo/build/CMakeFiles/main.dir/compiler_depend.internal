@@ -231,8 +231,6 @@ CMakeFiles/main.dir/main.cpp.o
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.h
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.cpp
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.h
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.cpp
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.h
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/leer_imagenes.cpp
  /usr/local/include/opencv4/opencv2/opencv.hpp
  /usr/local/include/opencv4/opencv2/opencv_modules.hpp
@@ -439,6 +437,21 @@ CMakeFiles/main.dir/main.cpp.o
  /usr/local/include/opencv4/opencv2/video.hpp
  /usr/local/include/opencv4/opencv2/video/tracking.hpp
  /usr/local/include/opencv4/opencv2/video/background_segm.hpp
+ /usr/include/c++/11/fstream
+ /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h
+ /usr/include/c++/11/bits/fstream.tcc
+ /usr/include/c++/11/random
+ /usr/include/c++/11/bits/random.h
+ /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h
+ /usr/include/c++/11/bits/random.tcc
+ /usr/include/c++/11/numeric
+ /usr/include/c++/11/bits/stl_numeric.h
+ /usr/include/c++/11/pstl/glue_numeric_defs.h
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.cpp
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.h
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/leer_imagenes.cpp
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/auxiliar.cpp
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/auxiliar.h
 
