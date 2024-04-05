@@ -252,6 +252,58 @@ void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
     
 }
 
+void CNN::leer_imagenes_cifar10(const int n_imagenes, const int n_clases)
+{
+    vector<vector<vector<float>>> imagen_k1;
+    vector<float> v1D, y_1D;
+    string ruta_ini, ruta;
+
+    // Crear el vector y
+    for(int i=0; i<n_clases; i++)
+        y_1D.push_back(0.0);
+
+    // Leer n_imagenes de la clase c
+    for(int c=0; c<n_clases; c++)
+    {
+        // Establecer etiqueta one-hot para la clase i
+        y_1D[c] = 1.0;
+
+        // Leer imágenes
+        for(int p=1; p<n_imagenes; p++)
+        {
+            ruta_ini = "../fotos/cifar10/train/";
+            ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".png";
+
+            Mat image2 = imread(ruta), image;
+
+            image = image2;
+
+            // Cargamos la imagen en un vector 3D
+            cargar_imagen_en_vector(image, imagen_k1);
+
+            // Normalizar imagen
+            for(int i=0; i<imagen_k1.size(); i++)
+                for(int j=0; j<imagen_k1[0].size(); j++)
+                    for(int k=0; k<imagen_k1[0][0].size(); k++)
+                        imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255.0;
+
+            // Aplicamos padding a la imagen de entrada
+            this->convs[0].aplicar_padding(imagen_k1, this->padding[0]);
+
+            // Almacenamos las imágenes de entrada de la CNN
+            this->train_imgs.push_back(imagen_k1);
+
+            // Establecemos que la imagen tiene una etiqueta, 1 = perro, 0 = gato
+            this->train_labels.push_back(y_1D);
+        }
+
+        // Reset todo "y_1D" a 0
+        y_1D[c] = 0.0;
+    }  
+
+    
+}
+
 void CNN::mostrar_arquitectura()
 {
     vector<vector<vector<float>>> img_in, img_out, img_in_copy;

@@ -27,7 +27,8 @@ class CNN
 
         void leer_imagenes();
         void leer_imagenes_mnist(const int n_imagenes, const int n_clases);
-
+        void leer_imagenes_cifar10(const int n_imagenes, const int n_clases);
+        
         void mostrar_arquitectura();
 
         void train(int epocas, int mini_batch);
