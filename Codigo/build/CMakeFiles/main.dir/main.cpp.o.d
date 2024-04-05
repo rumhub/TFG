@@ -184,15 +184,7 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/include/c++/11/tr1/poly_laguerre.tcc \
  /usr/include/c++/11/tr1/riemann_zeta.tcc /usr/include/c++/11/chrono \
  /usr/include/c++/11/ratio /usr/include/c++/11/ctime \
- /usr/include/c++/11/bits/parse_numbers.h \
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.cpp \
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.h \
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.cpp \
- /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.h \
- /usr/include/c++/11/fstream /usr/include/c++/11/bits/codecvt.h \
- /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
- /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
- /usr/include/c++/11/bits/fstream.tcc /usr/include/c++/11/random \
+ /usr/include/c++/11/bits/parse_numbers.h /usr/include/c++/11/random \
  /usr/include/c++/11/bits/random.h \
  /usr/include/c++/11/bits/uniform_int_dist.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h \
@@ -200,6 +192,14 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/include/c++/11/bits/stl_numeric.h /usr/include/c++/11/bit \
  /usr/include/c++/11/pstl/glue_numeric_defs.h \
  /usr/include/c++/11/pstl/execution_defs.h \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.h \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.cpp \
+ /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.h \
+ /usr/include/c++/11/fstream /usr/include/c++/11/bits/codecvt.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+ /usr/include/c++/11/bits/fstream.tcc \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.cpp \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.h \

@@ -4,7 +4,7 @@
 using namespace std;
 
 
-void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input)
+void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input, const int &pad)
 {
     vector<vector<vector<float>>> imagen_k1;
 
@@ -15,7 +15,7 @@ void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input)
 
     Mat image2 = imread(ruta), image;
     
-    resize(image2, image, Size(200, 200));
+    resize(image2, image, Size(28, 28));
 
     // Cargamos la imagen en un vector 3D
     cargar_imagen_en_vector(image, imagen_k1);
@@ -28,8 +28,8 @@ void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input)
             
     // Se almacena la imagen obtenida
     imagenes_input.push_back(imagen_k1);
-    
 };
+
 
 
 int main()
@@ -37,18 +37,19 @@ int main()
     
     vector<vector<vector<vector<float>>>> input;
     vector<float> output;
-    int n_imagenes;
-    leer_imagen(input);
+    int n_imagenes, pad=1;
+    leer_imagen(input, pad);
 
-    vector<vector<int>> capas_conv = {{3,3,3}, {3,3,3}}, capas_pool={{2,2}, {3,3}};
-    vector<int> capas_fully = {200, 10}, padding = {2, 1};
-    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.001);
+
+
+    vector<vector<int>> capas_conv = {{32,3,3}}, capas_pool={{2,2}};
+    vector<int> capas_fully = {128, 2}, padding = {pad};
+    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.01);
     
-    //cnn.leer_imagenes();
-    cnn.leer_imagenes_mnist(50, 10);
+    cnn.leer_imagenes();
+    //cnn.leer_imagenes_mnist(3000, 10);
     cnn.mostrar_arquitectura();
     cnn.train(10000, 32);
-    
     
     /*
     // PRUEBAS ----------------------------------------

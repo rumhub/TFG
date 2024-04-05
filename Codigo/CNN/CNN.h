@@ -35,7 +35,4 @@ class CNN
 
         // DEBUG ----------------------------------------
         void prueba();
-        void train_debug(int epocas, int mini_batch);
-
-
 };

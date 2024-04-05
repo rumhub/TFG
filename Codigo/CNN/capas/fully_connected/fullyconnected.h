@@ -59,7 +59,9 @@ class FullyConnected
 
         void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x);
 
-        void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);
+        void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, const int &n_imgs_batch);
+
+        void escalar_pesos(float clip_value);
 
         void inicializar_parametros();
 
@@ -72,6 +74,9 @@ class FullyConnected
         void copiar_parametros(FullyConnected &fc);
 
         void copiar_gradientes(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias);
+
+        vector<vector<vector<float>>> get_pesos(){return this->w;};
+        vector<vector<float>> get_bias(){return this->bias;};
 };
 
 #endif

@@ -105,6 +105,8 @@ void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vec
                         // Si es el valor máximo, dejarlo como estaba
                         if(input_copy[t][k][h] != 0)
                             input[t][k][h] = max;
+                        else
+                            input[t][k][h] = 0.0;
                     }
                 }
             }
@@ -118,6 +120,64 @@ void PoolingMax::mostrar_tam_kernel()
 {
     cout << "Estructura kernel "<< this->kernel_fils << "x" << this->kernel_cols << "x" << this->image_canales << endl; 
 }
+
+void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
+{
+    vector<vector<vector<float>>> imagen_3D_aux;
+    vector<vector<float>> imagen_aux;
+    vector<float> fila_aux;
+
+    // Por cada imagen
+    for(int i=0; i<imagen_3D.size();i++)
+    {
+        // Añadimos padding superior
+        for(int j=0; j<imagen_3D[i].size() + pad*2; j++) // pad*2 porque hay padding tanto a la derecha como a la izquierda
+            fila_aux.push_back(0.0);
+        
+        for(int k=0; k<pad; k++)
+            imagen_aux.push_back(fila_aux);
+        
+        fila_aux.clear();
+
+        // Padding lateral (izquierda y derecha)
+        // Por cada fila de cada imagen
+        for(int j=0; j<imagen_3D[i].size(); j++)
+        {
+            // Añadimos padding lateral izquierdo
+            for(int t=0; t<pad; t++)
+                fila_aux.push_back(0.0);
+
+            // Dejamos casillas centrales igual que en la imagen original
+            for(int k=0; k<imagen_3D[i][j].size(); k++)
+                fila_aux.push_back(imagen_3D[i][j][k]);
+            
+            // Añadimos padding lateral derecho
+            for(int t=0; t<pad; t++)
+                fila_aux.push_back(0.0);
+            
+            // Añadimos fila construida a la imagen
+            imagen_aux.push_back(fila_aux);
+            fila_aux.clear();
+        }
+        
+        // Añadimos padding inferior
+        fila_aux.clear();
+
+        for(int j=0; j<imagen_3D[i].size() + pad*2; j++) // pad*2 porque hay padding tanto a la derecha como a la izquierda
+            fila_aux.push_back(0.0);
+        
+        for(int k=0; k<pad; k++)
+            imagen_aux.push_back(fila_aux);
+        
+        fila_aux.clear();
+        
+        // Añadimos imagen creada al conjunto de imágenes
+        imagen_3D_aux.push_back(imagen_aux);
+        imagen_aux.clear();
+    }
+
+    imagen_3D = imagen_3D_aux;
+};
 
 /*
 // https://leonardoaraujosantos.gitbook.io/artificial-inteligence/machine_learning/deep_learning/pooling_layer

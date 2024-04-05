@@ -3,6 +3,7 @@
 #include <math.h>
 #include <iostream>
 #include <chrono>
+#include "random"
 
 using namespace std;
 
@@ -93,8 +94,7 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
                 for(int j=0; j<kernel_cols;j++)
                 {
                     // Inicialización He
-                    random = (rand() / double(RAND_MAX) - 0.5);
-                    pesos_fila.push_back(random);
+                    pesos_fila.push_back(0.0);
                 }
                 pesos_kernel_2D.push_back(pesos_fila);
                 pesos_fila.clear();
@@ -109,18 +109,33 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
     this->w = pesos_por_kernel;
     this->grad_w = this->w;
 
+    this->generar_pesos();
 
     // Bias    
     // Un bias por filtro, https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
 
     for(int i=0; i<n_kernels; i++)
-        this->bias.push_back((float) (rand()) / (RAND_MAX) - 0.5);
+        this->bias.push_back(0.0);
     
 
     // Grad Bias
     this->grad_bias = this->bias;
 
 };
+
+void Convolutional::generar_pesos() 
+{
+    // Inicialización He
+    random_device rd;
+    mt19937 gen(rd());
+    normal_distribution<float> distribution(0.0, sqrt(2.0 / (this->n_kernels * this->kernel_depth * this->kernel_fils * this->kernel_fils)));
+
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[0].size(); j++)
+            for(int k=0; k<this->w[0][0].size(); k++)
+                for(int p=0; p<this->w[0][0][0].size(); p++)
+                    this->w[i][j][k][p] = distribution(gen);
+}
 
 float Convolutional::activationFunction(float x)
 {
@@ -294,14 +309,14 @@ void Convolutional::reset_gradients()
     
     // Reset gradiende del bias
     for(int k=0; k<this->n_kernels; k++)
-        this->grad_bias[k] = 0;
+        this->grad_bias[k] = 0.0;
 
     // Reset del gradiente de cada peso
     for(int i=0; i<this->grad_w.size(); i++)
         for(int j=0; j<this->grad_w[0].size(); j++)
             for(int k=0; k<this->grad_w[0][0].size(); k++)
                 for(int l=0; l<this->grad_w[0][0][0].size(); l++)
-                    this->grad_w[i][j][k][l] = 0;
+                    this->grad_w[i][j][k][l] = 0.0;
                 
 }
 
@@ -540,6 +555,31 @@ void Convolutional::backPropagation_bibliografia(vector<vector<vector<float>>> &
     */
 }
 
+void Convolutional::escalar_pesos(float clip_value)
+{
+    // Calculate the maximum and minimum values of weights
+    float max = this->w[0][0][0][0], min = this->w[0][0][0][0];
+
+    for(int i=0; i<this->grad_w.size(); i++)
+        for(int j=0; j<this->grad_w[i].size(); j++)
+            for(int k=0; k<this->grad_w[i][j].size(); k++)
+                for(int l=0; l<this->grad_w[i][j][k].size(); l++)
+                {
+                    if(max < this->w[i][j][k][l])
+                        max = this->w[i][j][k][l];
+                    
+                    if(min > this->w[i][j][k][l])
+                        min = this->w[i][j][k][l];
+                }
+
+    // Perform gradient clipping
+    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
+    for(int i=0; i<this->grad_w.size(); i++)
+        for(int j=0; j<this->grad_w[i].size(); j++)
+            for(int k=0; k<this->grad_w[i][j].size(); k++)
+                for(int l=0; l<this->grad_w[i][j][k].size(); l++)
+                    this->w[i][j][k][l] = std::max(std::min(this->w[i][j][k][l] * scaling_factor, clip_value), -clip_value);
+}
 
 void Convolutional::actualizar_grads(int n_datos)
 {
@@ -585,25 +625,27 @@ int main()
     vector<vector<vector<float>>> imagenes_2D, output, grad_output, v_3D, imagenes_2D_copy;
     vector<vector<float>> v_2D;
     vector<float> v_1D;
-    int n_kernels = 1, pad=1, K=3;
+    int n_kernels = 1, pad=0, K=3;
 
-    imagenes_2D.push_back(imagen);
-    imagenes_2D.push_back(imagen);
+    //imagenes_2D.push_back(imagen);
+    //imagenes_2D.push_back(imagen);
 
      // Input tensor
-    std::vector<std::vector<std::vector<float>>> x =
+    vector<vector<vector<float>>> x =
         {
             {
-                {1, 2, 3, 4},
-                {5, 6, 7, 8},
-                {9, 10, 11, 12},
-                {13, 14, 15, 16}
+                {1, 2, 3, 4, 5},
+                {6, 7, 8, 9, 10},
+                {11, 12, 13, 14, 15},
+                {16, 17, 18, 19, 20},
+                {21, 22, 23, 24, 25}
             },
             {
-                {1, 2, 3, 4},
-                {5, 6, 7, 8},
-                {9, 10, 11, 12},
-                {13, 14, 15, 16}
+                {25, 24, 23, 22, 21},
+                {20, 19, 18, 17, 16},
+                {15, 14, 13, 12, 11},
+                {10, 9, 8, 7, 6},
+                {5, 4, 3, 2, 1}
             }
         };
 
@@ -642,7 +684,7 @@ int main()
 
     Convolutional conv(n_kernels, K, K, imagenes_2D, 0.1);
 
-    //conv.w_a_1();
+    conv.w_a_1();
     conv.mostrar_pesos();
 
     imagenes_2D_copy = imagenes_2D;

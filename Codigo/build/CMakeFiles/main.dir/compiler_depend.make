@@ -226,10 +226,28 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   /usr/include/c++/11/ratio \
   /usr/include/c++/11/ctime \
   /usr/include/c++/11/bits/parse_numbers.h \
+  /usr/include/c++/11/random \
+  /usr/include/c++/11/bits/random.h \
+  /usr/include/c++/11/bits/uniform_int_dist.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h \
+  /usr/include/c++/11/bits/random.tcc \
+  /usr/include/c++/11/numeric \
+  /usr/include/c++/11/bits/stl_numeric.h \
+  /usr/include/c++/11/bit \
+  /usr/include/c++/11/pstl/glue_numeric_defs.h \
+  /usr/include/c++/11/pstl/execution_defs.h \
   ../CNN/capas/flatten/flatten.cpp \
   ../CNN/capas/flatten/flatten.h \
   ../CNN/capas/fully_connected/fullyconnected.cpp \
   ../CNN/capas/fully_connected/fullyconnected.h \
+  /usr/include/c++/11/fstream \
+  /usr/include/c++/11/bits/codecvt.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+  /usr/include/c++/11/bits/fstream.tcc \
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h \
+  ../CNN/capas/pooling_max/poolingMax.cpp \
+  ../CNN/capas/pooling_max/poolingMax.h \
   ../CNN/auxiliar/leer_imagenes.cpp \
   /usr/local/include/opencv4/opencv2/opencv.hpp \
   /usr/local/include/opencv4/opencv2/opencv_modules.hpp \
@@ -263,7 +281,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   /usr/include/c++/11/bits/algorithmfwd.h \
   /usr/include/c++/11/bits/stl_heap.h \
   /usr/include/c++/11/bits/stl_tempbuf.h \
-  /usr/include/c++/11/bits/uniform_int_dist.h \
   /usr/include/c++/11/pstl/glue_algorithm_defs.h \
   /usr/include/c++/11/functional \
   /usr/include/c++/11/tuple \
@@ -279,7 +296,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   /usr/include/c++/11/bits/node_handle.h \
   /usr/include/c++/11/bits/unordered_map.h \
   /usr/include/c++/11/bits/erase_if.h \
-  /usr/include/c++/11/pstl/execution_defs.h \
   /usr/local/include/opencv4/opencv2/core/cvstd.hpp \
   /usr/include/c++/11/cstring \
   /usr/include/string.h \
@@ -290,7 +306,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   /usr/include/c++/11/memory \
   /usr/include/c++/11/bits/stl_raw_storage_iter.h \
   /usr/include/c++/11/bits/align.h \
-  /usr/include/c++/11/bit \
   /usr/include/c++/11/bits/unique_ptr.h \
   /usr/include/c++/11/bits/shared_ptr.h \
   /usr/include/c++/11/bits/shared_ptr_base.h \
@@ -381,7 +396,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   /usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/messages_members.h \
   /usr/include/libintl.h \
-  /usr/include/c++/11/bits/codecvt.h \
   /usr/include/c++/11/bits/locale_facets_nonio.tcc \
   /usr/include/c++/11/bits/locale_conv.h \
   /usr/include/c++/11/bits/quoted_string.h \
@@ -436,38 +450,11 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
   /usr/local/include/opencv4/opencv2/video.hpp \
   /usr/local/include/opencv4/opencv2/video/tracking.hpp \
   /usr/local/include/opencv4/opencv2/video/background_segm.hpp \
-  /usr/include/c++/11/fstream \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
-  /usr/include/c++/11/bits/fstream.tcc \
-  /usr/include/c++/11/random \
-  /usr/include/c++/11/bits/random.h \
-  /usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h \
-  /usr/include/c++/11/bits/random.tcc \
-  /usr/include/c++/11/numeric \
-  /usr/include/c++/11/bits/stl_numeric.h \
-  /usr/include/c++/11/pstl/glue_numeric_defs.h \
-  /usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h \
-  ../CNN/capas/pooling_max/poolingMax.cpp \
-  ../CNN/capas/pooling_max/poolingMax.h \
-  ../CNN/auxiliar/leer_imagenes.cpp \
   ../CNN/auxiliar/auxiliar.cpp \
   ../CNN/auxiliar/auxiliar.h
 
 
 ../CNN/auxiliar/auxiliar.h:
-
-/usr/include/c++/11/numeric:
-
-/usr/include/c++/11/bits/random.h:
-
-/usr/include/c++/11/random:
-
-/usr/include/c++/11/bits/fstream.tcc:
-
-/usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h:
-
-/usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h:
 
 /usr/local/include/opencv4/opencv2/video/tracking.hpp:
 
@@ -571,10 +558,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/local/include/opencv4/opencv2/flann/params.h:
 
-/usr/include/c++/11/fstream:
-
-/usr/local/include/opencv4/opencv2/flann/matrix.h:
-
 /usr/local/include/opencv4/opencv2/flann/general.h:
 
 /usr/local/include/opencv4/opencv2/flann/flann_base.hpp:
@@ -606,10 +589,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/local/include/opencv4/opencv2/dnn/dnn.hpp:
 
 /usr/local/include/opencv4/opencv2/flann/config.h:
-
-/usr/include/c++/11/bits/stl_numeric.h:
-
-/usr/local/include/opencv4/opencv2/flann/defines.h:
 
 /usr/local/include/opencv4/opencv2/flann/miniflann.hpp:
 
@@ -657,8 +636,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/bits/unique_ptr.h:
 
-/usr/include/c++/11/bit:
-
 /usr/local/include/opencv4/opencv2/flann/any.h:
 
 /usr/include/c++/11/bits/align.h:
@@ -691,10 +668,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/unordered_map:
 
-/usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h:
-
-/usr/include/c++/11/bits/refwrap.h:
-
 /usr/include/c++/11/bits/invoke.h:
 
 /usr/include/c++/11/bits/unique_lock.h:
@@ -707,15 +680,45 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/bits/stl_tempbuf.h:
 
-/usr/include/c++/11/pstl/execution_defs.h:
-
-/usr/include/c++/11/bits/algorithmfwd.h:
-
 /usr/include/c++/11/bits/stl_algo.h:
 
 /usr/include/c++/11/algorithm:
 
+/usr/local/include/opencv4/opencv2/flann/timer.h:
+
+/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h:
+
+/usr/local/include/opencv4/opencv2/core/base.hpp:
+
+/usr/include/limits.h:
+
+/usr/include/c++/11/bits/stl_relops.h:
+
+/usr/include/c++/11/stdlib.h:
+
+/usr/local/include/opencv4/opencv2/photo.hpp:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h:
+
 /usr/include/c++/11/bits/cxxabi_forced.h:
+
+/usr/local/include/opencv4/opencv2/flann/matrix.h:
+
+/usr/include/c++/11/fstream:
+
+/usr/include/c++/11/bits/shared_ptr_base.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/c++/11/bits/basic_string.h:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
 
@@ -734,6 +737,8 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h:
+
+/usr/include/c++/11/numeric:
 
 /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h:
 
@@ -758,10 +763,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/include/x86_64-linux-gnu/bits/endianness.h:
 
 /usr/include/c++/11/tr1/modified_bessel_func.tcc:
-
-/usr/include/c++/11/pstl/glue_numeric_defs.h:
-
-/usr/include/x86_64-linux-gnu/bits/locale.h:
 
 /usr/local/include/opencv4/opencv2/core/traits.hpp:
 
@@ -805,6 +806,12 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/bits/stl_iterator.h:
 
+/usr/include/c++/11/bits/sstream.tcc:
+
+/usr/include/c++/11/climits:
+
+/usr/include/c++/11/new:
+
 /usr/include/x86_64-linux-gnu/bits/floatn-common.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
@@ -812,6 +819,10 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/include/wchar.h:
 
 /usr/include/c++/11/bits/cxxabi_init_exception.h:
+
+/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
+
+/usr/include/c++/11/string:
 
 /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h:
 
@@ -828,6 +839,12 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/include/c++/11/functional:
 
 /usr/include/linux/errno.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h:
+
+/usr/include/c++/11/debug/debug.h:
+
+/usr/include/features-time64.h:
 
 ../CNN/CNN.h:
 
@@ -911,17 +928,13 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/ratio:
 
-/usr/include/c++/11/bits/shared_ptr_base.h:
-
-/usr/include/c++/11/bits/basic_string.h:
-
-/usr/include/linux/limits.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
-
 /usr/include/c++/11/bits/exception_ptr.h:
 
 /usr/include/c++/11/ext/string_conversions.h:
+
+/usr/include/c++/11/bits/algorithmfwd.h:
+
+/usr/include/c++/11/pstl/execution_defs.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/locale_t.h:
 
@@ -954,10 +967,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/include/x86_64-linux-gnu/bits/stdlib.h:
 
 /usr/include/x86_64-linux-gnu/asm/errno.h:
-
-../CNN/capas/pooling_max/poolingMax.cpp:
-
-/usr/include/x86_64-linux-gnu/sys/cdefs.h:
 
 /usr/local/include/opencv4/opencv2/core.hpp:
 
@@ -993,6 +1002,8 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/c++/11/tr1/poly_laguerre.tcc:
 
+/usr/include/c++/11/bit:
+
 /usr/include/x86_64-linux-gnu/bits/fp-logb.h:
 
 /usr/include/x86_64-linux-gnu/bits/wchar2.h:
@@ -1005,7 +1016,9 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/wchar.h:
 
-/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+/usr/include/x86_64-linux-gnu/bits/locale.h:
+
+/usr/include/c++/11/pstl/glue_numeric_defs.h:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/atomic_word.h:
 
@@ -1039,10 +1052,6 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++locale.h:
 
-/usr/local/include/opencv4/opencv2/flann/timer.h:
-
-/usr/include/x86_64-linux-gnu/bits/xopen_lim.h:
-
 /usr/include/c++/11/locale:
 
 /usr/include/ctype.h:
@@ -1064,6 +1073,10 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/local/include/opencv4/opencv2/core/saturate.hpp:
 
 /usr/include/stdlib.h:
+
+/usr/include/c++/11/bits/refwrap.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h:
 
 /usr/include/x86_64-linux-gnu/bits/waitflags.h:
 
@@ -1175,9 +1188,9 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/local/include/opencv4/opencv2/core/mat.inl.hpp:
 
-/usr/include/c++/11/ios:
-
 /usr/include/c++/11/utility:
+
+/usr/include/c++/11/ios:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/error_constants.h:
 
@@ -1209,21 +1222,13 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/ctype_inline.h:
 
-/usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h:
-
-/usr/include/c++/11/bits/codecvt.h:
-
-/usr/include/c++/11/bits/enable_special_members.h:
-
-/usr/include/c++/11/bits/basic_ios.tcc:
+/usr/include/c++/11/random:
 
 /usr/include/c++/11/istream:
 
 ../CNN/capas/convolutional/convolutional.cpp:
 
 ../CNN/capas/convolutional/convolutional.h:
-
-/usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
 /usr/local/include/opencv4/opencv2/flann/all_indices.h:
 
@@ -1232,6 +1237,10 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/local/include/opencv4/opencv2/core/operations.hpp:
 
 /usr/include/c++/11/bits/stl_uninitialized.h:
+
+/usr/local/include/opencv4/opencv2/flann/defines.h:
+
+/usr/include/c++/11/bits/stl_numeric.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h:
 
@@ -1263,7 +1272,17 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
 
+/usr/include/c++/11/bits/enable_special_members.h:
+
+/usr/include/c++/11/bits/codecvt.h:
+
+/usr/include/c++/11/bits/basic_ios.tcc:
+
+/usr/include/x86_64-linux-gnu/c++/11/bits/opt_random.h:
+
 /usr/include/x86_64-linux-gnu/bits/mathcalls.h:
+
+/usr/include/c++/11/bits/random.h:
 
 /usr/include/c++/11/bits/postypes.h:
 
@@ -1274,6 +1293,10 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 /usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
 /usr/include/c++/11/limits:
+
+/usr/include/c++/11/array:
+
+/usr/include/c++/11/tr1/beta_function.tcc:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
@@ -1297,50 +1320,26 @@ CMakeFiles/main.dir/main.cpp.o: ../main.cpp \
 
 /usr/local/include/opencv4/opencv2/opencv.hpp:
 
+/usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h:
+
+/usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h:
+
+/usr/include/c++/11/bits/fstream.tcc:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
+../CNN/capas/pooling_max/poolingMax.cpp:
+
 ../CNN/auxiliar/leer_imagenes.cpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
 
 /usr/local/include/opencv4/opencv2/core/cvdef.h:
 
-/usr/local/include/opencv4/opencv2/core/affine.hpp:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h:
-
-/usr/local/include/opencv4/opencv2/photo.hpp:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h:
+/usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h:
 
 /usr/local/include/opencv4/opencv2/core/cv_cpu_dispatch.h:
 
-/usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h:
+/usr/local/include/opencv4/opencv2/core/affine.hpp:
 
-/usr/include/c++/11/stdlib.h:
-
-/usr/include/c++/11/tr1/beta_function.tcc:
-
-/usr/include/c++/11/array:
-
-/usr/include/c++/11/bits/sstream.tcc:
-
-/usr/include/c++/11/new:
-
-/usr/include/c++/11/climits:
-
-/usr/include/limits.h:
-
-/usr/include/c++/11/bits/stl_relops.h:
-
-/usr/include/c++/11/debug/debug.h:
-
-/usr/include/features-time64.h:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h:
-
-/usr/local/include/opencv4/opencv2/core/base.hpp:
-
-/usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h:
-
-/usr/include/c++/11/string:
-
-/usr/include/x86_64-linux-gnu/bits/uio_lim.h:
+/usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h:

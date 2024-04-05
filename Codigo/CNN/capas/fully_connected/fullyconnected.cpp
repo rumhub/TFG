@@ -182,7 +182,11 @@ void FullyConnected::forwardPropagation(const vector<float> &x)
 
     // Introducimos input -------------------------------------------------------
     for(int i=0; i<x.size(); i++)
+    {
         this->z[0][i] = x[i];
+        this->a[0][i] = x[i];
+    }
+        
     
     // Forward Propagation ------------------------------------------------------------
     // Por cada capa
@@ -328,7 +332,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     int i_last_h = i_output-1;  // Índice de la capa h1
     int i_act, i_ant;
 
-    // Inicializar gradiente respecto a entrada a 0 --------------------------
+    // Inicializar gradiente respecto a entrada 
     grad_x.clear();
 
     // Inicializar gradiente de pesos a 0 --------------------------
@@ -397,19 +401,62 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         }
 
         grad_x.push_back(this->grad_a[0]);
-    }
 
+        /*
+        for(int g=0; g<grad_a[0].size(); g++)
+            cout << grad_a[0][g] << " ";
+        cout << endl;
+        int a;
+        cin >> a;
+        */
+    } 
           
     // Actualizar parámetros
     //this->actualizar_parametros();
+
+
 
     grad_pesos = this->grad_w;
     grad_b = this->grad_bias;
 }
 
-
-void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b)
+void FullyConnected::escalar_pesos(float clip_value)
 {
+    // Calcular el máximo y el mínimo de los pesos
+    float max = this->w[0][0][0], min = this->w[0][0][0];
+
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+            {
+                if(max < this->w[i][j][k])
+                    max = this->w[i][j][k];
+                
+                if(min > this->w[i][j][k])
+                    min = this->w[i][j][k];
+            }
+    
+    // Realizar gradient clipping
+    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
+}
+
+void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, const int &n_imgs_batch)
+{
+
+    // Realizar la media
+    for(int j=0; j<this->w.size(); j++)
+        for(int k=0; k<this->w[j].size(); k++)
+            for(int p=0; p<this->w[j][k].size(); p++)
+                grad_pesos[j][k][p] = grad_pesos[j][k][p] / n_imgs_batch;
+
+    for(int i=0; i<this->grad_bias.size(); i++)
+        for(int j=0; j<this->grad_bias[i].size(); j++)
+            grad_b[i][j] = grad_b[i][j] / n_imgs_batch;
+
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
         for(int k=0; k<this->w[j].size(); k++)
