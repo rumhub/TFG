@@ -15,7 +15,7 @@ void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input, const in
 
     Mat image2 = imread(ruta), image;
     
-    resize(image2, image, Size(32, 32));
+    resize(image2, image, Size(28, 28));
 
     // Cargamos la imagen en un vector 3D
     cargar_imagen_en_vector(image, imagen_k1);
@@ -43,12 +43,12 @@ int main()
 
 
     vector<vector<int>> capas_conv = {{32,3,3}}, capas_pool={{2,2}};
-    vector<int> capas_fully = {128, 10}, padding = {pad};
+    vector<int> capas_fully = {128, 2}, padding = {pad};
     CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.01);
     
-    //cnn.leer_imagenes();
+    cnn.leer_imagenes();
     //cnn.leer_imagenes_mnist(3000, 10);
-    cnn.leer_imagenes_cifar10(200, 10);
+    //cnn.leer_imagenes_cifar10(100, 10);
     cnn.mostrar_arquitectura();
     cnn.train(10000, 32);
     

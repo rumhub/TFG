@@ -272,21 +272,27 @@ void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &inpu
         exit(-1);
     }
     
+    this->a = output;
+
     // Por cada kernel M 
     for(int img_out=0; img_out<M; img_out++)
         for(int i=0; i<n_veces; i++)    
             for(int j=0; j<n_veces; j++)  
             {
-                output[img_out][i][j] = 0.0;
+                this->a[img_out][i][j] = 0.0;
                 
                 // Realizar convolución 3D
                 for(int c=0; c<C; c++)
                     for(int i_k=0; i_k<K; i_k++)
                         for(int j_k=0; j_k<K; j_k++)
-                            output[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];                            
+                            this->a[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];                            
 
                 // Sumamos bias a la suma ponderada obtenida
-                output[img_out][i][j] = activationFunction(output[img_out][i][j] + this->bias[img_out]);
+                this->a[img_out][i][j] += this->bias[img_out];
+
+
+                // Aplicamos función de activación
+                output[img_out][i][j] = activationFunction(this->a[img_out][i][j]);
             }
 };
 
@@ -440,6 +446,20 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
     int C = input.size();
 
     grad_input = input;
+
+    // Inicializar input a 0
+    for(int i=0; i<input.size(); i++)
+        for(int j=0; j<input[0].size(); j++)    
+            for(int k=0; k<input[0][0].size(); k++)
+                grad_input[i][j][k] = 0.0;
+
+    // Realizar derivada Y_out/Y_in
+    for(int i=0; i<output.size(); i++)
+        for(int j=0; j<output[0].size(); j++)    
+            for(int k=0; k<output[0][0].size(); k++)
+                output[i][j][k] = output[i][j][k] * deriv_activationFunction(this->a[i][j][k]);
+    
+    // Aplicar padding
     output_copy = output;
     aplicar_padding(output_copy, pad + K-2);    // Se añade + K-2 para hacer una convolución completa
     
@@ -447,12 +467,6 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
     // nº veces k sobre y, nº de veces o deslizamientos de y sobre x
     int n_veces_ky = output_copy[0].size() - K + 1, n_veces_yx = input[0].size() - output[0].size() + 1;
 
-    // Inicializar input a 0
-    for(int i=0; i<input.size(); i++)
-        for(int j=0; j<input[0].size(); j++)    
-            for(int k=0; k<input[0][0].size(); k++)
-                grad_input[i][j][k] = 0.0;
-    
     // Convolución entre output y pesos    
     for(int f=0; f<F; f++)  // Por cada filtro f
     {
@@ -478,7 +492,7 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
     for(int i=0; i<input.size(); i++)
         for(int j=0; j<input[0].size(); j++)    
             for(int k=0; k<input[0][0].size(); k++)
-                input[i][j][k] = grad_input[i][j][k] * deriv_activationFunction(input[i][j][k]);
+                input[i][j][k] = grad_input[i][j][k];
 
     // Calcular el gradiente del bias
     for(int i=0; i<output.size(); i++)

@@ -7,6 +7,8 @@ class Convolutional
     private:
         vector<vector<vector<vector<float>>>> w;    // w[n][d][i][j]   --> Matriz de pesos([d][i][j]) respecto al kernel n. (d = depth del kernel)
         vector<vector<vector<vector<float>>>> grad_w;   // Gradiente de los pesos
+        vector<vector<vector<float>>> a;    // Convolución antes de aplicar la función de activación
+
         int n_kernels;
         int kernel_fils;
         int kernel_cols;
@@ -18,7 +20,7 @@ class Convolutional
         vector<float> bias; 
         vector<float> grad_bias;
         float lr;
-    
+
     public:
 
         // Constructor
