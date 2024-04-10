@@ -8,6 +8,8 @@
 
 #include <vector>
 
+#define THREAD_NUM 8
+
 class CNN
 {
     private:
@@ -32,7 +34,7 @@ class CNN
         void mostrar_arquitectura();
 
         void train(int epocas, int mini_batch);
-        void accuracy();
+        void accuracy(vector<vector<float>> &fully_a, vector<vector<float>> &fully_z);
 
         // DEBUG ----------------------------------------
         void prueba();

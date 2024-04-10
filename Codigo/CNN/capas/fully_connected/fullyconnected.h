@@ -6,8 +6,6 @@
 #include <vector>
 #include <fstream>
 
-#define THREAD_NUM 3
-
 using namespace std;
 
 // Prueba, una red con una sola capa oculta. Siempre capa output solo 1 neurona. Clasificación binaria
@@ -15,29 +13,22 @@ class FullyConnected
 {
     protected:
         vector<vector<vector<float>>> w;        // Pesos
-        vector<vector<vector<float>>> grad_w;   // Gradiente de los pesos
 
-        // Neuronas
-        vector<vector<float>> a;    // X*W + B, neurona antes de aplicar función de activación   
-        vector<vector<float>> z;    // f(X*W + B), neurona después de aplicar función de activación
-        vector<vector<float>> grad_a;   // Gradiente respecto a la entrada de la neurona
+        vector<vector<float>> a;
         vector<vector<float>> bias; // Un sesgo o bias por neurona
-        vector<vector<float>> grad_bias;
         float lr;
 
     public:
-        FullyConnected(const vector<int> &capas, const float & lr=0.1);
+        FullyConnected(const vector<int> &capas, const float & lr);
         FullyConnected(){};
 
-        void generar_pesos(const int &capa);
+        void generar_pesos(const int &capa, vector<vector<float>> &a);
 
         void particion_k_fold(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &k);
 
         void leer_atributos(vector<vector<float>> &x, vector<vector<float>> &y, string fichero);
 
         void mostrarpesos();
-
-        void mostrarNeuronas();
 
         void mostrarbias();
 
@@ -47,25 +38,19 @@ class FullyConnected
 
         float sigmoid(const float &x);
 
-        void forwardPropagation(const vector<float> &x);
+        void forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z);
 
-        void mostrar_prediccion(vector<float> x, float y);
+        float accuracy(vector<vector<float>> x, vector<vector<float>> y, vector<vector<float>> &a, vector<vector<float>> &z);
 
-        void mostrar_prediccion_vs_verdad(vector<float> x, float y);
+        float cross_entropy(vector<vector<float>> x, vector<vector<float>> y, vector<vector<float>> &a, vector<vector<float>> &z);
 
-        float accuracy(vector<vector<float>> x, vector<vector<float>> y);
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &indices, const int &n_datos, vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a);
 
-        float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
-
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x);
-
-        void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, const int &n_imgs_batch);
+        void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);
 
         void escalar_pesos(float clip_value);
 
         void inicializar_parametros();
-
-        void generarDatos(vector<vector<float>> &x, vector<float> &y);
 
         void setLR(float lr);
 
@@ -73,10 +58,12 @@ class FullyConnected
 
         void copiar_parametros(FullyConnected &fc);
 
-        void copiar_gradientes(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias);
-
         vector<vector<vector<float>>> get_pesos(){return this->w;};
         vector<vector<float>> get_bias(){return this->bias;};
+
+        void reservar_espacio(vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a){a = this->a; z=this->a; grad_a = this->a;};
+
+        void reset_gradients(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias);
 };
 
 #endif

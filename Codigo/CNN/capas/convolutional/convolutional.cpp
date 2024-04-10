@@ -249,7 +249,7 @@ void Convolutional::mostrar_grad()
 
 
 // La salida es una imagen 2D, un canal de profundidad
-void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output)
+void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a)
 {
     // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
     vector<vector<vector<float>>> input_copy;
@@ -272,27 +272,27 @@ void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &inpu
         exit(-1);
     }
     
-    this->a = output;
+    a = output;
 
     // Por cada kernel M 
     for(int img_out=0; img_out<M; img_out++)
         for(int i=0; i<n_veces; i++)    
             for(int j=0; j<n_veces; j++)  
             {
-                this->a[img_out][i][j] = 0.0;
+                a[img_out][i][j] = 0.0;
                 
                 // Realizar convolución 3D
                 for(int c=0; c<C; c++)
                     for(int i_k=0; i_k<K; i_k++)
                         for(int j_k=0; j_k<K; j_k++)
-                            this->a[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];                            
+                            a[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];                            
 
                 // Sumamos bias a la suma ponderada obtenida
-                this->a[img_out][i][j] += this->bias[img_out];
+                a[img_out][i][j] += this->bias[img_out];
 
 
                 // Aplicamos función de activación
-                output[img_out][i][j] = activationFunction(this->a[img_out][i][j]);
+                output[img_out][i][j] = activationFunction(a[img_out][i][j]);
             }
 };
 
@@ -432,7 +432,7 @@ void Convolutional::backPropagation_libro(vector<vector<vector<float>>> &input, 
 
 
 // OJO --> El input viene ya con el padding aplicado
-void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad)
+void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad, vector<vector<vector<float>>> &a)
 {
     // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
     vector<vector<vector<float>>> output_copy, grad_input;
@@ -457,7 +457,7 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
     for(int i=0; i<output.size(); i++)
         for(int j=0; j<output[0].size(); j++)    
             for(int k=0; k<output[0][0].size(); k++)
-                output[i][j][k] = output[i][j][k] * deriv_activationFunction(this->a[i][j][k]);
+                output[i][j][k] = output[i][j][k] * deriv_activationFunction(a[i][j][k]);
     
     // Aplicar padding
     output_copy = output;

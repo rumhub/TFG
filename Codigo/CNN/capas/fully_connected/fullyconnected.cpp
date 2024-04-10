@@ -25,9 +25,6 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
         neuronas_capa.clear();
     }
 
-    this->z = this->a;
-    this->grad_a = this->a;
-
     // Pesos -------------------------------------------------------------------
     // Por cada capa
     for(int i=0; i<a.size()-1; i++)
@@ -59,37 +56,24 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
 
     // Inicializar pesos mediante inicialización He
     for(int i=0; i<a.size()-1; i++)
-        this->generar_pesos(i);
+        this->generar_pesos(i, this->a);
 
     // Inicializamos bias con un valor random entre -0.5 y 0.5
     for(int i=0; i<this->bias.size(); i++)
         for(int j=0; j<this->bias[i].size(); j++)
             this->bias[i][j] = 0.0;
-
-    // Inicializar gradiente de pesos a 0
-    this->grad_w = w;
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                this->grad_w[i][j][k] = 0;
-
-    // Inicializar gradiente de bias a 0
-    this->grad_bias = this->bias;
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->grad_bias[i][j] = 0.0;
 };
 
 
-void FullyConnected::generar_pesos(const int &capa)
+void FullyConnected::generar_pesos(const int &capa, vector<vector<float>> &a)
 {
     // Inicialización He
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<float> distribution(0.0, sqrt(2.0 / this->a[capa].size())); 
+    std::normal_distribution<float> distribution(0.0, sqrt(2.0 / a[capa].size())); 
 
-    for(int i=0; i<this->a[capa].size(); i++)
-        for(int j=0; j<this->a[capa+1].size(); j++)
+    for(int i=0; i<a[capa].size(); i++)
+        for(int j=0; j<a[capa+1].size(); j++)
             this->w[capa][i][j] = distribution(gen);
 }
 
@@ -123,19 +107,6 @@ void FullyConnected::mostrarpesos()
     cout << endl;
     */
 
-}
-
-void FullyConnected::mostrarNeuronas()
-{
-    cout << "NEURONAS: " << endl;
-    for(int i=0; i<this->z.size(); i++)
-    {
-        for(int j=0; j<this->z[i].size(); j++)
-        {
-            cout << this->z[i][j] << " ";
-        }
-        cout << endl;
-    }
 }
 
 void FullyConnected::mostrarbias()
@@ -176,109 +147,87 @@ float FullyConnected::sigmoid(const float &x)
 }
 
 // x --> Input de la red
-void FullyConnected::forwardPropagation(const vector<float> &x)
+void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z)
 {
     float max, sum = 0.0, epsilon = 0.000000001;
 
     // Introducimos input -------------------------------------------------------
     for(int i=0; i<x.size(); i++)
     {
-        this->z[0][i] = x[i];
-        this->a[0][i] = x[i];
+        z[0][i] = x[i];
+        a[0][i] = x[i];
     }
         
     
     // Forward Propagation ------------------------------------------------------------
     // Por cada capa
-    for(int i=0; i<this->a.size()-1; i++)
+    for(int i=0; i<a.size()-1; i++)
     {
 
         // Por cada neurona de la capa siguiente
-        for(int k=0; k<this->a[i+1].size(); k++)
+        for(int k=0; k<a[i+1].size(); k++)
         {
             // Reset siguiente capa
-            this->a[i+1][k] = 0.0;
+            a[i+1][k] = 0.0;
 
             // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
-            for(int j=0; j<this->a[i].size(); j++)
-                this->a[i+1][k] += this->z[i][j] * this->w[i][j][k];
+            for(int j=0; j<a[i].size(); j++)
+                a[i+1][k] += z[i][j] * this->w[i][j][k];
             
             // Aplicar bias o sesgo
-            this->a[i+1][k] += this->bias[i+1][k];
+            a[i+1][k] += this->bias[i+1][k];
         }
 
         // Aplicamos función de activación asociada a la capa actual -------------------------------
 
         // En capas ocultas se emplea ReLU como función de activación
-        if(i < this->a.size() - 2)
+        if(i < a.size() - 2)
         {
-            for(int k=0; k<this->a[i+1].size(); k++)
-                this->z[i+1][k] = relu(this->a[i+1][k]);
+            for(int k=0; k<a[i+1].size(); k++)
+                z[i+1][k] = relu(a[i+1][k]);
             
         }else
         {
             // En la capa output se emplea softmax como función de activación
             sum = 0.0;
-            max = this->a[i+1][0];
+            max = a[i+1][0];
 
             // Normalizar -----------------------------------------------------------------
             // Encontrar el máximo
-            for(int k=0; k<this->a[i+1].size(); k++)
-                if(max < this->a[i+1][k])
-                    max = this->a[i+1][k];
+            for(int k=0; k<a[i+1].size(); k++)
+                if(max < a[i+1][k])
+                    max = a[i+1][k];
             
             // Normalizar
-            for(int k=0; k<this->a[i+1].size(); k++)
-                this->a[i+1][k] = this->a[i+1][k] - max;
+            for(int k=0; k<a[i+1].size(); k++)
+                a[i+1][k] = a[i+1][k] - max;
             
             // Calculamos la suma exponencial de todas las neuronas de la capa output ---------------------
-            for(int k=0; k<this->a[i+1].size(); k++)
-                sum += exp(this->a[i+1][k]);
+            for(int k=0; k<a[i+1].size(); k++)
+                sum += exp(a[i+1][k]);
 
-            for(int k=0; k<this->a[i+1].size(); k++)
-                this->z[i+1][k] = exp(this->a[i+1][k]) / sum;
+            for(int k=0; k<a[i+1].size(); k++)
+                z[i+1][k] = exp(a[i+1][k]) / sum;
             
         } 
     }
 }
 
-
-void FullyConnected::mostrar_prediccion(vector<float> x, float y)
-{
-    forwardPropagation(x);
-    cout << "Input: ";
-    int n=this->a.size()-1;
-
-    for(int i=0; i<x.size(); i++)
-    {
-        cout << x[i] << " ";
-    }
-    cout << "y: " << y << ", predicción: " << this->z[n][0] << endl;
-}
-
-void FullyConnected::mostrar_prediccion_vs_verdad(vector<float> x, float y)
-{
-    int n=this->a.size()-1;
-    forwardPropagation(x);
-
-    cout << "y: " << y << ", predicción: " << this->z[n][0] << endl;
-}
-
 // Ahora x es el conjunto de datos de training
 // x[0] el primer dato training
 // x[0][0] el primer elemento del primer dato training
-float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y)
+float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y, vector<vector<float>> &a, vector<vector<float>> &z)
 {
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=this->a.size()-1;
 
     for(int i=0; i<x.size(); i++)
     {
-        forwardPropagation(x[i]);
+        forwardPropagation(x[i], a, z);
 
-        for(int c=0; c<this->a[n].size(); c++)
+        for(int c=0; c<a[n].size(); c++)
             if(y[i][c] == 1)
-                prediccion = this->z[n][c];
+                prediccion = z[n][c];
             
         sum += log(prediccion+epsilon);
     }
@@ -289,25 +238,25 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
     return sum;
 }
 
-float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
+float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y, vector<vector<float>> &a, vector<vector<float>> &z)
 {
     float sum =0.0, max;
-    int prediccion, n=this->z.size()-1;
+    int prediccion, n=this->a.size()-1;
 
     for(int i=0; i<x.size(); i++)
     {
-        forwardPropagation(x[i]);
+        forwardPropagation(x[i], a, z);
 
         // Inicialización
-        max = this->z[n][0];
+        max = z[n][0];
         prediccion = 0;
 
         // Obtener valor más alto de la capa output
-        for(int c=1; c<this->z[n].size(); c++)
+        for(int c=1; c<z[n].size(); c++)
         {
-            if(max < this->z[n][c])
+            if(max < z[n][c])
             {
-                max = this->z[n][c];
+                max = z[n][c];
                 prediccion = c;
             }
         }
@@ -323,11 +272,24 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     return sum;
 }
 
-void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x)
+void FullyConnected::reset_gradients(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias)
+{
+    // Realizar la media
+    for(int j=0; j<this->w.size(); j++)
+        for(int k=0; k<this->w[j].size(); k++)
+            for(int p=0; p<this->w[j][k].size(); p++)
+                grad_w[j][k][p] = 0.0;
+
+    for(int i=0; i<this->bias.size(); i++)
+        for(int j=0; j<this->bias[i].size(); j++)
+            grad_bias[i][j] = 0.0;
+}
+
+
+void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &indices, const int &n_datos, vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
 {
     float epsilon = 0.000000001;
-
-    int i_output = this->a.size()-1; // índice de la capa output
+    int i_output = a.size()-1; // índice de la capa output
     float sum, o_in, grad_x_output, sig_o_in;
     int i_last_h = i_output-1;  // Índice de la capa h1
     int i_act, i_ant;
@@ -335,89 +297,61 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     // Inicializar gradiente respecto a entrada 
     grad_x.clear();
 
-    // Inicializar gradiente de pesos a 0 --------------------------
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                this->grad_w[i][j][k] = 0.0;
-
-    // Inicializar gradiente bias a 0 ------------------------------
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
-            this->grad_bias[i][j] = 0.0;
-
     // Backpropagation ----------------------------------------------
     // Hay 2 o más capas ocultas
     for(int i=0; i<n_datos; i++)
     {
-        forwardPropagation(x[i]);
+        forwardPropagation(x[i], a, z);
 
         // Inicializar a 0 gradiente respecto a input
-        for(int _i = 0; _i < this->grad_a.size(); _i++)
-            for(int j = 0; j < this->grad_a[_i].size(); j++)
-                this->grad_a[_i][j] = 0.0;
+        for(int _i = 0; _i < grad_a.size(); _i++)
+            for(int j = 0; j < grad_a[_i].size(); j++)
+                grad_a[_i][j] = 0.0;
 
 
         // Capa SoftMax -----------------------------------------------
         // Se calcula gradiente del error respecto a cada Z_k
         // grad_Zk = O_k - y_k
-        for(int k=0; k<this->a[i_output].size(); k++)
-            this->grad_a[i_output][k] = this->z[i_output][k] - y[i][k];
+        for(int k=0; k<a[i_output].size(); k++)
+            grad_a[i_output][k] = z[i_output][k] - y[indices[i]][k];
 
         // Pesos h_last - Softmax
-        for(int p=0; p<this->a[i_last_h].size(); p++)
-            for(int k=0; k<this->a[i_output].size(); k++)
-                this->grad_w[i_last_h][p][k] += this->grad_a[i_output][k] * this->z[i_last_h][p];
+        for(int p=0; p<a[i_last_h].size(); p++)
+            for(int k=0; k<a[i_output].size(); k++)
+                grad_w[i_last_h][p][k] += grad_a[i_output][k] * z[i_last_h][p];
                 //                                 grad_Zk                  *  z^i_last_h_p
 
         // Sesgos capa softmax
-        for(int k=0; k<this->a[i_output].size(); k++)
-            this->grad_bias[i_output][k] += this->grad_a[i_output][k];
+        for(int k=0; k<a[i_output].size(); k++)
+            grad_bias[i_output][k] += grad_a[i_output][k];
             // bk = grad_Zk
 
         // Última capa oculta -----------------------------------------------
-        for(int p=0; p<this->a[i_last_h].size(); p++)      
-            for(int k=0; k<this->a[i_output].size(); k++)
-                this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(this->a[i_last_h][p]);
-                //this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * sigmoid(this->a[i_last_h][p]) * (1- sigmoid(this->a[i_last_h][p]));
+        for(int p=0; p<a[i_last_h].size(); p++)      
+            for(int k=0; k<a[i_output].size(); k++)
+                grad_a[i_last_h][p] += grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(a[i_last_h][p]);
                 //                              grad_Zk           *  w^i_last_h_pk          * ...
                 
         // Capas ocultas intermedias
         for(int capa= i_last_h; capa >= 1; capa--)
         {
             // Pesos
-            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
-                for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                    this->grad_w[capa-1][i_ant][i_act] += this->grad_a[capa][i_act] * this->z[capa-1][i_ant];
+            for(int i_act = 0; i_act < a[capa].size(); i_act++)       // Por cada neurona de la capa actual
+                for(int i_ant = 0; i_ant < a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
+                    grad_w[capa-1][i_ant][i_act] += grad_a[capa][i_act] * z[capa-1][i_ant];
 
             // Bias
-            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)
-                this->grad_bias[capa][i_act] += this->grad_a[capa][i_act];
+            for(int i_act = 0; i_act < a[capa].size(); i_act++)
+                grad_bias[capa][i_act] += grad_a[capa][i_act];
             
             // Grad input
-            for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
-                    this->grad_a[capa-1][i_ant] += this->grad_a[capa][i_act] * this->w[capa-1][i_ant][i_act] * deriv_relu(this->a[capa-1][i_ant]);
+            for(int i_ant = 0; i_ant < a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
+                for(int i_act = 0; i_act < a[capa].size(); i_act++)       // Por cada neurona de la capa actual
+                    grad_a[capa-1][i_ant] += grad_a[capa][i_act] * this->w[capa-1][i_ant][i_act] * deriv_relu(a[capa-1][i_ant]);
         }
 
-        grad_x.push_back(this->grad_a[0]);
-
-        /*
-        for(int g=0; g<grad_a[0].size(); g++)
-            cout << grad_a[0][g] << " ";
-        cout << endl;
-        int a;
-        cin >> a;
-        */
+        grad_x.push_back(grad_a[0]);
     } 
-          
-    // Actualizar parámetros
-    //this->actualizar_parametros();
-
-
-
-    grad_pesos = this->grad_w;
-    grad_b = this->grad_bias;
 }
 
 void FullyConnected::escalar_pesos(float clip_value)
@@ -444,18 +378,19 @@ void FullyConnected::escalar_pesos(float clip_value)
                 this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
 }
 
-void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, const int &n_imgs_batch)
+void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b)
 {
-
+    /*
     // Realizar la media
     for(int j=0; j<this->w.size(); j++)
         for(int k=0; k<this->w[j].size(); k++)
             for(int p=0; p<this->w[j][k].size(); p++)
                 grad_pesos[j][k][p] = grad_pesos[j][k][p] / n_imgs_batch;
 
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
+    for(int i=0; i<this->bias.size(); i++)
+        for(int j=0; j<this->bias[i].size(); j++)
             grad_b[i][j] = grad_b[i][j] / n_imgs_batch;
+    */
 
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
@@ -464,66 +399,9 @@ void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_p
                 this->w[j][k][p] -= this->lr * grad_pesos[j][k][p];
 
     // Actualizar bias
-    for(int i=0; i<this->grad_bias.size(); i++)
-        for(int j=0; j<this->grad_bias[i].size(); j++)
+    for(int i=0; i<this->bias.size(); i++)
+        for(int j=0; j<this->bias[i].size(); j++)
             this->bias[i][j] -= this->lr * grad_b[i][j];
-}
-
-void FullyConnected::generarDatos(vector<vector<float>> &x, vector<float> &y)
-{
-    int n_datos = 1000, cont0 = 0, cont1 = 0, n_datos_por_clase = n_datos/2; 
-    float x1, x2, y_, aux, sum;
-    vector<float> dato_x;
-    x.clear();
-    y.clear();
-
-    while(cont0 < n_datos_por_clase)
-    {
-        dato_x.clear();
-        sum = 0.0;
-
-        // Generamos datos input
-        for(int j=0; j<this->a[0].size(); j++)
-        {
-            aux = rand() / float(RAND_MAX);
-            aux = aux / this->a[0].size();  // Para que esté en clase 0
-            dato_x.push_back(aux);
-
-            // Generamos dato output tal que: if x+y >0, result=1, else result=0
-            sum += aux;
-        }
-
-        x.push_back(dato_x);
-
-        y.push_back(0);
-        cont0++;
-             
-    }
-
-
-    while(cont1 < n_datos_por_clase)
-    {
-        dato_x.clear();
-        sum = 0.0;
-
-        // Generamos datos input
-        for(int j=0; j<this->a[0].size(); j++)
-        {
-            aux = rand() / float(RAND_MAX);
-            aux = aux + 1/this->a[0].size();  // Para que esté en clase 0
-            dato_x.push_back(aux);
-
-            // Generamos dato output tal que: if x+y >0, result=1, else result=0
-            sum += aux;
-        }
-
-        x.push_back(dato_x);
-
-        y.push_back(1);
-        cont1++;
-             
-    }
-
 }
 
 void FullyConnected::setLR(float lr)
@@ -667,11 +545,6 @@ void FullyConnected::copiar_parametros(FullyConnected &fc)
     this->bias = fc.bias;
 }
 
-void FullyConnected::copiar_gradientes(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias)
-{
-    this->grad_w = grad_w;
-    this->grad_bias = grad_bias;
-}
 
 /*
 int main()
