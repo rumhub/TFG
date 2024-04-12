@@ -12,6 +12,7 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
 {
     vector<float> neuronas_capa, w_1D;
     vector<vector<float>> w_2D;
+    this->capas = capas;
     
     // Neuronas ------------------------------------------------------------------
     // Por cada capa 
@@ -176,15 +177,15 @@ float FullyConnected::sigmoid(const float &x)
 }
 
 // x --> Input de la red
-void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z)
+void FullyConnected::forwardPropagation(const vector<float> &x)
 {
     float max, sum = 0.0, epsilon = 0.000000001;
 
     // Introducimos input -------------------------------------------------------
     for(int i=0; i<x.size(); i++)
     {
-        z[0][i] = x[i];
-        a[0][i] = x[i];
+        this->z[0][i] = x[i];
+        this->a[0][i] = x[i];
     }
         
     
@@ -197,14 +198,14 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
         for(int k=0; k<this->a[i+1].size(); k++)
         {
             // Reset siguiente capa
-            a[i+1][k] = 0.0;
+            this->a[i+1][k] = 0.0;
 
             // w[i][j][k] indica el peso que conecta la neurona j de la capa i con la neurona k de la capa i+1
             for(int j=0; j<this->a[i].size(); j++)
-                a[i+1][k] += z[i][j] * this->w[i][j][k];
+                this->a[i+1][k] += this->z[i][j] * this->w[i][j][k];
             
             // Aplicar bias o sesgo
-            a[i+1][k] += this->bias[i+1][k];
+            this->a[i+1][k] += this->bias[i+1][k];
         }
 
         // Aplicamos función de activación asociada a la capa actual -------------------------------
@@ -213,36 +214,33 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
         if(i < this->a.size() - 2)
         {
             for(int k=0; k<this->a[i+1].size(); k++)
-                z[i+1][k] = relu(a[i+1][k]);
+                this->z[i+1][k] = relu(this->a[i+1][k]);
             
         }else
         {
             // En la capa output se emplea softmax como función de activación
             sum = 0.0;
-            max = a[i+1][0];
+            max = this->a[i+1][0];
 
             // Normalizar -----------------------------------------------------------------
             // Encontrar el máximo
             for(int k=0; k<this->a[i+1].size(); k++)
                 if(max < this->a[i+1][k])
-                    max = a[i+1][k];
+                    max = this->a[i+1][k];
             
             // Normalizar
             for(int k=0; k<this->a[i+1].size(); k++)
-                a[i+1][k] = a[i+1][k] - max;
+                this->a[i+1][k] = this->a[i+1][k] - max;
             
             // Calculamos la suma exponencial de todas las neuronas de la capa output ---------------------
             for(int k=0; k<this->a[i+1].size(); k++)
-                sum += exp(a[i+1][k]);
+                sum += exp(this->a[i+1][k]);
 
             for(int k=0; k<this->a[i+1].size(); k++)
-                z[i+1][k] = exp(a[i+1][k]) / sum;
+                z[i+1][k] = exp(this->a[i+1][k]) / sum;
             
         } 
     }
-
-    this->a = a;
-    this->z = z;
 }
 
 
@@ -256,24 +254,23 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=this->a.size()-1;
 
-    vector<vector<float>> a, z;
-    a = this->a;
-    z = this->a;
+    FullyConnected *f = new FullyConnected(this->w, this->bias, this->a, this->z, this->lr); 
+    sum = 0.0;
 
-
-    #pragma omp parallel for reduction(+:sum) firstprivate(a, z)
+    #pragma omp parallel for reduction(+:sum) firstprivate(f)
     for(int i=0; i<x.size(); i++)
     {
-        forwardPropagation(x[i], a, z);
+        f->forwardPropagation(x[i]);
 
         for(int c=0; c<this->a[n].size(); c++)
             if(y[i][c] == 1)
-                prediccion = z[n][c];
+                prediccion = f->z[n][c];
             
         sum += log(prediccion+epsilon);
     }
 
     sum = -sum / x.size();
+
 
     return sum;
 }
@@ -283,25 +280,24 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     float sum =0.0, max;
     int prediccion, n=this->z.size()-1;
 
-    vector<vector<float>> a, z;
-    a = this->a;
-    z = this->a;
 
-    #pragma omp parallel for reduction(+:sum) firstprivate(a, z)
+    FullyConnected *f = new FullyConnected(this->w, this->bias, this->a, this->z, this->lr);    
+
+    #pragma omp parallel for reduction(+:sum) firstprivate(f)
     for(int i=0; i<x.size(); i++)
     {
-        forwardPropagation(x[i], a, z);
+        f->forwardPropagation(x[i]);
 
         // Inicialización
-        max = z[n][0];
+        max = f->z[n][0];
         prediccion = 0;
 
         // Obtener valor más alto de la capa output
         for(int c=1; c<this->z[n].size(); c++)
         {
-            if(max < z[n][c])
+            if(max < f->z[n][c])
             {
-                max = z[n][c];
+                max = f->z[n][c];
                 prediccion = c;
             }
         }
@@ -324,9 +320,6 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     int i_last_h = i_output-1;  // Índice de la capa h1
     int i_act, i_ant;
 
-    vector<vector<float>> a, z;
-    a = this->a;
-    z = this->z;
 
     // Inicializar gradiente respecto a entrada 
     grad_x.clear();
@@ -346,7 +339,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     // Hay 2 o más capas ocultas
     for(int i=0; i<n_datos; i++)
     {
-        forwardPropagation(x[i], a, z);
+        forwardPropagation(x[i]);
 
         // Inicializar a 0 gradiente respecto a input
         for(int _i = 0; _i < this->grad_a.size(); _i++)

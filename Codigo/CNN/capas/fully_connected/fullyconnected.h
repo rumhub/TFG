@@ -24,10 +24,12 @@ class FullyConnected
         vector<vector<float>> bias; // Un sesgo o bias por neurona
         vector<vector<float>> grad_bias;
         float lr;
+        vector<int> capas;
 
     public:
         FullyConnected(const vector<int> &capas, const float & lr=0.1);
         FullyConnected(){};
+        FullyConnected(const vector<vector<vector<float>>> &w, const vector<vector<float>> &bias, const vector<vector<float>> &a, const vector<vector<float>> &z, const float &lr){this->w = w; this->bias = bias; this->a = a; this->z = z; this->lr = lr;};
 
         void generar_pesos(const int &capa);
 
@@ -47,7 +49,7 @@ class FullyConnected
 
         float sigmoid(const float &x);
 
-        void forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z);
+        void forwardPropagation(const vector<float> &x);
 
         float accuracy(vector<vector<float>> x, vector<vector<float>> y);
 
