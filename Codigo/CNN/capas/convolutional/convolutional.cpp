@@ -211,45 +211,9 @@ void Convolutional::aplicar_padding(vector<vector<vector<float>>> &imagen_3D, in
     imagen_3D = imagen_3D_aux;
 };
 
-void Convolutional::mostrar_pesos()
-{
-    
-    for(int n=0; n<this->n_kernels; n++)
-    {
-        for(int d=0; d<this->kernel_depth; d++)
-            for(int i=0; i<this->kernel_fils; i++)
-            {
-                for(int j=0; j<this->kernel_cols; j++)
-                    cout << this->w[n][d][i][j] << " ";
-                
-                cout << endl;
-            }
-
-        cout << "Bias kernel " << n << ": " << this->bias[n] << endl;
-        cout << endl << endl;
-    }
-    cout << endl; 
-}
-
-void Convolutional::mostrar_grad()
-{
-    
-    for(int n=0; n<this->n_kernels; n++)
-        for(int d=0; d<this->kernel_depth; d++)
-            for(int i=0; i<this->kernel_fils; i++)
-            {
-                for(int j=0; j<this->kernel_cols; j++)
-                    cout << this->grad_w[n][d][i][j] << " ";
-                
-                cout << endl;
-            }
-
-    cout << endl; 
-}
-
-
+// a --> // Convolución antes de aplicar la función de activación
 // La salida es una imagen 2D, un canal de profundidad
-void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output)
+void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a)
 {
     // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
     vector<vector<vector<float>>> input_copy;
@@ -272,27 +236,27 @@ void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &inpu
         exit(-1);
     }
     
-    this->a = output;
+    a = output;
 
     // Por cada kernel M 
     for(int img_out=0; img_out<M; img_out++)
         for(int i=0; i<n_veces; i++)    
             for(int j=0; j<n_veces; j++)  
             {
-                this->a[img_out][i][j] = 0.0;
+                a[img_out][i][j] = 0.0;
                 
                 // Realizar convolución 3D
                 for(int c=0; c<C; c++)
                     for(int i_k=0; i_k<K; i_k++)
                         for(int j_k=0; j_k<K; j_k++)
-                            this->a[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];                            
+                            a[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];                            
 
                 // Sumamos bias a la suma ponderada obtenida
-                this->a[img_out][i][j] += this->bias[img_out];
+                a[img_out][i][j] += this->bias[img_out];
 
 
                 // Aplicamos función de activación
-                output[img_out][i][j] = activationFunction(this->a[img_out][i][j]);
+                output[img_out][i][j] = activationFunction(a[img_out][i][j]);
             }
 };
 
@@ -327,112 +291,9 @@ void Convolutional::reset_gradients()
 }
 
 
-void Convolutional::backPropagation_libro(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output)
-{
-    // Cálculo de los gradientes ---------------------------------------------------------------------------------------------
-   
-    // Cálculo del gradiente de bias --------------------------------------
-
-    // Cada kernel tiene un bias --> nº bias = nº kernels = nº de dimensiones del volumen output
-    // Por cada kernel
-    for(int k=0; k<this->n_kernels; k++)
-    {
-        // Tras cada correlación se obtiene una imagen 2D
-        // En cada pixel de dicha imagen 2D influye el bias del kernel empleado
-        // Es decir, el bias b del kernel k influye en cada píxel del output producido en la correlación del volumen de entrada
-        // con el kernel k. De esta forma, b influye en cada píxel de la imagen 2D número k del volumen de salida
-
-        // https://towardsdatascience.com/backpropagation-in-a-convolutional-layer-24c8d64d8509
-        for(int j=0; j<output[k].size(); j++)
-        {
-            for(int p=0; p<output[k][j].size(); p++)
-            {
-                this->grad_bias[k] += output[k][j][p];
-            }
-        } 
-    }
-
-    
-    // Cálculo del gradiente de pesos --------------------------------------
-    int n_imgs_sep, tam_fil=this->w[0][0].size(), tam_col=this->w[0][0][0].size(), fil, col;
-    int n_veces_fils = input[0].size() - tam_fil + 1;
-    int n_veces_cols = input[0][0].size() - tam_col + 1;
-    float sum;
-
-    
-    // Libro
-    // ------------------------------------------------------------------------------------------
-    
-    int M = this->grad_w.size(), C = input.size(), K = this->kernel_fils;
-    for(int m=0; m<M; m++)
-    {
-        for(int h=0; h<n_veces_fils; h++)
-        {
-            for(int w=0; w<n_veces_cols; w++)
-            {
-                for(int c=0; c<C; c++)
-                {
-                    for(int p=0; p<K; p++)
-                    {
-                        for(int q=0; q<K; q++)
-                        {
-                            this->grad_w[m][c][p][q] += input[c][h+p][w+q] * output[m][h][w];
-                        }
-
-                    }
-                }
-            }
-        }
-    }
-    
-    // ----------------------------------------------------------------------------------
-
-        
-    // Gradiente respecto a input -----------------------------
-    
-    // Reset gradiente respecto a input
-    for(int i=0; i<input.size(); i++)
-    {
-        for(int j=0; j<input[0].size(); j++)
-        {
-            for(int k=0; k<input[0][0].size(); k++)
-            {
-                input[i][j][k] = 0;
-            }
-        }
-    } 
-
-    // Libro
-    // ------------------------------------------------------------------------------------------
-    int H = input[0].size();
-    int W = input[0][0].size();
-
-    for(int m=0; m<M; m++)
-    {
-        for(int h=0; h<H-1; h++)
-        {
-            for(int w=0; w<W-1; w++)
-            {
-                for(int c=0; c<C; c++)
-                {
-                    for(int p=0; p<K; p++)
-                    {
-                        for(int q=0; q<K; q++)
-                        {
-                            if(h-p >= 0 && w-p >= 0 && h-p < n_veces_fils && w-p < n_veces_cols)
-                                input[c][h][w] += output[m][h-p][w-p] * this->w[m][c][K-1-p][K-1-q];
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-}
-
-
+// a --> // Convolución antes de aplicar la función de activación
 // OJO --> El input viene ya con el padding aplicado
-void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad)
+void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, vector<vector<vector<float>>> &a, const int &pad)
 {
     // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
     vector<vector<vector<float>>> output_copy, grad_input;
@@ -457,7 +318,7 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
     for(int i=0; i<output.size(); i++)
         for(int j=0; j<output[0].size(); j++)    
             for(int k=0; k<output[0][0].size(); k++)
-                output[i][j][k] = output[i][j][k] * deriv_activationFunction(this->a[i][j][k]);
+                output[i][j][k] = output[i][j][k] * deriv_activationFunction(a[i][j][k]);
     
     // Aplicar padding
     output_copy = output;
@@ -501,73 +362,6 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
                 this->grad_bias[i] += output[i][j][k];
 };
 
-// OJO --> El input viene ya con el padding aplicado
-void Convolutional::backPropagation_bibliografia(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad)
-{
-    int C = input.size(), H = input[0].size(), W = input[0][0].size();
-    int F = this->w.size(), H_out = output[0].size(), W_out = output[0][0].size();
-    int Hf = this->kernel_cols, Wf = this->kernel_cols;
-    int stride = 1;
-
-    // Gradient variables
-    vector<vector<vector<float>>> grad_x_pad(vector<vector<vector<float>>>(C, vector<vector<float>>(H + 2 * pad, vector<float>(W + 2 * pad, 0.0f))));
-
-    // Calcular los gradientes
-    for (int f = 0; f < F; ++f) {
-        for (int h = 0; h < H_out; ++h) {
-            for (int w = 0; w < W_out; ++w) {
-                int i = h * stride;
-                int j = w * stride;
-
-                // Gradient for weight
-                for (int c = 0; c < C; ++c) 
-                    for (int p = 0; p < Hf; ++p) 
-                        for (int q = 0; q < Wf; ++q) 
-                            this->grad_w[f][c][p][q] += input[c][i + p][j + q] * output[f][h][w];
-                         
-                // Gradient for x_pad
-                for (int c = 0; c < C; ++c) 
-                    for (int p = 0; p < Hf; ++p) 
-                        for (int q = 0; q < Wf; ++q) 
-                            grad_x_pad[c][pad + i + p][pad + j + q] += this->w[f][c][p][q] * output[f][h][w];
-
-            }
-        }
-    }
-
-
-    // Quitar el padding de grad_x
-    for (int c = 0; c < C; ++c) 
-        for (int i = 0; i < H; ++i) 
-            for (int j = 0; j < W; ++j) 
-                input[c][i][j] = grad_x_pad[c][i + pad][j + pad] * deriv_activationFunction(input[c][i][j]);
-
-    // Calcular el gradiente del bias
-    for (int f = 0; f < F; ++f) 
-        for (int h = 0; h < H_out; ++h) 
-            for (int w = 0; w < W_out; ++w) 
-                this->grad_bias[f] += output[f][h][w];
-
-
-    /*
-    std::cout << "\nGradient of x (grad_x):\n";
-        for (int c = 0; c < C; ++c) {
-            for (int i = 0; i < H; ++i) {
-                for (int j = 0; j < W; ++j) {
-                    std::cout << input[c][i][j] << " ";
-                }
-                std::cout << std::endl;
-            }
-            std::cout << std::endl;
-        }
-    
-    std::cout << "\nGradient of bias (grad_bias):\n";
-    for (int f = 0; f < F; ++f) {
-        std::cout << this->grad_bias[f] << " ";
-    }
-    std::cout << std::endl;
-    */
-}
 
 void Convolutional::escalar_pesos(float clip_value)
 {

@@ -7,7 +7,6 @@ class Convolutional
     private:
         vector<vector<vector<vector<float>>>> w;    // w[n][d][i][j]   --> Matriz de pesos([d][i][j]) respecto al kernel n. (d = depth del kernel)
         vector<vector<vector<vector<float>>>> grad_w;   // Gradiente de los pesos
-        vector<vector<vector<float>>> a;    // Convolución antes de aplicar la función de activación
 
         int n_kernels;
         int kernel_fils;
@@ -35,30 +34,19 @@ class Convolutional
 
         void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad);
 
-        void forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output);
+        void forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a);
 
         // https://calvinfeng.gitbook.io/machine-learning-notebook/supervised-learning/convolutional-neural-network/convolution_operation
 
-        void backPropagation_libro(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output);
 
-        void backPropagation_bibliografia(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad);
+        void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, vector<vector<vector<float>>> &a, const int &pad);
 
-        void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const int &pad);
-
-        void mostrar_pesos();
-
-        void mostrar_grad();
 
         void flip_w(vector<vector<vector<vector<float>>>> &w_flipped);
-
-        // Capa de convolución o capa de correlación
-        void conv_corr(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<vector<float>>>> pesos, bool valid, bool conv);
 
         void reset_gradients();
 
         void actualizar_grads(int n_datos);
-
-        void mostrar_tam_kernel();
 
         int get_kernel_fils(){return this->kernel_fils;};
         int get_kernel_cols(){return this->kernel_cols;};
