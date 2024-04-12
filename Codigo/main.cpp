@@ -34,7 +34,7 @@ void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input, const in
 
 int main()
 {
-    
+    omp_set_num_threads(omp_get_num_procs());
     vector<vector<vector<vector<float>>>> input;
     vector<float> output;
     int n_imagenes, pad=1;

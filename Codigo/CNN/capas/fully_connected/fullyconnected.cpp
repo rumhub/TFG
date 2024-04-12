@@ -254,17 +254,17 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=this->a.size()-1;
 
-    FullyConnected *f = new FullyConnected(this->w, this->bias, this->a, this->z, this->lr); 
+    FullyConnected f = FullyConnected(this->w, this->bias, this->a, this->z, this->lr); 
     sum = 0.0;
 
     #pragma omp parallel for reduction(+:sum) firstprivate(f)
     for(int i=0; i<x.size(); i++)
     {
-        f->forwardPropagation(x[i]);
+        f.forwardPropagation(x[i]);
 
         for(int c=0; c<this->a[n].size(); c++)
             if(y[i][c] == 1)
-                prediccion = f->z[n][c];
+                prediccion = f.z[n][c];
             
         sum += log(prediccion+epsilon);
     }
@@ -281,23 +281,23 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     int prediccion, n=this->z.size()-1;
 
 
-    FullyConnected *f = new FullyConnected(this->w, this->bias, this->a, this->z, this->lr);    
+    FullyConnected f = FullyConnected(this->w, this->bias, this->a, this->z, this->lr);    
 
     #pragma omp parallel for reduction(+:sum) firstprivate(f)
     for(int i=0; i<x.size(); i++)
     {
-        f->forwardPropagation(x[i]);
+        f.forwardPropagation(x[i]);
 
         // Inicialización
-        max = f->z[n][0];
+        max = f.z[n][0];
         prediccion = 0;
 
         // Obtener valor más alto de la capa output
         for(int c=1; c<this->z[n].size(); c++)
         {
-            if(max < f->z[n][c])
+            if(max < f.z[n][c])
             {
-                max = f->z[n][c];
+                max = f.z[n][c];
                 prediccion = c;
             }
         }
