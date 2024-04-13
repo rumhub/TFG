@@ -7,6 +7,7 @@ class Convolutional
     private:
         vector<vector<vector<vector<float>>>> w;    // w[n][d][i][j]   --> Matriz de pesos([d][i][j]) respecto al kernel n. (d = depth del kernel)
         vector<vector<vector<vector<float>>>> grad_w;   // Gradiente de los pesos
+        vector<vector<vector<float>>> a;
 
         int n_kernels;
         int kernel_fils;
@@ -37,7 +38,6 @@ class Convolutional
         void forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a);
 
         // https://calvinfeng.gitbook.io/machine-learning-notebook/supervised-learning/convolutional-neural-network/convolution_operation
-
 
         void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, vector<vector<vector<float>>> &a, const int &pad);
 

@@ -346,12 +346,21 @@ void CNN::train(int epocas, int mini_batch)
 
     // Almacenar inputs y outputs de cada capa
     vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch), plms_in_copys(mini_batch), conv_a(mini_batch);       // Input y output de cada capa (por cada imagen de training)
-    vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv), plms_out(this->n_capas_conv), plms_in_copy(this->n_capas_conv); // Input y Output de cada capa convolucional y de pooling
+    vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv);
     vector<float> flat_out; 
 
     // Paso a la siguiente capa
     vector<vector<vector<float>>> img_aux, grad_x;
     vector<vector<float>> flat_outs(mini_batch), grad_x_fully; 
+
+    // Reservar espacio
+    for(int i=0; i<mini_batch; i++)
+    {
+        convs_outs[i] = convs_out;
+        plms_outs[i] = convs_out;
+        plms_in_copys[i] = convs_out;
+        conv_a[i] = convs_out;
+    }
 
     // Inicializar vector de índices
     for(int i=0; i<n; i++)
@@ -402,42 +411,37 @@ void CNN::train(int epocas, int mini_batch)
             ini += mini_batch;
             fin += mini_batch;
             
+            //#pragma omp parallel for firstprivate(convs_out, plms_out, conv_a, plms_in_copy, flat_out)
             for(int img=0; img<n_imgs_batch; img++)
             {
                 // Primera capa convolucional y maxpool -----------------------
                 // Establecer dimensiones de salida
-                convs_out[0] = this->outputs[0];
-                plms_out[0] = this->outputs[1];
+                convs_outs[img][0] = this->outputs[0];
+                plms_outs[img][0] = this->outputs[1];
 
                 // Realizar los cálculos
-                this->convs[0].forwardPropagation(this->train_imgs[batch[img]], convs_out[0], conv_a[img][0]);
+                this->convs[0].forwardPropagation(this->train_imgs[batch[img]], convs_outs[img][0], conv_a[img][0]);
                 
-                plms_in_copy[0] = convs_out[0];
-                this->plms[0].forwardPropagation(convs_out[0], plms_out[0], plms_in_copy[0]);
+                plms_in_copys[img][0] = convs_outs[img][0];
+                this->plms[0].forwardPropagation(convs_outs[img][0], plms_outs[img][0], plms_in_copys[img][0]);
                 
                 // Resto de capas convolucionales y maxpool ----------------------------
                 for(int i=1; i<this->n_capas_conv; i++)
                 {
                     // Establecer dimensiones de salida
-                    convs_out[i] = this->outputs[i*2];
-                    plms_out[i] = this->outputs[i*2+1];
+                    convs_outs[img][i] = this->outputs[i*2];
+                    plms_outs[img][i] = this->outputs[i*2+1];
 
                     // Capa convolucional 
-                    this->convs[i].aplicar_padding(plms_out[i-1], this->padding[i]);
-                    this->convs[i].forwardPropagation(plms_out[i-1], convs_out[i], conv_a[img][i]);
+                    this->convs[i].aplicar_padding(plms_outs[img][i-1], this->padding[i]);
+                    this->convs[i].forwardPropagation(plms_outs[img][i-1], convs_outs[img][i], conv_a[img][i]);
 
                     // Capa MaxPool 
-                    plms_in_copy[i] = convs_out[i];
-                    this->plms[i].forwardPropagation(convs_out[i], plms_out[i], plms_in_copy[i]);
+                    plms_in_copys[img][i] = convs_outs[img][i];
+                    this->plms[i].forwardPropagation(convs_outs[img][i], plms_outs[img][i], plms_in_copys[img][i]);
                 }
                 
-                (*this->flat).forwardPropagation(plms_out[plms_out.size()-1], flat_out);
-                
-                convs_outs[img] = convs_out;
-                plms_outs[img] = plms_out;
-                plms_in_copys[img] = plms_in_copy;
-                flat_outs[img] = flat_out;
-                
+                (*this->flat).forwardPropagation(plms_outs[img][plms_outs[img].size()-1], flat_outs[img]);                
             }
 
             (*this->fully).train(flat_outs, batch_labels, n_imgs_batch, grad_w, grad_bias, grad_x_fully);
@@ -450,6 +454,7 @@ void CNN::train(int epocas, int mini_batch)
             for(int i=0; i<this->n_capas_conv; i++)
                 this->convs[i].reset_gradients();
 
+            //#pragma omp parallel for
             for(int img=0; img<n_imgs_batch; img++)
             {
                 img_aux = this->train_imgs[batch[img]];

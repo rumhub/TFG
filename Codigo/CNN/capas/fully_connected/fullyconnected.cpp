@@ -368,11 +368,10 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         for(int p=0; p<this->a[i_last_h].size(); p++)      
             for(int k=0; k<this->a[i_output].size(); k++)
                 this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(this->a[i_last_h][p]);
-                //this->grad_a[i_last_h][p] += this->grad_a[i_output][k] * this->w[i_last_h][p][k] * sigmoid(this->a[i_last_h][p]) * (1- sigmoid(this->a[i_last_h][p]));
                 //                              grad_Zk           *  w^i_last_h_pk          * ...
                 
         // Capas ocultas intermedias
-        for(int capa= i_last_h; capa >= 1; capa--)
+        for(int capa= i_last_h; capa > 1; capa--)
         {
             // Pesos
             for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
@@ -388,6 +387,19 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
                 for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
                     this->grad_a[capa-1][i_ant] += this->grad_a[capa][i_act] * this->w[capa-1][i_ant][i_act] * deriv_relu(this->a[capa-1][i_ant]);
         }
+
+        // Capa input
+        // Pesos
+        int capa=1;
+        for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
+            for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
+                this->grad_w[capa-1][i_ant][i_act] += this->grad_a[capa][i_act] * this->z[capa-1][i_ant];
+        
+        // Grad input
+        for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
+            for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
+                this->grad_a[capa-1][i_ant] += this->grad_a[capa][i_act] * this->w[capa-1][i_ant][i_act];
+
 
         grad_x.push_back(this->grad_a[0]);
 
