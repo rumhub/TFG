@@ -15,13 +15,13 @@ class FullyConnected
 {
     protected:
         vector<vector<vector<float>>> w;        // Pesos
-        vector<vector<vector<float>>> grad_w;   // Gradiente de los pesos
+        //vector<vector<vector<float>>> grad_w;   // Gradiente de los pesos
 
         // Neuronas
         vector<vector<float>> a;    // X*W + B, neurona antes de aplicar función de activación   
-        vector<vector<float>> grad_a;   // Gradiente respecto a la entrada de la neurona
+        //vector<vector<float>> grad_a;   // Gradiente respecto a la entrada de la neurona
         vector<vector<float>> bias; // Un sesgo o bias por neurona
-        vector<vector<float>> grad_bias;
+        //vector<vector<float>> grad_bias;
         float lr;
         vector<int> capas;
 
@@ -52,7 +52,7 @@ class FullyConnected
 
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z);
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a);
 
         void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, const int &n_imgs_batch);
 
@@ -67,8 +67,6 @@ class FullyConnected
         //void leer_imagenes_mnist(vector<vector<float>> &x, vector<vector<float>> &y, const int n_imagenes, const int n_clases);
 
         void copiar_parametros(FullyConnected &fc);
-
-        void copiar_gradientes(vector<vector<vector<float>>> &grad_w, vector<vector<float>> &grad_bias);
 
         vector<vector<vector<float>>> get_pesos(){return this->w;};
         vector<vector<float>> get_bias(){return this->bias;};
