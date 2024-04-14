@@ -19,7 +19,6 @@ class FullyConnected
 
         // Neuronas
         vector<vector<float>> a;    // X*W + B, neurona antes de aplicar función de activación   
-        vector<vector<float>> z;    // f(X*W + B), neurona después de aplicar función de activación
         vector<vector<float>> grad_a;   // Gradiente respecto a la entrada de la neurona
         vector<vector<float>> bias; // Un sesgo o bias por neurona
         vector<vector<float>> grad_bias;
@@ -29,7 +28,6 @@ class FullyConnected
     public:
         FullyConnected(const vector<int> &capas, const float & lr=0.1);
         FullyConnected(){};
-        FullyConnected(const vector<vector<vector<float>>> &w, const vector<vector<float>> &bias, const vector<vector<float>> &a, const vector<vector<float>> &z, const float &lr){this->w = w; this->bias = bias; this->a = a; this->z = z; this->lr = lr;};
 
         void generar_pesos(const int &capa);
 
@@ -39,8 +37,6 @@ class FullyConnected
 
         void mostrarpesos();
 
-        void mostrarNeuronas();
-
         void mostrarbias();
 
         float deriv_relu(const float &x);
@@ -49,13 +45,14 @@ class FullyConnected
 
         float sigmoid(const float &x);
 
-        void forwardPropagation(const vector<float> &x);
+        // z -->  f(X*W + B), neurona después de aplicar función de activación
+        void forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z);
 
         float accuracy(vector<vector<float>> x, vector<vector<float>> y);
 
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x);
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z);
 
         void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, const int &n_imgs_batch);
 
@@ -75,6 +72,7 @@ class FullyConnected
 
         vector<vector<vector<float>>> get_pesos(){return this->w;};
         vector<vector<float>> get_bias(){return this->bias;};
+        vector<vector<float>> get_a(){return this->a;};
 };
 
 #endif

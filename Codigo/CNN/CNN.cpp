@@ -374,6 +374,10 @@ void CNN::train(int epocas, int mini_batch)
     // Borrar ----------------
     vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos();
     vector<vector<float>> grad_bias = (*this->fully).get_bias();
+    vector<vector<float>> fully_a, fully_z;
+
+    fully_a = (*this->fully).get_a();
+    fully_z = (*this->fully).get_a();
     // --------------
 
     for(int ep=0; ep<epocas; ep++)
@@ -444,7 +448,7 @@ void CNN::train(int epocas, int mini_batch)
                 (*this->flat).forwardPropagation(plms_outs[img][plms_outs[img].size()-1], flat_outs[img]);                
             }
 
-            (*this->fully).train(flat_outs, batch_labels, n_imgs_batch, grad_w, grad_bias, grad_x_fully);
+            (*this->fully).train(flat_outs, batch_labels, n_imgs_batch, grad_w, grad_bias, grad_x_fully, fully_a, fully_z);
 
             (*this->fully).actualizar_parametros(grad_w, grad_bias, n_imgs_batch);
 
@@ -519,7 +523,6 @@ void CNN::accuracy()
     vector<float> flat_out; 
     float acc ,entr;
     
-
     for(int img=0; img<n; img++)
     {
         img_in = this->train_imgs[img];
