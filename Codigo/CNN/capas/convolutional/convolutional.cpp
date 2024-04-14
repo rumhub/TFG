@@ -107,7 +107,6 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
     }     
     
     this->w = pesos_por_kernel;
-    this->grad_w = this->w;
 
     this->generar_pesos();
 
@@ -117,10 +116,6 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
     for(int i=0; i<n_kernels; i++)
         this->bias.push_back(0.0);
     
-
-    // Grad Bias
-    this->grad_bias = this->bias;
-
 };
 
 void Convolutional::generar_pesos() 
@@ -273,27 +268,27 @@ void Convolutional::flip_w(vector<vector<vector<vector<float>>>> &w_flipped)
     
 };
 
-void Convolutional::reset_gradients()
+void Convolutional::reset_gradients(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias)
 {
     // Reset gradientes -------------------------------------------------------------------
     
     // Reset gradiende del bias
     for(int k=0; k<this->n_kernels; k++)
-        this->grad_bias[k] = 0.0;
+        grad_bias[k] = 0.0;
 
     // Reset del gradiente de cada peso
-    for(int i=0; i<this->grad_w.size(); i++)
-        for(int j=0; j<this->grad_w[0].size(); j++)
-            for(int k=0; k<this->grad_w[0][0].size(); k++)
-                for(int l=0; l<this->grad_w[0][0][0].size(); l++)
-                    this->grad_w[i][j][k][l] = 0.0;
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[0].size(); j++)
+            for(int k=0; k<this->w[0][0].size(); k++)
+                for(int l=0; l<this->w[0][0][0].size(); l++)
+                    grad_w[i][j][k][l] = 0.0;
                 
 }
 
 
 // a --> // Convolución antes de aplicar la función de activación
 // OJO --> El input viene ya con el padding aplicado
-void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, vector<vector<vector<float>>> &a, const int &pad)
+void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad)
 {
     // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
     vector<vector<vector<float>>> output_copy, grad_input;
@@ -345,7 +340,7 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
                 for(int c=0; c<C; c++)  // Convolución entre entrada y salida
                     for(int i_k=0; i_k<tam_fil_y; i_k++)
                         for(int j_k=0; j_k<tam_fil_y; j_k++)
-                            this->grad_w[f][c][i][j] += input[c][i + i_k][j + j_k] * output[f][i_k][j_k];
+                            grad_w[f][c][i][j] += input[c][i + i_k][j + j_k] * output[f][i_k][j_k];
     }
 
 
@@ -359,7 +354,7 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
     for(int i=0; i<output.size(); i++)
         for(int j=0; j<output[0].size(); j++)    
             for(int k=0; k<output[0][0].size(); k++)
-                this->grad_bias[i] += output[i][j][k];
+                grad_bias[i] += output[i][j][k];
 };
 
 
@@ -368,10 +363,10 @@ void Convolutional::escalar_pesos(float clip_value)
     // Calculate the maximum and minimum values of weights
     float max = this->w[0][0][0][0], min = this->w[0][0][0][0];
 
-    for(int i=0; i<this->grad_w.size(); i++)
-        for(int j=0; j<this->grad_w[i].size(); j++)
-            for(int k=0; k<this->grad_w[i][j].size(); k++)
-                for(int l=0; l<this->grad_w[i][j][k].size(); l++)
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                for(int l=0; l<this->w[i][j][k].size(); l++)
                 {
                     if(max < this->w[i][j][k][l])
                         max = this->w[i][j][k][l];
@@ -382,37 +377,37 @@ void Convolutional::escalar_pesos(float clip_value)
 
     // Perform gradient clipping
     float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
-    for(int i=0; i<this->grad_w.size(); i++)
-        for(int j=0; j<this->grad_w[i].size(); j++)
-            for(int k=0; k<this->grad_w[i][j].size(); k++)
-                for(int l=0; l<this->grad_w[i][j][k].size(); l++)
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                for(int l=0; l<this->w[i][j][k].size(); l++)
                     this->w[i][j][k][l] = std::max(std::min(this->w[i][j][k][l] * scaling_factor, clip_value), -clip_value);
 }
 
-void Convolutional::actualizar_grads(int n_datos)
+void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, int n_datos)
 {
     // Realizar la media de los gradientes de pesos
-    for(int i=0; i<this->grad_w.size(); i++)
-        for(int j=0; j<this->grad_w[i].size(); j++)
-            for(int k=0; k<this->grad_w[i][j].size(); k++)
-                for(int l=0; l<this->grad_w[i][j][k].size(); l++)
-                    this->grad_w[i][j][k][l] = this->grad_w[i][j][k][l] / n_datos;
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                for(int l=0; l<this->w[i][j][k].size(); l++)
+                    grad_w[i][j][k][l] = grad_w[i][j][k][l] / n_datos;
 
 
     // Realizar la media de los gradientes de bias
-    for(int i=0; i<this->grad_bias.size(); i++)
-        this->grad_bias[i] = this->grad_bias[i] / n_datos;
+    for(int i=0; i<this->bias.size(); i++)
+        grad_bias[i] = grad_bias[i] / n_datos;
 
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
         for(int k=0; k<this->w[j].size(); k++)
             for(int p=0; p<this->w[j][k].size(); p++)
-                for(int l=0; l<this->grad_w[j][k][p].size(); l++)
-                    this->w[j][k][p][l] -= this->lr * this->grad_w[j][k][p][l];
+                for(int l=0; l<this->w[j][k][p].size(); l++)
+                    this->w[j][k][p][l] -= this->lr * grad_w[j][k][p][l];
     
     // Actualizar bias
     for(int i=0; i<this->bias.size(); i++)
-        this->bias[i] -= this->lr * this->grad_bias[i];
+        this->bias[i] -= this->lr * grad_bias[i];
     
 }
 

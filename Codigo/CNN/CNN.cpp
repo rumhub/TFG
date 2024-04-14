@@ -371,7 +371,7 @@ void CNN::train(int epocas, int mini_batch)
     for(int i=0; i<mini_batch; i++)
         conv_a[i] = convs_out;
 
-    // Borrar ----------------
+    // Capa totalmente conectada  ----------------
     vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos();
     vector<vector<float>> grad_bias = (*this->fully).get_bias();
     vector<vector<float>> fully_a, fully_z, fully_grad_a;
@@ -379,6 +379,16 @@ void CNN::train(int epocas, int mini_batch)
     fully_a = (*this->fully).get_a();
     fully_z = (*this->fully).get_a();
     fully_grad_a = (*this->fully).get_a();
+
+    // Capas convolucionales ---------------------------
+    vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv); 
+    vector<vector<float>> conv_grads_bias(this->n_capas_conv);
+
+    for(int i=0; i<this->n_capas_conv; i++)
+    {
+        conv_grads_w[i] = this->convs[i].get_pesos();
+        conv_grads_bias[i] = this->convs[i].get_bias();
+    }
     // --------------
 
     for(int ep=0; ep<epocas; ep++)
@@ -457,7 +467,7 @@ void CNN::train(int epocas, int mini_batch)
 
             // BackPropagation -----------------------------------------------------------------------
             for(int i=0; i<this->n_capas_conv; i++)
-                this->convs[i].reset_gradients();
+                this->convs[i].reset_gradients(conv_grads_w[i], conv_grads_bias[i]);
 
             //#pragma omp parallel for
             for(int img=0; img<n_imgs_batch; img++)
@@ -473,9 +483,9 @@ void CNN::train(int epocas, int mini_batch)
 
                 // Capa convolucional 
                 if(this->n_capas_conv > 1)
-                    this->convs[i_c].backPropagation(plms_outs[img][i_c-1], convs_outs[img][i_c], conv_a[img][i_c], this->padding[i_c]);
+                    this->convs[i_c].backPropagation(plms_outs[img][i_c-1], convs_outs[img][i_c], conv_a[img][i_c], conv_grads_w[i_c], conv_grads_bias[i_c], this->padding[i_c]);
                 else
-                    this->convs[i_c].backPropagation(img_aux, convs_outs[img][i_c], conv_a[img][i_c], this->padding[i_c]);
+                    this->convs[i_c].backPropagation(img_aux, convs_outs[img][i_c], conv_a[img][i_c], conv_grads_w[i_c], conv_grads_bias[i_c], this->padding[i_c]);
 
                 for(int i=this->n_capas_conv-2; i>=1; i--)
                 {
@@ -483,13 +493,13 @@ void CNN::train(int epocas, int mini_batch)
                     this->plms[i].backPropagation(convs_outs[img][i], plms_outs[img][i], plms_in_copys[img][i], this->padding[i+1]);
 
                     // Capa convolucional 
-                    this->convs[i].backPropagation(plms_outs[img][i-1], convs_outs[img][i], conv_a[img][i], this->padding[i]);
+                    this->convs[i].backPropagation(plms_outs[img][i-1], convs_outs[img][i], conv_a[img][i], conv_grads_w[i], conv_grads_bias[i], this->padding[i]);
                 }
                 
                 if(this->n_capas_conv >1)
                 {
                     this->plms[0].backPropagation(convs_outs[img][0], plms_outs[img][0], plms_in_copys[img][0], this->padding[1]);
-                    this->convs[0].backPropagation(img_aux, convs_outs[img][0], conv_a[img][0], this->padding[0]);
+                    this->convs[0].backPropagation(img_aux, convs_outs[img][0], conv_a[img][0], conv_grads_w[0], conv_grads_bias[0], this->padding[0]);
                 }
                 
             }
@@ -498,7 +508,7 @@ void CNN::train(int epocas, int mini_batch)
             // Actualizar pesos de capas convolucionales 
             for(int i=0; i<this->n_capas_conv; i++)
             {
-                this->convs[i].actualizar_grads(n_imgs_batch);
+                this->convs[i].actualizar_grads(conv_grads_w[i], conv_grads_bias[i], n_imgs_batch);
                 this->convs[i].escalar_pesos(2);
             }
         }

@@ -12,7 +12,6 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
 {
     vector<float> neuronas_capa, w_1D;
     vector<vector<float>> w_2D;
-    this->capas = capas;
     
     // Neuronas ------------------------------------------------------------------
     // Por cada capa 

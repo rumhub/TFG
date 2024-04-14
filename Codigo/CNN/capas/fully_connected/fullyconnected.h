@@ -15,15 +15,15 @@ class FullyConnected
 {
     protected:
         vector<vector<vector<float>>> w;        // Pesos
-        //vector<vector<vector<float>>> grad_w;   // Gradiente de los pesos
 
         // Neuronas
         vector<vector<float>> a;    // X*W + B, neurona antes de aplicar función de activación   
-        //vector<vector<float>> grad_a;   // Gradiente respecto a la entrada de la neurona
+
+        // Bias
         vector<vector<float>> bias; // Un sesgo o bias por neurona
-        //vector<vector<float>> grad_bias;
+
+        // Learning Rate o Tasa de Aprendizaje
         float lr;
-        vector<int> capas;
 
     public:
         FullyConnected(const vector<int> &capas, const float & lr=0.1);
@@ -52,6 +52,7 @@ class FullyConnected
 
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
+        // grad_a --> Gradiente respecto a la entrada de la neurona
         void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a);
 
         void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, const int &n_imgs_batch);
