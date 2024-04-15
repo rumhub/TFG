@@ -528,12 +528,15 @@ void CNN::accuracy()
 {
     
     int n=this->train_imgs.size();
-    double t1, t2;
-    vector<vector<vector<float>>> img_in, img_in_copy, conv_a;
+    double t_ini, t_fin, t1, t2;
+    vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
     vector<vector<float>> flat_outs(n);
     vector<float> flat_out; 
     float acc ,entr;
-    
+
+    t_ini = omp_get_wtime();
+
+    #pragma omp parallel for private(img_in, img_out, img_in_copy, flat_out, conv_a)
     for(int img=0; img<n; img++)
     {
         img_in = this->train_imgs[img];
@@ -542,31 +545,35 @@ void CNN::accuracy()
         for(int i=0; i<this->n_capas_conv; i++)
         {
             // Capa convolucional 
-            this->convs[i].forwardPropagation(img_in, this->outputs[i*2], conv_a);
-            img_in = this->outputs[i*2];
+            img_out = this->outputs[i*2];
+            this->convs[i].forwardPropagation(img_in, img_out, conv_a);
+            img_in = img_out;
 
             // Capa MaxPool 
+            img_out = this->outputs[i*2+1];
             img_in_copy = img_in;
-            this->plms[i].forwardPropagation(img_in, this->outputs[i*2+1], img_in_copy);
-            img_in = this->outputs[i*2+1];
+            this->plms[i].forwardPropagation(img_in, img_out, img_in_copy);
+            img_in = img_out;
         }
         
-        (*this->flat).forwardPropagation(this->outputs[this->outputs.size()-1], flat_out);
+        (*this->flat).forwardPropagation(img_out, flat_out);
 
         flat_outs[img] = flat_out;
 
     }
+    t_fin = omp_get_wtime();
+
 
     t1 = omp_get_wtime();
     acc = (*this->fully).accuracy(flat_outs,this->train_labels);
     t2 = omp_get_wtime();
-    cout << "Accuracy: " << acc << " %,                                         " << t2-t1 << " (s) " << endl;
+    cout << "Accuracy: " << acc << " %,                                         " << t_fin-t_ini + t2-t1 << " (s) " << endl;
 
 
     t1 = omp_get_wtime();
     entr = (*this->fully).cross_entropy(flat_outs, this->train_labels);
     t2 = omp_get_wtime();
-    cout << "Entropía cruzada: " << entr << ",                                     " << t2-t1 << " (s) " << endl << endl;
+    cout << "Entropía cruzada: " << entr << ",                                     " << t_fin-t_ini + t2-t1 << " (s) " << endl << endl;
     
 }
 
