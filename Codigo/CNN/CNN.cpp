@@ -425,8 +425,9 @@ void CNN::train(int epocas, int mini_batch)
             
             ini += mini_batch;
             fin += mini_batch;
-            
-            //#pragma omp parallel for firstprivate(convs_out, plms_out, conv_a, plms_in_copy, flat_out)
+
+            // ---------------------------------------------------------------------------------------
+            #pragma omp parallel for 
             for(int img=0; img<n_imgs_batch; img++)
             {
                 // Primera capa convolucional y maxpool -----------------------
@@ -458,6 +459,8 @@ void CNN::train(int epocas, int mini_batch)
                 
                 (*this->flat).forwardPropagation(plms_outs[img][plms_outs[img].size()-1], flat_outs[img]);                
             }
+
+            // ---------------------------------------------------------------------------------------
 
             (*this->fully).train(flat_outs, batch_labels, n_imgs_batch, grad_w, grad_bias, grad_x_fully, fully_a, fully_z, fully_grad_a);
 
