@@ -367,26 +367,21 @@ void CNN::train(int epocas, int mini_batch)
     for(int i=0; i<n; i++)
         indices[i] = i;
 
-    Aux *aux = new Aux();
-
-    for(int i=0; i<mini_batch; i++)
-        conv_a[i] = convs_out;
-
     // Capa totalmente conectada  ----------------
     vector<vector<vector<vector<float>>>> grads_pesos_fully(n_thrs);
-    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs);
+    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs);
     vector<vector<float>> grad_bias = (*this->fully).get_bias();
-    vector<vector<float>> fully_a, fully_z, fully_grad_a;
-
-    fully_a = (*this->fully).get_a();
-    fully_z = (*this->fully).get_a();
-    fully_grad_a = (*this->fully).get_a();
 
     for(int i=0; i<n_thrs; i++)
     {
         grads_pesos_fully[i] = grad_w;
         grads_bias_fully[i] = grad_bias;
+        fully_a[i] = (*this->fully).get_a();
     }
+
+    fully_z = fully_a;
+    fully_grad_a = fully_a;
+
 
     // Capas convolucionales ---------------------------
     vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv); 
