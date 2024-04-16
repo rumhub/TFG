@@ -46,7 +46,7 @@ class Convolutional
 
         void reset_gradients(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias);
 
-        void actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, int n_datos);
+        void actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias);
 
         int get_kernel_fils(){return this->kernel_fils;};
         int get_kernel_cols(){return this->kernel_cols;};

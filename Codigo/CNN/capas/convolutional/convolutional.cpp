@@ -384,20 +384,8 @@ void Convolutional::escalar_pesos(float clip_value)
                     this->w[i][j][k][l] = std::max(std::min(this->w[i][j][k][l] * scaling_factor, clip_value), -clip_value);
 }
 
-void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, int n_datos)
+void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias)
 {
-    // Realizar la media de los gradientes de pesos
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                for(int l=0; l<this->w[i][j][k].size(); l++)
-                    grad_w[i][j][k][l] = grad_w[i][j][k][l] / n_datos;
-
-
-    // Realizar la media de los gradientes de bias
-    for(int i=0; i<this->bias.size(); i++)
-        grad_bias[i] = grad_bias[i] / n_datos;
-
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
         for(int k=0; k<this->w[j].size(); k++)
