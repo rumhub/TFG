@@ -284,7 +284,7 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     return sum;
 }
 
-void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
+void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a, const int &n_thrs)
 {
     float epsilon = 0.000000001;
 
@@ -292,32 +292,21 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     float sum, o_in, grad_x_output, sig_o_in;
     int i_last_h = i_output-1;  // Índice de la capa h1
     int i_act, i_ant;
-    int n_thrs = omp_get_num_threads();
-
     vector<vector<float>> vector_2d(n_datos);
     grad_x = vector_2d;
+    double t1, t2;
 
-    // Inicializar gradiente respecto a entrada 
+    // Inicializar gradientes
+    for(int i=0; i<grad_pesos.size(); i++)
+        for(int j=0; j<grad_pesos[i].size(); j++)
+            for(int k=0; k<grad_pesos[i][j].size(); k++)
+                for(int p=0; p<grad_pesos[i][j][k].size(); p++)
+                    grad_pesos[i][j][k][p] = 0.0;
 
-    // Inicializar gradiente de pesos a 0 --------------------------
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                grad_pesos[i][j][k] = 0.0;
-
-    // Inicializar gradiente bias a 0 ------------------------------
-    for(int i=0; i<this->bias.size(); i++)
-        for(int j=0; j<this->bias[i].size(); j++)
-            grad_b[i][j] = 0.0;
-
-    vector<vector<vector<vector<float>>>> grads_pesos(n_thrs);
-    vector<vector<vector<float>>> grads_b(n_thrs);
-
-    for(int i=0; i<n_thrs; i++)
-    {
-        grads_pesos[i] = grad_pesos;
-        grads_b[i] = grad_b;
-    }
+    for(int i=0; i<grad_b.size(); i++)
+        for(int j=0; j<grad_b[i].size(); j++)
+            for(int k=0; k<grad_b[i][j].size(); k++)
+                grad_b[i][j][k] = 0.0;
 
     // Backpropagation ----------------------------------------------
     // Hay 2 o más capas ocultas
@@ -344,12 +333,12 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         // Pesos h_last - Softmax
         for(int p=0; p<this->a[i_last_h].size(); p++)
             for(int k=0; k<this->a[i_output].size(); k++)
-                grads_pesos[thr_id][i_last_h][p][k] += grad_a[i_output][k] * z[i_last_h][p];
+                grad_pesos[thr_id][i_last_h][p][k] += grad_a[i_output][k] * z[i_last_h][p];
                 //                                 grad_Zk                  *  z^i_last_h_p
         
         // Sesgos capa softmax
         for(int k=0; k<this->a[i_output].size(); k++)
-            grads_b[thr_id][i_output][k] += grad_a[i_output][k];
+            grad_b[thr_id][i_output][k] += grad_a[i_output][k];
             // bk = grad_Zk
 
         // Última capa oculta -----------------------------------------------
@@ -364,11 +353,11 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
             // Pesos
             for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
                 for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                    grads_pesos[thr_id][capa-1][i_ant][i_act] += grad_a[capa][i_act] * z[capa-1][i_ant];
+                    grad_pesos[thr_id][capa-1][i_ant][i_act] += grad_a[capa][i_act] * z[capa-1][i_ant];
 
             // Bias
             for(int i_act = 0; i_act < this->a[capa].size(); i_act++)
-                grads_b[thr_id][capa][i_act] += grad_a[capa][i_act];
+                grad_b[thr_id][capa][i_act] += grad_a[capa][i_act];
             
             // Grad input
             for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
@@ -382,7 +371,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         int capa=1;
         for(int i_act = 0; i_act < this->a[capa].size(); i_act++)       // Por cada neurona de la capa actual
             for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
-                grads_pesos[thr_id][capa-1][i_ant][i_act] += grad_a[capa][i_act] * z[capa-1][i_ant];
+                grad_pesos[thr_id][capa-1][i_ant][i_act] += grad_a[capa][i_act] * z[capa-1][i_ant];
         
         // Grad input
         for(int i_ant = 0; i_ant < this->a[capa-1].size(); i_ant++)     // Por cada neurona de la capa anterior
@@ -395,29 +384,26 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     } 
     
     // Sumar gradientes
-    for(int i=1; i<grads_pesos.size(); i++)
-        for(int j=0; j<grads_pesos[i].size(); j++)
-            for(int k=0; k<grads_pesos[i][j].size(); k++)
-                for(int p=0; p<grads_pesos[i][j][k].size(); p++)
-                    grads_pesos[0][j][k][p] += grads_pesos[i][j][k][p];
+    for(int i=1; i<grad_pesos.size(); i++)
+        for(int j=0; j<grad_pesos[i].size(); j++)
+            for(int k=0; k<grad_pesos[i][j].size(); k++)
+                for(int p=0; p<grad_pesos[i][j][k].size(); p++)
+                    grad_pesos[0][j][k][p] += grad_pesos[i][j][k][p];
 
-    for(int i=1; i<grads_b.size(); i++)
-        for(int j=0; j<grads_b[i].size(); j++)
-            for(int k=0; k<grads_b[i][j].size(); k++)
-                grads_b[0][j][k] += grads_b[i][j][k];
+    for(int i=1; i<grad_b.size(); i++)
+        for(int j=0; j<grad_b[i].size(); j++)
+            for(int k=0; k<grad_b[i][j].size(); k++)
+                grad_b[0][j][k] += grad_b[i][j][k];
     
     // Media
-    for(int j=0; j<grads_pesos[0].size(); j++)
-        for(int k=0; k<grads_pesos[0][j].size(); k++)
-            for(int p=0; p<grads_pesos[0][j][k].size(); p++)
-                grads_pesos[0][j][k][p] = grads_pesos[0][j][k][p] / n_datos;
+    for(int j=0; j<grad_pesos[0].size(); j++)
+        for(int k=0; k<grad_pesos[0][j].size(); k++)
+            for(int p=0; p<grad_pesos[0][j][k].size(); p++)
+                grad_pesos[0][j][k][p] = grad_pesos[0][j][k][p] / n_datos;
 
-    for(int j=0; j<grads_b[0].size(); j++)
-        for(int k=0; k<grads_b[0][j].size(); k++)
-            grads_b[0][j][k] = grads_b[0][j][k] / n_datos;
-
-    grad_pesos = grads_pesos[0];
-    grad_b = grads_b[0];
+    for(int j=0; j<grad_b[0].size(); j++)
+        for(int k=0; k<grad_b[0][j].size(); k++)
+            grad_b[0][j][k] = grad_b[0][j][k] / n_datos;
 }
 
 void FullyConnected::escalar_pesos(float clip_value)
@@ -444,18 +430,18 @@ void FullyConnected::escalar_pesos(float clip_value)
                 this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
 }
 
-void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b)
+void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b)
 {
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
         for(int k=0; k<this->w[j].size(); k++)
             for(int p=0; p<this->w[j][k].size(); p++)
-                this->w[j][k][p] -= this->lr * grad_pesos[j][k][p];
+                this->w[j][k][p] -= this->lr * grad_pesos[0][j][k][p];
 
     // Actualizar bias
     for(int i=0; i<this->bias.size(); i++)
         for(int j=0; j<this->bias[i].size(); j++)
-            this->bias[i][j] -= this->lr * grad_b[i][j];
+            this->bias[i][j] -= this->lr * grad_b[0][i][j];
 }
 
 void FullyConnected::generarDatos(vector<vector<float>> &x, vector<float> &y)

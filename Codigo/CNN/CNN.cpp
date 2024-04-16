@@ -339,6 +339,7 @@ void CNN::train(int epocas, int mini_batch)
     double t1, t2;
     int n=this->train_imgs.size(), n_imgs_batch;
     int ini, fin;
+    int n_thrs = omp_get_num_threads();
     vector<int> indices(n);
     vector<int> batch;
     vector<vector<float>> batch_labels;
@@ -372,13 +373,20 @@ void CNN::train(int epocas, int mini_batch)
         conv_a[i] = convs_out;
 
     // Capa totalmente conectada  ----------------
-    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos();
+    vector<vector<vector<vector<float>>>> grads_pesos_fully(n_thrs);
+    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs);
     vector<vector<float>> grad_bias = (*this->fully).get_bias();
     vector<vector<float>> fully_a, fully_z, fully_grad_a;
 
     fully_a = (*this->fully).get_a();
     fully_z = (*this->fully).get_a();
     fully_grad_a = (*this->fully).get_a();
+
+    for(int i=0; i<n_thrs; i++)
+    {
+        grads_pesos_fully[i] = grad_w;
+        grads_bias_fully[i] = grad_bias;
+    }
 
     // Capas convolucionales ---------------------------
     vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv); 
@@ -462,9 +470,9 @@ void CNN::train(int epocas, int mini_batch)
 
             // ---------------------------------------------------------------------------------------
 
-            (*this->fully).train(flat_outs, batch_labels, n_imgs_batch, grad_w, grad_bias, grad_x_fully, fully_a, fully_z, fully_grad_a);
+            (*this->fully).train(flat_outs, batch_labels, n_imgs_batch, grads_pesos_fully, grads_bias_fully, grad_x_fully, fully_a, fully_z, fully_grad_a, n_thrs);
 
-            (*this->fully).actualizar_parametros(grad_w, grad_bias);
+            (*this->fully).actualizar_parametros(grads_pesos_fully, grads_bias_fully);
 
             (*this->fully).escalar_pesos(2);
 

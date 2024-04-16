@@ -53,9 +53,9 @@ class FullyConnected
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
         // grad_a --> Gradiente respecto a la entrada de la neurona
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a);
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a, const int &n_thrs);
 
-        void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);
+        void actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b);
 
         void escalar_pesos(float clip_value);
 
