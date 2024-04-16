@@ -464,7 +464,7 @@ void CNN::train(int epocas, int mini_batch)
 
             (*this->fully).train(flat_outs, batch_labels, n_imgs_batch, grad_w, grad_bias, grad_x_fully, fully_a, fully_z, fully_grad_a);
 
-            (*this->fully).actualizar_parametros(grad_w, grad_bias, n_imgs_batch);
+            (*this->fully).actualizar_parametros(grad_w, grad_bias);
 
             (*this->fully).escalar_pesos(2);
 
