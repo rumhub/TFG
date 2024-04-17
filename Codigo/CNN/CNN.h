@@ -33,6 +33,7 @@ class CNN
 
         void train(int epocas, int mini_batch);
         void accuracy();
+        void accuracy_secuencial();
 
         // DEBUG ----------------------------------------
         void prueba();

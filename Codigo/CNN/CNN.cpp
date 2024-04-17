@@ -337,22 +337,20 @@ void CNN::mostrar_arquitectura()
 void CNN::train(int epocas, int mini_batch)
 {
     double t1, t2, t3, t4;
-    int n=this->train_imgs.size(), n_imgs_batch;
+    int n=this->train_imgs.size();
     int ini, fin;
     int n_thrs = omp_get_num_threads();
-    vector<int> indices(n);
-    vector<int> batch;
-    vector<vector<float>> batch_labels;
-    
+    vector<int> indices(n);  
 
     // Almacenar inputs y outputs de cada capa
+    vector<vector<vector<vector<vector<vector<float>>>>>> convs_outs_thr(n_thrs), plms_outs_thr(n_thrs), plms_in_copys_thr(n_thrs), conv_a_thr(n_thrs);
     vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch), plms_in_copys(mini_batch), conv_a(mini_batch);       // Input y output de cada capa (por cada imagen de training)
-    vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv);
+    vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv), img_aux(n_thrs);
     vector<float> flat_out; 
 
     // Paso a la siguiente capa
-    vector<vector<vector<float>>> img_aux, grad_x;
-    vector<vector<float>> flat_outs(mini_batch), grad_x_fully; 
+    vector<vector<vector<float>>> grad_x, flat_outs_thr(n_thrs), grad_x_fully(n_thrs);
+    vector<vector<float>> flat_outs(mini_batch); 
 
     // Reservar espacio
     for(int i=0; i<mini_batch; i++)
@@ -361,6 +359,14 @@ void CNN::train(int epocas, int mini_batch)
         plms_outs[i] = convs_out;
         plms_in_copys[i] = convs_out;
         conv_a[i] = convs_out;
+    }
+
+    for(int i=0; i<n_thrs; i++)
+    {
+        convs_outs_thr[i] = convs_outs;
+        plms_outs_thr[i] = plms_outs;
+        plms_in_copys_thr[i] = plms_in_copys;
+        conv_a_thr[i] = conv_a;
     }
 
     // Inicializar vector de índices
@@ -377,6 +383,7 @@ void CNN::train(int epocas, int mini_batch)
         grads_pesos_fully[i] = grad_w;
         grads_bias_fully[i] = grad_bias;
         fully_a[i] = (*this->fully).get_a();
+        flat_outs_thr[i] = flat_outs;
     }
 
     fully_z = fully_a;
@@ -402,164 +409,234 @@ void CNN::train(int epocas, int mini_batch)
     }
 
     // --------------
+    vector<vector<int>> batch_thr(n_thrs);
+    vector<int> batch(mini_batch), tam_batches, n_imgs_batch(n_thrs), n_imgs_batch_ant(n_thrs);
+    const int M = n / mini_batch;
+    // Inicializar tamaño de mini-batches (int)
+    for(int i=0; i<M; i++)
+        tam_batches.push_back(mini_batch);
+    
+    // Último batch puede tener distinto tamaño al resto
+    if(n % mini_batch != 0)
+        tam_batches.push_back(n % mini_batch);   
 
+    for(int i=0; i<n_thrs; i++)
+        batch_thr[i] = batch;
+    // -----------
+
+    #pragma omp parallel num_threads(n_thrs)
     for(int ep=0; ep<epocas; ep++)
     {
-        t1 = omp_get_wtime();
-        // ForwardPropagation -----------------------------------------------------------------------
-        ini = 0;
-        fin = mini_batch;
+        int thr_id = omp_get_thread_num();
 
-        // Desordenar vector de índices
-        random_shuffle(indices.begin(), indices.end());
-
-        while(fin <=n)
+        #pragma omp single
         {
-            //cout << fin << " de " << n << endl;
-            // Crear el batch ----------------------
-            batch.clear();
-            if(fin <= n)
-                for(int j=ini; j<fin; j++)
-                    batch.push_back(indices[j]);   
-            else
-                if(ini < n)
-                    for(int j=ini; j<n; j++)
-                        batch.push_back(indices[j]);
-            
+            t1 = omp_get_wtime();
+            // ForwardPropagation -----------------------------------------------------------------------
 
-            batch_labels.clear();
-            n_imgs_batch = batch.size();
+            // Desordenar vector de índices
+            random_shuffle(indices.begin(), indices.end());
+        }
+
+        #pragma omp barrier
+
+        for(int i=0; i<tam_batches.size(); i++)
+        {
+            // Crear el batch ----------------------
+            n_imgs_batch[thr_id] = tam_batches[i] / n_thrs, n_imgs_batch_ant[thr_id] = n_imgs_batch[thr_id]; 
+
             
-            // Crear batch de labels
-            for(int j=0; j<n_imgs_batch; j++)
-                batch_labels.push_back(this->train_labels[batch[j]]);
-            
-            
-            ini += mini_batch;
-            fin += mini_batch;
+            if(n_imgs_batch[thr_id] * n_thrs < tam_batches[i] && thr_id == n_thrs-1)
+                n_imgs_batch[thr_id] = n_imgs_batch[thr_id] + (tam_batches[i] % n_thrs);
+                            
+            for(int j=0; j<n_imgs_batch[thr_id]; j++)
+                batch_thr[thr_id][j] = indices[mini_batch*i + n_imgs_batch_ant[thr_id]*thr_id + j];   
 
             // ---------------------------------------------------------------------------------------
-            #pragma omp parallel for 
-            for(int img=0; img<n_imgs_batch; img++)
+            for(int img=0; img<n_imgs_batch[thr_id]; img++)
             {
                 // Primera capa convolucional y maxpool -----------------------
                 // Establecer dimensiones de salida
-                convs_outs[img][0] = this->outputs[0];
-                plms_outs[img][0] = this->outputs[1];
+                convs_outs_thr[thr_id][img][0] = this->outputs[0];
+                plms_outs_thr[thr_id][img][0] = this->outputs[1];
 
                 // Realizar los cálculos
-                this->convs[0].forwardPropagation(this->train_imgs[batch[img]], convs_outs[img][0], conv_a[img][0]);
+                this->convs[0].forwardPropagation(this->train_imgs[batch_thr[thr_id][img]], convs_outs_thr[thr_id][img][0], conv_a_thr[thr_id][img][0]);
                 
-                plms_in_copys[img][0] = convs_outs[img][0];
-                this->plms[0].forwardPropagation(convs_outs[img][0], plms_outs[img][0], plms_in_copys[img][0]);
+                plms_in_copys_thr[thr_id][img][0] = convs_outs_thr[thr_id][img][0];
+                this->plms[0].forwardPropagation(convs_outs_thr[thr_id][img][0], plms_outs_thr[thr_id][img][0], plms_in_copys_thr[thr_id][img][0]);
                 
                 // Resto de capas convolucionales y maxpool ----------------------------
                 for(int i=1; i<this->n_capas_conv; i++)
                 {
                     // Establecer dimensiones de salida
-                    convs_outs[img][i] = this->outputs[i*2];
-                    plms_outs[img][i] = this->outputs[i*2+1];
+                    convs_outs_thr[thr_id][img][i] = this->outputs[i*2];
+                    plms_outs_thr[thr_id][img][i] = this->outputs[i*2+1];
 
                     // Capa convolucional 
-                    this->convs[i].aplicar_padding(plms_outs[img][i-1], this->padding[i]);
-                    this->convs[i].forwardPropagation(plms_outs[img][i-1], convs_outs[img][i], conv_a[img][i]);
+                    this->convs[i].aplicar_padding(plms_outs_thr[thr_id][img][i-1], this->padding[i]);
+                    this->convs[i].forwardPropagation(plms_outs_thr[thr_id][img][i-1], convs_outs_thr[thr_id][img][i], conv_a_thr[thr_id][img][i]);
 
                     // Capa MaxPool 
-                    plms_in_copys[img][i] = convs_outs[img][i];
-                    this->plms[i].forwardPropagation(convs_outs[img][i], plms_outs[img][i], plms_in_copys[img][i]);
+                    plms_in_copys_thr[thr_id][img][i] = convs_outs_thr[thr_id][img][i];
+                    this->plms[i].forwardPropagation(convs_outs_thr[thr_id][img][i], plms_outs_thr[thr_id][img][i], plms_in_copys_thr[thr_id][img][i]);
                 }
                 
-                (*this->flat).forwardPropagation(plms_outs[img][plms_outs[img].size()-1], flat_outs[img]);                
+                (*this->flat).forwardPropagation(plms_outs_thr[thr_id][img][plms_outs_thr[thr_id][img].size()-1], flat_outs_thr[thr_id][img]);                
+            }
+            
+            // ---------------------------------------------------------------------------------------
+            // Inicializar gradientes
+                for(int j=0; j<grads_pesos_fully[thr_id].size(); j++)
+                    for(int k=0; k<grads_pesos_fully[thr_id][j].size(); k++)
+                        for(int p=0; p<grads_pesos_fully[thr_id][j][k].size(); p++)
+                            grads_pesos_fully[thr_id][j][k][p] = 0.0;
+
+                for(int j=0; j<grads_bias_fully[thr_id].size(); j++)
+                    for(int k=0; k<grads_bias_fully[thr_id][j].size(); k++)
+                        grads_bias_fully[thr_id][j][k] = 0.0;
+
+            (*this->fully).train(flat_outs_thr[thr_id], this->train_labels, batch_thr[thr_id], n_imgs_batch[thr_id], grads_pesos_fully[thr_id], grads_bias_fully[thr_id], grad_x_fully[thr_id], fully_a[thr_id], fully_z[thr_id], fully_grad_a[thr_id], n_thrs);
+
+            // Pesos
+            #pragma omp single
+            {
+                // Sumar gradientes
+                for(int i=1; i<grads_pesos_fully.size(); i++)
+                    for(int j=0; j<grads_pesos_fully[i].size(); j++)
+                        for(int k=0; k<grads_pesos_fully[i][j].size(); k++)
+                            for(int p=0; p<grads_pesos_fully[i][j][k].size(); p++)
+                                grads_pesos_fully[0][j][k][p] += grads_pesos_fully[i][j][k][p];          
+                // Media
+                for(int j=0; j<grads_pesos_fully[0].size(); j++)
+                    for(int k=0; k<grads_pesos_fully[0][j].size(); k++)
+                        for(int p=0; p<grads_pesos_fully[0][j][k].size(); p++)
+                            grads_pesos_fully[0][j][k][p] = grads_pesos_fully[0][j][k][p] / tam_batches[i];
             }
 
-            // ---------------------------------------------------------------------------------------
+            // Bias
+            #pragma omp single
+            {
+                // Sumar gradientes
+                for(int i=1; i<grads_bias_fully.size(); i++)
+                    for(int j=0; j<grads_bias_fully[i].size(); j++)
+                        for(int k=0; k<grads_bias_fully[i][j].size(); k++)
+                            grads_bias_fully[0][j][k] += grads_bias_fully[i][j][k];
 
-            (*this->fully).train(flat_outs, batch_labels, n_imgs_batch, grads_pesos_fully, grads_bias_fully, grad_x_fully, fully_a, fully_z, fully_grad_a, n_thrs);
-
-            (*this->fully).actualizar_parametros(grads_pesos_fully, grads_bias_fully);
-
-            (*this->fully).escalar_pesos(2);
+                // Media
+                for(int j=0; j<grads_bias_fully[0].size(); j++)
+                    for(int k=0; k<grads_bias_fully[0][j].size(); k++)
+                        grads_bias_fully[0][j][k] = grads_bias_fully[0][j][k] / tam_batches[i];
+            }
 
             // BackPropagation -----------------------------------------------------------------------
-            for(int thr=0; thr<n_thrs; thr++)     
-                for(int i=0; i<this->n_capas_conv; i++)
-                    this->convs[i].reset_gradients(convs_grads_w[thr][i], convs_grads_bias[thr][i]);
+            for(int i=0; i<this->n_capas_conv; i++)
+                this->convs[i].reset_gradients(convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i]);
 
-            #pragma omp parallel for num_threads(n_thrs) private(img_aux)
-            for(int img=0; img<n_imgs_batch; img++)
+
+            for(int img=0; img<n_imgs_batch[thr_id]; img++)
             {
-                int thr_id = omp_get_thread_num();
-
-                img_aux = this->train_imgs[batch[img]];
+                img_aux[thr_id] = this->train_imgs[batch_thr[thr_id][img]];
 
                 // Última capa, su output no tiene padding
                 int i_c=this->n_capas_conv-1;
-                (*this->flat).backPropagation(plms_outs[img][i_c], grad_x_fully[img]);
+                (*this->flat).backPropagation(plms_outs_thr[thr_id][img][i_c], grad_x_fully[thr_id][img]);
 
                 // Capa MaxPool 
-                this->plms[i_c].backPropagation(convs_outs[img][i_c], plms_outs[img][i_c], plms_in_copys[img][i_c], 0);
+                this->plms[i_c].backPropagation(convs_outs_thr[thr_id][img][i_c], plms_outs_thr[thr_id][img][i_c], plms_in_copys_thr[thr_id][img][i_c], 0);
 
                 // Capa convolucional 
                 if(this->n_capas_conv > 1)
-                    this->convs[i_c].backPropagation(plms_outs[img][i_c-1], convs_outs[img][i_c], conv_a[img][i_c], convs_grads_w[thr_id][i_c], convs_grads_bias[thr_id][i_c], this->padding[i_c]);
+                    this->convs[i_c].backPropagation(plms_outs_thr[thr_id][img][i_c-1], convs_outs_thr[thr_id][img][i_c], conv_a_thr[thr_id][img][i_c], convs_grads_w[thr_id][i_c], convs_grads_bias[thr_id][i_c], this->padding[i_c]);
                 else
-                    this->convs[i_c].backPropagation(img_aux, convs_outs[img][i_c], conv_a[img][i_c], convs_grads_w[thr_id][i_c], convs_grads_bias[thr_id][i_c], this->padding[i_c]);
+                    this->convs[i_c].backPropagation(img_aux[thr_id], convs_outs_thr[thr_id][img][i_c], conv_a_thr[thr_id][img][i_c], convs_grads_w[thr_id][i_c], convs_grads_bias[thr_id][i_c], this->padding[i_c]);
 
                 for(int i=this->n_capas_conv-2; i>=1; i--)
                 {
                     // Capa MaxPool 
-                    this->plms[i].backPropagation(convs_outs[img][i], plms_outs[img][i], plms_in_copys[img][i], this->padding[i+1]);
+                    this->plms[i].backPropagation(convs_outs_thr[thr_id][img][i], plms_outs_thr[thr_id][img][i], plms_in_copys_thr[thr_id][img][i], this->padding[i+1]);
 
                     // Capa convolucional 
-                    this->convs[i].backPropagation(plms_outs[img][i-1], convs_outs[img][i], conv_a[img][i], convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i], this->padding[i]);
+                    this->convs[i].backPropagation(plms_outs_thr[thr_id][img][i-1], convs_outs_thr[thr_id][img][i], conv_a_thr[thr_id][img][i], convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i], this->padding[i]);
                 }
                 
                 if(this->n_capas_conv >1)
                 {
-                    this->plms[0].backPropagation(convs_outs[img][0], plms_outs[img][0], plms_in_copys[img][0], this->padding[1]);
-                    this->convs[0].backPropagation(img_aux, convs_outs[img][0], conv_a[img][0], convs_grads_w[thr_id][0], convs_grads_bias[thr_id][0], this->padding[0]);
+                    this->plms[0].backPropagation(convs_outs_thr[thr_id][img][0], plms_outs_thr[thr_id][img][0], plms_in_copys_thr[thr_id][img][0], this->padding[1]);
+                    this->convs[0].backPropagation(img_aux[thr_id], convs_outs_thr[thr_id][img][0], conv_a_thr[thr_id][img][0], convs_grads_w[thr_id][0], convs_grads_bias[thr_id][0], this->padding[0]);
                 }
                 
             }
+            
+            #pragma omp barrier
 
-            // Sumar gradientes
-            for(int i_1=1; i_1<convs_grads_w.size(); i_1++)
-                for(int i_2=0; i_2<convs_grads_w[i_1].size(); i_2++)
-                    for(int i_3=0; i_3<convs_grads_w[i_1][i_2].size(); i_3++)
-                        for(int i_4=0; i_4<convs_grads_w[i_1][i_2][i_3].size(); i_4++)
-                            for(int i_5=0; i_5<convs_grads_w[i_1][i_2][i_3][i_4].size(); i_5++)
-                                for(int i_6=0; i_6<convs_grads_w[i_1][i_2][i_3][i_4][i_5].size(); i_6++)
-                                    convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] += convs_grads_w[i_1][i_2][i_3][i_4][i_5][i_6];
+            // Pesos
+            #pragma omp single
+            {
+                // Sumar gradientes
+                for(int i_1=1; i_1<convs_grads_w.size(); i_1++)
+                    for(int i_2=0; i_2<convs_grads_w[i_1].size(); i_2++)
+                        for(int i_3=0; i_3<convs_grads_w[i_1][i_2].size(); i_3++)
+                            for(int i_4=0; i_4<convs_grads_w[i_1][i_2][i_3].size(); i_4++)
+                                for(int i_5=0; i_5<convs_grads_w[i_1][i_2][i_3][i_4].size(); i_5++)
+                                    for(int i_6=0; i_6<convs_grads_w[i_1][i_2][i_3][i_4][i_5].size(); i_6++)
+                                        convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] += convs_grads_w[i_1][i_2][i_3][i_4][i_5][i_6];
 
-
-            for(int i=1; i<convs_grads_bias.size(); i++)
-                for(int j=0; j<convs_grads_bias[i].size(); j++)
-                    for(int k=0; k<convs_grads_bias[i][j].size(); k++)
-                        convs_grads_bias[0][j][k] += convs_grads_bias[i][j][k];
-
-            // Media
+                // Media
                 for(int i_2=0; i_2<convs_grads_w[0].size(); i_2++)
                     for(int i_3=0; i_3<convs_grads_w[0][i_2].size(); i_3++)
                         for(int i_4=0; i_4<convs_grads_w[0][i_2][i_3].size(); i_4++)
                             for(int i_5=0; i_5<convs_grads_w[0][i_2][i_3][i_4].size(); i_5++)
                                 for(int i_6=0; i_6<convs_grads_w[0][i_2][i_3][i_4][i_5].size(); i_6++)
-                                    convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] = convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] / n_imgs_batch;
+                                    convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] = convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] / tam_batches[i];
+            }
 
+            // Bias
+            #pragma omp single
+            {
+                // Sumar gradientes
+                for(int i=1; i<convs_grads_bias.size(); i++)
+                    for(int j=0; j<convs_grads_bias[i].size(); j++)
+                        for(int k=0; k<convs_grads_bias[i][j].size(); k++)
+                            convs_grads_bias[0][j][k] += convs_grads_bias[i][j][k];
+
+                // Media
                 for(int j=0; j<convs_grads_bias[0].size(); j++)
                     for(int k=0; k<convs_grads_bias[0][j].size(); k++)
-                        convs_grads_bias[0][j][k] = convs_grads_bias[0][j][k] / n_imgs_batch;
-
-            // Actualizar pesos de capas convolucionales 
-            for(int i=0; i<this->n_capas_conv; i++)
-            {
-                this->convs[i].actualizar_grads(convs_grads_w[0][i], convs_grads_bias[0][i]);
-                this->convs[i].escalar_pesos(2);
+                        convs_grads_bias[0][j][k] = convs_grads_bias[0][j][k] / tam_batches[i];
             }
+
+            #pragma omp barrier
+
+            // Actualizar parámetros --------------------------------------------------------------------
+            #pragma omp single
+            {
+                // Actualizar parámetros de capas convolucionales 
+                for(int i=0; i<this->n_capas_conv; i++)
+                {
+                    this->convs[i].actualizar_grads(convs_grads_w[0][i], convs_grads_bias[0][i]);
+                    this->convs[i].escalar_pesos(2);
+                }
+            }
+
+            #pragma omp single
+            {
+                // Actualizar parámetros de capas totalmente conectadas 
+                (*this->fully).actualizar_parametros(grads_pesos_fully, grads_bias_fully);
+
+                (*this->fully).escalar_pesos(2);
+            }
+
+            #pragma omp barrier
         }
 
-        t2 = omp_get_wtime();
-        cout << "Época: " << ep << "                                       , " << t2-t1 << " (s) " << endl;
-        accuracy();  
+        #pragma omp single
+        {
+            t2 = omp_get_wtime();
+            cout << "Época: " << ep << "                                       , " << t2-t1 << " (s) " << endl;
+            accuracy();  
+        }
+        #pragma omp barrier
         
         
     }
@@ -616,6 +693,60 @@ void CNN::accuracy()
 
     t1 = omp_get_wtime();
     entr = (*this->fully).cross_entropy(flat_outs, this->train_labels);
+    t2 = omp_get_wtime();
+    cout << "Entropía cruzada: " << entr << ",                                     " << t_fin-t_ini + t2-t1 << " (s) " << endl << endl;
+    
+}
+
+
+// Accuracy sobre training 
+void CNN::accuracy_secuencial()
+{
+    int n=this->train_imgs.size();
+    double t_ini, t_fin, t1, t2;
+    vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
+    vector<vector<float>> flat_outs(n);
+    vector<float> flat_out; 
+    float acc ,entr;
+
+    t_ini = omp_get_wtime();
+
+    //#pragma omp parallel for private(img_in, img_out, img_in_copy, flat_out, conv_a)
+    for(int img=0; img<n; img++)
+    {
+        img_in = this->train_imgs[img];
+
+        // Capas convolucionales y maxpool ----------------------------
+        for(int i=0; i<this->n_capas_conv; i++)
+        {
+            // Capa convolucional 
+            img_out = this->outputs[i*2];
+            this->convs[i].forwardPropagation(img_in, img_out, conv_a);
+            img_in = img_out;
+
+            // Capa MaxPool 
+            img_out = this->outputs[i*2+1];
+            img_in_copy = img_in;
+            this->plms[i].forwardPropagation(img_in, img_out, img_in_copy);
+            img_in = img_out;
+        }
+        
+        (*this->flat).forwardPropagation(img_out, flat_out);
+
+        flat_outs[img] = flat_out;
+
+    }
+    t_fin = omp_get_wtime();
+
+
+    t1 = omp_get_wtime();
+    acc = (*this->fully).accuracy_secuencial(flat_outs,this->train_labels);
+    t2 = omp_get_wtime();
+    cout << "Accuracy: " << acc << " %,                                         " << t_fin-t_ini + t2-t1 << " (s) " << endl;
+
+
+    t1 = omp_get_wtime();
+    entr = (*this->fully).cross_entropy_secuencial(flat_outs, this->train_labels);
     t2 = omp_get_wtime();
     cout << "Entropía cruzada: " << entr << ",                                     " << t_fin-t_ini + t2-t1 << " (s) " << endl << endl;
     

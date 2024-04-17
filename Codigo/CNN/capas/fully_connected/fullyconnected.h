@@ -50,10 +50,14 @@ class FullyConnected
 
         float accuracy(vector<vector<float>> x, vector<vector<float>> y);
 
+        float accuracy_secuencial(vector<vector<float>> x, vector<vector<float>> y);
+
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
+        float cross_entropy_secuencial(vector<vector<float>> x, vector<vector<float>> y);
+
         // grad_a --> Gradiente respecto a la entrada de la neurona
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &n_datos, vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b, vector<vector<float>> &grad_x, vector<vector<vector<float>>> &a, vector<vector<vector<float>>> &z, vector<vector<vector<float>>> &grad_a, const int &n_thrs);
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a, const int &n_thrs);
 
         void actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b);
 
