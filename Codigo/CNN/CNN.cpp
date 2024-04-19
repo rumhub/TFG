@@ -339,7 +339,8 @@ void CNN::train(int epocas, int mini_batch)
     double t1, t2, t3, t4;
     int n=this->train_imgs.size();
     int ini, fin;
-    int n_thrs = omp_get_num_threads();
+    int n_thrs = 8;
+    //int n_thrs = omp_get_num_threads();
     vector<int> indices(n);  
 
     // Almacenar inputs y outputs de cada capa
@@ -633,9 +634,9 @@ void CNN::train(int epocas, int mini_batch)
         #pragma omp single
         {
             t2 = omp_get_wtime();
-            cout << "Época: " << ep << "                                       , " << t2-t1 << " (s) " << endl;
-            accuracy();  
+            cout << "Época: " << ep << ",                                           " << t2-t1 << " (s) " << endl;
         }
+            accuracy();  
         #pragma omp barrier
         
         
@@ -647,18 +648,28 @@ void CNN::train(int epocas, int mini_batch)
 // Accuracy sobre training 
 void CNN::accuracy()
 {
-    
-    int n=this->train_imgs.size();
-    double t_ini, t_fin, t1, t2;
+    int n=this->train_imgs.size(), n_thrs = omp_get_num_threads(), n_imgs = n / n_thrs, n_imgs_ant = n / n_thrs, thr_id = omp_get_thread_num();
+    double t1, t2;
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
-    vector<vector<float>> flat_outs(n);
+    
     vector<float> flat_out; 
     float acc ,entr;
 
-    t_ini = omp_get_wtime();
+    if(thr_id == n_thrs - 1)
+        n_imgs = n - n_imgs * thr_id;
 
-    #pragma omp parallel for private(img_in, img_out, img_in_copy, flat_out, conv_a)
-    for(int img=0; img<n; img++)
+    vector<vector<float>> flat_outs(n_imgs);
+
+    #pragma omp master
+    {
+        t1 = omp_get_wtime();
+        this->sum_acc = 0.0;
+        this->sum_entr = 0.0;
+    }
+
+    #pragma omp barrier
+
+    for(int img=n_imgs_ant*thr_id, k=0; img<n_imgs_ant*thr_id + n_imgs; img++, k++)
     {
         img_in = this->train_imgs[img];
 
@@ -679,22 +690,36 @@ void CNN::accuracy()
         
         (*this->flat).forwardPropagation(img_out, flat_out);
 
-        flat_outs[img] = flat_out;
+        flat_outs[k] = flat_out;
 
     }
-    t_fin = omp_get_wtime();
+    
+    acc = (*this->fully).accuracy(flat_outs,this->train_labels, n_imgs_ant*thr_id);
+    entr = (*this->fully).cross_entropy(flat_outs, this->train_labels, n_imgs_ant*thr_id);
+
+    #pragma omp critical
+    {
+        this->sum_acc += acc;
+        this->sum_entr += entr;
+    }
+
+    #pragma omp barrier
+
+    #pragma omp master
+    {
+        this->sum_acc = this->sum_acc / n * 100;
+        this->sum_entr = -this->sum_entr / n;
+
+        t2 = omp_get_wtime();
+    
+        cout << "Accuracy: " << this->sum_acc << " %,  ";
 
 
-    t1 = omp_get_wtime();
-    acc = (*this->fully).accuracy(flat_outs,this->train_labels);
-    t2 = omp_get_wtime();
-    cout << "Accuracy: " << acc << " %,                                         " << t_fin-t_ini + t2-t1 << " (s) " << endl;
+        cout << "Entropía cruzada: " << this->sum_entr << ",         " << t2 - t1 << " (s) " << endl << endl;
+    }
 
 
-    t1 = omp_get_wtime();
-    entr = (*this->fully).cross_entropy(flat_outs, this->train_labels);
-    t2 = omp_get_wtime();
-    cout << "Entropía cruzada: " << entr << ",                                     " << t_fin-t_ini + t2-t1 << " (s) " << endl << endl;
+
     
 }
 

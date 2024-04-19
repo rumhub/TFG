@@ -219,7 +219,7 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 // Ahora x es el conjunto de datos de training
 // x[0] el primer dato training
 // x[0][0] el primer elemento del primer dato training
-float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y)
+float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y, const int &ini)
 {
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=this->a.size()-1;
@@ -230,24 +230,24 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
 
     sum = 0.0;
 
-    #pragma omp parallel for reduction(+:sum) firstprivate(a, z)
+    //#pragma omp parallel for reduction(+:sum) firstprivate(a, z)
     for(int i=0; i<x.size(); i++)
     {
         forwardPropagation(x[i], a, z);
 
         for(int c=0; c<this->a[n].size(); c++)
-            if(y[i][c] == 1)
+            if(y[ini + i][c] == 1)
                 prediccion = z[n][c];
             
         sum += log(prediccion+epsilon);
     }
 
-    sum = -sum / x.size();
+    //sum = -sum / x.size();
 
     return sum;
 }
 
-float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
+float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y, const int &ini)
 {
     float sum =0.0, max;
     int prediccion, n=this->a.size()-1;
@@ -256,7 +256,7 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     a = this->a;
     z = this->a;
 
-    #pragma omp parallel for reduction(+:sum) firstprivate(a, z)
+    //#pragma omp parallel for reduction(+:sum) firstprivate(a, z)
     for(int i=0; i<x.size(); i++)
     {
         forwardPropagation(x[i], a, z);
@@ -276,10 +276,10 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
         }
 
         // Ver si etiqueta real y predicción coindicen
-        sum += y[i][prediccion];
+        sum += y[ini + i][prediccion];
     }
 
-    sum = sum / x.size() * 100;
+    //sum = sum / x.size() * 100;
 
     return sum;
 }

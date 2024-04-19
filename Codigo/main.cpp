@@ -48,11 +48,13 @@ int main()
     
     //cnn.leer_imagenes();
     //cnn.leer_imagenes_mnist(3000, 10);
-    cnn.leer_imagenes_cifar10(100, 10);
+    cnn.leer_imagenes_cifar10(10, 10);
+    //cnn.leer_imagenes_cifar10(100, 10);
     cnn.mostrar_arquitectura();
-    cnn.train(50, 32);
+    cout << "ENTRENAMIENTO PARALELO:" << endl;
+    cnn.train(1, 32);
 
-    cout << "MEDIDAS SECUENCIALES SOBRE CONJUNTO DE ENTRENAMIENTO" << endl;
+    cout << "MEDIDAS SECUENCIALES:" << endl;
     cnn.accuracy_secuencial();
 
     /*

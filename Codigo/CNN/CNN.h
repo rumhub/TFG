@@ -21,6 +21,7 @@ class CNN
         vector<int> padding;
         float lr;                           // Learning rate
         int n_capas_conv;
+        float sum_acc, sum_entr;
 
     public:
         CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding, vector<int> &capas_fully, const vector<vector<vector<float>>> &input, const float &lr);

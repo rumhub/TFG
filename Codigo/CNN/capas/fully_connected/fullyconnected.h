@@ -48,11 +48,11 @@ class FullyConnected
         // z -->  f(X*W + B), neurona después de aplicar función de activación
         void forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z);
 
-        float accuracy(vector<vector<float>> x, vector<vector<float>> y);
+        float accuracy(vector<vector<float>> x, vector<vector<float>> y, const int &ini);
 
         float accuracy_secuencial(vector<vector<float>> x, vector<vector<float>> y);
 
-        float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
+        float cross_entropy(vector<vector<float>> x, vector<vector<float>> y, const int &ini);
 
         float cross_entropy_secuencial(vector<vector<float>> x, vector<vector<float>> y);
 
