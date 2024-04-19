@@ -499,6 +499,8 @@ void CNN::train(int epocas, int mini_batch)
 
             (*this->fully).train(flat_outs_thr[thr_id], this->train_labels, batch_thr[thr_id], n_imgs_batch[thr_id], grads_pesos_fully[thr_id], grads_bias_fully[thr_id], grad_x_fully[thr_id], fully_a[thr_id], fully_z[thr_id], fully_grad_a[thr_id], n_thrs);
 
+            #pragma omp barrier
+            
             // Pesos
             #pragma omp single
             {
