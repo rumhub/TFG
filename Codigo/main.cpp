@@ -35,27 +35,22 @@ void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input, const in
 int main()
 {
     omp_set_num_threads(omp_get_num_procs());
+    //omp_set_num_threads(omp_get_num_procs());
     vector<vector<vector<vector<float>>>> input;
     vector<float> output;
     int n_imagenes, pad=1;
     leer_imagen(input, pad);
 
-
-
     vector<vector<int>> capas_conv = {{32,3,3}}, capas_pool={{2,2}};
     vector<int> capas_fully = {128, 10}, padding = {pad};
-    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.01);
+    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.001);
     
     //cnn.leer_imagenes();
     //cnn.leer_imagenes_mnist(3000, 10);
-    cnn.leer_imagenes_cifar10(10, 10);
+    cnn.leer_imagenes_cifar10(100, 10);
     //cnn.leer_imagenes_cifar10(100, 10);
     cnn.mostrar_arquitectura();
-    cout << "ENTRENAMIENTO PARALELO:" << endl;
-    cnn.train(1, 32);
-
-    cout << "MEDIDAS SECUENCIALES:" << endl;
-    cnn.accuracy_secuencial();
+    cnn.train(50, 32);
 
     /*
     // PRUEBAS ----------------------------------------

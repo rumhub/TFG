@@ -284,69 +284,6 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y,
     return sum;
 }
 
-float FullyConnected::accuracy_secuencial(vector<vector<float>> x, vector<vector<float>> y)
-{
-    float sum =0.0, max;
-    int prediccion, n=this->a.size()-1;
-
-    vector<vector<float>> a, z;
-    a = this->a;
-    z = this->a;
-
-    for(int i=0; i<x.size(); i++)
-    {
-        forwardPropagation(x[i], a, z);
-
-        // Inicialización
-        max = z[n][0];
-        prediccion = 0;
-
-        // Obtener valor más alto de la capa output
-        for(int c=1; c<this->a[n].size(); c++)
-        {
-            if(max < z[n][c])
-            {
-                max = z[n][c];
-                prediccion = c;
-            }
-        }
-
-        // Ver si etiqueta real y predicción coindicen
-        sum += y[i][prediccion];
-    }
-
-    sum = sum / x.size() * 100;
-
-    return sum;
-}
-
-float FullyConnected::cross_entropy_secuencial(vector<vector<float>> x, vector<vector<float>> y)
-{
-    float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
-    int n=this->a.size()-1;
-
-    vector<vector<float>> a, z;
-    a = this->a;
-    z = this->a;
-
-    sum = 0.0;
-
-    for(int i=0; i<x.size(); i++)
-    {
-        forwardPropagation(x[i], a, z);
-
-        for(int c=0; c<this->a[n].size(); c++)
-            if(y[i][c] == 1)
-                prediccion = z[n][c];
-            
-        sum += log(prediccion+epsilon);
-    }
-
-    sum = -sum / x.size();
-
-    return sum;
-}
-
 void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a, const int &n_thrs)
 {
     float epsilon = 0.000000001;
