@@ -376,7 +376,7 @@ void CNN::train(int epocas, int mini_batch)
 
     // Capa totalmente conectada  ----------------
     vector<vector<vector<vector<float>>>> grads_pesos_fully(n_thrs);
-    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs);
+    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs), prueba;
     vector<vector<float>> grad_bias = (*this->fully).get_bias();
 
     for(int i=0; i<n_thrs; i++)
@@ -488,34 +488,53 @@ void CNN::train(int epocas, int mini_batch)
             
             // ---------------------------------------------------------------------------------------
             // Inicializar gradientes
-                for(int j=0; j<grads_pesos_fully[thr_id].size(); j++)
-                    for(int k=0; k<grads_pesos_fully[thr_id][j].size(); k++)
-                        for(int p=0; p<grads_pesos_fully[thr_id][j][k].size(); p++)
-                            grads_pesos_fully[thr_id][j][k][p] = 0.0;
+            for(int j=0; j<grads_pesos_fully[thr_id].size(); j++)
+                for(int k=0; k<grads_pesos_fully[thr_id][j].size(); k++)
+                    for(int p=0; p<grads_pesos_fully[thr_id][j][k].size(); p++)
+                        grads_pesos_fully[thr_id][j][k][p] = 0.0;
 
-                for(int j=0; j<grads_bias_fully[thr_id].size(); j++)
-                    for(int k=0; k<grads_bias_fully[thr_id][j].size(); k++)
-                        grads_bias_fully[thr_id][j][k] = 0.0;
+            for(int j=0; j<grads_bias_fully[thr_id].size(); j++)
+                for(int k=0; k<grads_bias_fully[thr_id][j].size(); k++)
+                    grads_bias_fully[thr_id][j][k] = 0.0;
 
             (*this->fully).train(flat_outs_thr[thr_id], this->train_labels, batch_thr[thr_id], n_imgs_batch[thr_id], grads_pesos_fully[thr_id], grads_bias_fully[thr_id], grad_x_fully[thr_id], fully_a[thr_id], fully_z[thr_id], fully_grad_a[thr_id], n_thrs);
 
             #pragma omp barrier
-            
+
+            // ----------------------------------------------
             // Pesos
-            #pragma omp single
+            // ----------------------------------------------
+            // ----------------------------------------------
+            // Sumar gradientes 
+            for(int c=1; c<grads_pesos_fully.size(); c++)
             {
-                // Sumar gradientes
-                for(int i=1; i<grads_pesos_fully.size(); i++)
-                    for(int j=0; j<grads_pesos_fully[i].size(); j++)
-                        for(int k=0; k<grads_pesos_fully[i][j].size(); k++)
-                            for(int p=0; p<grads_pesos_fully[i][j][k].size(); p++)
-                                grads_pesos_fully[0][j][k][p] += grads_pesos_fully[i][j][k][p];          
-                // Media
-                for(int j=0; j<grads_pesos_fully[0].size(); j++)
-                    for(int k=0; k<grads_pesos_fully[0][j].size(); k++)
-                        for(int p=0; p<grads_pesos_fully[0][j][k].size(); p++)
-                            grads_pesos_fully[0][j][k][p] = grads_pesos_fully[0][j][k][p] / tam_batches[i];
+                int n_imgs = grads_pesos_fully[c].size() / n_thrs, n_imgs_ant = grads_pesos_fully[c].size() / n_thrs;
+
+                if(thr_id == n_thrs - 1)
+                    n_imgs = grads_pesos_fully[c].size() - n_imgs * thr_id;
+
+                for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+                    for(int k=0; k<grads_pesos_fully[c][j].size(); k++)
+                        for(int p=0; p<grads_pesos_fully[c][j][k].size(); p++)
+                            grads_pesos_fully[0][j][k][p] += grads_pesos_fully[c][j][k][p];       
             }
+
+            // ----------------------------------------------
+            // Realizar la media de los gradientes respecto a cada parámetro
+            int n_imgs = grads_pesos_fully[0].size() / n_thrs, n_imgs_ant = grads_pesos_fully[0].size() / n_thrs;
+
+            if(thr_id == n_thrs - 1)
+                n_imgs = grads_pesos_fully[0].size() - n_imgs * thr_id;
+
+            for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+                for(int k=0; k<grads_pesos_fully[0][j].size(); k++)
+                    for(int p=0; p<grads_pesos_fully[0][j][k].size(); p++)
+                        grads_pesos_fully[0][j][k][p] /= tam_batches[i];
+            
+
+            #pragma omp barrier
+
+            // ---------------------------------------------------------------------------
 
             // Bias
             #pragma omp single
