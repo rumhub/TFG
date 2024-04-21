@@ -4,6 +4,7 @@
 #include <iostream>
 #include <chrono>
 #include "random"
+#include "omp.h"
 
 using namespace std;
 
@@ -386,17 +387,30 @@ void Convolutional::escalar_pesos(float clip_value)
 
 void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias)
 {
+    int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
+
     // Actualizar pesos
-    for(int j=0; j<this->w.size(); j++)
-        for(int k=0; k<this->w[j].size(); k++)
-            for(int p=0; p<this->w[j][k].size(); p++)
-                for(int l=0; l<this->w[j][k][p].size(); l++)
-                    this->w[j][k][p][l] -= this->lr * grad_w[j][k][p][l];
-    
-    // Actualizar bias
-    for(int i=0; i<this->bias.size(); i++)
-        this->bias[i] -= this->lr * grad_bias[i];
-    
+    for(int c=0; c<this->w.size(); c++)
+    {
+        n_imgs = this->w[c].size() / n_thrs, n_imgs_ant = this->w[c].size() / n_thrs;
+
+        if(thr_id == n_thrs - 1)
+            n_imgs = this->w[c].size() - n_imgs * thr_id;
+
+        for(int k=n_imgs_ant*thr_id; k<n_imgs_ant*thr_id + n_imgs; k++)
+            for(int p=0; p<this->w[c][k].size(); p++)
+                for(int l=0; l<this->w[c][k][p].size(); l++)
+                    this->w[c][k][p][l] -= this->lr * grad_w[c][k][p][l];
+    }
+
+    // Actualizar Bias
+    n_imgs = this->bias.size() / n_thrs, n_imgs_ant = this->bias.size() / n_thrs;
+
+    if(thr_id == n_thrs - 1)
+        n_imgs = this->bias.size() - n_imgs * thr_id;
+
+    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+        this->bias[j] -= this->lr * grad_bias[j];
 }
 
 // https://towardsdatascience.com/forward-and-backward-propagation-in-convolutional-neural-networks-64365925fdfa

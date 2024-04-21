@@ -393,9 +393,9 @@ void CNN::train(int epocas, int mini_batch)
 
     // Capas convolucionales ---------------------------
     vector<vector<vector<vector<vector<vector<float>>>>>> convs_grads_w(n_thrs); 
-    vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv); 
+    vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv);
     vector<vector<vector<float>>> convs_grads_bias(n_thrs);
-    vector<vector<float>> conv_grads_bias(this->n_capas_conv);
+    vector<vector<float>> conv_grads_bias(this->n_capas_conv), prueba(this->n_capas_conv);
 
     for(int i=0; i<this->n_capas_conv; i++)
     {
@@ -683,15 +683,10 @@ void CNN::train(int epocas, int mini_batch)
             #pragma omp barrier
 
             // Actualizar parámetros --------------------------------------------------------------------
-            #pragma omp single
-            {
-                // Actualizar parámetros de capas convolucionales 
-                for(int i=0; i<this->n_capas_conv; i++)
-                {
-                    this->convs[i].actualizar_grads(convs_grads_w[0][i], convs_grads_bias[0][i]);
-                    this->convs[i].escalar_pesos(2);
-                }
-            }
+
+            // Actualizar parámetros de capas convolucionales 
+            for(int i=0; i<this->n_capas_conv; i++)
+                this->convs[i].actualizar_grads(convs_grads_w[0][i], convs_grads_bias[0][i]);
 
 
             // Actualizar parámetros de capas totalmente conectadas 
@@ -700,6 +695,12 @@ void CNN::train(int epocas, int mini_batch)
             #pragma omp barrier
             (*this->fully).escalar_pesos(2, max_fully,min_fully);
 
+            #pragma omp single
+            {
+                // Actualizar parámetros de capas convolucionales 
+                for(int i=0; i<this->n_capas_conv; i++)
+                    this->convs[i].escalar_pesos(2);
+            }
 
 
             #pragma omp barrier

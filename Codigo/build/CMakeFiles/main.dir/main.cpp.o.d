@@ -192,6 +192,7 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/include/c++/11/bits/stl_numeric.h /usr/include/c++/11/bit \
  /usr/include/c++/11/pstl/glue_numeric_defs.h \
  /usr/include/c++/11/pstl/execution_defs.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.cpp \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/flatten/flatten.h \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/fully_connected/fullyconnected.cpp \
@@ -200,7 +201,6 @@ CMakeFiles/main.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
  /usr/include/c++/11/bits/fstream.tcc \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/omp.h \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.cpp \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/capas/pooling_max/poolingMax.h \
  /home/david/Escritorio/ugr/github/TFG/Codigo/CNN/auxiliar/leer_imagenes.cpp \
