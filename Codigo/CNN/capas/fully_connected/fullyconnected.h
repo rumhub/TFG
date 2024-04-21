@@ -57,7 +57,7 @@ class FullyConnected
 
         void actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b);
 
-        void escalar_pesos(float clip_value);
+        void escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins);
 
         void inicializar_parametros();
 

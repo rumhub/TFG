@@ -368,28 +368,63 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     } 
 }
 
-void FullyConnected::escalar_pesos(float clip_value)
+void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins)
 {
-    // Calcular el máximo y el mínimo de los pesos
-    float max = this->w[0][0][0], min = this->w[0][0][0];
+    // Cada hebra busca el máximo y mínimo de su conjunto de datos
+    int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
+    maxs[thr_id] = this->w[0][0][0];
+    mins[thr_id] = this->w[0][0][0];
 
+    // Buscar máximo y mínimo locales
     for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
+    {
+
+        n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
+
+        if(thr_id == n_thrs - 1)
+            n_imgs = this->w[i].size() - n_imgs * thr_id;
+
+        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
             for(int k=0; k<this->w[i][j].size(); k++)
             {
-                if(max < this->w[i][j][k])
-                    max = this->w[i][j][k];
+                if(maxs[thr_id] < this->w[i][j][k])
+                    maxs[thr_id] = this->w[i][j][k];
                 
-                if(min > this->w[i][j][k])
-                    min = this->w[i][j][k];
+                if(mins[thr_id] > this->w[i][j][k])
+                    mins[thr_id] = this->w[i][j][k];
             }
-    
+    }
+
+    #pragma omp barrier
+
+    // Buscar valor ḿaximo y mínimo globales
+    #pragma omp master
+    {
+        for(int i=1; i<n_thrs; i++)
+        {
+            if(maxs[0] < maxs[i])
+                maxs[0] = maxs[i];
+            
+            if(mins[0] > mins[i])
+                mins[0] = mins[i];
+        }
+    }
+    #pragma omp barrier
+
     // Realizar gradient clipping
-    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
+    float scaling_factor = clip_value / std::max(std::abs(maxs[0]), std::abs(mins[0]));
     for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
+    {
+        n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
+
+        if(thr_id == n_thrs - 1)
+            n_imgs = this->w[i].size() - n_imgs * thr_id;
+
+        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
             for(int k=0; k<this->w[i][j].size(); k++)
                 this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
+
+    }
 }
 
 void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b)
