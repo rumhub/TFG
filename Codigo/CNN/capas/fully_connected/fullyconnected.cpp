@@ -394,16 +394,32 @@ void FullyConnected::escalar_pesos(float clip_value)
 
 void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b)
 {
-    // Actualizar pesos
-    for(int j=0; j<this->w.size(); j++)
-        for(int k=0; k<this->w[j].size(); k++)
-            for(int p=0; p<this->w[j][k].size(); p++)
-                this->w[j][k][p] -= this->lr * grad_pesos[0][j][k][p];
+    int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
 
-    // Actualizar bias
-    for(int i=0; i<this->bias.size(); i++)
-        for(int j=0; j<this->bias[i].size(); j++)
-            this->bias[i][j] -= this->lr * grad_b[0][i][j];
+    // Pesos
+    for(int c=0; c<this->w.size(); c++)
+    {
+        n_imgs = this->w[c].size() / n_thrs, n_imgs_ant = this->w[c].size() / n_thrs;
+
+        if(thr_id == n_thrs - 1)
+            n_imgs = this->w[c].size() - n_imgs * thr_id;
+
+        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+            for(int k=0; k<this->w[c][j].size(); k++)
+                this->w[c][j][k] -= this->lr * grad_pesos[0][c][j][k];
+    }
+
+    // Bias
+    for(int c=0; c<this->bias.size(); c++)
+    {
+        n_imgs = this->bias[c].size() / n_thrs, n_imgs_ant = this->bias[c].size() / n_thrs;
+
+        if(thr_id == n_thrs - 1)
+            n_imgs = this->bias[c].size() - n_imgs * thr_id;
+
+        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+            this->bias[c][j] -= this->lr * grad_b[0][c][j];
+    }
 }
 
 void FullyConnected::generarDatos(vector<vector<float>> &x, vector<float> &y)

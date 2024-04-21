@@ -377,7 +377,7 @@ void CNN::train(int epocas, int mini_batch)
     // Capa totalmente conectada  ----------------
     vector<vector<vector<vector<float>>>> grads_pesos_fully(n_thrs);
     vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs);
-    vector<vector<float>> grad_bias = (*this->fully).get_bias();
+    vector<vector<float>> grad_bias = (*this->fully).get_bias(), prueba = (*this->fully).get_bias();
 
     for(int i=0; i<n_thrs; i++)
     {
@@ -395,7 +395,7 @@ void CNN::train(int epocas, int mini_batch)
     vector<vector<vector<vector<vector<vector<float>>>>>> convs_grads_w(n_thrs); 
     vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv); 
     vector<vector<vector<float>>> convs_grads_bias(n_thrs);
-    vector<vector<float>> conv_grads_bias(this->n_capas_conv), prueba;
+    vector<vector<float>> conv_grads_bias(this->n_capas_conv);
 
     for(int i=0; i<this->n_capas_conv; i++)
     {
@@ -690,12 +690,14 @@ void CNN::train(int epocas, int mini_batch)
                     this->convs[i].escalar_pesos(2);
                 }
             }
+            
 
+            // Actualizar parámetros de capas totalmente conectadas 
+            (*this->fully).actualizar_parametros(grads_pesos_fully, grads_bias_fully);
+
+            #pragma omp barrier
             #pragma omp single
             {
-                // Actualizar parámetros de capas totalmente conectadas 
-                (*this->fully).actualizar_parametros(grads_pesos_fully, grads_bias_fully);
-
                 (*this->fully).escalar_pesos(2);
             }
 
