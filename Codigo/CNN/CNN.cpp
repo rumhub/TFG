@@ -376,8 +376,8 @@ void CNN::train(int epocas, int mini_batch)
 
     // Capa totalmente conectada  ----------------
     vector<vector<vector<vector<float>>>> grads_pesos_fully(n_thrs);
-    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs), prueba;
-    vector<vector<float>> grad_bias = (*this->fully).get_bias();
+    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs);
+    vector<vector<float>> grad_bias = (*this->fully).get_bias(), prueba;
 
     for(int i=0; i<n_thrs; i++)
     {
@@ -429,6 +429,7 @@ void CNN::train(int epocas, int mini_batch)
     for(int ep=0; ep<epocas; ep++)
     {
         int thr_id = omp_get_thread_num();
+        int n_imgs, n_imgs_ant;
 
         #pragma omp single
         {
@@ -508,7 +509,7 @@ void CNN::train(int epocas, int mini_batch)
             // Sumar gradientes 
             for(int c=1; c<grads_pesos_fully.size(); c++)
             {
-                int n_imgs = grads_pesos_fully[c].size() / n_thrs, n_imgs_ant = grads_pesos_fully[c].size() / n_thrs;
+                n_imgs = grads_pesos_fully[c].size() / n_thrs, n_imgs_ant = grads_pesos_fully[c].size() / n_thrs;
 
                 if(thr_id == n_thrs - 1)
                     n_imgs = grads_pesos_fully[c].size() - n_imgs * thr_id;
@@ -521,7 +522,7 @@ void CNN::train(int epocas, int mini_batch)
 
             // ----------------------------------------------
             // Realizar la media de los gradientes respecto a cada parámetro
-            int n_imgs = grads_pesos_fully[0].size() / n_thrs, n_imgs_ant = grads_pesos_fully[0].size() / n_thrs;
+            n_imgs = grads_pesos_fully[0].size() / n_thrs, n_imgs_ant = grads_pesos_fully[0].size() / n_thrs;
 
             if(thr_id == n_thrs - 1)
                 n_imgs = grads_pesos_fully[0].size() - n_imgs * thr_id;
@@ -530,28 +531,39 @@ void CNN::train(int epocas, int mini_batch)
                 for(int k=0; k<grads_pesos_fully[0][j].size(); k++)
                     for(int p=0; p<grads_pesos_fully[0][j][k].size(); p++)
                         grads_pesos_fully[0][j][k][p] /= tam_batches[i];
-            
 
-            #pragma omp barrier
-
-            // ---------------------------------------------------------------------------
-
-            // Bias
-            #pragma omp single
+            // ----------------------------------------------
+            // Bias o Sesgos
+            // ----------------------------------------------
+            // ----------------------------------------------
+            // Sumar gradientes
+            for(int c=1; c<grads_bias_fully.size(); c++)
             {
-                // Sumar gradientes
-                for(int i=1; i<grads_bias_fully.size(); i++)
-                    for(int j=0; j<grads_bias_fully[i].size(); j++)
-                        for(int k=0; k<grads_bias_fully[i][j].size(); k++)
-                            grads_bias_fully[0][j][k] += grads_bias_fully[i][j][k];
+                n_imgs = grads_bias_fully[c].size() / n_thrs, n_imgs_ant = grads_bias_fully[c].size() / n_thrs;
 
-                // Media
-                for(int j=0; j<grads_bias_fully[0].size(); j++)
-                    for(int k=0; k<grads_bias_fully[0][j].size(); k++)
-                        grads_bias_fully[0][j][k] = grads_bias_fully[0][j][k] / tam_batches[i];
+                if(thr_id == n_thrs - 1)
+                    n_imgs = grads_bias_fully[c].size() - n_imgs * thr_id;
+
+                for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+                    for(int k=0; k<grads_bias_fully[c][j].size(); k++)
+                        grads_bias_fully[0][j][k] += grads_bias_fully[c][j][k];
             }
 
-            // BackPropagation -----------------------------------------------------------------------
+            // Realizar la media
+            n_imgs = grads_bias_fully[0].size() / n_thrs, n_imgs_ant = grads_bias_fully[0].size() / n_thrs;
+
+            if(thr_id == n_thrs - 1)
+                n_imgs = grads_bias_fully[0].size() - n_imgs * thr_id;
+
+            for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+                for(int k=0; k<grads_bias_fully[0][j].size(); k++)
+                        grads_bias_fully[0][j][k] /= tam_batches[i];
+
+            // ----------------------------------------------
+            // ----------------------------------------------
+            // BackPropagation ------------------------------
+            // ----------------------------------------------
+            // ----------------------------------------------
             for(int i=0; i<this->n_capas_conv; i++)
                 this->convs[i].reset_gradients(convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i]);
 
