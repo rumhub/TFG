@@ -377,7 +377,7 @@ void CNN::train(int epocas, int mini_batch)
     // Capa totalmente conectada  ----------------
     vector<vector<vector<vector<float>>>> grads_pesos_fully(n_thrs);
     vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs);
-    vector<vector<float>> grad_bias = (*this->fully).get_bias(), prueba;
+    vector<vector<float>> grad_bias = (*this->fully).get_bias();
 
     for(int i=0; i<n_thrs; i++)
     {
@@ -393,7 +393,7 @@ void CNN::train(int epocas, int mini_batch)
 
     // Capas convolucionales ---------------------------
     vector<vector<vector<vector<vector<vector<float>>>>>> convs_grads_w(n_thrs); 
-    vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv); 
+    vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv), prueba; 
     vector<vector<vector<float>>> convs_grads_bias(n_thrs);
     vector<vector<float>> conv_grads_bias(this->n_capas_conv);
 
@@ -503,7 +503,7 @@ void CNN::train(int epocas, int mini_batch)
             #pragma omp barrier
 
             // ----------------------------------------------
-            // Pesos
+            // Pesos de la capa totalmente conectada
             // ----------------------------------------------
             // ----------------------------------------------
             // Sumar gradientes 
@@ -520,7 +520,6 @@ void CNN::train(int epocas, int mini_batch)
                             grads_pesos_fully[0][j][k][p] += grads_pesos_fully[c][j][k][p];       
             }
 
-            // ----------------------------------------------
             // Realizar la media de los gradientes respecto a cada parámetro
             n_imgs = grads_pesos_fully[0].size() / n_thrs, n_imgs_ant = grads_pesos_fully[0].size() / n_thrs;
 
@@ -533,7 +532,7 @@ void CNN::train(int epocas, int mini_batch)
                         grads_pesos_fully[0][j][k][p] /= tam_batches[i];
 
             // ----------------------------------------------
-            // Bias o Sesgos
+            // Bias o Sesgos de la capa totalmente conectada
             // ----------------------------------------------
             // ----------------------------------------------
             // Sumar gradientes
@@ -559,15 +558,22 @@ void CNN::train(int epocas, int mini_batch)
                 for(int k=0; k<grads_bias_fully[0][j].size(); k++)
                         grads_bias_fully[0][j][k] /= tam_batches[i];
 
+
+            // ---------------------------------------------------------------------------------------------------------------------------
+            // Capas convolucionales, de agrupación y aplanado
+            // ---------------------------------------------------------------------------------------------------------------------------
+
             // ----------------------------------------------
             // ----------------------------------------------
             // BackPropagation ------------------------------
             // ----------------------------------------------
             // ----------------------------------------------
+
+            // Inicializar gradientes a 0
             for(int i=0; i<this->n_capas_conv; i++)
                 this->convs[i].reset_gradients(convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i]);
 
-
+            // Cálculo de gradientes respecto a cada parámetro 
             for(int img=0; img<n_imgs_batch[thr_id]; img++)
             {
                 img_aux[thr_id] = this->train_imgs[batch_thr[thr_id][img]];
@@ -604,26 +610,44 @@ void CNN::train(int epocas, int mini_batch)
             
             #pragma omp barrier
 
-            // Pesos
-            #pragma omp single
-            {
-                // Sumar gradientes
-                for(int i_1=1; i_1<convs_grads_w.size(); i_1++)
-                    for(int i_2=0; i_2<convs_grads_w[i_1].size(); i_2++)
-                        for(int i_3=0; i_3<convs_grads_w[i_1][i_2].size(); i_3++)
-                            for(int i_4=0; i_4<convs_grads_w[i_1][i_2][i_3].size(); i_4++)
-                                for(int i_5=0; i_5<convs_grads_w[i_1][i_2][i_3][i_4].size(); i_5++)
-                                    for(int i_6=0; i_6<convs_grads_w[i_1][i_2][i_3][i_4][i_5].size(); i_6++)
-                                        convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] += convs_grads_w[i_1][i_2][i_3][i_4][i_5][i_6];
 
-                // Media
-                for(int i_2=0; i_2<convs_grads_w[0].size(); i_2++)
-                    for(int i_3=0; i_3<convs_grads_w[0][i_2].size(); i_3++)
-                        for(int i_4=0; i_4<convs_grads_w[0][i_2][i_3].size(); i_4++)
-                            for(int i_5=0; i_5<convs_grads_w[0][i_2][i_3][i_4].size(); i_5++)
-                                for(int i_6=0; i_6<convs_grads_w[0][i_2][i_3][i_4][i_5].size(); i_6++)
-                                    convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] = convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] / tam_batches[i];
+            // ----------------------------------------------
+            // Pesos de las capas convolucionales
+            // ----------------------------------------------
+            // ----------------------------------------------
+            // Sumar gradientes
+            for(int i_1=1; i_1<convs_grads_w.size(); i_1++)
+            {
+                n_imgs = convs_grads_w[i_1].size() / n_thrs, n_imgs_ant = convs_grads_w[i_1].size() / n_thrs;
+
+                if(thr_id == n_thrs - 1)
+                    n_imgs = convs_grads_w[i_1].size() - n_imgs * thr_id;
+
+                for(int i_2=n_imgs_ant*thr_id; i_2<n_imgs_ant*thr_id + n_imgs; i_2++)
+                    for(int i_3=0; i_3<convs_grads_w[i_1][i_2].size(); i_3++)
+                        for(int i_4=0; i_4<convs_grads_w[i_1][i_2][i_3].size(); i_4++)
+                            for(int i_5=0; i_5<convs_grads_w[i_1][i_2][i_3][i_4].size(); i_5++)
+                                for(int i_6=0; i_6<convs_grads_w[i_1][i_2][i_3][i_4][i_5].size(); i_6++)
+                                    convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] += convs_grads_w[i_1][i_2][i_3][i_4][i_5][i_6];
             }
+
+            // Realizar la media de los gradientes respecto a cada parámetro
+            n_imgs = convs_grads_w[0].size() / n_thrs, n_imgs_ant = convs_grads_w[0].size() / n_thrs;
+
+            if(thr_id == n_thrs - 1)
+                n_imgs = convs_grads_w[0].size() - n_imgs * thr_id;
+
+            for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+                for(int k=0; k<convs_grads_w[0][j].size(); k++)
+                    for(int p=0; p<convs_grads_w[0][j][k].size(); p++)
+                        grads_pesos_fully[0][j][k][p] /= tam_batches[i];
+
+            for(int i_2=n_imgs_ant*thr_id; i_2<n_imgs_ant*thr_id + n_imgs; i_2++)
+                for(int i_3=0; i_3<convs_grads_w[0][i_2].size(); i_3++)
+                    for(int i_4=0; i_4<convs_grads_w[0][i_2][i_3].size(); i_4++)
+                        for(int i_5=0; i_5<convs_grads_w[0][i_2][i_3][i_4].size(); i_5++)
+                            for(int i_6=0; i_6<convs_grads_w[0][i_2][i_3][i_4][i_5].size(); i_6++)
+                                convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] /= tam_batches[i];
 
             // Bias
             #pragma omp single
