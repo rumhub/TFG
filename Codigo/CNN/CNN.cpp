@@ -425,7 +425,16 @@ void CNN::train(int epocas, int mini_batch)
         batch_thr[i] = batch;
     // -----------
 
+    vector<vector<float>> max_conv(this->n_capas_conv), min_conv(this->n_capas_conv);
     vector<float> max_fully(n_thrs), min_fully(n_thrs);
+
+    for(int i=0; i<this->n_capas_conv; i++)
+    {
+        max_conv[i] = max_fully;
+        min_conv[i] = min_fully;
+    }
+
+    vector<vector<vector<vector<float>>>> pruebas;
 
     #pragma omp parallel num_threads(n_thrs)
     for(int ep=0; ep<epocas; ep++)
@@ -694,13 +703,11 @@ void CNN::train(int epocas, int mini_batch)
 
             #pragma omp barrier
             (*this->fully).escalar_pesos(2, max_fully,min_fully);
-
-            #pragma omp single
-            {
-                // Actualizar parámetros de capas convolucionales 
-                for(int i=0; i<this->n_capas_conv; i++)
-                    this->convs[i].escalar_pesos(2);
-            }
+            
+            // Actualizar parámetros de capas convolucionales 
+            for(int j=0; j<this->n_capas_conv; j++)
+                this->convs[j].escalar_pesos(2, max_conv[j], min_conv[j]);
+            
 
 
             #pragma omp barrier

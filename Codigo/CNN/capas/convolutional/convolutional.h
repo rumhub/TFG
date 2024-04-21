@@ -53,7 +53,7 @@ class Convolutional
         int get_kernel_depth(){return this->kernel_depth;};
         int get_n_kernels(){return this->n_kernels;};
 
-        void escalar_pesos(float clip_value);
+        void escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins);
 
         vector<vector<vector<vector<float>>>> get_pesos(){return this->w;};
         vector<float> get_bias(){return this->bias;};
