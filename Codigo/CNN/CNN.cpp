@@ -442,7 +442,7 @@ void CNN::train(int epocas, int mini_batch)
         int thr_id = omp_get_thread_num();
         int n_imgs, n_imgs_ant;
 
-        #pragma omp single
+        #pragma omp master
         {
             t1 = omp_get_wtime();
  
@@ -518,6 +518,55 @@ void CNN::train(int epocas, int mini_batch)
             // Relaizar propagación hacia delante y hacia detrás en la capa totalmente conectada
             (*this->fully).train(flat_outs_thr[thr_id], this->train_labels, batch_thr[thr_id], n_imgs_batch[thr_id], grads_pesos_fully[thr_id], grads_bias_fully[thr_id], grad_x_fully[thr_id], fully_a[thr_id], fully_z[thr_id], fully_grad_a[thr_id], n_thrs);
 
+            // ---------------------------------------------------------------------------------------------------------------------------
+            // Capas convolucionales, de agrupación y aplanado
+            // ---------------------------------------------------------------------------------------------------------------------------
+
+            // ----------------------------------------------
+            // ----------------------------------------------
+            // BackPropagation ------------------------------
+            // ----------------------------------------------
+            // ----------------------------------------------
+
+            // Inicializar gradientes a 0
+            for(int i=0; i<this->n_capas_conv; i++)
+                this->convs[i].reset_gradients(convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i]);
+
+            // Cálculo de gradientes respecto a cada parámetro 
+            for(int img=0; img<n_imgs_batch[thr_id]; img++)
+            {
+                img_aux[thr_id] = this->train_imgs[batch_thr[thr_id][img]];
+
+                // Última capa, su output no tiene padding
+                int i_c=this->n_capas_conv-1;
+                (*this->flat).backPropagation(plms_outs_thr[thr_id][img][i_c], grad_x_fully[thr_id][img]);
+
+                // Capa MaxPool 
+                this->plms[i_c].backPropagation(convs_outs_thr[thr_id][img][i_c], plms_outs_thr[thr_id][img][i_c], plms_in_copys_thr[thr_id][img][i_c], 0);
+
+                // Capa convolucional 
+                if(this->n_capas_conv > 1)
+                    this->convs[i_c].backPropagation(plms_outs_thr[thr_id][img][i_c-1], convs_outs_thr[thr_id][img][i_c], conv_a_thr[thr_id][img][i_c], convs_grads_w[thr_id][i_c], convs_grads_bias[thr_id][i_c], this->padding[i_c]);
+                else
+                    this->convs[i_c].backPropagation(img_aux[thr_id], convs_outs_thr[thr_id][img][i_c], conv_a_thr[thr_id][img][i_c], convs_grads_w[thr_id][i_c], convs_grads_bias[thr_id][i_c], this->padding[i_c]);
+
+                for(int i=this->n_capas_conv-2; i>=1; i--)
+                {
+                    // Capa MaxPool 
+                    this->plms[i].backPropagation(convs_outs_thr[thr_id][img][i], plms_outs_thr[thr_id][img][i], plms_in_copys_thr[thr_id][img][i], this->padding[i+1]);
+
+                    // Capa convolucional 
+                    this->convs[i].backPropagation(plms_outs_thr[thr_id][img][i-1], convs_outs_thr[thr_id][img][i], conv_a_thr[thr_id][img][i], convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i], this->padding[i]);
+                }
+                
+                if(this->n_capas_conv >1)
+                {
+                    this->plms[0].backPropagation(convs_outs_thr[thr_id][img][0], plms_outs_thr[thr_id][img][0], plms_in_copys_thr[thr_id][img][0], this->padding[1]);
+                    this->convs[0].backPropagation(img_aux[thr_id], convs_outs_thr[thr_id][img][0], conv_a_thr[thr_id][img][0], convs_grads_w[thr_id][0], convs_grads_bias[thr_id][0], this->padding[0]);
+                }
+                
+            }
+            
             #pragma omp barrier
 
             // ----------------------------------------------
@@ -576,57 +625,6 @@ void CNN::train(int epocas, int mini_batch)
                 for(int k=0; k<grads_bias_fully[0][j].size(); k++)
                         grads_bias_fully[0][j][k] /= tam_batches[i];
 
-
-            // ---------------------------------------------------------------------------------------------------------------------------
-            // Capas convolucionales, de agrupación y aplanado
-            // ---------------------------------------------------------------------------------------------------------------------------
-
-            // ----------------------------------------------
-            // ----------------------------------------------
-            // BackPropagation ------------------------------
-            // ----------------------------------------------
-            // ----------------------------------------------
-
-            // Inicializar gradientes a 0
-            for(int i=0; i<this->n_capas_conv; i++)
-                this->convs[i].reset_gradients(convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i]);
-
-            // Cálculo de gradientes respecto a cada parámetro 
-            for(int img=0; img<n_imgs_batch[thr_id]; img++)
-            {
-                img_aux[thr_id] = this->train_imgs[batch_thr[thr_id][img]];
-
-                // Última capa, su output no tiene padding
-                int i_c=this->n_capas_conv-1;
-                (*this->flat).backPropagation(plms_outs_thr[thr_id][img][i_c], grad_x_fully[thr_id][img]);
-
-                // Capa MaxPool 
-                this->plms[i_c].backPropagation(convs_outs_thr[thr_id][img][i_c], plms_outs_thr[thr_id][img][i_c], plms_in_copys_thr[thr_id][img][i_c], 0);
-
-                // Capa convolucional 
-                if(this->n_capas_conv > 1)
-                    this->convs[i_c].backPropagation(plms_outs_thr[thr_id][img][i_c-1], convs_outs_thr[thr_id][img][i_c], conv_a_thr[thr_id][img][i_c], convs_grads_w[thr_id][i_c], convs_grads_bias[thr_id][i_c], this->padding[i_c]);
-                else
-                    this->convs[i_c].backPropagation(img_aux[thr_id], convs_outs_thr[thr_id][img][i_c], conv_a_thr[thr_id][img][i_c], convs_grads_w[thr_id][i_c], convs_grads_bias[thr_id][i_c], this->padding[i_c]);
-
-                for(int i=this->n_capas_conv-2; i>=1; i--)
-                {
-                    // Capa MaxPool 
-                    this->plms[i].backPropagation(convs_outs_thr[thr_id][img][i], plms_outs_thr[thr_id][img][i], plms_in_copys_thr[thr_id][img][i], this->padding[i+1]);
-
-                    // Capa convolucional 
-                    this->convs[i].backPropagation(plms_outs_thr[thr_id][img][i-1], convs_outs_thr[thr_id][img][i], conv_a_thr[thr_id][img][i], convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i], this->padding[i]);
-                }
-                
-                if(this->n_capas_conv >1)
-                {
-                    this->plms[0].backPropagation(convs_outs_thr[thr_id][img][0], plms_outs_thr[thr_id][img][0], plms_in_copys_thr[thr_id][img][0], this->padding[1]);
-                    this->convs[0].backPropagation(img_aux[thr_id], convs_outs_thr[thr_id][img][0], conv_a_thr[thr_id][img][0], convs_grads_w[thr_id][0], convs_grads_bias[thr_id][0], this->padding[0]);
-                }
-                
-            }
-            
-            #pragma omp barrier
 
             // ----------------------------------------------
             // Pesos de las capas convolucionales
@@ -713,14 +711,13 @@ void CNN::train(int epocas, int mini_batch)
             #pragma omp barrier
         }
 
-        #pragma omp single
+        #pragma omp master
         {
             t2 = omp_get_wtime();
             cout << "Época: " << ep << ",                                           " << t2-t1 << " (s) " << endl;
         }
-            accuracy();  
-        #pragma omp barrier
-        
+
+        accuracy();  
         
     }
     
