@@ -8,6 +8,13 @@
 
 using namespace std;
 
+/*
+    CONSTRUCTOR de la clase FullyConnected
+    --------------------------------------
+  
+    @capas  Vector de enteros que indica el número de neuronas por capa. Habrá capas.size() capas y cada una contendrá capas[i] neuronas
+    @lr     Learning Rate o Tasa de Aprendizaje
+*/
 FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
 {
     vector<float> neuronas_capa, w_1D;
@@ -58,13 +65,17 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
     for(int i=0; i<a.size()-1; i++)
         this->generar_pesos(i);
 
-    // Inicializamos bias con un valor random entre -0.5 y 0.5
+    // Inicializar bias con un valor de 0.0
     for(int i=0; i<this->bias.size(); i++)
         for(int j=0; j<this->bias[i].size(); j++)
             this->bias[i][j] = 0.0;
 };
 
-
+/*
+    @brief  Genera los pesos entre 2 capas de neuronas
+    @capa   Capa a generar los pesos con la siguiente
+    @return Se actualizan los valores de w (pesos de la red)
+*/
 void FullyConnected::generar_pesos(const int &capa)
 {
     // Inicialización He
@@ -77,49 +88,11 @@ void FullyConnected::generar_pesos(const int &capa)
             this->w[capa][i][j] = distribution(gen);
 }
 
-void FullyConnected::mostrarpesos()
-{
-    
-    cout << "Pesos: " << endl;
-    for(int i=0; i<this->w.size(); i++)
-    {
-        cout << "Capa " << i << "------------" << endl;
-        for(int j=0; j<this->w[i].size(); j++)
-        {
-            //cout << "Pesos de neurona " << j << " respecto a neuronas de la capa siguiente: " << endl;
-            for(int k=0; k<this->w[i][j].size(); k++)
-            {
-                cout << this->w[i][j][k] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    
-    /*
-    cout << "Pesos: " << endl;
-
-    //cout << "Pesos de neurona " << j << " respecto a neuronas de la capa siguiente: " << endl;
-    for(int k=0; k<this->w[0][0].size(); k++)
-    {
-        cout << this->w[0][0][k] << " ";
-    }
-    cout << endl;
-    */
-
-}
-
-void FullyConnected::mostrarbias()
-{
-    cout << "Bias: " << endl;
-    
-    for(int i=0; i<this->bias.size(); i++)
-        for(int j=0; j<this->bias[i].size(); j++)
-            cout << this->bias[i][j] << " ";
-
-    cout << endl;
-}
-
+/*
+    @brief      Función de activación ReLU
+    @x          Valor sobre el cual aplicar ReLU
+    @return     @x tras aplicar ReLU sobre él
+*/
 float FullyConnected::relu(const float &x)
 {
     float result = 0.0;
@@ -130,6 +103,11 @@ float FullyConnected::relu(const float &x)
     return result;
 }
 
+/*
+    @brief      Derivada de la función de activación ReLU
+    @x          Valor sobre el cual aplicar la derivada de ReLU
+    @return     @x tras aplicar la derivada de ReLU sobre él
+*/
 float FullyConnected::deriv_relu(const float &x)
 {
     float result = 0.0;
@@ -140,13 +118,24 @@ float FullyConnected::deriv_relu(const float &x)
     return result;
 }
 
-
+/*
+    @brief      Función de activación Sigmoid
+    @x          Valor sobre el cual aplicar Sigmoid
+    @return     @x tras aplicar Sigmoid sobre él
+*/
 float FullyConnected::sigmoid(const float &x)
 {
     return 1/(1+exp(-x));
 }
 
-// x --> Input de la red
+/*
+    @brief  Propagación hacia delante por toda la red totalmente conectada
+    @x      Valores de entrada a la red
+    @a      Neuronas de la red antes de aplicar la función de activación
+    @z      Neuronas de la red después de aplicar la función de activación
+
+    @return Se actualizan los valores de @a y @z
+*/
 void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z)
 {
     float max, sum = 0.0, epsilon = 0.000000001;
@@ -213,24 +202,21 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
     }
 }
 
-
-
-
-// Ahora x es el conjunto de datos de training
-// x[0] el primer dato training
-// x[0][0] el primer elemento del primer dato training
+/*
+    @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
+    @x      Conjunto de datos de entrada
+    @y      Etiquetas de los datos de entrada
+    @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
+    @return Valor de entropía cruzada sobre el conjunto de datos de entrada x
+*/
 float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y, const int &ini)
 {
+    vector<vector<float>> a, z;
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=this->a.size()-1;
-
-    vector<vector<float>> a, z;
     a = this->a;
     z = this->a;
 
-    sum = 0.0;
-
-    //#pragma omp parallel for reduction(+:sum) firstprivate(a, z)
     for(int i=0; i<x.size(); i++)
     {
         forwardPropagation(x[i], a, z);
@@ -247,25 +233,32 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
     return sum;
 }
 
+
+/*
+    @brief  Realiza la medida de Accuracy sobre un conjunto de datos
+    @x      Conjunto de datos de entrada
+    @y      Etiquetas de los datos de entrada
+    @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
+    @return Valor de accuracy sobre el conjunto de datos de entrada x
+*/
 float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y, const int &ini)
 {
+    vector<vector<float>> a, z;
     float sum =0.0, max;
     int prediccion, n=this->a.size()-1;
-
-    vector<vector<float>> a, z;
     a = this->a;
     z = this->a;
 
-    //#pragma omp parallel for reduction(+:sum) firstprivate(a, z)
     for(int i=0; i<x.size(); i++)
     {
+        // Propagación hacia delante de la entrada x[i] a lo largo de la red
         forwardPropagation(x[i], a, z);
 
-        // Inicialización
+        // Inicialización de valores
         max = z[n][0];
         prediccion = 0;
 
-        // Obtener valor más alto de la capa output
+        // Obtener valor más alto de la capa output (predicción de la red)
         for(int c=1; c<this->a[n].size(); c++)
         {
             if(max < z[n][c])
@@ -284,24 +277,35 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y,
     return sum;
 }
 
+/*
+    @brief      Entrenamiento de la red
+    @x          Conjunto de datos de entrada
+    @y          Etiquetas asociadas a cada dato de entrada
+    @batch      Conjunto de índices desordenados tal que para cada dato de entrada x[i], este está asociado con y[batch[i]]
+    @n_datos    Número de datos con los que entrenar
+    @grad_pesos Gradiente de cada peso de la red
+    @grad_b     Gradiente de cada bias de la red
+    @grad_x     Gradiente respecto a la entrada x
+    @a          Neuronas de la red antes de aplicar la función de activación
+    @z          Neuronas de la red después de aplicar la función de activación
+    @grad_a     Gradiente respecto a cada neurona de la red antes de aplicar la función de activación
+    @n_thrs     Número de hebras a emplear
+    @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
+*/
 void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a, const int &n_thrs)
 {
     float epsilon = 0.000000001;
-
-    int i_output = this->a.size()-1; // índice de la capa output
-    float sum, o_in, grad_x_output, sig_o_in;
-    int i_last_h = i_output-1;  // Índice de la capa h1
-    int i_act, i_ant;
+    int i_output = this->a.size()-1, i_last_h = i_output-1; // índice de la capa output, Índice de la capa h1 respectivamente
     vector<vector<float>> vector_2d(n_datos);
     grad_x = vector_2d;
-    double t1, t2;
 
-    // Backpropagation ----------------------------------------------
     // Hay 2 o más capas ocultas
     for(int i=0; i<n_datos; i++)
     {
+        // Propagación hacia delante
         forwardPropagation(x[i], a, z);
         
+        // Propagación hacia detrás
         // Inicializar a 0 gradiente respecto a input
         for(int _i = 0; _i < grad_a.size(); _i++)
             for(int j = 0; j < grad_a[_i].size(); j++)
@@ -310,9 +314,9 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
 
         // Capa SoftMax -----------------------------------------------
         // Se calcula gradiente del error respecto a cada Z_k
-        // grad_Zk = O_k - y_k
         for(int k=0; k<this->a[i_output].size(); k++)
             grad_a[i_output][k] = z[i_output][k] - y[batch[i]][k];
+            // grad_Zk          = O_k            - y_k
         
         // Pesos h_last - Softmax
         for(int p=0; p<this->a[i_last_h].size(); p++)
@@ -329,7 +333,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         for(int p=0; p<this->a[i_last_h].size(); p++)      
             for(int k=0; k<this->a[i_output].size(); k++)
                 grad_a[i_last_h][p] += grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(a[i_last_h][p]);
-                //                              grad_Zk           *  w^i_last_h_pk          * ...
+                //                              grad_Zk    * w^i_last_h_pk           * ...
                 
         // Capas ocultas intermedias
         for(int capa= i_last_h; capa > 1; capa--)
@@ -368,6 +372,13 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     } 
 }
 
+/*
+    @brief          Escalar los pesos para evitar que los gradientes "exploten"
+    @clip_value     Valor a emplear para realizar el "clip" o escalado
+    @maxs           Se asigna una posición a cada hebra. Contiene el valor máximo encontrado
+    @mins           Se asigna una posición a cada hebra. Contiene el valor mínimo encontrado
+    @return         Se actualizan los valores de w (pesos de la red)
+*/
 void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins)
 {
     // Cada hebra busca el máximo y mínimo de su conjunto de datos
@@ -427,6 +438,12 @@ void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector
     }
 }
 
+/*
+    @brief          Actualizar los pesos y sesgos de la red
+    @grad_pesos     Gradiente de cada peso de la red
+    @grad_b         Gradiente de cada sesgo de la red
+    @return         Se actualizar los valores de w y bias (pesos y sesgos de la red)
+*/
 void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b)
 {
     int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
@@ -434,11 +451,13 @@ void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>>
     // Pesos
     for(int c=0; c<this->w.size(); c++)
     {
+        // Reparto de carga
         n_imgs = this->w[c].size() / n_thrs, n_imgs_ant = this->w[c].size() / n_thrs;
 
         if(thr_id == n_thrs - 1)
             n_imgs = this->w[c].size() - n_imgs * thr_id;
 
+        // Cada hebra actualiza "n_imgs" pesos
         for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
             for(int k=0; k<this->w[c][j].size(); k++)
                 this->w[c][j][k] -= this->lr * grad_pesos[0][c][j][k];
@@ -447,359 +466,14 @@ void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>>
     // Bias
     for(int c=0; c<this->bias.size(); c++)
     {
+        // Reparto de carga
         n_imgs = this->bias[c].size() / n_thrs, n_imgs_ant = this->bias[c].size() / n_thrs;
 
         if(thr_id == n_thrs - 1)
             n_imgs = this->bias[c].size() - n_imgs * thr_id;
 
+        // Cada hebra actualiza "n_imgs" sesgos
         for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
             this->bias[c][j] -= this->lr * grad_b[0][c][j];
     }
 }
-
-void FullyConnected::generarDatos(vector<vector<float>> &x, vector<float> &y)
-{
-    int n_datos = 1000, cont0 = 0, cont1 = 0, n_datos_por_clase = n_datos/2; 
-    float x1, x2, y_, aux, sum;
-    vector<float> dato_x;
-    x.clear();
-    y.clear();
-
-    while(cont0 < n_datos_por_clase)
-    {
-        dato_x.clear();
-        sum = 0.0;
-
-        // Generamos datos input
-        for(int j=0; j<this->a[0].size(); j++)
-        {
-            aux = rand() / float(RAND_MAX);
-            aux = aux / this->a[0].size();  // Para que esté en clase 0
-            dato_x.push_back(aux);
-
-            // Generamos dato output tal que: if x+y >0, result=1, else result=0
-            sum += aux;
-        }
-
-        x.push_back(dato_x);
-
-        y.push_back(0);
-        cont0++;
-             
-    }
-
-
-    while(cont1 < n_datos_por_clase)
-    {
-        dato_x.clear();
-        sum = 0.0;
-
-        // Generamos datos input
-        for(int j=0; j<this->a[0].size(); j++)
-        {
-            aux = rand() / float(RAND_MAX);
-            aux = aux + 1/this->a[0].size();  // Para que esté en clase 0
-            dato_x.push_back(aux);
-
-            // Generamos dato output tal que: if x+y >0, result=1, else result=0
-            sum += aux;
-        }
-
-        x.push_back(dato_x);
-
-        y.push_back(1);
-        cont1++;
-             
-    }
-
-}
-
-void FullyConnected::setLR(float lr)
-{
-    this->lr = lr;
-}
-
-/*
-void FullyConnected::leer_imagenes_mnist(vector<vector<float>> &x, vector<vector<float>> &y, const int n_imagenes, const int n_clases)
-{
-    vector<vector<vector<float>>> imagen_k1;
-    vector<float> v1D, y_1D;
-    string ruta_ini, ruta;
-
-    //n_imagenes = 4000;
-
-    x.clear();
-    y.clear();
-
-    // Crear el vector y
-    for(int i=0; i<n_clases; i++)
-        y_1D.push_back(0.0);
-
-
-
-    // Leer n_imagenes de la clase c
-    for(int c=0; c<n_clases; c++)
-    {
-        // Establecer etiqueta one-hot para la clase i
-        y_1D[c] = 1.0;
-
-        // Leer imágenes
-        for(int p=1; p<n_imagenes; p++)
-        {
-            ruta_ini = "../../../fotos/mnist/training/";
-            ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".jpg";
-
-            Mat image2 = imread(ruta), image;
-
-            image = image2;
-
-            // Cargamos la imagen en un vector 3D
-            cargar_imagen_en_vector(image, imagen_k1);
-
-            // Normalizar imagen y pasar a 1D (solo queremos 1 canal porque son en blanco y negro)
-            v1D.clear();
-            for(int j=0; j<imagen_k1[0].size(); j++)
-                for(int k=0; k<imagen_k1[0][0].size(); k++)
-                {
-                    //imagen_k1[0][j][k] = imagen_k1[0][j][k] / 255;
-                    v1D.push_back((float) imagen_k1[0][j][k] / 255.0);
-                }
-            x.push_back(v1D);
-            y.push_back(y_1D);
-        }
-
-        // Reset todo "y_1D" a 0
-        y_1D[c] = 0.0;
-    }  
-}
-*/
-
-void FullyConnected::particion_k_fold(const vector<vector<float>> &x, const vector<vector<float>> &y, const int &k)
-{
-    int tam_particion = x.size() / k, n = x.size();
-    vector<vector<vector<float>>> particiones_train, particiones_test;
-    vector<vector<float>> datos_particion;
-    vector<float> v_1D(x[0].size());
-
-    for(int i=0; i<tam_particion; i++)
-        datos_particion.push_back(v_1D);
-
-    // Por cada partición
-    for(int i=0; i<k; i++)
-    {
-        for(int j=0; j<k; j++)
-        {
-            for(int k=0; k<tam_particion; k++)
-                datos_particion[k] = x[j*tam_particion + k];
-
-            if(i == j)
-                particiones_test.push_back(datos_particion);
-            else
-                particiones_train.push_back(datos_particion);
-        }
-    }
-}
-
-
-void FullyConnected::leer_atributos(vector<vector<float>> &x, vector<vector<float>> &y, string fichero)
-{
-    ifstream inFile;
-    string dato, s, delimiter = ","; 
-    bool data = false;
-    int n=0;                // Num de características que tenemos sin contar la clase
-    vector<float> nums, y_1D;
-
-    x.clear();
-    y.clear();
-    inFile.open(fichero);
-
-    if(!inFile)
-    {
-        cerr << "No se ha podido abrir el fichero " << fichero;
-        exit(1);
-    }
-
-    // Inicializar y_1D
-    for(int i=0; i<4; i++)
-        y_1D.push_back(0.0);
-    
-    for(int i=0; i<3; i++)  // Hay 3 clases
-    {
-        y_1D[i] = 1.0;
-        for(int j=0; j<50; j++) // Hay 50 ejemplos de cada clase
-        {
-            getline(inFile, s);
-            for(int i=0; i<4; i++)  // Hay 4 números por ejemplo
-            {
-                dato = s.substr(0, s.find(delimiter));
-                s.erase(0, s.find(delimiter)+ delimiter.length());
-                nums.push_back(stof(dato));
-                //cout << dato << " ";
-            }
-            //cout << endl;
-            x.push_back(nums);
-            y.push_back(y_1D);
-            nums.clear();
-            s.clear();
-        }
-        y_1D[i] = 0.0;
-    }
-
-
-    inFile.close();
-}
-
-void FullyConnected::copiar_parametros(FullyConnected &fc)
-{
-    this->w = fc.w;
-    this->bias = fc.bias;
-}
-
-/*
-int main()
-{ 
-    // Solo se meten capa input y capas ocultas, la capa output siempre tiene 1 neurona
-    vector<vector<float>> x, y; 
-    vector<int> capas1{784, 10, 10};        // MNIST
-    FullyConnected n1(capas1, 0.1);
-
-    //n1.leer_imagenes_mnist(x, y, 5, 10);
-    n1.leer_imagenes_mnist(x, y, 3000, 10);
-
-    //x[0] = {1, 0, 0, 1};
-    //n1.forwardPropagation(x[0]);
-    //n1.mostrarNeuronas();
-
-    //vector<int> capas{(int) x[0].size(), 256, 256, 10}; // MNIST
-    //vector<int> capas{4, 4, 10, 3};                  // IRIS
-    //vector<int> capas{4, 4, 3};                  // IRIS
-    FullyConnected n(capas1, 0.01);
-    //n.forwardPropagation(x[0]);
-    
-    //n.leer_atributos(x, y, "../../../fotos/iris/iris.data");
-    
-    // SGD
-    vector<int> indices(x.size()), tam_batches;
-    int n_imgs=x.size(), n_epocas = 100, mini_batch = 32;
-    const int M = n_imgs / mini_batch;
-
-    // Inicializar vector de índices
-    for(int i=0; i<n_imgs; i++)
-        indices[i] = i;
-
-    // Indices --------------------------------------------
-    // Inicializar tamaño de mini-batches (int)
-    for(int i=0; i<M; i++)
-        tam_batches.push_back(mini_batch);
-    
-    // Último batch puede tener distinto tamaño al resto
-    if(n_imgs % mini_batch != 0)
-        tam_batches.push_back(n_imgs % mini_batch);    
-
-    vector<vector<vector<vector<float>>>> grad_pesos(THREAD_NUM);
-    vector<vector<vector<float>>> grad_b(THREAD_NUM), grad_x(THREAD_NUM);
-
-    FullyConnected *fullys = new FullyConnected[THREAD_NUM];
-    for(int i=0; i<THREAD_NUM; i++)
-        fullys[i] = n;
-    
-    // ---------------------------------------------------
-    // Por cada trabajador p 
-    #pragma omp parallel num_threads(THREAD_NUM)
-    {
-        int thread_id = omp_get_thread_num();
-
-        vector<int> batch_p(mini_batch);
-        vector<vector<float>> batch_xp(mini_batch);
-        vector<vector<float>> batch_yp(mini_batch);
-
-
-        for(int ep=0; ep<n_epocas; ep++)
-        {
-            // Desordenar vector de índices
-            #pragma omp single
-            {
-                random_shuffle(indices.begin(), indices.end());
-            }
-            #pragma omp barrier
-
-            // Por cada mini-batch
-            for(int i=0; i<tam_batches.size(); i++)
-            {
-                fullys[thread_id].copiar_parametros(n);
-                
-                // Cada trabajador obtiene N/P imágenes, N = Nº imágenes por mini-batch 
-                int n_imgs_batch = tam_batches[i] / THREAD_NUM, n_imgs_batch_ant = n_imgs_batch; 
-
-                if(n_imgs_batch * THREAD_NUM < tam_batches[i] && thread_id == THREAD_NUM-1)
-                    n_imgs_batch = n_imgs_batch + (tam_batches[i] % THREAD_NUM);
-                                
-                for(int j=0; j<n_imgs_batch; j++)
-                    batch_p[j] = indices[mini_batch*i + n_imgs_batch_ant*thread_id + j];   
-
-                // X ---------------------------------------------------
-                for(int j=0; j<n_imgs_batch; j++)
-                    batch_xp[j] = x[batch_p[j]];
-
-                // Y ---------------------------------------------------
-                for(int j=0; j<n_imgs_batch; j++)
-                    batch_yp[j] = y[batch_p[j]];              
-                
-                // Realizar backpropagation y acumular gradientes
-                fullys[thread_id].train(batch_xp, batch_yp, n_imgs_batch, grad_pesos[thread_id], grad_b[thread_id], grad_x[thread_id]);
-
-                #pragma omp barrier
-                #pragma omp critical
-                {
-                    // Sumar gradientes
-                    if(thread_id != 0)
-                    {
-                        for(int c=0; c<grad_pesos[0].size(); c++)
-                            for(int j=0; j<grad_pesos[0][c].size(); j++)
-                                for(int k=0; k<grad_pesos[0][c][j].size(); k++)
-                                    grad_pesos[0][c][j][k] += grad_pesos[thread_id][c][j][k];
-
-                        for(int c=0; c<grad_b[0].size(); c++)
-                            for(int j=0; j<grad_b[0][c].size(); j++)
-                                    grad_b[0][c][j] += grad_b[thread_id][c][j];
-                    }
-                }
-
-                #pragma omp barrier  
-                #pragma omp single
-                {
-                    // Realizar la media
-                    for(int c=0; c<grad_pesos[0].size(); c++)
-                        for(int j=0; j<grad_pesos[0][c].size(); j++)
-                            for(int k=0; k<grad_pesos[0][c][j].size(); k++)
-                                grad_pesos[0][c][j][k] = grad_pesos[0][c][j][k] / tam_batches[i];
-
-                    for(int c=0; c<grad_b[0].size(); c++)
-                        for(int j=0; j<grad_b[0][c].size(); j++)
-                                grad_b[0][c][j] = grad_b[0][c][j] / tam_batches[i];
-                    
-                    // Actualizar parámetros
-                    n.actualizar_parametros(grad_pesos[0], grad_b[0]);
-                }
-
-                #pragma omp barrier  
-                
-            }
-
-            #pragma omp single
-            {
-                cout << "Época: " << ep << endl;
-                cout << "Entropía cruzada: " << n.cross_entropy(x, y) << endl;
-                cout << "Accuracy: " << n.accuracy(x,y) << " %" << endl;
-            }
-            #pragma omp barrier 
-        }
-    }
-
-    
-    
-    
-    
-    return 0;
-}
-*/
