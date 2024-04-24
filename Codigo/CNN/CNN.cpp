@@ -5,9 +5,16 @@
 using namespace std;
 
 /*
-    Formato:
-    capas_conv={{3,2,2}, {2,2,2}} --> {3,2,2} significa 3 kernels 2x2
-    tams_pool={{2,2}, {3,3}} --> Una capa MaxPool de 2x2, luego otra de 3x3
+    CONSTRUCTOR de la clase CNN
+    --------------------------------------
+  
+    @capas_conv     Indica el número de capas convolucionales, así como la estructura de cada una. Habrá "capas_conv.size()" capas convolucionales, y la estructura de la capa i 
+                    vendrá dada por capas_conv[i]. De esta forma. capas_conv[i] = {3, 2, 2} corresponde a un kernel 3x2x2, por ejemplo.
+    @tams_pool      Indica el número de capas de agrupación, así como la estructura de cada una. tams_pool[i] = {2,2} indica un tamaño de ventana de agrupamiento  de 2x2.
+    @padding        Indica el nivel de padding de cada capa convolucional. padding[i] corresponde con el nivel de padding a aplicar en la capa capas_conv[i].
+    @capas_fully    Vector de enteros que indica el número de neuronas por capa dentro de la capa totalmente conectada. Habrá capas.size() capas y cada una contendrá capas[i] neuronas.
+    @input          Volumen 3D de entrada. Se tendrán en cuenta sus dimensiones para crear las estructuras necesarias y permitir un posterior entrenamiento con volúmenes de iguales dimensiones.
+    @lr             Learning Rate o Tasa de Aprendizaje
 */
 CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding,  vector<int> &capas_fully, const vector<vector<vector<float>>> &input, const float &lr)
 {
@@ -37,7 +44,7 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
     vector<float> v_1D(W_out);
     vector<vector<float>> v_2D;
 
-    Convolutional conv1(capas_conv[0][0], capas_conv[0][1], capas_conv[0][2], img_in, lr);  // CAMBIAR ---------------------------
+    Convolutional conv1(capas_conv[0][0], capas_conv[0][1], capas_conv[0][2], img_in, lr);
 
     // Inicializar capas convolucionales y maxpool --------------------------------------------
     for(int i=0; i<n_capas_conv; i++)
@@ -125,6 +132,10 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
     this->fully = new FullyConnected(capas_fully, lr);
 }
 
+/*
+    @brief      Leer imágenes de la base de datos binaria Gatos vs Perros
+    @return     Se modifican this->train_imgs y this->train_labels
+*/
 void CNN::leer_imagenes()
 {
     vector<vector<vector<float>>> imagen_k1;
@@ -200,7 +211,10 @@ void CNN::leer_imagenes()
     }  
 }
 
-
+/*
+    @brief      Leer imágenes de la base de datos MNIST
+    @return     Se modifican this->train_imgs y this->train_labels
+*/
 void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
 {
     vector<vector<vector<float>>> imagen_k1;
@@ -253,6 +267,10 @@ void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
     
 }
 
+/*
+    @brief      Leer imágenes de la base de datos CIFAR10
+    @return     Se modifican this->train_imgs y this->train_labels
+*/
 void CNN::leer_imagenes_cifar10(const int n_imagenes, const int n_clases)
 {
     vector<vector<vector<float>>> imagen_k1;
@@ -305,6 +323,9 @@ void CNN::leer_imagenes_cifar10(const int n_imagenes, const int n_clases)
     
 }
 
+/*
+    @brief  Muestra la arquitectura de la red
+*/
 void CNN::mostrar_arquitectura()
 {
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
@@ -336,84 +357,27 @@ void CNN::mostrar_arquitectura()
 
 void CNN::train(int epocas, int mini_batch)
 {
-    double t1, t2, t3, t4;
+    double t1, t2;
     int n=this->train_imgs.size();
-    int ini, fin;
     int n_thrs = 8;
-    //int n_thrs = omp_get_num_threads();
-    vector<int> indices(n);  
+    vector<vector<vector<vector<vector<vector<float>>>>>> convs_outs_thr(n_thrs), plms_outs_thr(n_thrs), plms_in_copys_thr(n_thrs), conv_a_thr(n_thrs), convs_grads_w(n_thrs);
+    vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch), plms_in_copys(mini_batch), conv_a(mini_batch), conv_grads_w(this->n_capas_conv);       // Input y output de cada capa (por cada imagen de training)
+    vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv), img_aux(n_thrs), grads_pesos_fully(n_thrs);
+    vector<vector<vector<float>>> grad_x, flat_outs_thr(n_thrs), grad_x_fully(n_thrs), grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs), convs_grads_bias(n_thrs);
+    vector<vector<float>> flat_outs(mini_batch), grad_bias = (*this->fully).get_bias(), conv_grads_bias(this->n_capas_conv), prueba(this->n_capas_conv), max_conv(this->n_capas_conv), min_conv(this->n_capas_conv); 
+    vector<vector<int>> batch_thr(n_thrs);
+    vector<int> indices(n), batch(mini_batch), tam_batches, n_imgs_batch(n_thrs), n_imgs_batch_ant(n_thrs);  
+    vector<float> max_fully(n_thrs), min_fully(n_thrs);
+    const int M = n / mini_batch;
 
-    // Almacenar inputs y outputs de cada capa
-    vector<vector<vector<vector<vector<vector<float>>>>>> convs_outs_thr(n_thrs), plms_outs_thr(n_thrs), plms_in_copys_thr(n_thrs), conv_a_thr(n_thrs);
-    vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch), plms_in_copys(mini_batch), conv_a(mini_batch);       // Input y output de cada capa (por cada imagen de training)
-    vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv), img_aux(n_thrs);
-    vector<float> flat_out; 
-
-    // Paso a la siguiente capa
-    vector<vector<vector<float>>> grad_x, flat_outs_thr(n_thrs), grad_x_fully(n_thrs);
-    vector<vector<float>> flat_outs(mini_batch); 
-
-    // Reservar espacio
-    for(int i=0; i<mini_batch; i++)
-    {
-        convs_outs[i] = convs_out;
-        plms_outs[i] = convs_out;
-        plms_in_copys[i] = convs_out;
-        conv_a[i] = convs_out;
-    }
-
-    for(int i=0; i<n_thrs; i++)
-    {
-        convs_outs_thr[i] = convs_outs;
-        plms_outs_thr[i] = plms_outs;
-        plms_in_copys_thr[i] = plms_in_copys;
-        conv_a_thr[i] = conv_a;
-    }
-
+    //-------------------------------------------------
+    // Inicializar índices
+    //-------------------------------------------------
     // Inicializar vector de índices
     for(int i=0; i<n; i++)
         indices[i] = i;
 
-    // Capa totalmente conectada  ----------------
-    vector<vector<vector<vector<float>>>> grads_pesos_fully(n_thrs);
-    vector<vector<vector<float>>> grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs);
-    vector<vector<float>> grad_bias = (*this->fully).get_bias();
-
-    for(int i=0; i<n_thrs; i++)
-    {
-        grads_pesos_fully[i] = grad_w;
-        grads_bias_fully[i] = grad_bias;
-        fully_a[i] = (*this->fully).get_a();
-        flat_outs_thr[i] = flat_outs;
-    }
-
-    fully_z = fully_a;
-    fully_grad_a = fully_a;
-
-
-    // Capas convolucionales ---------------------------
-    vector<vector<vector<vector<vector<vector<float>>>>>> convs_grads_w(n_thrs); 
-    vector<vector<vector<vector<vector<float>>>>> conv_grads_w(this->n_capas_conv);
-    vector<vector<vector<float>>> convs_grads_bias(n_thrs);
-    vector<vector<float>> conv_grads_bias(this->n_capas_conv), prueba(this->n_capas_conv);
-
-    for(int i=0; i<this->n_capas_conv; i++)
-    {
-        conv_grads_w[i] = this->convs[i].get_pesos();
-        conv_grads_bias[i] = this->convs[i].get_bias();
-    }
-
-    for(int i=0; i<n_thrs; i++)
-    {
-        convs_grads_w[i] = conv_grads_w;
-        convs_grads_bias[i] = conv_grads_bias;
-    }
-
-    // --------------
-    vector<vector<int>> batch_thr(n_thrs);
-    vector<int> batch(mini_batch), tam_batches, n_imgs_batch(n_thrs), n_imgs_batch_ant(n_thrs);
-    const int M = n / mini_batch;
-    // Inicializar tamaño de mini-batches (int)
+    // Inicializar tamaño de mini-batches
     for(int i=0; i<M; i++)
         tam_batches.push_back(mini_batch);
     
@@ -421,20 +385,58 @@ void CNN::train(int epocas, int mini_batch)
     if(n % mini_batch != 0)
         tam_batches.push_back(n % mini_batch);   
 
+    // Inicializar batch de cada hebra
     for(int i=0; i<n_thrs; i++)
         batch_thr[i] = batch;
-    // -----------
 
-    vector<vector<float>> max_conv(this->n_capas_conv), min_conv(this->n_capas_conv);
-    vector<float> max_fully(n_thrs), min_fully(n_thrs);
+    //-------------------------------------------------
+    // Reservar espacio 
+    //-------------------------------------------------
+    for(int i=0; i<mini_batch; i++)
+    {
+        // Capas convolucionales
+        convs_outs[i] = convs_out;
+        conv_a[i] = convs_out;
 
+        // Capas de agrupamiento
+        plms_outs[i] = convs_out;
+        plms_in_copys[i] = convs_out;
+    }
+
+    for(int i=0; i<n_thrs; i++)
+    {
+        // Capas convolucionales
+        convs_outs_thr[i] = convs_outs;
+        conv_a_thr[i] = conv_a;
+        convs_grads_w[i] = conv_grads_w;
+        convs_grads_bias[i] = conv_grads_bias;
+
+        // Capas de agrupamiento
+        plms_outs_thr[i] = plms_outs;
+        plms_in_copys_thr[i] = plms_in_copys;
+
+        // Capa totalmente conectada
+        grads_pesos_fully[i] = grad_w;
+        grads_bias_fully[i] = grad_bias;
+        fully_a[i] = (*this->fully).get_a();
+        flat_outs_thr[i] = flat_outs;
+    }
+
+    // Capa totalmente conectada  
+    fully_z = fully_a;
+    fully_grad_a = fully_a;
+
+    // Capas convolucionales ---------------------------
     for(int i=0; i<this->n_capas_conv; i++)
     {
+        // Gradientes
+        conv_grads_w[i] = this->convs[i].get_pesos();
+        conv_grads_bias[i] = this->convs[i].get_bias();
+
+        // Máximos y Mínimos
         max_conv[i] = max_fully;
         min_conv[i] = min_fully;
     }
-
-    vector<vector<vector<vector<float>>>> pruebas;
 
     #pragma omp parallel num_threads(n_thrs)
     for(int ep=0; ep<epocas; ep++)
@@ -446,7 +448,6 @@ void CNN::train(int epocas, int mini_batch)
         {
             t1 = omp_get_wtime();
  
-
             // Desordenar vector de índices
             random_shuffle(indices.begin(), indices.end());
         }
@@ -456,9 +457,8 @@ void CNN::train(int epocas, int mini_batch)
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
         for(int i=0; i<tam_batches.size(); i++)
         {
-            // Crear el batch ----------------------
+            // Crear el batch para cada hebra ----------------------
             n_imgs_batch[thr_id] = tam_batches[i] / n_thrs, n_imgs_batch_ant[thr_id] = n_imgs_batch[thr_id]; 
-
             
             if(n_imgs_batch[thr_id] * n_thrs < tam_batches[i] && thr_id == n_thrs-1)
                 n_imgs_batch[thr_id] = n_imgs_batch[thr_id] + (tam_batches[i] % n_thrs);
@@ -717,15 +717,17 @@ void CNN::train(int epocas, int mini_batch)
             cout << "Época: " << ep << ",                                           " << t2-t1 << " (s) " << endl;
         }
 
-        accuracy();  
+        evaluar_modelo();  
         
     }
     
 }
 
 
-// Accuracy sobre training 
-void CNN::accuracy()
+/*
+    @brief  Evalúa el modelo sobre los datos de entrenamiento. Las medidas de evaluación son Accuracy y Entropía Cruzada
+*/
+void CNN::evaluar_modelo()
 {
     int n=this->train_imgs.size(), n_thrs = omp_get_num_threads(), n_imgs = n / n_thrs, n_imgs_ant = n / n_thrs, thr_id = omp_get_thread_num();
     double t1, t2;
@@ -739,6 +741,7 @@ void CNN::accuracy()
 
     vector<vector<float>> flat_outs(n_imgs);
 
+    // Inicialización de parámetros
     #pragma omp master
     {
         t1 = omp_get_wtime();
@@ -748,6 +751,7 @@ void CNN::accuracy()
 
     #pragma omp barrier
 
+    // Cada hebra realiza la propagación hacia delante de una porción de imágenes
     for(int img=n_imgs_ant*thr_id, k=0; img<n_imgs_ant*thr_id + n_imgs; img++, k++)
     {
         img_in = this->train_imgs[img];
@@ -767,15 +771,17 @@ void CNN::accuracy()
             img_in = img_out;
         }
         
+        // Capa de aplanado
         (*this->flat).forwardPropagation(img_out, flat_out);
 
         flat_outs[k] = flat_out;
-
     }
     
+    // Cada hebra obtiene el accuracy y la entropía cruzada sobre una porción de imágenes
     acc = (*this->fully).accuracy(flat_outs,this->train_labels, n_imgs_ant*thr_id);
     entr = (*this->fully).cross_entropy(flat_outs, this->train_labels, n_imgs_ant*thr_id);
 
+    // Sumar valores de cada hebra
     #pragma omp critical
     {
         this->sum_acc += acc;
@@ -784,6 +790,7 @@ void CNN::accuracy()
 
     #pragma omp barrier
 
+    // Realizar media y obtener valores totales
     #pragma omp master
     {
         this->sum_acc = this->sum_acc / n * 100;
@@ -795,10 +802,6 @@ void CNN::accuracy()
 
 
         cout << "Entropía cruzada: " << this->sum_entr << ",         " << t2 - t1 << " (s) " << endl << endl;
-    }
-
-
-
-    
+    }    
 }
 
