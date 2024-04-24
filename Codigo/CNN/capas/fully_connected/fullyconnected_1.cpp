@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 /*
     CONSTRUCTOR de la clase FullyConnected
     --------------------------------------
@@ -203,9 +202,6 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
     }
 }
 
-
-
-
 /*
     @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
     @x      Conjunto de datos de entrada
@@ -215,10 +211,9 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 */
 float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y, const int &ini)
 {
+    vector<vector<float>> a, z;
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=this->a.size()-1;
-
-    vector<vector<float>> a, z;
     a = this->a;
     z = this->a;
 
@@ -248,10 +243,9 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
 */
 float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y, const int &ini)
 {
+    vector<vector<float>> a, z;
     float sum =0.0, max;
     int prediccion, n=this->a.size()-1;
-
-    vector<vector<float>> a, z;
     a = this->a;
     z = this->a;
 
@@ -260,11 +254,11 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y,
         // Propagación hacia delante de la entrada x[i] a lo largo de la red
         forwardPropagation(x[i], a, z);
 
-        // Inicialización
+        // Inicialización de valores
         max = z[n][0];
         prediccion = 0;
 
-        // Obtener valor más alto de la capa output
+        // Obtener valor más alto de la capa output (predicción de la red)
         for(int c=1; c<this->a[n].size(); c++)
         {
             if(max < z[n][c])
@@ -305,7 +299,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     vector<vector<float>> vector_2d(n_datos);
     grad_x = vector_2d;
 
-
+    // Hay 2 o más capas ocultas
     for(int i=0; i<n_datos; i++)
     {
         // Propagación hacia delante
@@ -322,7 +316,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         // Se calcula gradiente del error respecto a cada Z_k
         for(int k=0; k<this->a[i_output].size(); k++)
             grad_a[i_output][k] = z[i_output][k] - y[batch[i]][k];
-            // grad_Zk = O_k - y_k
+            // grad_Zk          = O_k            - y_k
         
         // Pesos h_last - Softmax
         for(int p=0; p<this->a[i_last_h].size(); p++)
@@ -339,7 +333,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
         for(int p=0; p<this->a[i_last_h].size(); p++)      
             for(int k=0; k<this->a[i_output].size(); k++)
                 grad_a[i_last_h][p] += grad_a[i_output][k] * this->w[i_last_h][p][k] * deriv_relu(a[i_last_h][p]);
-                //                              grad_Zk           *  w^i_last_h_pk          * ...
+                //                              grad_Zk    * w^i_last_h_pk           * ...
                 
         // Capas ocultas intermedias
         for(int capa= i_last_h; capa > 1; capa--)
@@ -395,13 +389,12 @@ void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector
     // Buscar máximo y mínimo locales
     for(int i=0; i<this->w.size(); i++)
     {
-        // Reparto de carga
+
         n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
 
         if(thr_id == n_thrs - 1)
             n_imgs = this->w[i].size() - n_imgs * thr_id;
 
-        // Cada hebra busca en "n_imgs" pesos
         for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
             for(int k=0; k<this->w[i][j].size(); k++)
             {
@@ -433,13 +426,11 @@ void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector
     float scaling_factor = clip_value / std::max(std::abs(maxs[0]), std::abs(mins[0]));
     for(int i=0; i<this->w.size(); i++)
     {
-        // Reparto de carga
         n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
 
         if(thr_id == n_thrs - 1)
             n_imgs = this->w[i].size() - n_imgs * thr_id;
 
-        // Cada hebra actualiza "n_imgs" pesos
         for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
             for(int k=0; k<this->w[i][j].size(); k++)
                 this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
