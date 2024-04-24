@@ -203,9 +203,6 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
     }
 }
 
-
-
-
 /*
     @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
     @x      Conjunto de datos de entrada
@@ -237,7 +234,6 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
 
     return sum;
 }
-
 
 /*
     @brief  Realiza la medida de Accuracy sobre un conjunto de datos
