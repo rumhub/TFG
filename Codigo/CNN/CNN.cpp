@@ -132,6 +132,7 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
     this->fully = new FullyConnected(capas_fully, lr);
 }
 
+
 /*
     @brief      Leer imágenes de la base de datos binaria Gatos vs Perros
     @return     Se modifican this->train_imgs y this->train_labels
@@ -211,6 +212,7 @@ void CNN::leer_imagenes()
     }  
 }
 
+
 /*
     @brief      Leer imágenes de la base de datos MNIST
     @return     Se modifican this->train_imgs y this->train_labels
@@ -266,6 +268,7 @@ void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
 
     
 }
+
 
 /*
     @brief      Leer imágenes de la base de datos CIFAR10
@@ -403,6 +406,18 @@ void CNN::train(int epocas, int mini_batch)
         plms_in_copys[i] = convs_out;
     }
 
+    // Capas convolucionales ---------------------------
+    for(int i=0; i<this->n_capas_conv; i++)
+    {
+        // Gradientes
+        conv_grads_w[i] = this->convs[i].get_pesos();
+        conv_grads_bias[i] = this->convs[i].get_bias();
+
+        // Máximos y Mínimos
+        max_conv[i] = max_fully;
+        min_conv[i] = min_fully;
+    }
+
     for(int i=0; i<n_thrs; i++)
     {
         // Capas convolucionales
@@ -425,18 +440,6 @@ void CNN::train(int epocas, int mini_batch)
     // Capa totalmente conectada  
     fully_z = fully_a;
     fully_grad_a = fully_a;
-
-    // Capas convolucionales ---------------------------
-    for(int i=0; i<this->n_capas_conv; i++)
-    {
-        // Gradientes
-        conv_grads_w[i] = this->convs[i].get_pesos();
-        conv_grads_bias[i] = this->convs[i].get_bias();
-
-        // Máximos y Mínimos
-        max_conv[i] = max_fully;
-        min_conv[i] = min_fully;
-    }
 
     #pragma omp parallel num_threads(n_thrs)
     for(int ep=0; ep<epocas; ep++)
