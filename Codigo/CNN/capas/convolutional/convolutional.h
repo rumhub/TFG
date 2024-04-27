@@ -30,7 +30,7 @@ class Convolutional
         void forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a);
 
         // Retropropagación
-        void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
+        void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
 
         // Modificación de parámetros
         void generar_pesos();

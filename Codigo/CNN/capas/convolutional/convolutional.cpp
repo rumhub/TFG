@@ -261,20 +261,15 @@ void Convolutional::reset_gradients(vector<vector<vector<vector<float>>>> &grad_
     @grad_bias  Gradientes respecto a sesgos
     @pad        Nivel de padding que se aplicó anteriormente   
 */
-void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad)
+void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad)
 {
     // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
-    vector<vector<vector<float>>> output_copy, grad_input;
+    vector<vector<vector<float>>> grad_input = input;
     vector<vector<float>> conv_imagen;
     vector<float> conv_fila;
     
     // nº de kernels, nº de filas del kernel, nº de columnas del kernel a aplicar
-    int F = this->w.size(), K = this->w[0][0].size(), tam_fil_y = output[0][0].size();
-
-    // nº de "capas 2D",   nº de filas del volumen de entrada
-    int C = input.size();
-
-    grad_input = input;
+    int F = this->w.size(), K = this->w[0][0].size(), C = input.size();
 
     // Inicializar input a 0
     for(int i=0; i<input.size(); i++)
@@ -288,32 +283,29 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
             for(int k=0; k<output[0][0].size(); k++)
                 output[i][j][k] = output[i][j][k] * deriv_activationFunction(a[i][j][k]);
     
-    // Aplicar padding
-    output_copy = output;
-    aplicar_padding(output_copy, pad + K-2);    // Se añade + K-2 para hacer una convolución completa
-    
     // Suponemos nº filas = nº columnas
-    // nº veces k sobre y, nº de veces o deslizamientos de y sobre x
-    int n_veces_ky = output_copy[0].size() - K + 1, n_veces_yx = input[0].size() - output[0].size() + 1;
+    int H = input[0].size(), W = input[0][0].size();
+    int H_out = H-K+1, W_out = W-K+1;
 
     // Convolución entre output y pesos    
     for(int f=0; f<F; f++)  // Por cada filtro f
     {
         // Gradiente respecto a entrada
-        for(int i=0; i<n_veces_ky; i++)    
-            for(int j=0; j<n_veces_ky; j++)    
+        for(int i=0; i<H; i++)    
+            for(int j=0; j<W; j++)    
                 for(int c=0; c<C; c++)  // Convolución entre salida y pesos invertidos
                     for(int i_k=0; i_k<K; i_k++)
                         for(int j_k=0; j_k<K; j_k++)
-                            grad_input[c][i][j] += output_copy[f][i+i_k][j+j_k] * this->w[f][c][K -1 - i_k][K -1 - j_k];                            
+                            if(i-i_k >= 0 && j-j_k >= 0 && i-i_k < H_out && j-j_k < W_out)
+                                grad_input[c][i][j] += output[f][i-i_k][j-j_k] * this->w[f][c][K -1 - i_k][K -1 - j_k];                            
         
         // Gradiente respecto a pesos
-        for(int i=0; i<n_veces_yx; i++)    
-            for(int j=0; j<n_veces_yx; j++)  
+        for(int i=0; i<H_out; i++)    
+            for(int j=0; j<W_out; j++)  
                 for(int c=0; c<C; c++)  // Convolución entre entrada y salida
-                    for(int i_k=0; i_k<tam_fil_y; i_k++)
-                        for(int j_k=0; j_k<tam_fil_y; j_k++)
-                            grad_w[f][c][i][j] += input[c][i + i_k][j + j_k] * output[f][i_k][j_k];
+                    for(int i_k=0; i_k<this->kernel_fils; i_k++)
+                        for(int j_k=0; j_k<this->kernel_cols; j_k++)
+                            grad_w[f][c][i_k][j_k] += input[c][i + i_k][j + j_k] * output[f][i][j];
     }
 
 
