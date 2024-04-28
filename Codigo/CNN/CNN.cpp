@@ -413,7 +413,7 @@ void CNN::train(int epocas, int mini_batch)
     int n=this->train_imgs.size();
     int n_thrs = 8;
     vector<vector<vector<vector<vector<vector<float>>>>>> convs_outs_thr(n_thrs), plms_outs_thr(n_thrs), plms_in_copys_thr(n_thrs), conv_a_thr(n_thrs), convs_grads_w(n_thrs);
-    vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch), plms_in_copys(mini_batch), conv_a(mini_batch), conv_grads_w(this->n_capas_conv);       // Input y output de cada capa (por cada imagen de training)
+    vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch), conv_grads_w(this->n_capas_conv);       // Input y output de cada capa (por cada imagen de training)
     vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv), pools_out(this->n_capas_conv), img_aux(n_thrs), grads_pesos_fully(n_thrs);
     vector<vector<vector<float>>> grad_x, flat_outs_thr(n_thrs), grad_x_fully(n_thrs), grad_w = (*this->fully).get_pesos(), grads_bias_fully(n_thrs), fully_a(n_thrs), fully_z(n_thrs), fully_grad_a(n_thrs), convs_grads_bias(n_thrs);
     vector<vector<float>> flat_outs(mini_batch), grad_bias = (*this->fully).get_bias(), conv_grads_bias(this->n_capas_conv), prueba(this->n_capas_conv), max_conv(this->n_capas_conv), min_conv(this->n_capas_conv); 
@@ -464,11 +464,9 @@ void CNN::train(int epocas, int mini_batch)
     {
         // Capas convolucionales
         convs_outs[i] = convs_out;
-        conv_a[i] = convs_out;
 
         // Capas de agrupamiento
         plms_outs[i] = pools_out;
-        plms_in_copys[i] = convs_out;
     }
 
 
@@ -477,13 +475,11 @@ void CNN::train(int epocas, int mini_batch)
     {
         // Capas convolucionales
         convs_outs_thr[i] = convs_outs;
-        conv_a_thr[i] = conv_a;
         convs_grads_w[i] = conv_grads_w;
         convs_grads_bias[i] = conv_grads_bias;
 
         // Capas de agrupamiento
         plms_outs_thr[i] = plms_outs;
-        plms_in_copys_thr[i] = plms_in_copys;
 
         // Capa totalmente conectada
         grads_pesos_fully[i] = grad_w;
@@ -491,6 +487,8 @@ void CNN::train(int epocas, int mini_batch)
         fully_a[i] = (*this->fully).get_a();
         flat_outs_thr[i] = flat_outs;
     }
+    conv_a_thr = convs_outs_thr;
+    plms_in_copys_thr = convs_outs_thr;
 
     // Capa totalmente conectada  
     fully_z = fully_a;
@@ -529,11 +527,7 @@ void CNN::train(int epocas, int mini_batch)
             {
                 // Primera capa convolucional y maxpool -----------------------
                 // Realizar los cálculos
-                conv_a_thr[thr_id][img][0] = convs_outs_thr[thr_id][img][0];
                 this->convs[0].forwardPropagation(this->train_imgs[batch_thr[thr_id][img]], convs_outs_thr[thr_id][img][0], conv_a_thr[thr_id][img][0]);
-
-
-                plms_in_copys_thr[thr_id][img][0] = convs_outs_thr[thr_id][img][0];
 
                 int pad_sig = 0;    // Padding de la siguiente capa convolucional
                 if(this->n_capas_conv > 1)
@@ -548,12 +542,9 @@ void CNN::train(int epocas, int mini_batch)
                 for(int i=1; i<this->n_capas_conv; i++)
                 {
                     // Capa convolucional 
-                    conv_a_thr[thr_id][img][i] = convs_outs_thr[thr_id][img][i];
                     this->convs[i].forwardPropagation(plms_outs_thr[thr_id][img][i-1], convs_outs_thr[thr_id][img][i], conv_a_thr[thr_id][img][i]);
 
                     // Capa MaxPool 
-                    plms_in_copys_thr[thr_id][img][i] = convs_outs_thr[thr_id][img][i];
-
                     pad_sig = 0;    // Padding de la siguiente capa convolucional
                     if(this->n_capas_conv > i+1)
                         pad_sig = this->padding[i+1];
