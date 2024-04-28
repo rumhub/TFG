@@ -23,7 +23,7 @@ PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<fl
 // Idea de input_copy --> Inicializar a 0. Cada kernel se quedará solo con 1 valor, pues lo pones a 1 en input_copy para luego saber cuál era al hacer backpropagation
 // Suponemos que H y W son múltiplos de K
 // Es decir, suponemos que tanto el ancho como el alto de la imagen de entrada "input" son múltiplos del tamaño del kernel a aplicar
-void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy)
+void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad)
 {
     int M = input.size(), K=kernel_fils, n_veces_fils = input[0].size() / K , n_veces_cols = input[0][0].size() / K;
     float max;
@@ -63,7 +63,7 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
                             
                     }
                 
-                output[m][h][w] = max;
+                output[m][pad+h][pad+w] = max;
 
                 if(encontrado)
                     input_copy[m][i_m][j_m] = 1.0;
@@ -120,7 +120,7 @@ void PoolingMax::mostrar_tam_kernel()
 {
     cout << "Estructura kernel "<< this->kernel_fils << "x" << this->kernel_cols << "x" << this->image_canales << endl; 
 }
-
+/*
 void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
 {
     vector<vector<vector<float>>> imagen_3D_aux;
@@ -179,7 +179,7 @@ void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
     imagen_3D = imagen_3D_aux;
 };
 
-/*
+
 // https://leonardoaraujosantos.gitbook.io/artificial-inteligence/machine_learning/deep_learning/pooling_layer
 int main() 
 {
@@ -227,6 +227,9 @@ int main()
         output.push_back(v_2D);
     }
 
+    // Aplicamos padding al output
+    // Output viene ya con las dimensiones tras aplicar padding
+    aplicar_padding(output, pad);
 
     cout << "------------ Imagen inicial: ------------" << endl;
     aux->mostrar_imagen(imagenes_2D);
@@ -234,15 +237,9 @@ int main()
 
     PoolingMax plm1(2, 2, imagenes_2D);
 
-    plm1.forwardPropagation(imagenes_2D, output, input_copy);
+    plm1.forwardPropagation(imagenes_2D, output, input_copy, pad);
 
     cout << "Output \n";
-    aux->mostrar_imagen(output);
-
-    // Aplicamos padding al output
-    aplicar_padding(output, pad);
-
-    cout << "Output + padding \n";
     aux->mostrar_imagen(output);
 
     cout << "------------ Pooling Max, Back Propagation: ------------" << endl;

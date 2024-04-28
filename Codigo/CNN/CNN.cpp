@@ -48,8 +48,9 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
 
     // Inicializar capas convolucionales y maxpool --------------------------------------------
     for(int i=0; i<n_capas_conv; i++)
-    {    
-        conv1.aplicar_padding(img_in, padding[i]);
+    {   
+        if(i == 0) 
+            conv1.aplicar_padding(img_in, padding[i]);
 
         // Crear imagen output ----------------------------------------
         // H_out = fils_img   -       K          + 1;
@@ -79,7 +80,7 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
         //                  nºkernels          filas_kernel      cols_kernel
         Convolutional conv(capas_conv[i][0], capas_conv[i][1], capas_conv[i][2], img_in, lr); 
         this->convs[i] = conv;
-        vector<vector<vector<float>>> conv_a;
+        vector<vector<vector<float>>> conv_a = img_out;
         this->convs[i].forwardPropagation(img_in, img_out, conv_a);
         img_in = img_out;
         
@@ -102,16 +103,23 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
         for(int j=0; j<capas_conv[i][0]; j++)
             img_out.push_back(v_2D);
         
-        this->outputs.push_back(img_out);
+
 
         // Capas MaxPool -----------------------------------------------------------
         //           filas_kernel_pool  cols_kernel_pool
         PoolingMax plm(tams_pool[i][0], tams_pool[i][1], img_in);
         img_in_copy = img_in;
         this->plms[i] = plm;
-        this->plms[i].forwardPropagation(img_in, img_out, img_in_copy);
+
+        int pad_sig = 0;    // Padding de la siguiente capa convolucional
+        if(this->n_capas_conv > i+1)
+            pad_sig = this->padding[i+1];
+
+        conv1.aplicar_padding(img_out, pad_sig);
+        this->outputs.push_back(img_out);
+
+        this->plms[i].forwardPropagation(img_in, img_out, img_in_copy, pad_sig);
         img_in = img_out;
-        
     }
 
     
@@ -142,7 +150,8 @@ void CNN::leer_imagenes()
     vector<vector<vector<float>>> imagen_k1;
 
     //n_imagenes = 4000;
-    int n_imagenes = 1000;
+    //int n_imagenes = 1000;
+    int n_imagenes = 200;
 
     this->train_imgs.clear();
     this->train_labels.clear();
@@ -342,13 +351,18 @@ void CNN::mostrar_arquitectura()
     for(int i=0; i<n_capas_conv; i++)
     {
         // Capas convolucionales ------------------------------------------------
+        conv_a = this->outputs[i*2];
         this->convs[i].forwardPropagation(img_in, this->outputs[i*2], conv_a);
         img_in = this->outputs[i*2];
         cout << "Dimensiones tras " << this->convs[i].get_n_kernels() << " capas convolucionales de " << this->convs[i].get_kernel_fils() << "x" << this->convs[i].get_kernel_cols() << ": " << this->outputs[i*2].size() << "x" << this->outputs[i*2][0].size() << "x" << this->outputs[i*2][0][0].size() << endl;
 
         // Capas MaxPool -----------------------------------------------------------
         img_in_copy = img_in;
-        this->plms[i].forwardPropagation(img_in, this->outputs[i*2+1], img_in_copy);
+        int pad_sig = 0;    // Padding de la siguiente capa convolucional
+        if(this->n_capas_conv > i+1)
+            pad_sig = this->padding[i+1];
+
+        this->plms[i].forwardPropagation(img_in, this->outputs[i*2+1], img_in_copy, pad_sig);
         cout << "Dimensiones tras una capa MaxPool de " << this->plms[i].get_kernel_fils() << "x" << this->plms[i].get_kernel_cols() << ": " << this->outputs[i*2+1].size() << "x" << this->outputs[i*2+1][0].size() << "x" << this->outputs[i*2+1][0][0].size() << endl;
         img_in = this->outputs[i*2+1];
     }
@@ -478,11 +492,19 @@ void CNN::train(int epocas, int mini_batch)
                 plms_outs_thr[thr_id][img][0] = this->outputs[1];
 
                 // Realizar los cálculos
+                conv_a_thr[thr_id][img][0] = convs_outs_thr[thr_id][img][0];
                 this->convs[0].forwardPropagation(this->train_imgs[batch_thr[thr_id][img]], convs_outs_thr[thr_id][img][0], conv_a_thr[thr_id][img][0]);
-                
+
+
                 plms_in_copys_thr[thr_id][img][0] = convs_outs_thr[thr_id][img][0];
-                this->plms[0].forwardPropagation(convs_outs_thr[thr_id][img][0], plms_outs_thr[thr_id][img][0], plms_in_copys_thr[thr_id][img][0]);
-                
+
+                int pad_sig = 0;    // Padding de la siguiente capa convolucional
+                if(this->n_capas_conv > 1)
+                    pad_sig = this->padding[1];
+
+                this->plms[0].forwardPropagation(convs_outs_thr[thr_id][img][0], plms_outs_thr[thr_id][img][0], plms_in_copys_thr[thr_id][img][0], pad_sig);
+
+
                 // Resto de capas convolucionales y maxpool ----------------------------
                 for(int i=1; i<this->n_capas_conv; i++)
                 {
@@ -491,12 +513,17 @@ void CNN::train(int epocas, int mini_batch)
                     plms_outs_thr[thr_id][img][i] = this->outputs[i*2+1];
 
                     // Capa convolucional 
-                    this->convs[i].aplicar_padding(plms_outs_thr[thr_id][img][i-1], this->padding[i]);
+                    conv_a_thr[thr_id][img][i] = convs_outs_thr[thr_id][img][i];
                     this->convs[i].forwardPropagation(plms_outs_thr[thr_id][img][i-1], convs_outs_thr[thr_id][img][i], conv_a_thr[thr_id][img][i]);
 
                     // Capa MaxPool 
                     plms_in_copys_thr[thr_id][img][i] = convs_outs_thr[thr_id][img][i];
-                    this->plms[i].forwardPropagation(convs_outs_thr[thr_id][img][i], plms_outs_thr[thr_id][img][i], plms_in_copys_thr[thr_id][img][i]);
+
+                    pad_sig = 0;    // Padding de la siguiente capa convolucional
+                    if(this->n_capas_conv > i+1)
+                        pad_sig = this->padding[i+1];
+
+                    this->plms[i].forwardPropagation(convs_outs_thr[thr_id][img][i], plms_outs_thr[thr_id][img][i], plms_in_copys_thr[thr_id][img][i], pad_sig);
                 }
                 
                 (*this->flat).forwardPropagation(plms_outs_thr[thr_id][img][plms_outs_thr[thr_id][img].size()-1], flat_outs_thr[thr_id][img]);                
@@ -764,13 +791,19 @@ void CNN::evaluar_modelo()
         {
             // Capa convolucional 
             img_out = this->outputs[i*2];
+            conv_a = img_out;
             this->convs[i].forwardPropagation(img_in, img_out, conv_a);
             img_in = img_out;
 
             // Capa MaxPool 
             img_out = this->outputs[i*2+1];
             img_in_copy = img_in;
-            this->plms[i].forwardPropagation(img_in, img_out, img_in_copy);
+
+            int pad_sig = 0;    // Padding de la siguiente capa convolucional
+            if(this->n_capas_conv > i+1)
+                pad_sig = this->padding[i+1];
+
+            this->plms[i].forwardPropagation(img_in, img_out, img_in_copy, pad_sig);
             img_in = img_out;
         }
         

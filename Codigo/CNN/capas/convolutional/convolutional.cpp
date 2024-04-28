@@ -203,7 +203,7 @@ void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &inpu
         exit(-1);
     }
     
-    a = output;
+    //a = output;
 
     // Por cada kernel M 
     for(int img_out=0; img_out<M; img_out++)
