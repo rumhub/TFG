@@ -40,4 +40,7 @@ class CNN
         
         // Evaluar el modelo
         void evaluar_modelo();
+
+        // Modificar imagen
+        void padding_interno(vector<vector<vector<float>>> &input, const int &pad);
 };

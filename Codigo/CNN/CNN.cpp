@@ -372,6 +372,41 @@ void CNN::mostrar_arquitectura()
 
 }
 
+/*
+    @brief  Aplica padding sobre una imagen sin aumentar su tamaño
+    @input  Imagen sobre la cual aplicar padding
+    @pad    Nivel de padding a aplicar
+    @return Imagen @input con padding interno aplicado
+*/
+void CNN::padding_interno(vector<vector<vector<float>>> &input, const int &pad)
+{
+    for(int i=0; i<input.size(); i++)
+    {
+        // Primeras "pad" filas se igualan a 0.0
+        for(int j=0; j<pad; j++)
+            for(int k=0; k<input[i].size(); k++)
+            input[i][j][k] = 0.0; 
+
+        // Últimas "pad" filas se igualan a 0.0
+        for(int j=input[i].size()-1; j>=input[i].size() - pad; j--)
+            for(int k=0; k<input[i].size(); k++)
+            input[i][j][k] = 0.0; 
+        
+        // Por cada fila
+        for(int k=0; k<input[i].size(); k++)
+        {
+            // Primeras "pad" casillas se igualan a 0.0
+            for(int j=0; j<pad; j++)
+                input[i][k][j] = 0.0;
+
+            // Últimas "pad" casillas se igualan a 0.0
+            for(int j=input[i][k].size()-1; j>=input[i][k].size() - pad; j--)
+                input[i][k][j] = 0.0;
+        }
+    }    
+}
+
+
 void CNN::train(int epocas, int mini_batch)
 {
     double t1, t2;
@@ -504,6 +539,8 @@ void CNN::train(int epocas, int mini_batch)
                 if(this->n_capas_conv > 1)
                     pad_sig = this->padding[1];
 
+                padding_interno(plms_outs_thr[thr_id][img][0], pad_sig);
+
                 this->plms[0].forwardPropagation(convs_outs_thr[thr_id][img][0], plms_outs_thr[thr_id][img][0], plms_in_copys_thr[thr_id][img][0], pad_sig);
 
 
@@ -521,6 +558,7 @@ void CNN::train(int epocas, int mini_batch)
                     if(this->n_capas_conv > i+1)
                         pad_sig = this->padding[i+1];
 
+                    padding_interno(plms_outs_thr[thr_id][img][i], pad_sig);
                     this->plms[i].forwardPropagation(convs_outs_thr[thr_id][img][i], plms_outs_thr[thr_id][img][i], plms_in_copys_thr[thr_id][img][i], pad_sig);
                 }
                 
