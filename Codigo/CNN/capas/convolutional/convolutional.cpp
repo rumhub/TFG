@@ -34,13 +34,13 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
     vector<float> pesos_fila;               // Representa los pesos de una fila de un kernel 2D. Podría verse como un kernel 1D (un array)
     
     // Crear estructura de los pesos
-    for(int f=0; f< n_kernels; f++) // Por cada kernel
+    for(int f=0; f< n_kernels; ++f) // Por cada kernel
     {
-        for(int k=0; k< kernel_depth; k++)
+        for(int k=0; k< kernel_depth; ++k)
         {
-            for(int i=0; i<kernel_fils; i++)
+            for(int i=0; i<kernel_fils; ++i)
             {
-                for(int j=0; j<kernel_cols;j++)
+                for(int j=0; j<kernel_cols; ++j)
                 {
                     pesos_fila.push_back(0.0);
                 }
@@ -75,10 +75,10 @@ void Convolutional::generar_pesos()
     mt19937 gen(rd());
     normal_distribution<float> distribution(0.0, sqrt(2.0 / (this->n_kernels * this->kernel_depth * this->kernel_fils * this->kernel_fils)));
 
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[0].size(); j++)
-            for(int k=0; k<this->w[0][0].size(); k++)
-                for(int p=0; p<this->w[0][0][0].size(); p++)
+    for(int i=0; i<this->w.size(); ++i)
+        for(int j=0; j<this->w[0].size(); ++j)
+            for(int k=0; k<this->w[0][0].size(); ++k)
+                for(int p=0; p<this->w[0][0][0].size(); ++p)
                     this->w[i][j][k][p] = distribution(gen);
 }
 
@@ -121,31 +121,31 @@ void Convolutional::aplicar_padding(vector<vector<vector<float>>> &imagen_3D, in
     vector<float> fila_aux;
 
     // Por cada imagen
-    for(int i=0; i<imagen_3D.size();i++)
+    for(int i=0; i<imagen_3D.size(); ++i)
     {
         // Añadimos padding superior
-        for(int j=0; j<imagen_3D[i].size() + pad*2; j++) // pad*2 porque hay padding tanto a la derecha como a la izquierda
+        for(int j=0; j<imagen_3D[i].size() + pad*2; ++j) // pad*2 porque hay padding tanto a la derecha como a la izquierda
             fila_aux.push_back(0.0);
         
-        for(int k=0; k<pad; k++)
+        for(int k=0; k<pad; ++k)
             imagen_aux.push_back(fila_aux);
         
         fila_aux.clear();
 
         // Padding lateral (izquierda y derecha)
         // Por cada fila de cada imagen
-        for(int j=0; j<imagen_3D[i].size(); j++)
+        for(int j=0; j<imagen_3D[i].size(); ++j)
         {
             // Añadimos padding lateral izquierdo
-            for(int t=0; t<pad; t++)
+            for(int t=0; t<pad; ++t)
                 fila_aux.push_back(0.0);
 
             // Dejamos casillas centrales igual que en la imagen original
-            for(int k=0; k<imagen_3D[i][j].size(); k++)
+            for(int k=0; k<imagen_3D[i][j].size(); ++k)
                 fila_aux.push_back(imagen_3D[i][j][k]);
             
             // Añadimos padding lateral derecho
-            for(int t=0; t<pad; t++)
+            for(int t=0; t<pad; ++t)
                 fila_aux.push_back(0.0);
             
             // Añadimos fila construida a la imagen
@@ -156,10 +156,10 @@ void Convolutional::aplicar_padding(vector<vector<vector<float>>> &imagen_3D, in
         // Añadimos padding inferior
         fila_aux.clear();
 
-        for(int j=0; j<imagen_3D[i].size() + pad*2; j++) // pad*2 porque hay padding tanto a la derecha como a la izquierda
+        for(int j=0; j<imagen_3D[i].size() + pad*2; ++j) // pad*2 porque hay padding tanto a la derecha como a la izquierda
             fila_aux.push_back(0.0);
         
-        for(int k=0; k<pad; k++)
+        for(int k=0; k<pad; ++k)
             imagen_aux.push_back(fila_aux);
         
         fila_aux.clear();
@@ -206,16 +206,16 @@ void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &inpu
     //a = output;
 
     // Por cada kernel M 
-    for(int img_out=0; img_out<M; img_out++)
-        for(int i=0; i<n_veces; i++)    
-            for(int j=0; j<n_veces; j++)  
+    for(int img_out=0; img_out<M; ++img_out)
+        for(int i=0; i<n_veces; ++i)    
+            for(int j=0; j<n_veces; ++j)  
             {
                 a[img_out][i][j] = 0.0;
                 
                 // Realizar convolución 3D
-                for(int c=0; c<C; c++)
-                    for(int i_k=0; i_k<K; i_k++)
-                        for(int j_k=0; j_k<K; j_k++)
+                for(int c=0; c<C; ++c)
+                    for(int i_k=0; i_k<K; ++i_k)
+                        for(int j_k=0; j_k<K; ++j_k)
                             a[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];                            
 
                 // Sumamos bias a la suma ponderada obtenida
@@ -239,14 +239,14 @@ void Convolutional::reset_gradients(vector<vector<vector<vector<float>>>> &grad_
     // Reset gradientes -------------------------------------------------------------------
     
     // Reset gradiende del bias
-    for(int k=0; k<this->n_kernels; k++)
+    for(int k=0; k<this->n_kernels; ++k)
         grad_bias[k] = 0.0;
 
     // Reset del gradiente de cada peso
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[0].size(); j++)
-            for(int k=0; k<this->w[0][0].size(); k++)
-                for(int l=0; l<this->w[0][0][0].size(); l++)
+    for(int i=0; i<this->w.size(); ++i)
+        for(int j=0; j<this->w[0].size(); ++j)
+            for(int k=0; k<this->w[0][0].size(); ++k)
+                for(int l=0; l<this->w[0][0][0].size(); ++l)
                     grad_w[i][j][k][l] = 0.0;
                 
 }
@@ -272,15 +272,15 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
     int F = this->w.size(), K = this->w[0][0].size(), C = input.size();
 
     // Inicializar input a 0
-    for(int i=0; i<input.size(); i++)
-        for(int j=0; j<input[0].size(); j++)    
-            for(int k=0; k<input[0][0].size(); k++)
+    for(int i=0; i<input.size(); ++i)
+        for(int j=0; j<input[0].size(); ++j)    
+            for(int k=0; k<input[0][0].size(); ++k)
                 grad_input[i][j][k] = 0.0;
 
     // Realizar derivada Y_out/Y_in
-    for(int i=0; i<output.size(); i++)
-        for(int j=0; j<output[0].size(); j++)    
-            for(int k=0; k<output[0][0].size(); k++)
+    for(int i=0; i<output.size(); ++i)
+        for(int j=0; j<output[0].size(); ++j)    
+            for(int k=0; k<output[0][0].size(); ++k)
                 output[i][j][k] = output[i][j][k] * deriv_activationFunction(a[i][j][k]);
     
     // Suponemos nº filas = nº columnas
@@ -288,37 +288,37 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
     int H_out = H-K+1, W_out = W-K+1;
 
     // Convolución entre output y pesos    
-    for(int f=0; f<F; f++)  // Por cada filtro f
+    for(int f=0; f<F; ++f)  // Por cada filtro f
     {
         // Gradiente respecto a entrada
-        for(int i=0; i<H; i++)    
-            for(int j=0; j<W; j++)    
-                for(int c=0; c<C; c++)  // Convolución entre salida y pesos invertidos
-                    for(int i_k=0; i_k<K; i_k++)
-                        for(int j_k=0; j_k<K; j_k++)
+        for(int i=0; i<H; ++i)    
+            for(int j=0; j<W; ++j)    
+                for(int c=0; c<C; ++c)  // Convolución entre salida y pesos invertidos
+                    for(int i_k=0; i_k<K; ++i_k)
+                        for(int j_k=0; j_k<K; ++j_k)
                             if(i-i_k >= 0 && j-j_k >= 0 && i-i_k < H_out && j-j_k < W_out)
                                 grad_input[c][i][j] += output[f][i-i_k][j-j_k] * this->w[f][c][K -1 - i_k][K -1 - j_k];                            
         
         // Gradiente respecto a pesos
-        for(int i=0; i<H_out; i++)    
-            for(int j=0; j<W_out; j++)  
-                for(int c=0; c<C; c++)  // Convolución entre entrada y salida
-                    for(int i_k=0; i_k<this->kernel_fils; i_k++)
-                        for(int j_k=0; j_k<this->kernel_cols; j_k++)
+        for(int i=0; i<H_out; ++i)    
+            for(int j=0; j<W_out; ++j)  
+                for(int c=0; c<C; ++c)  // Convolución entre entrada y salida
+                    for(int i_k=0; i_k<this->kernel_fils; ++i_k)
+                        for(int j_k=0; j_k<this->kernel_cols; ++j_k)
                             grad_w[f][c][i_k][j_k] += input[c][i + i_k][j + j_k] * output[f][i][j];
     }
 
 
     // Gradiente respecto a entrada
-    for(int i=0; i<input.size(); i++)
-        for(int j=0; j<input[0].size(); j++)    
-            for(int k=0; k<input[0][0].size(); k++)
+    for(int i=0; i<input.size(); ++i)
+        for(int j=0; j<input[0].size(); ++j)    
+            for(int k=0; k<input[0][0].size(); ++k)
                 input[i][j][k] = grad_input[i][j][k];
 
     // Calcular el gradiente del bias
-    for(int i=0; i<output.size(); i++)
-        for(int j=0; j<output[0].size(); j++)    
-            for(int k=0; k<output[0][0].size(); k++)
+    for(int i=0; i<output.size(); ++i)
+        for(int j=0; j<output[0].size(); ++j)    
+            for(int k=0; k<output[0][0].size(); ++k)
                 grad_bias[i] += output[i][j][k];
 };
 
@@ -337,7 +337,7 @@ void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<
     mins[thr_id] = this->w[0][0][0][0];
 
     // Buscar máximo y mínimo locales
-    for(int i=0; i<this->w.size(); i++)
+    for(int i=0; i<this->w.size(); ++i)
     {
         // Reparto de carga
         n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
@@ -346,9 +346,9 @@ void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<
             n_imgs = this->w[i].size() - n_imgs * thr_id;
 
         // Cada hebra busca en "n_imgs" pesos
-        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                for(int l=0; l<this->w[i][j][k].size(); l++)
+        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
+            for(int k=0; k<this->w[i][j].size(); ++k)
+                for(int l=0; l<this->w[i][j][k].size(); ++l)
                 {
                     if(maxs[thr_id] < this->w[i][j][k][l])
                         maxs[thr_id] = this->w[i][j][k][l];
@@ -362,7 +362,7 @@ void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<
     // Buscar valor ḿaximo y mínimo globales
     #pragma omp master
     {
-        for(int i=1; i<n_thrs; i++)
+        for(int i=1; i<n_thrs; ++i)
         {
             if(maxs[0] < maxs[i])
                 maxs[0] = maxs[i];
@@ -375,7 +375,7 @@ void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<
 
     // Perform gradient clipping
     float scaling_factor = clip_value / std::max(std::abs(maxs[0]), std::abs(mins[0]));
-    for(int i=0; i<this->w.size(); i++)
+    for(int i=0; i<this->w.size(); ++i)
     {
         // Reparto de carga
         n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
@@ -384,9 +384,9 @@ void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<
             n_imgs = this->w[i].size() - n_imgs * thr_id;
 
         // Cada hebra actualiza "n_imgs" pesos
-        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                for(int l=0; l<this->w[i][j][k].size(); l++)
+        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
+            for(int k=0; k<this->w[i][j].size(); ++k)
+                for(int l=0; l<this->w[i][j][k].size(); ++l)
                     this->w[i][j][k][l] = std::max(std::min(this->w[i][j][k][l] * scaling_factor, clip_value), -clip_value);
     }
 
@@ -403,7 +403,7 @@ void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad
     int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
 
     // Actualizar pesos
-    for(int c=0; c<this->w.size(); c++)
+    for(int c=0; c<this->w.size(); ++c)
     {
         // Reparto de carga
         n_imgs = this->w[c].size() / n_thrs, n_imgs_ant = this->w[c].size() / n_thrs;
@@ -412,9 +412,9 @@ void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad
             n_imgs = this->w[c].size() - n_imgs * thr_id;
 
         // Cada hebra actualiza "n_imgs" pesos
-        for(int k=n_imgs_ant*thr_id; k<n_imgs_ant*thr_id + n_imgs; k++)
-            for(int p=0; p<this->w[c][k].size(); p++)
-                for(int l=0; l<this->w[c][k][p].size(); l++)
+        for(int k=n_imgs_ant*thr_id; k<n_imgs_ant*thr_id + n_imgs; ++k)
+            for(int p=0; p<this->w[c][k].size(); ++p)
+                for(int l=0; l<this->w[c][k][p].size(); ++l)
                     this->w[c][k][p][l] -= this->lr * grad_w[c][k][p][l];
     }
 
@@ -426,7 +426,7 @@ void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad
         n_imgs = this->bias.size() - n_imgs * thr_id;
 
     // Cada hebra actualiza "n_imgs" sesgos
-    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
+    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
         this->bias[j] -= this->lr * grad_bias[j];
 }
 

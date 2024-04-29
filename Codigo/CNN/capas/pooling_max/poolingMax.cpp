@@ -35,23 +35,23 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
     }
 
     // Inicializamos input_copy a 0
-    for(int i=0; i<input_copy.size(); i++)
-    for(int j=0; j<input_copy[0].size(); j++)
-        for(int k=0; k<input_copy[0][0].size(); k++)
+    for(int i=0; i<input_copy.size(); ++i)
+    for(int j=0; j<input_copy[0].size(); ++j)
+        for(int k=0; k<input_copy[0][0].size(); ++k)
             input_copy[i][j][k] = 0.0;
 
     int i_m, j_m;
     bool encontrado;
 
-    for(int m=0; m<M; m++) // Para cada canal
-        for(int h=0; h<n_veces_fils; h++) // Se calcula el nº de desplazamientos del kernel a lo largo del volumen de entrada 3D
-            for(int w=0; w<n_veces_cols; w++)  
+    for(int m=0; m<M; ++m) // Para cada canal
+        for(int h=0; h<n_veces_fils; ++h) // Se calcula el nº de desplazamientos del kernel a lo largo del volumen de entrada 3D
+            for(int w=0; w<n_veces_cols; ++w)  
             {
                 max = numeric_limits<float>::min();
                 encontrado = false;
                 // Para cada subregión, realizar el pooling
-                for(int p=0; p<K; p++)
-                    for(int q=0; q<K; q++)
+                for(int p=0; p<K; ++p)
+                    for(int q=0; q<K; ++q)
                     {
                         if(input[m][h*K + p][w*K + q] > max)
                         {
@@ -79,28 +79,28 @@ void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vec
     int output_fil = 0, output_col = 0;
 
     // Inicializar imagen de entrada a 0
-    for(int i=0; i<input.size(); i++)
-        for(int j=0; j<input[0].size(); j++)
-            for(int k=0; k<input[0][0].size(); k++)
+    for(int i=0; i<input.size(); ++i)
+        for(int j=0; j<input[0].size(); ++j)
+            for(int k=0; k<input[0][0].size(); ++k)
                 input[i][j][k] = 0.0;
 
     // Para cada imagen 2D
-    for(int t=0; t<n_canales; t++)
+    for(int t=0; t<n_canales; ++t)
     {
         output_fil = 0;
-        for(int i=0; i<n_veces_fils*kernel_fils; i+=kernel_fils, output_fil++)
+        for(int i=0; i<n_veces_fils*kernel_fils; i+=kernel_fils, ++output_fil)
         {
             output_col = 0;
             // En este momento imagenes_2D[t][i][j] contiene la casilla inicial del kernel en la imagen t para realizar el pooling
             // Casilla inicial = esquina superior izquierda
-            for(int j=0; j<n_veces_cols*kernel_cols; j+=kernel_cols, output_col++)  
+            for(int j=0; j<n_veces_cols*kernel_cols; j+=kernel_cols, ++output_col)  
             {
                 max = output[t][pad_output + output_fil][pad_output + output_col];
 
                 // Para cada subregión, realizar el pooling
-                for(int k=i; k<(i+kernel_fils)  && k<this->image_fils; k++)
+                for(int k=i; k<(i+kernel_fils)  && k<this->image_fils; ++k)
                 {
-                    for(int h=j; h<(j+kernel_cols) && h<this->image_cols; h++)
+                    for(int h=j; h<(j+kernel_cols) && h<this->image_cols; ++h)
                     {
                         // Si es el valor máximo, dejarlo como estaba
                         if(input_copy[t][k][h] != 0)

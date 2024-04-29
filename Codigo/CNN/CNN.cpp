@@ -47,7 +47,7 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
     Convolutional conv1(capas_conv[0][0], capas_conv[0][1], capas_conv[0][2], img_in, lr);
 
     // Inicializar capas convolucionales y maxpool --------------------------------------------
-    for(int i=0; i<n_capas_conv; i++)
+    for(int i=0; i<n_capas_conv; ++i)
     {   
         if(i == 0) 
             conv1.aplicar_padding(img_in, padding[i]);
@@ -58,21 +58,18 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
         W_out = img_in[0][0].size() - capas_conv[i][2] + 1;
 
         v_1D.clear();
-        for(int j=0; j<W_out; j++)
-        {
+        for(int j=0; j<W_out; ++j)
             v_1D.push_back(0.0);
-        }
+        
         v_2D.clear();
-        for(int j=0; j<H_out; j++)
-        {
+        for(int j=0; j<H_out; ++j)
             v_2D.push_back(v_1D);
-        }
+        
 
         img_out.clear();
-        for(int j=0; j<capas_conv[i][0]; j++)
-        {
+        for(int j=0; j<capas_conv[i][0]; ++j)
             img_out.push_back(v_2D);
-        }
+        
         
         this->outputs.push_back(img_out);
 
@@ -94,13 +91,13 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
         v_2D.clear();
         img_out.clear();
 
-        for(int j=0; j<W_out; j++)
+        for(int j=0; j<W_out; ++j)
             v_1D.push_back(0.0);
 
-        for(int j=0; j<H_out; j++)
+        for(int j=0; j<H_out; ++j)
             v_2D.push_back(v_1D);
 
-        for(int j=0; j<capas_conv[i][0]; j++)
+        for(int j=0; j<capas_conv[i][0]; ++j)
             img_out.push_back(v_2D);
         
 
@@ -157,7 +154,7 @@ void CNN::leer_imagenes()
     this->train_labels.clear();
 
     // Leer imágenes
-    for(int p=1; p<n_imagenes; p++)
+    for(int p=1; p<n_imagenes; ++p)
     {
         // Leemos perros
         string ruta_ini = "../fotos/gatos_perros/training_set/dogs/dog.";
@@ -171,9 +168,9 @@ void CNN::leer_imagenes()
         cargar_imagen_en_vector(image, imagen_k1);
 
         // Normalizar imagen
-        for(int i=0; i<imagen_k1.size(); i++)
-            for(int j=0; j<imagen_k1[0].size(); j++)
-                for(int k=0; k<imagen_k1[0][0].size(); k++)
+        for(int i=0; i<imagen_k1.size(); ++i)
+            for(int j=0; j<imagen_k1[0].size(); ++j)
+                for(int k=0; k<imagen_k1[0][0].size(); ++k)
                     imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255;
                 
             
@@ -201,9 +198,9 @@ void CNN::leer_imagenes()
         cargar_imagen_en_vector(image, imagen_k1);
 
         // Normalizar imagen
-        for(int i=0; i<imagen_k1.size(); i++)
-            for(int j=0; j<imagen_k1[0].size(); j++)
-                for(int k=0; k<imagen_k1[0][0].size(); k++)
+        for(int i=0; i<imagen_k1.size(); ++i)
+            for(int j=0; j<imagen_k1[0].size(); ++j)
+                for(int k=0; k<imagen_k1[0][0].size(); ++k)
                     imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255;
                 
             
@@ -233,17 +230,17 @@ void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
     string ruta_ini, ruta;
 
     // Crear el vector y
-    for(int i=0; i<n_clases; i++)
+    for(int i=0; i<n_clases; ++i)
         y_1D.push_back(0.0);
 
     // Leer n_imagenes de la clase c
-    for(int c=0; c<n_clases; c++)
+    for(int c=0; c<n_clases; ++c)
     {
         // Establecer etiqueta one-hot para la clase i
         y_1D[c] = 1.0;
 
         // Leer imágenes
-        for(int p=1; p<n_imagenes; p++)
+        for(int p=1; p<n_imagenes; ++p)
         {
             ruta_ini = "../fotos/mnist/training/";
             ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".jpg";
@@ -256,9 +253,9 @@ void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
             cargar_imagen_en_vector(image, imagen_k1);
 
             // Normalizar imagen
-            for(int i=0; i<imagen_k1.size(); i++)
-                for(int j=0; j<imagen_k1[0].size(); j++)
-                    for(int k=0; k<imagen_k1[0][0].size(); k++)
+            for(int i=0; i<imagen_k1.size(); ++i)
+                for(int j=0; j<imagen_k1[0].size(); ++j)
+                    for(int k=0; k<imagen_k1[0][0].size(); ++k)
                         imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255.0;
 
             // Aplicamos padding a la imagen de entrada
@@ -290,18 +287,18 @@ void CNN::leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagen
     string ruta_ini, ruta;
 
     // Crear el vector y
-    for(int i=0; i<n_clases; i++)
+    for(int i=0; i<n_clases; ++i)
         y_1D.push_back(0.0);
 
     // TRAIN ------------------------------------------------------------------------
     // Leer n_imagenes de la clase c
-    for(int c=0; c<n_clases; c++)
+    for(int c=0; c<n_clases; ++c)
     {
         // Establecer etiqueta one-hot para la clase i
         y_1D[c] = 1.0;
 
         // Leer imágenes
-        for(int p=1; p<n_imagenes_train; p++)
+        for(int p=1; p<n_imagenes_train; ++p)
         {
             ruta_ini = "../fotos/cifar10/train/";
             ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".png";
@@ -314,9 +311,9 @@ void CNN::leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagen
             cargar_imagen_en_vector(image, imagen_k1);
 
             // Normalizar imagen
-            for(int i=0; i<imagen_k1.size(); i++)
-                for(int j=0; j<imagen_k1[0].size(); j++)
-                    for(int k=0; k<imagen_k1[0][0].size(); k++)
+            for(int i=0; i<imagen_k1.size(); ++i)
+                for(int j=0; j<imagen_k1[0].size(); ++j)
+                    for(int k=0; k<imagen_k1[0][0].size(); ++k)
                         imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255.0;
 
             // Aplicamos padding a la imagen de entrada
@@ -336,13 +333,13 @@ void CNN::leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagen
     
     // TEST ------------------------------------------------------------------------
     // Leer n_imagenes de la clase c
-    for(int c=0; c<n_clases; c++)
+    for(int c=0; c<n_clases; ++c)
     {
         // Establecer etiqueta one-hot para la clase i
         y_1D[c] = 1.0;
 
         // Leer imágenes
-        for(int p=1; p<n_imagenes_test; p++)
+        for(int p=1; p<n_imagenes_test; ++p)
         {
             ruta_ini = "../fotos/cifar10/test/";
             ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".png";
@@ -355,9 +352,9 @@ void CNN::leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagen
             cargar_imagen_en_vector(image, imagen_k1);
 
             // Normalizar imagen
-            for(int i=0; i<imagen_k1.size(); i++)
-                for(int j=0; j<imagen_k1[0].size(); j++)
-                    for(int k=0; k<imagen_k1[0][0].size(); k++)
+            for(int i=0; i<imagen_k1.size(); ++i)
+                for(int j=0; j<imagen_k1[0].size(); ++j)
+                    for(int k=0; k<imagen_k1[0][0].size(); ++k)
                         imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255.0;
 
             // Aplicamos padding a la imagen de entrada
@@ -389,7 +386,7 @@ void CNN::mostrar_arquitectura()
     cout << "Imagen inicial, dimensiones: " << img_in.size() << "x" <<  img_in[0].size() << "x" << img_in[0][0].size() << endl;
 
     // Inicializar capas convolucionales y maxpool --------------------------------------------
-    for(int i=0; i<n_capas_conv; i++)
+    for(int i=0; i<n_capas_conv; ++i)
     {
         // Capas convolucionales ------------------------------------------------
         conv_a = this->outputs[i*2];
@@ -421,23 +418,23 @@ void CNN::mostrar_arquitectura()
 */
 void CNN::padding_interno(vector<vector<vector<float>>> &input, const int &pad)
 {
-    for(int i=0; i<input.size(); i++)
+    for(int i=0; i<input.size(); ++i)
     {
         // Primeras "pad" filas se igualan a 0.0
-        for(int j=0; j<pad; j++)
-            for(int k=0; k<input[i].size(); k++)
+        for(int j=0; j<pad; ++j)
+            for(int k=0; k<input[i].size(); ++k)
             input[i][j][k] = 0.0; 
 
         // Últimas "pad" filas se igualan a 0.0
         for(int j=input[i].size()-1; j>=input[i].size() - pad; j--)
-            for(int k=0; k<input[i].size(); k++)
+            for(int k=0; k<input[i].size(); ++k)
             input[i][j][k] = 0.0; 
         
         // Por cada fila
-        for(int k=0; k<input[i].size(); k++)
+        for(int k=0; k<input[i].size(); ++k)
         {
             // Primeras "pad" casillas se igualan a 0.0
-            for(int j=0; j<pad; j++)
+            for(int j=0; j<pad; ++j)
                 input[i][k][j] = 0.0;
 
             // Últimas "pad" casillas se igualan a 0.0
@@ -467,11 +464,11 @@ void CNN::train(int epocas, int mini_batch)
     // Inicializar índices
     //-------------------------------------------------
     // Inicializar vector de índices
-    for(int i=0; i<n; i++)
+    for(int i=0; i<n; ++i)
         indices[i] = i;
 
     // Inicializar tamaño de mini-batches
-    for(int i=0; i<M; i++)
+    for(int i=0; i<M; ++i)
         tam_batches.push_back(mini_batch);
     
     // Último batch puede tener distinto tamaño al resto
@@ -479,7 +476,7 @@ void CNN::train(int epocas, int mini_batch)
         tam_batches.push_back(n % mini_batch);   
 
     // Inicializar batch de cada hebra
-    for(int i=0; i<n_thrs; i++)
+    for(int i=0; i<n_thrs; ++i)
         batch_thr[i] = batch;
 
     //-------------------------------------------------
@@ -487,7 +484,7 @@ void CNN::train(int epocas, int mini_batch)
     //-------------------------------------------------
 
     // Capas convolucionales ---------------------------
-    for(int i=0; i<this->n_capas_conv; i++)
+    for(int i=0; i<this->n_capas_conv; ++i)
     {
         // Gradientes
         conv_grads_w[i] = this->convs[i].get_pesos();
@@ -501,7 +498,7 @@ void CNN::train(int epocas, int mini_batch)
         pools_out[i] = this->outputs[i*2+1];
     }
 
-    for(int i=0; i<mini_batch; i++)
+    for(int i=0; i<mini_batch; ++i)
     {
         // Capas convolucionales
         convs_outs[i] = convs_out;
@@ -512,7 +509,7 @@ void CNN::train(int epocas, int mini_batch)
 
 
 
-    for(int i=0; i<n_thrs; i++)
+    for(int i=0; i<n_thrs; ++i)
     {
         // Capas convolucionales
         convs_outs_thr[i] = convs_outs;
@@ -537,7 +534,7 @@ void CNN::train(int epocas, int mini_batch)
 
     #pragma omp parallel num_threads(n_thrs)
     {
-        for(int ep=0; ep<epocas; ep++)
+        for(int ep=0; ep<epocas; ++ep)
         {
             int thr_id = omp_get_thread_num();
             int n_imgs, n_imgs_ant;
@@ -553,7 +550,7 @@ void CNN::train(int epocas, int mini_batch)
             #pragma omp barrier
 
             // ForwardPropagation de cada batch -----------------------------------------------------------------------
-            for(int i=0; i<tam_batches.size(); i++)
+            for(int i=0; i<tam_batches.size(); ++i)
             {
                 // Crear el batch para cada hebra ----------------------
                 n_imgs_batch[thr_id] = tam_batches[i] / n_thrs, n_imgs_batch_ant[thr_id] = n_imgs_batch[thr_id]; 
@@ -565,7 +562,7 @@ void CNN::train(int epocas, int mini_batch)
                     batch_thr[thr_id][j] = indices[mini_batch*i + n_imgs_batch_ant[thr_id]*thr_id + j];   
 
                 // ---------------------------------------------------------------------------------------
-                for(int img=0; img<n_imgs_batch[thr_id]; img++)
+                for(int img=0; img<n_imgs_batch[thr_id]; ++img)
                 {
                     // Primera capa convolucional y maxpool -----------------------
                     // Realizar los cálculos
@@ -581,7 +578,7 @@ void CNN::train(int epocas, int mini_batch)
 
 
                     // Resto de capas convolucionales y maxpool ----------------------------
-                    for(int i=1; i<this->n_capas_conv; i++)
+                    for(int i=1; i<this->n_capas_conv; ++i)
                     {
                         // Capa convolucional 
                         this->convs[i].forwardPropagation(plms_outs_thr[thr_id][img][i-1], convs_outs_thr[thr_id][img][i], conv_a_thr[thr_id][img][i]);
@@ -604,14 +601,14 @@ void CNN::train(int epocas, int mini_batch)
                 // ---------------------------------------------------------------------------------------------------------------------------
 
                 // Inicializar gradientes de pesos
-                for(int j=0; j<grads_pesos_fully[thr_id].size(); j++)
-                    for(int k=0; k<grads_pesos_fully[thr_id][j].size(); k++)
-                        for(int p=0; p<grads_pesos_fully[thr_id][j][k].size(); p++)
+                for(int j=0; j<grads_pesos_fully[thr_id].size(); ++j)
+                    for(int k=0; k<grads_pesos_fully[thr_id][j].size(); ++k)
+                        for(int p=0; p<grads_pesos_fully[thr_id][j][k].size(); ++p)
                             grads_pesos_fully[thr_id][j][k][p] = 0.0;
 
                 // Inicializar gradientes de sesgos
-                for(int j=0; j<grads_bias_fully[thr_id].size(); j++)
-                    for(int k=0; k<grads_bias_fully[thr_id][j].size(); k++)
+                for(int j=0; j<grads_bias_fully[thr_id].size(); ++j)
+                    for(int k=0; k<grads_bias_fully[thr_id][j].size(); ++k)
                         grads_bias_fully[thr_id][j][k] = 0.0;
 
                 // Relaizar propagación hacia delante y hacia detrás en la capa totalmente conectada
@@ -628,11 +625,11 @@ void CNN::train(int epocas, int mini_batch)
                 // ----------------------------------------------
 
                 // Inicializar gradientes a 0
-                for(int i=0; i<this->n_capas_conv; i++)
+                for(int i=0; i<this->n_capas_conv; ++i)
                     this->convs[i].reset_gradients(convs_grads_w[thr_id][i], convs_grads_bias[thr_id][i]);
 
                 // Cálculo de gradientes respecto a cada parámetro 
-                for(int img=0; img<n_imgs_batch[thr_id]; img++)
+                for(int img=0; img<n_imgs_batch[thr_id]; ++img)
                 {
                     img_aux[thr_id] = this->train_imgs[batch_thr[thr_id][img]];
 
@@ -673,16 +670,16 @@ void CNN::train(int epocas, int mini_batch)
                 // ----------------------------------------------
                 // ----------------------------------------------
                 // Sumar gradientes de cada batch
-                for(int c=1; c<grads_pesos_fully.size(); c++)
+                for(int c=1; c<grads_pesos_fully.size(); ++c)
                 {
                     n_imgs = grads_pesos_fully[c].size() / n_thrs, n_imgs_ant = grads_pesos_fully[c].size() / n_thrs;
 
                     if(thr_id == n_thrs - 1)
                         n_imgs = grads_pesos_fully[c].size() - n_imgs * thr_id;
 
-                    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
-                        for(int k=0; k<grads_pesos_fully[c][j].size(); k++)
-                            for(int p=0; p<grads_pesos_fully[c][j][k].size(); p++)
+                    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
+                        for(int k=0; k<grads_pesos_fully[c][j].size(); ++k)
+                            for(int p=0; p<grads_pesos_fully[c][j][k].size(); ++p)
                                 grads_pesos_fully[0][j][k][p] += grads_pesos_fully[c][j][k][p];       
                 }
 
@@ -692,9 +689,9 @@ void CNN::train(int epocas, int mini_batch)
                 if(thr_id == n_thrs - 1)
                     n_imgs = grads_pesos_fully[0].size() - n_imgs * thr_id;
 
-                for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
-                    for(int k=0; k<grads_pesos_fully[0][j].size(); k++)
-                        for(int p=0; p<grads_pesos_fully[0][j][k].size(); p++)
+                for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
+                    for(int k=0; k<grads_pesos_fully[0][j].size(); ++k)
+                        for(int p=0; p<grads_pesos_fully[0][j][k].size(); ++p)
                             grads_pesos_fully[0][j][k][p] /= tam_batches[i];
 
                 // ----------------------------------------------
@@ -702,15 +699,15 @@ void CNN::train(int epocas, int mini_batch)
                 // ----------------------------------------------
                 // ----------------------------------------------
                 // Sumar gradientes
-                for(int c=1; c<grads_bias_fully.size(); c++)
+                for(int c=1; c<grads_bias_fully.size(); ++c)
                 {
                     n_imgs = grads_bias_fully[c].size() / n_thrs, n_imgs_ant = grads_bias_fully[c].size() / n_thrs;
 
                     if(thr_id == n_thrs - 1)
                         n_imgs = grads_bias_fully[c].size() - n_imgs * thr_id;
 
-                    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
-                        for(int k=0; k<grads_bias_fully[c][j].size(); k++)
+                    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
+                        for(int k=0; k<grads_bias_fully[c][j].size(); ++k)
                             grads_bias_fully[0][j][k] += grads_bias_fully[c][j][k];
                 }
 
@@ -720,8 +717,8 @@ void CNN::train(int epocas, int mini_batch)
                 if(thr_id == n_thrs - 1)
                     n_imgs = grads_bias_fully[0].size() - n_imgs * thr_id;
 
-                for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
-                    for(int k=0; k<grads_bias_fully[0][j].size(); k++)
+                for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
+                    for(int k=0; k<grads_bias_fully[0][j].size(); ++k)
                             grads_bias_fully[0][j][k] /= tam_batches[i];
 
 
@@ -730,18 +727,18 @@ void CNN::train(int epocas, int mini_batch)
                 // ----------------------------------------------
                 // ----------------------------------------------
                 // Sumar gradientes
-                for(int i_1=1; i_1<convs_grads_w.size(); i_1++)
+                for(int i_1=1; i_1<convs_grads_w.size(); ++i_1)
                 {
                     n_imgs = convs_grads_w[i_1].size() / n_thrs, n_imgs_ant = convs_grads_w[i_1].size() / n_thrs;
 
                     if(thr_id == n_thrs - 1)
                         n_imgs = convs_grads_w[i_1].size() - n_imgs * thr_id;
 
-                    for(int i_2=n_imgs_ant*thr_id; i_2<n_imgs_ant*thr_id + n_imgs; i_2++)
-                        for(int i_3=0; i_3<convs_grads_w[i_1][i_2].size(); i_3++)
-                            for(int i_4=0; i_4<convs_grads_w[i_1][i_2][i_3].size(); i_4++)
-                                for(int i_5=0; i_5<convs_grads_w[i_1][i_2][i_3][i_4].size(); i_5++)
-                                    for(int i_6=0; i_6<convs_grads_w[i_1][i_2][i_3][i_4][i_5].size(); i_6++)
+                    for(int i_2=n_imgs_ant*thr_id; i_2<n_imgs_ant*thr_id + n_imgs; ++i_2)
+                        for(int i_3=0; i_3<convs_grads_w[i_1][i_2].size(); ++i_3)
+                            for(int i_4=0; i_4<convs_grads_w[i_1][i_2][i_3].size(); ++i_4)
+                                for(int i_5=0; i_5<convs_grads_w[i_1][i_2][i_3][i_4].size(); ++i_5)
+                                    for(int i_6=0; i_6<convs_grads_w[i_1][i_2][i_3][i_4][i_5].size(); ++i_6)
                                         convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] += convs_grads_w[i_1][i_2][i_3][i_4][i_5][i_6];
                 }
 
@@ -751,11 +748,11 @@ void CNN::train(int epocas, int mini_batch)
                 if(thr_id == n_thrs - 1)
                     n_imgs = convs_grads_w[0].size() - n_imgs * thr_id;
 
-                for(int i_2=n_imgs_ant*thr_id; i_2<n_imgs_ant*thr_id + n_imgs; i_2++)
-                    for(int i_3=0; i_3<convs_grads_w[0][i_2].size(); i_3++)
-                        for(int i_4=0; i_4<convs_grads_w[0][i_2][i_3].size(); i_4++)
-                            for(int i_5=0; i_5<convs_grads_w[0][i_2][i_3][i_4].size(); i_5++)
-                                for(int i_6=0; i_6<convs_grads_w[0][i_2][i_3][i_4][i_5].size(); i_6++)
+                for(int i_2=n_imgs_ant*thr_id; i_2<n_imgs_ant*thr_id + n_imgs; ++i_2)
+                    for(int i_3=0; i_3<convs_grads_w[0][i_2].size(); ++i_3)
+                        for(int i_4=0; i_4<convs_grads_w[0][i_2][i_3].size(); ++i_4)
+                            for(int i_5=0; i_5<convs_grads_w[0][i_2][i_3][i_4].size(); ++i_5)
+                                for(int i_6=0; i_6<convs_grads_w[0][i_2][i_3][i_4][i_5].size(); ++i_6)
                                     convs_grads_w[0][i_2][i_3][i_4][i_5][i_6] /= tam_batches[i];
 
 
@@ -764,15 +761,15 @@ void CNN::train(int epocas, int mini_batch)
                 // ----------------------------------------------
                 // ----------------------------------------------
                 // Sumar gradientes
-                for(int c=1; c<convs_grads_bias.size(); c++)
+                for(int c=1; c<convs_grads_bias.size(); ++c)
                 {
                     n_imgs = convs_grads_bias[c].size() / n_thrs, n_imgs_ant = convs_grads_bias[c].size() / n_thrs;
 
                     if(thr_id == n_thrs - 1)
                         n_imgs = convs_grads_bias[c].size() - n_imgs * thr_id;
 
-                    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
-                        for(int k=0; k<convs_grads_bias[c][j].size(); k++)
+                    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
+                        for(int k=0; k<convs_grads_bias[c][j].size(); ++k)
                             convs_grads_bias[0][j][k] += convs_grads_bias[c][j][k];
                 }
 
@@ -782,8 +779,8 @@ void CNN::train(int epocas, int mini_batch)
                 if(thr_id == n_thrs - 1)
                     n_imgs = convs_grads_bias[0].size() - n_imgs * thr_id;
 
-                for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; j++)
-                    for(int k=0; k<convs_grads_bias[0][j].size(); k++)
+                for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
+                    for(int k=0; k<convs_grads_bias[0][j].size(); ++k)
                             convs_grads_bias[0][j][k] /= tam_batches[i];
 
                 #pragma omp barrier
@@ -791,7 +788,7 @@ void CNN::train(int epocas, int mini_batch)
                 // Actualizar parámetros --------------------------------------------------------------------
 
                 // Actualizar parámetros de capas convolucionales 
-                for(int i=0; i<this->n_capas_conv; i++)
+                for(int i=0; i<this->n_capas_conv; ++i)
                     this->convs[i].actualizar_grads(convs_grads_w[0][i], convs_grads_bias[0][i]);
 
 
@@ -802,7 +799,7 @@ void CNN::train(int epocas, int mini_batch)
                 (*this->fully).escalar_pesos(2, max_fully,min_fully);
                 
                 // Actualizar parámetros de capas convolucionales 
-                for(int j=0; j<this->n_capas_conv; j++)
+                for(int j=0; j<this->n_capas_conv; ++j)
                     this->convs[j].escalar_pesos(2, max_conv[j], min_conv[j]);
                 
 
@@ -855,12 +852,12 @@ void CNN::evaluar_modelo()
     #pragma omp barrier
 
     // Cada hebra realiza la propagación hacia delante de una porción de imágenes
-    for(int img=n_imgs_ant*thr_id, k=0; img<n_imgs_ant*thr_id + n_imgs; img++, k++)
+    for(int img=n_imgs_ant*thr_id, k=0; img<n_imgs_ant*thr_id + n_imgs; ++img, ++k)
     {
         img_in = this->train_imgs[img];
 
         // Capas convolucionales y maxpool ----------------------------
-        for(int i=0; i<this->n_capas_conv; i++)
+        for(int i=0; i<this->n_capas_conv; ++i)
         {
             // Capa convolucional 
             img_out = this->outputs[i*2];
@@ -947,7 +944,7 @@ void CNN::evaluar_modelo_en_test()
         img_in = this->test_imgs[img];
 
         // Capas convolucionales y maxpool ----------------------------
-        for(int i=0; i<this->n_capas_conv; i++)
+        for(int i=0; i<this->n_capas_conv; ++i)
         {
             // Capa convolucional 
             img_out = this->outputs[i*2];
