@@ -283,7 +283,7 @@ void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
     @brief      Leer imágenes de la base de datos CIFAR10
     @return     Se modifican this->train_imgs y this->train_labels
 */
-void CNN::leer_imagenes_cifar10(const int n_imagenes, const int n_clases)
+void CNN::leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagenes_test, const int n_clases)
 {
     vector<vector<vector<float>>> imagen_k1;
     vector<float> v1D, y_1D;
@@ -301,7 +301,7 @@ void CNN::leer_imagenes_cifar10(const int n_imagenes, const int n_clases)
         y_1D[c] = 1.0;
 
         // Leer imágenes
-        for(int p=1; p<n_imagenes; p++)
+        for(int p=1; p<n_imagenes_train; p++)
         {
             ruta_ini = "../fotos/cifar10/train/";
             ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".png";
@@ -342,7 +342,7 @@ void CNN::leer_imagenes_cifar10(const int n_imagenes, const int n_clases)
         y_1D[c] = 1.0;
 
         // Leer imágenes
-        for(int p=1; p<n_imagenes; p++)
+        for(int p=1; p<n_imagenes_test; p++)
         {
             ruta_ini = "../fotos/cifar10/test/";
             ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".png";

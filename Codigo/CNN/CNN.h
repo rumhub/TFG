@@ -32,7 +32,7 @@ class CNN
         // Leer imágenes de entrada
         void leer_imagenes();
         void leer_imagenes_mnist(const int n_imagenes, const int n_clases);
-        void leer_imagenes_cifar10(const int n_imagenes, const int n_clases);
+        void leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagenes_test, const int n_clases);
         
         // Mostrar arquitectura
         void mostrar_arquitectura();
