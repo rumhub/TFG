@@ -16,8 +16,10 @@ class CNN
         FullyConnected *fully;      // Red Fullyconnected
         Flatten * flat;             // Capa flatten
         vector<vector<vector<vector<float>>>> train_imgs;   // Imágenes de entrenamiento
+        vector<vector<vector<vector<float>>>> test_imgs;   // Imágenes de test
         vector<vector<vector<vector<float>>>> outputs;      // Imágenes con las dimensiones del output de capas conv y pooling
         vector<vector<float>> train_labels;             // Etiqueta de cada imagen de training
+        vector<vector<float>> test_labels;             // Etiqueta de cada imagen de test
         vector<int> padding;                        // Nivel de padding en cada capa convolucional
         float lr;                           // Learning rate o Tasa ded Aprendizaje
         int n_capas_conv;                   // Número de capas convolucionales
@@ -40,6 +42,7 @@ class CNN
         
         // Evaluar el modelo
         void evaluar_modelo();
+        void evaluar_modelo_en_test();
 
         // Modificar imagen
         void padding_interno(vector<vector<vector<float>>> &input, const int &pad);
