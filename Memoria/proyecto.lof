@@ -65,4 +65,5 @@
 \contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{60}{figure.caption.135}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{62}{figure.caption.136}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Imagen de una agrupación con una entrada estándar frente a una agrupación con una entrada procedente de GEMM}}{64}{figure.caption.137}%
 \addvspace {10\p@ }

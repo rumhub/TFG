@@ -15,3 +15,12 @@ En la figura \ref{fig:conv_std_vs_gemm} se muestra una comparativa visual entre 
 Mientras que el método estándar requiere de varias iteraciones para calcular cada valor del volumen de salida Y (figura \ref{fig:forward_prop_convolucional}), la alternativa que presenta GEMM permite que cada valor sea el resultado de multiplicar una fila de pesos (K o G en la figura \ref{fig:conv_std_vs_gemm}) por una columna de X\_unroll. \cite{Programming_Massively} \\
 De esta forma, con N kernels de tamaño K*K y un volumen de entrada con C canales de profundidad, una multiplicación matricial entre la matriz de pesos $M_1$ con N filas y $K^2*C$ columnas, y X\_unroll con $K^2*C$ filas y K*K columnas, produce el mismo volumen de salida Y que una convolución ordinaria con N kernels distintos. \\
 Por último, aunque se haya omitido para simplificar la comprensión del método planteado, tras realizar dicha multiplicación matricial se debe sumar el sesgo y aplicar la función de activación correspondiente a cada elemento del volumen de salida Y.
+
+\subsection{Paso de capa convolucional a capa de agrupación}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/maxpool_std_vs_gemm.jpg}  
+	\caption{Imagen de una agrupación con una entrada estándar frente a una agrupación con una entrada procedente de GEMM}
+	\label{fig:maxpool_std_vs_gemm}
+\end{figure}
