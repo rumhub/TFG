@@ -8,45 +8,49 @@ Database file #1: bibliografia/bibliografia.bib
 Warning--empty publisher in Learning_From_Data
 Warning--empty publisher in padding_2
 Warning--empty booktitle in CNN_parallel_Stanford
-You've used 33 entries,
+Too many commas in name 1 of "Xiaqing Li†‡§, Guangyan Zhang†‡§, H. Howie Huang¶, Zhufan Wang†‡, Weimin Zheng†‡ †Department of Computer Science and Technology, Tsinghua University ‡Tsinghua National Laboratory for Information Science and Technology §State Key Lab of Mathematical Engineering and Advanced Computing, Wuxi, China ¶Department of Electrical and Computer Engineering, George Washington University" for entry conv_GEMM_FFT_comparacion
+while executing---line 944 of file unsrt.bst
+Too many commas in name 1 of "Xiaqing Li†‡§, Guangyan Zhang†‡§, H. Howie Huang¶, Zhufan Wang†‡, Weimin Zheng†‡ †Department of Computer Science and Technology, Tsinghua University ‡Tsinghua National Laboratory for Information Science and Technology §State Key Lab of Mathematical Engineering and Advanced Computing, Wuxi, China ¶Department of Electrical and Computer Engineering, George Washington University" for entry conv_GEMM_FFT_comparacion
+while executing---line 944 of file unsrt.bst
+You've used 34 entries,
             1791 wiz_defined-function locations,
-            610 strings with 9786 characters,
-and the built_in function-call counts, 4767 in all, are:
-= -- 384
-> -- 150
+            615 strings with 10348 characters,
+and the built_in function-call counts, 4953 in all, are:
+= -- 396
+> -- 167
 < -- 2
-+ -- 71
-- -- 38
-* -- 97
-:= -- 699
-add.period$ -- 97
-call.type$ -- 33
-change.case$ -- 32
++ -- 77
+- -- 43
+* -- 109
+:= -- 735
+add.period$ -- 100
+call.type$ -- 34
+change.case$ -- 33
 chr.to.int$ -- 0
-cite$ -- 36
-duplicate$ -- 215
-empty$ -- 635
-format.name$ -- 38
-if$ -- 1135
+cite$ -- 37
+duplicate$ -- 223
+empty$ -- 649
+format.name$ -- 43
+if$ -- 1173
 int.to.chr$ -- 0
-int.to.str$ -- 33
-missing$ -- 9
-newline$ -- 166
-num.names$ -- 31
-pop$ -- 225
+int.to.str$ -- 34
+missing$ -- 10
+newline$ -- 171
+num.names$ -- 32
+pop$ -- 228
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 125
+skip$ -- 128
 stack$ -- 0
 substring$ -- 56
-swap$ -- 52
+swap$ -- 53
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 3
-while$ -- 35
-width$ -- 35
-write$ -- 332
-(There were 3 warnings)
+while$ -- 36
+width$ -- 36
+write$ -- 342
+(There were 2 error messages)

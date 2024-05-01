@@ -191,17 +191,17 @@ Piotr Skalski.
   \url{https://towardsdatascience.com/lets-code-convolutional-neural-network-in-plain-numpy-ce48e732f5d5}
   [Accessed:24/03/2024].
 
+\bibitem{CNN_parallel_Stanford}
+Vishakh Hegde and Sheema Usmani.
+\newblock Parallel and distributed deep learning.
+\newblock 2016.
+
 \bibitem{CNN_parallel_International_Conference}
 Sunwoo Lee, Dipendra Jha, Ankit Agrawal, Alok Choudhary, and Wei-keng Liao.
 \newblock Parallel deep convolutional neural network training by exploiting the
   overlapping of computation and communication.
 \newblock In {\em 2017 IEEE 24th International Conference on High Performance
   Computing (HiPC)}, pages 183--192, 2017.
-
-\bibitem{CNN_parallel_Stanford}
-Vishakh Hegde and Sheema Usmani.
-\newblock Parallel and distributed deep learning.
-\newblock 2016.
 
 \bibitem{CNN_parallel_Ome_Weird_Trick}
 Alex Krizhevsky.
@@ -213,5 +213,15 @@ Hide Inada.
 \newblock Calculate cnn backprop with padding and stride set to 2, 2024.
 \newblock \url{https://hideyukiinada.github.io/cnn_backprop_strides2.html}
   [Accessed:01/04/2024].
+
+\bibitem{conv_GEMM_FFT_comparacion}
+H.~Howie Huang¶ Zhufan Wang†‡ Weimin Zheng†‡ †Department of
+  Computer~Science Xiaqing~Li†‡§, Guangyan~Zhang†‡§, Tsinghua
+  University ‡Tsinghua National Laboratory for Information~Science
+  Technology, Technology §State Key~Lab of~Mathematical~Engineering, China
+  ¶Department of~Electrical Advanced~Computing, Wuxi, and George
+  Washington~University Computer~Engineering.
+\newblock Performance analysis of gpu-based convolutional neural networks.
+\newblock {\em International Conference on Parallel Processing}, 2016.
 
 \end{thebibliography}

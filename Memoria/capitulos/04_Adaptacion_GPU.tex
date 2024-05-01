@@ -1,4 +1,17 @@
 \chapter{Adaptación GPU}
 
-\section{GPU en Redes Neuronales Totalmente Conectadas}
-\section{GPU en Redes Neuronales Convolucionales}
+
+\section{Capa convolucional como GEMM}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/conv_std_vs_gemm.jpg}  
+	\caption{Imagen de una convolución estándar frente a una convolución empleando GEMM}
+	\label{fig:conv_std_vs_gemm}
+\end{figure}
+Se trata de un enfoque ampliamente conocido en el mundo de deep learning, empleándolo gran cantidad de librerías del sector como Caffe, Torch-cunn, Theano-CorrMM, o incluso CuDNN. \cite{conv_GEMM_FFT_comparacion} \\
+GEMM permite reducir el tiempo de cómputo requerido en una convolución a cambio de aumentar el espacio necesario para la misma. Este método consiste en ``desenrrollar'' tanto el volumen de entrada X como la matriz de filtros K, además de una serie de duplicaciones de X, de tal forma que cada columna de este nuevo volumen X\_unroll contenga todos los elementos de X implicados en el cálculo de una posición distinta del volumen de salida Y. \\
+En la figura \ref{fig:conv_std_vs_gemm} se muestra una comparativa visual entre una convolución implementada de forma ``estándar'' frente a una con GEMM. \\
+Mientras que el método estándar requiere de varias iteraciones para calcular cada valor del volumen de salida Y (figura \ref{fig:forward_prop_convolucional}), la alternativa que presenta GEMM permite que cada valor sea el resultado de multiplicar una fila de pesos (K o G en la figura \ref{fig:conv_std_vs_gemm}) por una columna de X\_unroll. \cite{Programming_Massively} \\
+De esta forma, con N kernels de tamaño K*K y un volumen de entrada con C canales de profundidad, una multiplicación matricial entre la matriz de pesos $M_1$ con N filas y $K^2*C$ columnas, y X\_unroll con $K^2*C$ filas y K*K columnas, produce el mismo volumen de salida Y que una convolución ordinaria con N kernels distintos. \\
+Por último, aunque se haya omitido para simplificar la comprensión del método planteado, tras realizar dicha multiplicación matricial se debe sumar el sesgo y aplicar la función de activación correspondiente a cada elemento del volumen de salida Y.
