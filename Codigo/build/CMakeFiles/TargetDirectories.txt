@@ -1,3 +1,0 @@
-/home/david/Escritorio/ugr/github/TFG/Codigo/build/CMakeFiles/main.dir
-/home/david/Escritorio/ugr/github/TFG/Codigo/build/CMakeFiles/edit_cache.dir
-/home/david/Escritorio/ugr/github/TFG/Codigo/build/CMakeFiles/rebuild_cache.dir
