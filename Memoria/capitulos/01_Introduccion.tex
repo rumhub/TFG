@@ -1,5 +1,13 @@
 \chapter{Introducción}
 
 \section{Resumen}
+En los inicios, las computadoras empleaban exclusivamente CPUs para llevar a cabo tareas de programación generales. Sin embargo, desde la última década empezaron a surgir otros elementos de procesamiento como las GPUs, las cuales se desarrollaron inicialmente para realizar cálculos gráficos paralelos especializados. Con el tiempo, han ido evolucionando tanto en prestaciones como en versatilidad, permitiendo a día de hoy su uso en tareas de cómputo paralelo de propósito general de alto rendimiento. \\
+Gracias a ello se logró el cambio de sistemas homogéneos a heterogéneos, el cual destaca por ser un logro de gran importancia y considerable magnitud en toda la historia de la computación de alto rendimiento. \\
+La computación homogénea emplea uno o más procesadores de la misma arquitectura para ejecutar una aplicación. Por otro lado, la computación heterogénea no se rige por esas reglas y rompe dicha limitación, empleando con ello un conjunto de arquitecturas distintas para ejecutar una misma aplicación, de tal forma que cada arquitectura se encargue de aquellas tareas para las que se encuentra mejor preparada, obteniendo por ello una mejora notable en cuanto a rendimiento. \\
+En el campo de computación heterogénea destaca el caso de CPU y GPU, pues su conjunto forma una excelente complementación. Mientras que la CPU se encuentra optimizada para tareas dinámicas de ráfagas de cómputo cortas y un flujo de control impredecible, la GPU se especializa justamente en el caso contrario: ráfagas de cómputo altamente demandantes pero con un flujo de control simple. \\
+De esta forma, si una tarea presenta un número reducido de datos, una lógica de control sofisticada y un bajo nivel de paralelismo, se asignará a la CPU. Si por el contrario esta presenta una cantidad exuberante de datos, así como un alto grado de paralelismo en ellos, se asignará a la GPU pues presenta un gran número de núcleos y puede dar soporte a una cantidad de hebras mucho mayor que la posible mediante CPU. \cite{Professional_CUDA_C} \\
+Tal y como se explicará en detalle en secciones posteriores, el patrón de entrenamiento en redes neuronales convolucionales es computacionalmente intensivo y altamente paralelo \cite{Programming_Massively}. Por ello, se adoptará un enfoque de computación heterogénea, con el propósito de acortar los tiempos de ejecución requeridos en dichos entrenamientos.
+
+
 \section{Estado del arte}
 \section{Objetivos}

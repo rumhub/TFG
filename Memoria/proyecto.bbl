@@ -28,6 +28,12 @@ Chamanth mvs.
   \url{https://pub.aimind.so/no-more-confusion-on-backpropagation-7adfc271539f}
   [Accessed:07/03/2024].
 
+\bibitem{Professional_CUDA_C}
+Ty~McKercher John~Cheng, Max~Grossman.
+\newblock {\em Professional Cuda C Programming}.
+\newblock John Wiley and Sons, Inc., 10475 Crosspoint Boulevard, 1 edition,
+  2014.
+
 \bibitem{Programming_Massively}
 Izzat El~Hajj Wen-emi W.Hwu, David~B.kirk.
 \newblock {\em Programming Massively Parallel Processors}.
