@@ -1,4 +1,13 @@
 #include "convolutional.cpp"
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
+#include <cublas_v2.h>
+#include <curand.h>         // Para valores random
+#include <stdlib.h>
+#include <assert.h>
+#include <time.h>
+#include <stdio.h>
+#include <math.h>
 
 // Function to print a matrix
 void printMatrix_vector(const vector<vector<vector<float>>> &X) {
@@ -79,6 +88,35 @@ void multiplyMatrices(float* m1, int rows1, int cols1, float* m2, int cols2, flo
         }
 }
 
+void transposeMatrix(float* matrix, int rows, int cols) {
+    // Allocate a new matrix to hold the transposed data
+    float* transposedMatrix = (float*)malloc(cols * rows * sizeof(float));
+    
+    if (transposedMatrix == nullptr) {
+        cerr << "Memory allocation for transposed matrix failed" << endl;
+        exit(1);
+    }
+
+    // Transpose the matrix
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            // Copy the element from original matrix at position (i, j) to
+            // transposed matrix at position (j, i)
+            transposedMatrix[j * rows + i] = matrix[i * cols + j];
+        }
+    }
+
+    // Copy the transposed data back to the original matrix
+    // This requires the original matrix to be able to hold the new dimensions
+    // i.e., it must have space for 'cols * rows' elements
+    for (int i = 0; i < cols * rows; i++) {
+        matrix[i] = transposedMatrix[i];
+    }
+
+    // Free the allocated memory for the transposed matrix
+    free(transposedMatrix);
+}
+
 int main()
 {
     // -----------------------------------------------------------------------------------------------------
@@ -120,15 +158,25 @@ int main()
     // -----------------------------------------------------------------------------------------------------
     // Método GEMM
     // -----------------------------------------------------------------------------------------------------
-    int n = 3; // Size of the matrix (n x n)
+    // n = Size of the matrix (n x n)
+    int n = 3, C = 2, fils_X_unroll = K*K*C, cols_X_unroll = H_out*W_out, fils_W = n_kernels, cols_W = K*K*C,
+    bytes_X = n * n * C * sizeof(float), bytes_X_unroll = fils_X_unroll * cols_X_unroll *sizeof(float), bytes_kernel_W = cols_W*fils_W * sizeof(float),
+    bytes_kernel_bias = n_kernels * sizeof(float), bytes_result = cols_X_unroll * fils_W * sizeof(float);
 
-    int C = 2;
+    // Reserva de memoria en host
+    float* X = (float*)malloc(bytes_X);
+    float* h_X_unroll = (float*)malloc(bytes_X_unroll);
+    float *h_kernel_W = (float *) malloc(bytes_kernel_W);
+    float *h_kernel_bias = (float *) malloc(bytes_kernel_bias);
+    float *h_result = (float*)malloc(bytes_result);
 
-    float* X = (float*)malloc(n * n * C * sizeof(float));
-    float* X_unroll = (float*)malloc(K*K*C *H_out*W_out *sizeof(float));
-    float *kernel_W = (float *) malloc(K*K*C*n_kernels * sizeof(float));
-    float *kernel_bias = (float *) malloc(n_kernels * sizeof(float));
-    float *result = (float*)malloc(H_out * W_out * n_kernels * sizeof(float));
+    // Reserva de memoria en device
+    float *d_X_unroll, *d_kernel_W, *d_kernel_bias, *d_result;
+    cudaMalloc((void **) &d_X_unroll, bytes_X_unroll);
+    cudaMalloc((void **) &d_kernel_W, bytes_kernel_W);
+    cudaMalloc((void **) &d_kernel_bias, bytes_kernel_bias);
+    cudaMalloc((void **) &d_result, bytes_result);
+
 
     // Inicializar matriz de entrada X
     int cont = 1;
@@ -144,32 +192,64 @@ int main()
         for (int i = 0; i < C; i++) 
             for (int j = 0; j < K; j++) {
                 for (int k = 0; k < K; k++) {
-                    kernel_W[f*C*K*K + i*K*K + j*K + k] = f+1;
+                    h_kernel_W[f*C*K*K + i*K*K + j*K + k] = f+1;
                 }
             }
     
     // Inicializar vector de sesgos
     for (int f = 0; f < n_kernels; f++) 
-        kernel_bias[f] = 0.0;
+        h_kernel_bias[f] = 0.0;
 
     cout << " -------------------------- Método GEMM -------------------------- " << endl;
 
     cout << "Input" << endl;
     printMatrix_3D(X, C, n);
-
-    //cout << "Kernel de pesos" << endl;
-    //printMatrix_4D(kernel_W, n_kernels, C, K);
-    //printMatrix(kernel_W, n_kernels, K*K*C);
-
     
-    unroll(C, n, K, X, X_unroll);
-    //cout << "-------- Unroll ----------:" << endl;
-    //printMatrix(X_unroll, K*K*C, H_out * W_out);
+    unroll(C, n, K, X, h_X_unroll);
 
-    multiplyMatrices(kernel_W, n_kernels, K*K*C, X_unroll, H_out*W_out, result); 
+
+
+
+    // Paso de valores de CPU a GPU
+    cudaMemcpy(d_X_unroll, h_X_unroll, bytes_X_unroll, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_kernel_W, h_kernel_W, bytes_kernel_W, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_kernel_bias, h_kernel_bias, bytes_kernel_bias, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_result, h_result, bytes_result, cudaMemcpyHostToDevice);
+
+    // Factores de escala
+    float alpha = 1.0f;     // Calcular: c = (alpha*a) *b + (beta*c)
+    float beta = 0.0f;
+
+    // cuBLAS handle
+    cublasHandle_t handle;
+    cublasCreate(&handle);
+
+    //multiplyMatrices(h_kernel_W, n_kernels, K*K*C, h_X_unroll, H_out*W_out, h_result); 
+    
+    // (m X n) * (n X k) = (m X k)
+    // Formato: handle, operation, operation, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
+    cublasSgemm(handle, 
+    CUBLAS_OP_T, CUBLAS_OP_T,       // Operaciones con matrices transpuestas
+    fils_W, cols_X_unroll, cols_W,  // ax, by, ay
+    &alpha, 
+    d_kernel_W, cols_W,              // d_a, ay
+    d_X_unroll, cols_X_unroll,        // d_b, by
+    &beta, 
+    d_result, n_kernels);           // d_c, ax
+    
+    // Paso de GPU a CPU
+    cudaMemcpy(h_result, d_result, bytes_result, cudaMemcpyDeviceToHost);
+
+    // Calcular la transpuesta para obtener la estructura original
+    transposeMatrix(h_result, cols_X_unroll, fils_W);
+
+    // Mostrar resultados obtenidos con cuBLAS
     cout << "Output" << endl;
-    printMatrix_3D(result, n_kernels, H_out);
-    
+    printMatrix_3D(h_result, n_kernels, H_out);
 
+    // Liberar memoria
+    free(X); free(h_X_unroll); free(h_kernel_W); free(h_kernel_bias); free(h_result);
+    cudaFree(d_X_unroll); cudaFree(d_kernel_W); cudaFree(d_kernel_bias); cudaFree(d_result);
+    
     return 0;
 }

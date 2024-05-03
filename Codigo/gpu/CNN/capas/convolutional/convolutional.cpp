@@ -331,6 +331,7 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
 */
 void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins)
 {
+    /*
     // Cada hebra busca el máximo y mínimo de su conjunto de datos
     int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
     maxs[thr_id] = this->w[0][0][0][0];
@@ -389,7 +390,7 @@ void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<
                 for(int l=0; l<this->w[i][j][k].size(); ++l)
                     this->w[i][j][k][l] = std::max(std::min(this->w[i][j][k][l] * scaling_factor, clip_value), -clip_value);
     }
-
+    */
 }
 
 /*
@@ -400,6 +401,7 @@ void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<
 */
 void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias)
 {
+    /*
     int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
 
     // Actualizar pesos
@@ -428,6 +430,7 @@ void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad
     // Cada hebra actualiza "n_imgs" sesgos
     for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
         this->bias[j] -= this->lr * grad_bias[j];
+    */
 }
 
 // https://towardsdatascience.com/forward-and-backward-propagation-in-convolutional-neural-networks-64365925fdfa
