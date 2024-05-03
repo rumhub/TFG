@@ -49,4 +49,8 @@ class Convolutional
         vector<vector<vector<vector<float>>>> get_pesos(){return this->w;};
         vector<float> get_bias(){return this->bias;};
         // https://calvinfeng.gitbook.io/machine-learning-notebook/supervised-learning/convolutional-neural-network/convolution_operation
+
+        // Debug
+        void set_w(const vector<vector<vector<vector<float>>>> &w_){this->w = w_;};
+        void set_b(const vector<float> &b){this->bias = b;};
 };
