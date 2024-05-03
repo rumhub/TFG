@@ -6,6 +6,12 @@
 #include "random"
 #include "omp.h"
 
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
+#include <cublas_v2.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 using namespace std;
 
 
@@ -229,6 +235,188 @@ void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &inpu
 
 
 /*
+    @brief      Propagación hacia delante a lo largo de toda la capa convolucional
+    @input      Volumen de entrada 3D
+    @output     Volumen de salida 3D
+    @a          Valor de las neuronas antes de aplicar la función de activación
+    @return     Se modifica @output y @a
+*/
+void Convolutional::forwardPropagationGEMM(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a)
+{
+    // Tamaños
+    int K = kernel_fils, C = input.size(), H = input[0].size(), W = input[0][0].size(), H_out = H -K +1, W_out = W -K +1, 
+        fils_input_unroll = K*K*C, cols_input_unroll = H_out * W_out,                       // Tamaños de la entrada 'desplegada'
+        fils_w = this->n_kernels, cols_w = K*K*C,                                           // Tamaños de los pesos
+        bytes_input = input.size() * input[0].size() * input[0][0].size() * sizeof(float),      // Espacio para la entrada
+        bytes_input_unroll = fils_input_unroll * cols_input_unroll *sizeof(float),          // Espacio para input 'desplegado'
+        bytes_w = fils_w * cols_w * sizeof(float),              // Espacio para pesos
+        bytes_bias = this->n_kernels * sizeof(float),           // Espacio para sesgos
+        bytes_output = cols_input_unroll * fils_w *sizeof(float);              // Espacio para la salida
+
+    // Punteros host
+    float *input_ = (float*)malloc(bytes_input), 
+    *h_input_unroll = (float*)malloc(bytes_input_unroll),
+    *output_ = (float*)malloc(bytes_output),
+    *h_a = (float*)malloc(bytes_output),
+    *h_w = (float*)malloc(bytes_w),
+    *b = (float*)malloc(bytes_bias); 
+
+
+    // Punteros device
+    float *d_input_unroll, *d_a, *d_w; 
+    cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
+    cudaMalloc((void **) &d_a, bytes_output);
+    cudaMalloc((void **) &d_w, bytes_w);
+
+    // Copiar valores a host -----------------------------------
+
+    // Input
+    for(int i = 0; i < C; i++) 
+        for(int j = 0; j < H; j++)
+            for(int k = 0; k < W; k++)
+                input_[i*H*W +j*W +k] = input[i][j][k];
+    
+    // Pesos
+    for(int i = 0; i < this->n_kernels; i++) 
+        for(int j = 0; j < C; j++)
+            for(int kx = 0; kx < K; kx++)
+                for(int ky = 0; ky < K; ky++)
+                    h_w[i*C*K*K + j*K*K + kx*K + ky] = this->w[i][j][kx][ky];
+
+    // Sesgos
+    for(int i = 0; i < this->n_kernels; i++) 
+        b[i] = this->bias[i];
+
+    this->unroll(C, H, K, input_, h_input_unroll);
+
+    // Copiar de CPU a GPU
+    cudaMemcpy(d_input_unroll, h_input_unroll, bytes_input_unroll, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_a, h_a, bytes_output, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_w, h_w, bytes_w, cudaMemcpyHostToDevice);
+
+    // Factores de escala
+    float alpha = 1.0f;     // Calcular: c = (alpha*a) *b + (beta*c)
+    float beta = 0.0f;
+
+    // cuBLAS handle
+    cublasHandle_t handle;
+    cublasCreate(&handle);
+
+    // (m X n) * (n X k) = (m X k)
+    // Formato: handle, operation, operation, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
+    cublasSgemm(handle, 
+    CUBLAS_OP_T, CUBLAS_OP_T,       // Operaciones con matrices transpuestas
+    fils_w, cols_input_unroll, cols_w,  // ax, by, ay
+    &alpha, 
+    d_w, cols_w,              // d_a, ay
+    d_input_unroll, cols_input_unroll,        // d_b, by
+    &beta, 
+    d_a, this->n_kernels);           // d_c, ax
+
+    // Paso de GPU a CPU
+    cudaMemcpy(h_a, d_a, bytes_output, cudaMemcpyDeviceToHost);
+
+    // Calcular la transpuesta para obtener la estructura original
+    this->matrizTranspuesta(h_a, cols_input_unroll, fils_w);
+
+    // Sumar bias
+    for(int i = 0; i < this->n_kernels; i++) 
+        for(int j = 0; j < H_out; j++)
+            for(int k = 0; k < W_out; k++)
+                h_a[i*H_out*W_out +j*W_out +k] += b[i];
+
+    // Aplicar función de activación
+    for(int i = 0; i < this->n_kernels; i++) 
+        for(int j = 0; j < H_out; j++)
+            for(int k = 0; k < W_out; k++)
+                output_[i*H_out*W_out +j*W_out +k] = activationFunction(h_a[i*H_out*W_out +j*W_out +k]);
+
+    // Copiar valores de salida
+    for(int i = 0; i < this->n_kernels; i++) 
+        for(int j = 0; j < H_out; j++)
+            for(int k = 0; k < W_out; k++)
+                output[i][j][k] = output_[i*H_out*W_out +j*W_out +k];
+    
+
+    // Liberar memoria
+    free(input_); free(h_input_unroll); free(output_); free(h_a); free(h_w); free(b);
+    cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w);
+};
+
+
+void Convolutional::unroll(int C, int n, int K, float *X, float *X_unroll){
+    int H_out = n-K+1;
+    int W_out = n-K+1;
+    int w_base;
+    int W = H_out * W_out;
+
+    for(int c=0; c<C; c++)
+    {
+        w_base = c * (K*K);
+        for(int p=0; p<K; p++)
+            for(int q=0; q<K; q++)
+                for(int h=0; h<H_out; h++){
+                    int h_unroll = w_base + p*K + q;
+                    for(int w=0; w < W_out; w++){
+                        int w_unroll = h * W_out + w;
+                        X_unroll[h_unroll*W + w_unroll] = X[c*n*n + (h+p)*n + (w+q)];
+                    }
+                }
+
+        
+    } 
+}
+
+void Convolutional::printMatrix_3D(float* matrix, int C, int n) {
+    for (int i = 0; i < C; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k < n; k++) 
+                cout << matrix[i*n*n +j*n +k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+}
+
+void Convolutional::printMatrix(float* matrix, int h, int w) {
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) 
+            cout << matrix[i * w + j] << " ";
+        cout << endl;
+    }
+}
+
+void Convolutional::matrizTranspuesta(float* matrix, int rows, int cols)
+{
+    // Allocate a new matrix to hold the transposed data
+    float* transposedMatrix = (float*)malloc(cols * rows * sizeof(float));
+    
+    if (transposedMatrix == nullptr) {
+        cerr << "Memory allocation for transposed matrix failed" << endl;
+        exit(1);
+    }
+
+    // Transpose the matrix
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            // Copy the element from original matrix at position (i, j) to
+            // transposed matrix at position (j, i)
+            transposedMatrix[j * rows + i] = matrix[i * cols + j];
+        }
+    }
+
+    // Copy the transposed data back to the original matrix
+    // This requires the original matrix to be able to hold the new dimensions
+    // i.e., it must have space for 'cols * rows' elements
+    for (int i = 0; i < cols * rows; i++) {
+        matrix[i] = transposedMatrix[i];
+    }
+
+    // Free the allocated memory for the transposed matrix
+    free(transposedMatrix);
+}
+
+/*
     @brief      Establece el valor de todos gradientes de la capa convolucional a 0.0
     @grad_w     Gradientes respecto a pesos
     @grad_bias  Gradientes respecto a sesgos
@@ -435,3 +623,79 @@ void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad
 
 // https://towardsdatascience.com/forward-and-backward-propagation-in-convolutional-neural-networks-64365925fdfa
 // https://colab.research.google.com/drive/13MLFWdi3uRMZB7UpaJi4wGyGAZ9ftpPD?authuser=1#scrollTo=FEFgOKF4gGv2
+
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+void printMatrix_3D(float* matrix, int C, int n) {
+    for (int i = 0; i < C; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int k = 0; k < n; k++) 
+                cout << matrix[i*n*n +j*n +k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+}
+
+void printMatrix_vector(const vector<vector<vector<float>>> &X) {
+    for (int i = 0; i < X.size(); i++) {
+        for (int j = 0; j < X[i].size(); j++) {
+            for (int k = 0; k < X[i][j].size(); k++) 
+                cout << X[i][j][k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+}
+
+int main()
+{
+    // -----------------------------------------------------------------------------------------------------
+    // Método estándar
+    // -----------------------------------------------------------------------------------------------------
+    int n_kernels = 2, K=2, H=3, W=H, H_out = H-K+1, W_out = W-K+1;
+    vector<vector<vector<float>>> input = {{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, {{10, 11, 12}, {13, 14, 15}, {16, 17, 18}}}, a = input;
+    vector<vector<vector<float>>> output(n_kernels);
+
+    // Crear volumen de salida
+    vector<vector<float>> aux_2D(H_out);
+    vector<float> aux_1D(W_out);
+
+    for(int i=0; i<aux_2D.size(); i++)
+        aux_2D[i] = aux_1D;
+    
+    for(int i=0; i<output.size(); i++)
+        output[i] = aux_2D;
+
+    // Kernel de pesos
+    vector<vector<vector<vector<float>>>> w = {{{{1, 1}, {1,1}}, {{1, 1}, {1,1}}}, {{{2, 2}, {2,2}}, {{2, 2}, {2,2}}}};
+    // Vector de sesgos
+    vector<float> bias(n_kernels, 0.0);
+
+    Convolutional conv(n_kernels, K, K, input, 0.01);
+    conv.set_w(w);
+    conv.set_b(bias);
+
+    cout << " -------------------------- Método Estándar -------------------------- " << endl;
+    cout << "Input" << endl;
+    printMatrix_vector(input);
+
+    conv.forwardPropagation(input, output, a);
+
+    cout << "Ouput" << endl;
+    printMatrix_vector(output);
+
+    cout << " -------------------------- Método GEMM -------------------------- " << endl;
+    cout << "Input" << endl;
+    printMatrix_vector(input);
+
+    conv.forwardPropagationGEMM(input, output, a);
+
+    cout << "Ouput" << endl;
+    printMatrix_vector(output);
+
+
+    return 0;
+}

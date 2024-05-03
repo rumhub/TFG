@@ -207,9 +207,6 @@ int main()
     
     unroll(C, n, K, X, h_X_unroll);
 
-
-
-
     // Paso de valores de CPU a GPU
     cudaMemcpy(d_X_unroll, h_X_unroll, bytes_X_unroll, cudaMemcpyHostToDevice);
     cudaMemcpy(d_kernel_W, h_kernel_W, bytes_kernel_W, cudaMemcpyHostToDevice);

@@ -29,6 +29,8 @@ class Convolutional
         // Propagación hacia delante
         void forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a);
 
+        void forwardPropagationGEMM(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a);
+
         // Retropropagación
         void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
 
@@ -37,6 +39,8 @@ class Convolutional
         void reset_gradients(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias);
         void actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias);
         void escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins);
+        void matrizTranspuesta(float* matrix, int rows, int cols);
+        void unroll(int C, int n, int K, float *X, float *X_unroll);
 
         // Aplicar padding
         void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad);
@@ -53,4 +57,6 @@ class Convolutional
         // Debug
         void set_w(const vector<vector<vector<vector<float>>>> &w_){this->w = w_;};
         void set_b(const vector<float> &b){this->bias = b;};
+        void printMatrix_3D(float* matrix, int C, int n);
+        void printMatrix(float* matrix, int h, int w);
 };
