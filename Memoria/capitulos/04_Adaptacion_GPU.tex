@@ -33,6 +33,13 @@ Como ambos gradientes se pueden implementar como convoluciones, y en la sección
 \begin{figure}[H]
 	\hspace{-25mm}
 	\includegraphics[scale=0.3]{imagenes/conv_std_vs_gemm_backprop.jpg}  
-	\caption{Retropropagación en una capa convolucional de forma estándar frente a GEMM}
+	\caption{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}
 	\label{fig:conv_std_vs_gemm_backprop}
+\end{figure}
+
+\begin{figure}[H]
+	\hspace{-25mm}
+	\includegraphics[scale=0.3]{imagenes/conv_std_vs_gemm_backprop_pesos.jpg}  
+	\caption{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}
+	\label{fig:conv_std_vs_gemm_backprop_pesos}
 \end{figure}
