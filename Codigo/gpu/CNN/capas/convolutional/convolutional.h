@@ -33,6 +33,8 @@ class Convolutional
 
         // Retropropagación
         void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
+        
+        void backPropagationGEMM(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
 
         // Modificación de parámetros
         void generar_pesos();
@@ -59,4 +61,7 @@ class Convolutional
         void set_b(const vector<float> &b){this->bias = b;};
         void printMatrix_3D(float* matrix, int C, int n);
         void printMatrix(float* matrix, int h, int w);
+        void printMatrix_vector(const vector<vector<vector<float>>> &X);
+        void multiplicarMatrices(float* m1, int rows1, int cols1, float* m2, int cols2, float* result);
+        void printMatrix_4D(float* matrix, int F, int C, int n);
 };
