@@ -1,7 +1,7 @@
 \chapter{Adaptación GPU}
 
 
-\section{Capa convolucional como GEMM}
+\section{Implementación de convoluciones como GEMM \label{Intro_GEMMM}}
 
 \begin{figure}[H]
 	\centering
@@ -23,4 +23,16 @@ Por último, aunque se haya omitido para simplificar la comprensión del método
 	\includegraphics[scale=0.35]{imagenes/maxpool_std_vs_gemm.jpg}  
 	\caption{Imagen de una agrupación con una entrada estándar frente a una agrupación con una entrada procedente de GEMM}
 	\label{fig:maxpool_std_vs_gemm}
+\end{figure}
+
+\section{Retropropagación en capa convolucional con enfoque GEMM}
+
+En la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad} se vio como la retropropagación respecto a la entrada en una capa convolucional consistía en una convolución entre los kernels de pesos y el volumen de salida. Del mismo modo, en la figura \ref{fig:conv_backprop_como_convolucion_Xpad_Y} también se mostró como el gradiente respecto a los pesos consistía en una convolución entre el volumen de entrada y el de salida. \\
+Como ambos gradientes se pueden implementar como convoluciones, y en la sección \ref{Intro_GEMMM} se mostró como implementar convoluciones con el enfoque GEMM, la retropropagación en una capa convolucional se puede implementar mediante el enfoque GEMM.
+
+\begin{figure}[H]
+	\hspace{-25mm}
+	\includegraphics[scale=0.3]{imagenes/conv_std_vs_gemm_backprop.jpg}  
+	\caption{Retropropagación en una capa convolucional de forma estándar frente a GEMM}
+	\label{fig:conv_std_vs_gemm_backprop}
 \end{figure}

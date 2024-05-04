@@ -103,7 +103,8 @@
 \contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{58}{section*.131}%
 \contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{59}{section*.133}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{61}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Capa convolucional como GEMM}{62}{section.4.1}%
+\contentsline {section}{\numberline {4.1}Implementación de convoluciones como GEMM }{62}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Paso de capa convolucional a capa de agrupación}{64}{subsection.4.1.1}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{65}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{65}{section.5.1}%
+\contentsline {section}{\numberline {4.2}Retropropagación en capa convolucional con enfoque GEMM}{64}{section.4.2}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{67}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{67}{section.5.1}%

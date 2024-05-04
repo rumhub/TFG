@@ -66,4 +66,5 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{62}{figure.caption.136}%
 \contentsline {figure}{\numberline {4.2}{\ignorespaces Imagen de una agrupación con una entrada estándar frente a una agrupación con una entrada procedente de GEMM}}{64}{figure.caption.137}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM}}{65}{figure.caption.138}%
 \addvspace {10\p@ }
