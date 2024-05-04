@@ -570,8 +570,8 @@ void Convolutional::backPropagationGEMM(vector<vector<vector<float>>> &input, ve
     // Concatenar los pesos de todos los kernels para una misma capa de profundidad C
     for(int j = 0; j < C; j++)
         for(int i = 0; i < this->n_kernels; i++) 
-            for(int kx = 0; kx < K; kx++)
-                for(int ky = 0; ky < K; ky++)
+            for(int kx = K-1; kx >= 0; kx--)
+                for(int ky = K-1; ky >=0; ky--)
                     h_matriz_pesos[j*this->n_kernels*K*K + i*K*K + kx*K + ky] = this->w[i][j][kx][ky];
 
     // Copiar datos de CPU a GPU
@@ -823,7 +823,7 @@ int main()
     output_gpu = output;
 
     // Kernel de pesos
-    vector<vector<vector<vector<float>>>> w = {{{{1, 1}, {1,1}}, {{1, 1}, {1,1}}}, {{{2, 2}, {2,2}}, {{2, 2}, {2,2}}}};
+    vector<vector<vector<vector<float>>>> w = {{{{1, 2}, {3,4}}, {{5, 6}, {7,8}}}, {{{2, 1}, {3,7}}, {{14, 2}, {24,2}}}};
     // Vector de sesgos
     vector<float> bias(n_kernels, 0.0);
 
