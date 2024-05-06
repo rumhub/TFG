@@ -1,6 +1,19 @@
 #include <vector>
+#include <math.h>
+#include <iostream>
+#include <chrono>
+#include "random"
+#include "omp.h"
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
+#include <cublas_v2.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 using namespace std;
+
+#define TILE_DIM 32
+#define BLOCK_SIZE 32
 
 class Convolutional
 {
@@ -65,3 +78,20 @@ class Convolutional
         void multiplicarMatrices(float* m1, int rows1, int cols1, float* m2, int cols2, float* result);
         void printMatrix_4D(float* matrix, int F, int C, int n);
 };
+
+// https://siboehm.com/articles/22/CUDA-MMM
+__global__ void sgemm_naive(int M, int N, int K, const float *A, const float *B, float *C) {
+  // compute position in C that this thread is responsible for
+  const uint i = blockIdx.x * blockDim.x + threadIdx.x;
+  const uint j = blockIdx.y * blockDim.y + threadIdx.y;
+
+  // `if` condition is necessary for when M or N aren't multiples of 32.
+  if (i < M && j < N) {
+    float tmp = 0.0;
+    for (int k = 0; k < K; ++k) {
+      tmp += A[i * K + k] * B[k * N + j];
+    }
+    // C = α*(A@B)+β*C
+    C[i * N + j] = tmp;
+  }
+}

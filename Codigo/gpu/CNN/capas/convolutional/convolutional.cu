@@ -1,18 +1,9 @@
 #include "convolutional.h"
-#include <vector>
-#include <math.h>
-#include <iostream>
-#include <chrono>
-#include "random"
-#include "omp.h"
 
-#include <cuda_runtime.h>
-#include <device_launch_parameters.h>
-#include <cublas_v2.h>
-#include <stdlib.h>
-#include <stdio.h>
+using namespace std::chrono;
 
-using namespace std;
+
+
 
 
 /*
@@ -253,6 +244,10 @@ void Convolutional::forwardPropagationGEMM(const vector<vector<vector<float>>> &
         bytes_bias = this->n_kernels * sizeof(float),           // Espacio para sesgos
         bytes_output = cols_input_unroll * fils_w *sizeof(float);              // Espacio para la salida
 
+    // Crear bloque y grid
+    dim3 block(BLOCK_SIZE, BLOCK_SIZE);
+    dim3 grid((fils_w + BLOCK_SIZE -1) / BLOCK_SIZE, (cols_input_unroll + BLOCK_SIZE -1) / BLOCK_SIZE);
+
     // Punteros host
     float *input_ = (float*)malloc(bytes_input), 
     *h_input_unroll = (float*)malloc(bytes_input_unroll),
@@ -269,7 +264,6 @@ void Convolutional::forwardPropagationGEMM(const vector<vector<vector<float>>> &
     cudaMalloc((void **) &d_w, bytes_w);
 
     // Copiar valores a host -----------------------------------
-
     // Input
     for(int i = 0; i < C; i++) 
         for(int j = 0; j < H; j++)
@@ -291,34 +285,14 @@ void Convolutional::forwardPropagationGEMM(const vector<vector<vector<float>>> &
 
     // Copiar de CPU a GPU
     cudaMemcpy(d_input_unroll, h_input_unroll, bytes_input_unroll, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_a, h_a, bytes_output, cudaMemcpyHostToDevice);
     cudaMemcpy(d_w, h_w, bytes_w, cudaMemcpyHostToDevice);
 
-    // Factores de escala
-    float alpha = 1.0f;     // Calcular: c = (alpha*a) *b + (beta*c)
-    float beta = 0.0f;
-
-    // cuBLAS handle
-    cublasHandle_t handle;
-    cublasCreate(&handle);
-
-    // (m X n) * (n X k) = (m X k)
-    // Formato: handle, operation, operation, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc
-    cublasSgemm(handle, 
-    CUBLAS_OP_T, CUBLAS_OP_T,       // Operaciones con matrices transpuestas
-    fils_w, cols_input_unroll, cols_w,  // ax, by, ay
-    &alpha, 
-    d_w, cols_w,              // d_a, ay
-    d_input_unroll, cols_input_unroll,        // d_b, by
-    &beta, 
-    d_a, this->n_kernels);           // d_c, ax
+    // Multiplicación de matrices
+    sgemm_naive<<<grid, block>>>(fils_w, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a);
 
     // Paso de GPU a CPU
     cudaMemcpy(h_a, d_a, bytes_output, cudaMemcpyDeviceToHost);
-
-    // Calcular la transpuesta para obtener la estructura original
-    this->matrizTranspuesta(h_a, cols_input_unroll, fils_w);
-
+    
     // Sumar bias
     for(int i = 0; i < this->n_kernels; i++) 
         for(int j = 0; j < H_out; j++)
@@ -856,32 +830,33 @@ int main()
     // -----------------------------------------------------------------------------------------------------
     // Método estándar
     // -----------------------------------------------------------------------------------------------------
-    int n_kernels = 2, K=2, H=3, W=H, H_out = H-K+1, W_out = W-K+1, pad = 0;
-    vector<vector<vector<float>>> input = {{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, {{10, 11, 12}, {13, 14, 15}, {16, 17, 18}}}, a = input, input_gpu = input, a_gpu = a;
-    vector<vector<vector<float>>> output(n_kernels), output_gpu;
-    vector<vector<vector<vector<float>>>> grad_w;
+    auto ini = high_resolution_clock::now();
+    auto fin = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(fin - ini);
+    int n_kernels = 20, K=10, H=30, W=30, H_out = H-K+1, W_out = W-K+1, pad = 0, C=10;
+    vector<vector<vector<float>>> a, input_gpu, a_gpu;
+    vector<vector<vector<vector<float>>>> grad_w, grad_w2;
     vector<float> grad_bias;
-    int C = input.size();
 
-    // Crear volumen de salida
-    vector<vector<float>> aux_2D(H_out);
-    vector<float> aux_1D(W_out);
+    vector<vector<vector<float>>> input(C, vector<vector<float>>(H, vector<float>(W, 0)));
+    vector<vector<vector<float>>> output(n_kernels, vector<vector<float>>(H_out, vector<float>(W_out, 0))), output_gpu = output;
 
-    for(int i=0; i<aux_2D.size(); i++)
-        aux_2D[i] = aux_1D;
+    for(int i=0; i<C; i++)
+        for(int j=0; j<H; j++)
+            for(int k=0; k<W; k++)
+                input[i][j][k] = 3.0;
     
-    for(int i=0; i<output.size(); i++)
-        output[i] = aux_2D;
-
-    output_gpu = output;
+    a = output, input_gpu = input, a_gpu = a;
 
     // Kernel de pesos
-    vector<vector<vector<vector<float>>>> w = {{{{1, 2}, {3,4}}, {{5, 6}, {7,8}}}, {{{2, 1}, {3,7}}, {{14, 2}, {24,2}}}};
+    vector<vector<vector<vector<float>>>> w(n_kernels, vector<vector<vector<float>>>(C, vector<vector<float>>(K, vector<float>(K, 1))));
+    
     // Vector de sesgos
     vector<float> bias(n_kernels, 0.0);
 
     // Inicializar gradientes a 0.0
     grad_w = w;
+    grad_w2 = w;
     grad_bias = bias;
 
     for(int i = 0; i < n_kernels; i++) 
@@ -904,19 +879,25 @@ int main()
     cudaSetDevice(dev);
 
     cout << " -------------------------- Método Estándar -------------------------- " << endl;
-    cout << "Input" << endl;
-    printMatrix_vector(input);
-
+    //cout << "Input" << endl;
+    //printMatrix_vector(input);
+    ini = high_resolution_clock::now();
     conv.forwardPropagation(input, output, a);
-
-    cout << "Ouput" << endl;
-    printMatrix_vector(output);
-
-    cout << "-- Backprop --" << endl;
-    cout << "Input" << endl;
+    fin = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(fin - ini);
+    
+    // Mostrar resultado
+    cout << "Tiempo CPU: " << duration.count() << " (us)" << endl;
+    
+    //cout << "Ouput" << endl;
+    //printMatrix_vector(output);
+    
+    //cout << "-- Backprop --" << endl;
+    //cout << "Input" << endl;
     conv.backPropagation(input, output, a, grad_w, grad_bias, pad);
-    printMatrix_vector(input);
+    //printMatrix_vector(input);
 
+    /*
     cout << "Gradientes de pesos" << endl;
     // Mostrar gradientes de pesos
     for(int i = 0; i < n_kernels; i++) 
@@ -933,26 +914,24 @@ int main()
         }
         cout << endl;
     }
-
+    */
     cout << " -------------------------- Método GEMM -------------------------- " << endl;
-
-    // Iniciali<ar gradientes de pesos a 0.0
-    for(int i = 0; i < n_kernels; i++) 
-        for(int j = 0; j < C; j++)
-            for(int kx = 0; kx < K; kx++)
-                for(int ky = 0; ky < K; ky++)
-                    grad_w[i][j][kx][ky] = 0.0;
-
-    cout << "Input" << endl;
-    printMatrix_vector(input_gpu);
-
+    //cout << "Input" << endl;
+    //printMatrix_vector(input_gpu);
+    ini = high_resolution_clock::now();
     conv.forwardPropagationGEMM(input_gpu, output_gpu, a_gpu);
-
-    cout << "Ouput" << endl;
-    printMatrix_vector(output_gpu);
-
-    cout << "-- Backprop --" << endl;
-    conv.backPropagationGEMM(input_gpu, output_gpu, a_gpu, grad_w, grad_bias, pad);
+    cudaDeviceSynchronize();
+    fin = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(fin - ini);
+    
+    // Mostrar resultado
+    cout << "Tiempo GPU: " << duration.count() << " (us)" << endl;
+    //cout << "Ouput" << endl;
+    //printMatrix_vector(output_gpu);
+    
+    //cout << "-- Backprop --" << endl;
+    conv.backPropagationGEMM(input_gpu, output_gpu, a_gpu, grad_w2, grad_bias, pad);
+    /*
     cout << "Input" << endl;
     printMatrix_vector(input_gpu);
 
@@ -973,7 +952,22 @@ int main()
         }
         cout << endl;
     }
+    */
+
+   // Comprobar resultados
+    bool correcto = true;
+    float epsilon = 0000000.1;
     
+    for(int i=0; i<n_kernels; i++)
+        for(int j=0; j<H_out; j++)
+            for(int k=0; k<W_out; k++)
+                if(abs(output[i][j][k] - output_gpu[i][j][k]) > epsilon)
+                    correcto = false;
+
+    if(correcto)
+        cout << "Todo correcto" << endl;
+    else
+        cout << "Incorrecto" << endl;
 
     return 0;
 }
