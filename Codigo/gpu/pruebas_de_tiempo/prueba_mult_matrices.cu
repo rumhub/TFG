@@ -11,6 +11,8 @@
 using namespace std;
 using namespace std::chrono;
 
+#define BLOCKSIZE 8
+
 /*
     Para multiplicar A(MxK) x B(KxN) se necesita un bloque de (MxN).
     Cada hebra calcula un elemento de la matriz de salida C, multiplicando una fila de A * una columna de B.
@@ -112,6 +114,44 @@ __global__ void multiplicarMatrices2(int M, int N, int K, const float *A, const 
   
 }
 
+/*
+    Emplea tiles. Un tile por bloque. No usa memoria compartida
+*/
+__global__ void multiplicarMatrices3(int M, int N, int K, const float *A, const float *B, float *C)
+{
+    // Memoria compartida dinámica
+	extern __shared__ float sdata[];
+
+    // Convertir de índices de hebra a índices de matriz 
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x, 
+        idA = iy*K + ix, idB = iy*N + ix;
+    int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+    
+    // Convertir de índices de hebra a índices de tile
+    int tx = threadIdx.x, ty =threadIdx.y;
+
+    float sum = 0.0f;    
+    
+    // Multiplicación matricial
+    if(iy < M && ix < N && threadIdx.y < blockDim.y && threadIdx.x < blockDim.x)
+    {
+        // Cada hebra calcula una posición de C (una fila de A * una columna de B)
+        for (int i = 0; i < K; i++) 
+            sum += A[iy*K + i] * B[ix + i*N];
+
+        C[iy*N + ix] = sum;
+    }
+    
+
+    /*
+    // Mostrar Tiles
+    if(iy < M && ix < N && threadIdx.y < blockDim.y && threadIdx.x < blockDim.x)
+    {
+        C[iy*N + ix] = blockIdx.x + blockIdx.y;
+    }
+    */
+}
+
 __global__ void multiplicarMatrices(int M, int N, int K, const float *A, const float *B, float *C)
 {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
@@ -168,7 +208,7 @@ void printMatrix(float* matrix, int h, int w_) {
 int main()
 {
     // A = MxK, B = KxN, C = MxN
-    int M = 20, K=20, N=20,
+    int M = 15, K=8, N=20,
         bytes_A = M*K * sizeof(float),
         bytes_B = K*N * sizeof(float),
         bytes_C = M*N * sizeof(float);
@@ -246,15 +286,16 @@ int main()
     
     // Mostrar resultado
     cout << "Tiempo GPU método simple: " << duration.count() << " (us)" << endl;
-
+    
 
     // Método con memoria compartida -----------------------------------------
+    
     ini = high_resolution_clock::now();
     size_t smem = (block.x * K + block.y * K) *sizeof(float);
     multiplicarMatrices2<<<grid, block, smem>>>(M, N, K, d_A, d_B, d_C_gpu_2);
-    cudaError_t err = cudaGetLastError();
-    if (err != cudaSuccess) 
-        printf("Error: %s\n", cudaGetErrorString(err));
+    //cudaError_t err = cudaGetLastError();
+    //if (err != cudaSuccess) 
+    //    printf("Error: %s\n", cudaGetErrorString(err));
 
     cudaDeviceSynchronize();
     fin = high_resolution_clock::now();
@@ -268,10 +309,40 @@ int main()
     
     // Mostrar resultado
     cout << "Tiempo GPU método con memoria compartida: " << duration.count() << " (us)" << endl;
+    
+
+    // Método con memoria compartida con tiles -----------------------------------------
+    ini = high_resolution_clock::now();
+    dim3 block_tile(BLOCKSIZE, BLOCKSIZE);
+    dim3 grid_tile(ceil( (float)(N + block_tile.x -1) / block_tile.x), ceil((float)(M + block_tile.y -1) / block_tile.y));
+    
+    //cout << block_tile.x << "x" << block_tile.y << endl;
+    //cout << grid_tile.x << "x" << grid_tile.y << endl;
+    // Cada tile ocupa (BLOCKSIZExBLOCKSIZE), cada bloque almacena en memoria compartida un tile de A y otro de B
+    // Es decir, 2 tiles
+    //size_t smem_tile = (2* +block_tile.x * block_tile.y) *sizeof(float);
+    //multiplicarMatrices3<<<grid_tile, block_tile, smem_tile>>>(M, N, K, d_A, d_B, d_C_gpu_3);
+    multiplicarMatrices3<<<grid_tile, block_tile>>>(M, N, K, d_A, d_B, d_C_gpu_3);
+    cudaError_t err = cudaGetLastError();
+    if (err != cudaSuccess) 
+        printf("Error: %s\n", cudaGetErrorString(err));
+
+    cudaDeviceSynchronize();
+    fin = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(fin - ini);
+    
+    // Copiar resultados de GPU a CPU
+    cudaMemcpy(h_C_gpu_3, d_C_gpu_3, bytes_C, cudaMemcpyDeviceToHost);
+
+    //printMatrix(h_C_gpu_3, M, N);
+
+    
+    // Mostrar resultado
+    cout << "Tiempo GPU método sin memoria compartida con tiles: " << duration.count() << " (us)" << endl;
+
 
     // Comprobar resultados
-    //if(comprobarResultados(C_cpu, h_C_gpu_2, M, N))
-    if(comprobarResultados(C_cpu, h_C_gpu_1, M, N) && comprobarResultados(C_cpu, h_C_gpu_2, M, N))
+    if(comprobarResultados(C_cpu, h_C_gpu_1, M, N) && comprobarResultados(C_cpu, h_C_gpu_2, M, N) && comprobarResultados(C_cpu, h_C_gpu_3, M, N))
         cout << "Todo correcto!" << endl;
     else
         cout << "Hay errores" << endl;
