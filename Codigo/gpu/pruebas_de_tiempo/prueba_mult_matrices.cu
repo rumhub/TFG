@@ -11,7 +11,7 @@
 using namespace std;
 using namespace std::chrono;
 
-#define BLOCKSIZE 8
+#define BLOCKSIZE 32
 
 /*
     Para multiplicar A(MxK) x B(KxN) se necesita un bloque de (MxN).
@@ -266,7 +266,7 @@ void printMatrix(float* matrix, int h, int w_) {
 int main()
 {
     // A = MxK, B = KxN, C = MxN
-    int M = 1000, K=1000, N=1000,
+    int M = 2000, K=2000, N=2000,
         bytes_A = M*K * sizeof(float),
         bytes_B = K*N * sizeof(float),
         bytes_C = M*N * sizeof(float);
@@ -317,7 +317,7 @@ int main()
     // Copiar matrices A y B de CPU a GPU
     cudaMemcpy(d_A, h_A, bytes_A, cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, bytes_B, cudaMemcpyHostToDevice);
-    /*
+    
     // Multiplicar las matrices en CPU
     ini = high_resolution_clock::now();
     multiplyMatrices(h_A, M, K, h_B, N, C_cpu);
@@ -330,7 +330,7 @@ int main()
     cout << "Tiempo CPU: " << duration.count() << " (us)" << endl;
     
     // ----------------------------------------- Multiplicar las matrices en GPU -----------------------------------------
-    
+    /*
     // Método simple -----------------------------------------
     ini = high_resolution_clock::now();
     multiplicarMatrices<<<grid, block>>>(M, N, K, d_A, d_B, d_C_gpu_1);
