@@ -36,6 +36,8 @@ class PoolingMax
         void forwardPropagationGPU(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad);
 
         void backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
+        
+        void backPropagationGPU(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
 
         void mostrar_tam_kernel();
 
@@ -48,7 +50,7 @@ class PoolingMax
 
 // https://www.linkedin.com/pulse/implementation-from-scratch-forward-back-propagation-layer-coy-ulloa
 
-__global__ void maxpool(int C, int H, int W, int K, float *X, float *Y, int pad)
+__global__ void maxpool_forward(int C, int H, int W, int K, float *X, float *X_copy, float *Y, int pad)
 {
     // Memoria compartida dinámica
 	//extern __shared__ float sdata[];
@@ -64,6 +66,7 @@ __global__ void maxpool(int C, int H, int W, int K, float *X, float *Y, int pad)
         tam_capaX = H * W;
 
     float max = FLT_MIN;
+    int pos_max;
 
     if(iy_Y < H_out-2*pad && ix_Y < W_out-2*pad)    // -2*pad para quitar el padding. Como solo hay padding en la salida, usamos las mismas hebras que si no hubiera ningún padding
     for(int c=0; c<C; c++)
@@ -72,10 +75,48 @@ __global__ void maxpool(int C, int H, int W, int K, float *X, float *Y, int pad)
         for(int i=0; i<K; i++)
             for(int j=0; j<K; j++)
                 if(max < X[idX + i*W + j] && iy_X + i < H && ix_X + j < W)
+                {
                     max = X[idX +i*W +j];
+                    pos_max = idX +i*W +j;
+                }
 
         // Establecer valor del píxel "IdY" de salida
         Y[idY] = max;
+
+        // Establecer posición del máximo
+        X_copy[pos_max] = 1.0;
+
+        // Actualizar índice para siguiente capa
+        idY += tam_capaY;
+        idX += tam_capaX;
+    }
+}
+
+__global__ void maxpool_back(int C, int H, int W, int K, float *X, float *X_copy, float *Y, int pad)
+{
+    // Memoria compartida dinámica
+	//extern __shared__ float sdata[];
+
+    int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+
+    // Convertir de índices de hebra a índices de matriz 
+  	int H_out = H / K + 2*pad, W_out = W /K + 2*pad,
+        iy_Y = threadIdx.y + blockIdx.y * blockDim.y, ix_Y = threadIdx.x + blockIdx.x * blockDim.x,     // Coordenadas respecto a la mtriz de salida Y
+        iy_X = iy_Y *K, ix_X = ix_Y *K,                                     // Coordenadas respecto a la matriz de entrada X
+        idX = iy_X*W + ix_X, idY = (iy_Y+pad)*W_out + (ix_Y+pad),
+        tam_capaY = H_out * W_out,
+        tam_capaX = H * W;
+
+    if(iy_Y < H_out-2*pad && ix_Y < W_out-2*pad)    // -2*pad para quitar el padding. Como solo hay padding en la salida, usamos las mismas hebras que si no hubiera ningún padding
+    for(int c=0; c<C; c++)
+    {
+        for(int i=0; i<K; i++)
+            for(int j=0; j<K; j++)
+                if(iy_X + i < H && ix_X + j < W)
+                    if(X_copy[idX +i*W +j] != 0)
+                        X[idX +i*W +j] = Y[idY];
+                    else
+                        X[idX +i*W +j] = 0.0;
 
         // Actualizar índice para siguiente capa
         idY += tam_capaY;
