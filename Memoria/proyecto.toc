@@ -31,8 +31,8 @@
 \contentsline {subsection}{\numberline {2.5.8}Tipos de codificaciones}{11}{subsection.2.5.8}%
 \contentsline {subsection}{\numberline {2.5.9}Propagación hacia delante con softmax}{11}{subsection.2.5.9}%
 \contentsline {section}{\numberline {2.6}Redes Neuronales Convolucionales}{11}{section.2.6}%
-\contentsline {subsection}{\numberline {2.6.1}Capa convolucional}{11}{subsection.2.6.1}%
-\contentsline {subsubsection}{Componentes}{11}{section*.23}%
+\contentsline {subsection}{\numberline {2.6.1}Capa convolucional}{12}{subsection.2.6.1}%
+\contentsline {subsubsection}{Componentes}{12}{section*.23}%
 \contentsline {subsubsection}{Propagación hacia delante}{12}{section*.25}%
 \contentsline {subsubsection}{Propagación hacia delante, canales de profundidad}{13}{section*.27}%
 \contentsline {subsubsection}{Propagación hacia delante, número de filtros}{14}{section*.29}%
@@ -103,8 +103,8 @@
 \contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{58}{section*.131}%
 \contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{59}{section*.133}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{61}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Implementación de convoluciones como GEMM }{62}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Paso de capa convolucional a capa de agrupación}{64}{subsection.4.1.1}%
-\contentsline {section}{\numberline {4.2}Retropropagación en capa convolucional con enfoque GEMM}{64}{section.4.2}%
+\contentsline {section}{\numberline {4.1}Convolución como GEMM }{62}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Memoria requerida al emplear GEMM}{63}{subsection.4.1.1}%
+\contentsline {section}{\numberline {4.2}Retropropagación GEMM en capa convolucional}{64}{section.4.2}%
 \contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{67}{chapter.5}%
 \contentsline {section}{\numberline {5.1}cuDNN}{67}{section.5.1}%

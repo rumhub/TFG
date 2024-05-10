@@ -218,6 +218,8 @@ Se calcula el error de entropía cruzada: \\
 
 \section{Redes Neuronales Convolucionales}
 
+Las redes neuronales convolucionales (CNNs) se caracterizan por trabajar con volúmenes 3D de datos. En este proyecto, en ocasiones estos también podrán denominarse como imágenes, pues una imagen RGB se trata de 3 matrices 2D, una por color. Además, la entrada de cada capa se define como X o X(C*H*W) y en ambos casos cuenta con unas dimensiones de C*H*W, siendo C el número de canales de profundidad, H el número de filas y W el número de columnas. De la misma forma, se define el volumen de salida como Y($M*H_{out}*W_{out}$). En cuanto a los pesos de la capa, cada filtro o kernel se denominará mediante un símbolo/s diferente/s (K,K1, G, etc), pues cada uno puede presentar unas dimensiones diferentes. Aun así, se podrá definir a un filtro de pesos como K1(K*K), indicando que posee K filas y columnas. Además, también se trata de una estructura con 3 dimensiones. Sin embargo, no se requiere especificar el número de canales de profundidad de un kernel de pesos pues siempre será C (depende de X). De la misma forma, el número de filtros a aplicar sobre X recibe el nombre de M, y el tamaño de Y depende de este, pues tal y como se verá posteriormente, cada filtro genera una canal de profundidad distinto de la salida Y. 
+
 \subsection{Capa convolucional}
 
 \subsubsection{Componentes}

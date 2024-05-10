@@ -7,7 +7,7 @@
 \contentsline {figure}{\numberline {2.4}{\ignorespaces Imagen de la función de activación Sigmoide}}{7}{figure.caption.13}%
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{7}{figure.caption.15}%
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{8}{figure.caption.18}%
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Componentes en una capa convolucional}}{11}{figure.caption.24}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Componentes en una capa convolucional}}{12}{figure.caption.24}%
 \contentsline {figure}{\numberline {2.8}{\ignorespaces Propagación hacia delante en una capa convolucional}}{12}{figure.caption.26}%
 \contentsline {figure}{\numberline {2.9}{\ignorespaces Propagación hacia delante en una capa convolucional con varios canales de profundidad}}{13}{figure.caption.28}%
 \contentsline {figure}{\numberline {2.10}{\ignorespaces Propagación hacia delante en una capa convolucional con varios filtros}}{14}{figure.caption.30}%
@@ -65,7 +65,6 @@
 \contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{60}{figure.caption.135}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{62}{figure.caption.136}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Imagen de una agrupación con una entrada estándar frente a una agrupación con una entrada procedente de GEMM}}{64}{figure.caption.137}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{65}{figure.caption.138}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{66}{figure.caption.139}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{65}{figure.caption.137}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{66}{figure.caption.138}%
 \addvspace {10\p@ }

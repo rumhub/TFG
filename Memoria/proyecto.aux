@@ -92,17 +92,17 @@
 \@writefile{toc}{\contentsline {subsubsection}{Inicialización de pesos}{10}{section*.21}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Inicialización de sesgos}{10}{section*.22}\protected@file@percent }
 \citation{Cross_entropy_backprop}
-\citation{capa_convolucional}
-\citation{capa_convolucional_Stanford}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.5.8}Tipos de codificaciones}{11}{subsection.2.5.8}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.5.9}Propagación hacia delante con softmax}{11}{subsection.2.5.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2.6}Redes Neuronales Convolucionales}{11}{section.2.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.1}Capa convolucional}{11}{subsection.2.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Componentes}{11}{section*.23}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces Componentes en una capa convolucional}}{11}{figure.caption.24}\protected@file@percent }
-\newlabel{fig:Componentes_convolucion}{{2.7}{11}{Componentes en una capa convolucional}{figure.caption.24}{}}
 \citation{capa_convolucional}
 \citation{capa_convolucional_Stanford}
+\citation{capa_convolucional}
+\citation{capa_convolucional_Stanford}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6.1}Capa convolucional}{12}{subsection.2.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Componentes}{12}{section*.23}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2.7}{\ignorespaces Componentes en una capa convolucional}}{12}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:Componentes_convolucion}{{2.7}{12}{Componentes en una capa convolucional}{figure.caption.24}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Propagación hacia delante}{12}{section*.25}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {2.8}{\ignorespaces Propagación hacia delante en una capa convolucional}}{12}{figure.caption.26}\protected@file@percent }
 \newlabel{fig:forward_prop_convolucional}{{2.8}{12}{Propagación hacia delante en una capa convolucional}{figure.caption.26}{}}
@@ -346,20 +346,19 @@
 \@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{61}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{Intro_GEMMM}{{4.1}{62}{Implementación de convoluciones como GEMM}{section.4.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Implementación de convoluciones como GEMM }{62}{section.4.1}\protected@file@percent }
+\newlabel{Intro_GEMMM}{{4.1}{62}{Convolución como GEMM}{section.4.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Convolución como GEMM }{62}{section.4.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{62}{figure.caption.136}\protected@file@percent }
 \newlabel{fig:conv_std_vs_gemm}{{4.1}{62}{Imagen de una convolución estándar frente a una convolución empleando GEMM}{figure.caption.136}{}}
 \citation{conv_GEMM_FFT_comparacion}
 \citation{Programming_Massively}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Paso de capa convolucional a capa de agrupación}{64}{subsection.4.1.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Imagen de una agrupación con una entrada estándar frente a una agrupación con una entrada procedente de GEMM}}{64}{figure.caption.137}\protected@file@percent }
-\newlabel{fig:maxpool_std_vs_gemm}{{4.2}{64}{Imagen de una agrupación con una entrada estándar frente a una agrupación con una entrada procedente de GEMM}{figure.caption.137}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Retropropagación en capa convolucional con enfoque GEMM}{64}{section.4.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{65}{figure.caption.138}\protected@file@percent }
-\newlabel{fig:conv_std_vs_gemm_backprop}{{4.3}{65}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}{figure.caption.138}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{66}{figure.caption.139}\protected@file@percent }
-\newlabel{fig:conv_std_vs_gemm_backprop_pesos}{{4.4}{66}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}{figure.caption.139}{}}
+\citation{Programming_Massively}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Memoria requerida al emplear GEMM}{63}{subsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Retropropagación GEMM en capa convolucional}{64}{section.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{65}{figure.caption.137}\protected@file@percent }
+\newlabel{fig:conv_std_vs_gemm_backprop}{{4.2}{65}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}{figure.caption.137}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{66}{figure.caption.138}\protected@file@percent }
+\newlabel{fig:conv_std_vs_gemm_backprop_pesos}{{4.3}{66}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}{figure.caption.138}{}}
 \bibstyle{unsrt}
 \bibdata{bibliografia/bibliografia}
 \@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{67}{chapter.5}\protected@file@percent }
