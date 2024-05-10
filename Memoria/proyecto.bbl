@@ -230,4 +230,19 @@ H.~Howie Huang¶ Zhufan Wang†‡ Weimin Zheng†‡ †Department of
 \newblock Performance analysis of gpu-based convolutional neural networks.
 \newblock {\em International Conference on Parallel Processing}, 2016.
 
+\bibitem{cuda_mult_matrix_v3}
+Mary Thomas.
+\newblock Comp 605: Introduction to parallel computing lecture : Cuda
+  matrix-matrix multiplication, 2017.
+\newblock
+  \url{https://edoras.sdsu.edu/~mthomas/sp17.605/lectures/CUDA-Mat-Mat-Mult.pdf}
+  [Accessed:10/05/2024].
+
+\bibitem{nvidia_mult_matrix_v4}
+NVIDIA.
+\newblock Matrix multiplication background, user's guide | nvidia docs, 2023.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/performance/pdf/Matrix-Multiplication-Background-User-Guide.pdf}
+  [Accessed:10/05/2024].
+
 \end{thebibliography}

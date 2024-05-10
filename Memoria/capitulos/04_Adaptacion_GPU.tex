@@ -41,3 +41,28 @@ Como ambos gradientes se pueden implementar como convoluciones, y en la sección
 	\caption{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}
 	\label{fig:conv_std_vs_gemm_backprop_pesos}
 \end{figure}
+
+\section{CUDA}
+
+Block(KxN)
+\subsection{Multiplicación de matrices en CUDA}
+
+Dadas dos matrices A(MxK) y B(KxN), se obtiene C(KxN) como producto de la multiplicación AB. Basándome en mi propia experiencia, una primera aproximación de cara a realizar dicha operación en CUDA consiste en crear un bloque Block(KxN), de forma que cada hebra calcule una posición de la matriz resultado C. Dada la naturaleza extremadamente simple de tal implementación, el desarrollador que la llevó a cabo optará por buscar formas de reducir el tiempo de cómputo requerido por la misma, optando en la mayoría de los casos por emplear memoria compartida de bloque. Tras desarrollar esta ``segunda versión'', el siguiente paso del desarrollador consiste en comparar ambas implementaciones para verificar si efectivamente se obtiene una ganancia notable sobre la primera. En el proceso se observa como para matrices de tamaño reducido ambas implementaciones parecen funcionar. Sin embargo, a medida que aumenta el tamaño de las mismas se ve un claro ``tope'' pues ambas comparten un mismo defecto, el tamaño de bloque. Por ejemplo, para calcular C(50x50) = A(50x10) x B(10x50) ambas implementaciones requerirían un bloque de 50x50 = 2500 hebras, lo cual es imposible pues excede el tamaño límite (CUDA solo permite 1024 hebras por bloque). \\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{imagenes/gemm_tile_v3.jpg}  
+	\caption{Tercera implementación de multiplicación matricial con CUDA}
+	\label{fig:mult_matrix_cuda_v3}
+\end{figure}
+
+Por tanto, resulta evidente la existencia de una ``tercera'' implementación carente de este gran defecto. Esta se caracteriza por la división la matriz C en submatrices o tiles, de forma que cada tile sea un bloque cuda. Partiendo de las implementaciones anteriores, el cambio resulta inmediato y los resultados descomunales pues aporta la capacidad de multiplicación matricial con independencia del tamaño de A y B, además de mejoras en cuanto a rendimiento. \cite{cuda_mult_matrix_v3} \\
+Sin embargo, esta última implementación carece de los beneficios de la memoria compartida nivel de bloque, por lo que una vez más indica la muy posible existencia de una mejora sobre la misma. \\
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{imagenes/gemm_tile_v4.jpg}  
+	\caption{Cuarta implementación de multiplicación matricial con CUDA}
+	\label{fig:mult_matrix_cuda_v4}
+\end{figure}
+Para realizar el cálculo de cada valor de C es necesario multiplicar una fila de A por una columna de B. Es decir, multiplicar dos vectores de K elementos. Una idea inicial consiste en cargar 2K elementos en memoria compartida para posteriormente usarlos. Sin embargo, si cada hebra de cada bloque requiere 2K elementos, esto no es viable pues la memoria compartida es limitada y escasa. En su lugar, un mejor enfoque consiste en, dado un bloque 2D de dimensiones TILExTILE, almacenar 2*TILE*TILE. Su objetivo es dividir el cálculo de cada valor de C en iteraciones, y en cada una de ellas, cada hebra multiplica TILE elementos de A por TILE de B, además de acumular y sumar los resultados obtenidos en cada iteración. \cite{nvidia_mult_matrix_v4}

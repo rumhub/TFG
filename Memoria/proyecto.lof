@@ -67,4 +67,6 @@
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{62}{figure.caption.136}%
 \contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{65}{figure.caption.137}%
 \contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{66}{figure.caption.138}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{67}{figure.caption.139}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{68}{figure.caption.140}%
 \addvspace {10\p@ }

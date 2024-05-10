@@ -12,45 +12,45 @@ Too many commas in name 1 of "Xiaqing Li†‡§, Guangyan Zhang†‡§, H. How
 while executing---line 944 of file unsrt.bst
 Too many commas in name 1 of "Xiaqing Li†‡§, Guangyan Zhang†‡§, H. Howie Huang¶, Zhufan Wang†‡, Weimin Zheng†‡ †Department of Computer Science and Technology, Tsinghua University ‡Tsinghua National Laboratory for Information Science and Technology §State Key Lab of Mathematical Engineering and Advanced Computing, Wuxi, China ¶Department of Electrical and Computer Engineering, George Washington University" for entry conv_GEMM_FFT_comparacion
 while executing---line 944 of file unsrt.bst
-You've used 35 entries,
+You've used 37 entries,
             1791 wiz_defined-function locations,
-            621 strings with 10506 characters,
-and the built_in function-call counts, 5111 in all, are:
-= -- 411
-> -- 171
+            629 strings with 10939 characters,
+and the built_in function-call counts, 5365 in all, are:
+= -- 431
+> -- 179
 < -- 2
-+ -- 79
-- -- 44
-* -- 115
-:= -- 760
-add.period$ -- 103
-call.type$ -- 35
-change.case$ -- 34
++ -- 83
+- -- 46
+* -- 117
+:= -- 798
+add.period$ -- 109
+call.type$ -- 37
+change.case$ -- 36
 chr.to.int$ -- 0
-cite$ -- 38
-duplicate$ -- 233
-empty$ -- 668
-format.name$ -- 44
-if$ -- 1211
+cite$ -- 40
+duplicate$ -- 243
+empty$ -- 704
+format.name$ -- 46
+if$ -- 1271
 int.to.chr$ -- 0
-int.to.str$ -- 35
+int.to.str$ -- 37
 missing$ -- 12
-newline$ -- 176
-num.names$ -- 33
-pop$ -- 233
+newline$ -- 186
+num.names$ -- 35
+pop$ -- 247
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 130
+skip$ -- 136
 stack$ -- 0
 substring$ -- 56
-swap$ -- 54
+swap$ -- 56
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 3
-while$ -- 37
-width$ -- 37
-write$ -- 354
+while$ -- 39
+width$ -- 39
+write$ -- 374
 (There were 2 error messages)
