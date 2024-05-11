@@ -246,7 +246,7 @@ void Convolutional::forwardPropagationGEMM(const vector<vector<vector<float>>> &
 
     // Crear bloque y grid
     dim3 block(BLOCK_SIZE, BLOCK_SIZE);
-    dim3 grid((fils_w + BLOCK_SIZE -1) / BLOCK_SIZE, (cols_input_unroll + BLOCK_SIZE -1) / BLOCK_SIZE);
+    dim3 grid((cols_input_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE, (fils_w + BLOCK_SIZE -1) / BLOCK_SIZE);
 
     // Punteros host
     float *input_ = (float*)malloc(bytes_input), 
@@ -288,7 +288,8 @@ void Convolutional::forwardPropagationGEMM(const vector<vector<vector<float>>> &
     cudaMemcpy(d_w, h_w, bytes_w, cudaMemcpyHostToDevice);
 
     // Multiplicación de matrices
-    sgemm_naive<<<grid, block>>>(fils_w, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a);
+    size_t smem = (2*block.x * block.y) *sizeof(float);
+    multiplicarMatricesGPU<<<grid, block, smem>>>(fils_w, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a);
 
     // Paso de GPU a CPU
     cudaMemcpy(h_a, d_a, bytes_output, cudaMemcpyDeviceToHost);
@@ -833,7 +834,7 @@ int main()
     auto ini = high_resolution_clock::now();
     auto fin = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(fin - ini);
-    int n_kernels = 20, K=10, H=30, W=30, H_out = H-K+1, W_out = W-K+1, pad = 0, C=10;
+    int n_kernels = 2, K=2, H=5, W=5, H_out = H-K+1, W_out = W-K+1, pad = 0, C=2;
     vector<vector<vector<float>>> a, input_gpu, a_gpu;
     vector<vector<vector<vector<float>>>> grad_w, grad_w2;
     vector<float> grad_bias;
@@ -930,7 +931,7 @@ int main()
     //printMatrix_vector(output_gpu);
     
     //cout << "-- Backprop --" << endl;
-    conv.backPropagationGEMM(input_gpu, output_gpu, a_gpu, grad_w2, grad_bias, pad);
+    //conv.backPropagationGEMM(input_gpu, output_gpu, a_gpu, grad_w2, grad_bias, pad);
     /*
     cout << "Input" << endl;
     printMatrix_vector(input_gpu);
@@ -957,7 +958,20 @@ int main()
    // Comprobar resultados
     bool correcto = true;
     float epsilon = 0000000.1;
-    
+
+    for(int i=0; i<n_kernels; i++)
+    {
+        for(int j=0; j<H_out; j++)
+        {
+            for(int k=0; k<W_out; k++)
+                cout << output_gpu[i][j][k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+
+
+
     for(int i=0; i<n_kernels; i++)
         for(int j=0; j<H_out; j++)
             for(int k=0; k<W_out; k++)

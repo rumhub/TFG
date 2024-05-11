@@ -12,8 +12,8 @@
 
 using namespace std;
 
-#define TILE_DIM 32
-#define BLOCK_SIZE 32
+#define TILE_DIM 8
+#define BLOCK_SIZE 8
 
 class Convolutional
 {
@@ -79,19 +79,67 @@ class Convolutional
         void printMatrix_4D(float* matrix, int F, int C, int n);
 };
 
-// https://siboehm.com/articles/22/CUDA-MMM
-__global__ void sgemm_naive(int M, int N, int K, const float *A, const float *B, float *C) {
-  // compute position in C that this thread is responsible for
-  const uint i = blockIdx.x * blockDim.x + threadIdx.x;
-  const uint j = blockIdx.y * blockDim.y + threadIdx.y;
 
-  // `if` condition is necessary for when M or N aren't multiples of 32.
-  if (i < M && j < N) {
-    float tmp = 0.0;
-    for (int k = 0; k < K; ++k) {
-      tmp += A[i * K + k] * B[k * N + j];
+/*
+    Emplea tiles. Un tile por bloque. Usa memoria compartida
+*/
+__global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, const float *B, float *C)
+{
+    // Memoria compartida dinámica
+	extern __shared__ float sdata[];
+
+    // Convertir de índices de hebra a índices de matriz 
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x, 
+        idA = iy*K + ix, idB = iy*N + ix, id_tile = threadIdx.y * blockDim.x + threadIdx.x, iy_tile_B = iy, ix_tile_A = ix;;
+    int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+    int n_tiles = (K + blockDim.x - 1) / blockDim.x;
+
+    // Punteros a A y B
+    float *sA = sdata,
+          *sB = sdata + blockDim.x * blockDim.y;
+
+    float sum = 0.0f;    
+
+    int lim = blockDim.x;
+
+    // Si tam_bloque > tam_A
+    if(lim > K)
+        lim = K;
+
+    /*
+        Para multiplicar A(MxK) x B(KxN) hay que multiplicar una fila de A x una columna de B
+        Es decir, multiplicar KxK elementos y sumarlos
+        Un tile es más pequeño que K -> Dividir K en tiles e iterar sobre ellos
+    */
+    for(int tile=0; tile < n_tiles; ++tile)
+    {
+        idA = iy*K + tile * blockDim.x + threadIdx.x;
+        idB = (tile * blockDim.x + threadIdx.y)*N + ix;
+       
+        // Cargar submatrices de A y B en memoria compartida (tamaño tilex x tiley)
+        // Cada hebra carga en memoria compartida un elemento de A y otro de B
+        (iy < M && tile * blockDim.x + threadIdx.x < K) ? sA[id_tile] = A[idA] : sA[id_tile] = 0.0;
+        (tile * blockDim.x + threadIdx.y < K && ix < N) ? sB[id_tile] = B[idB] : sB[id_tile] = 0.0;
+
+        // Sincronizar hebras
+        __syncthreads();
+
+        // Realizar multiplicación matricial
+        if(iy < M && ix < N)
+        {
+            // Si última iteración
+            if(tile == n_tiles -1)
+                lim = K - tile * blockDim.x;
+
+            // Cada hebra calcula una posición de C (una fila de A * una columna de B)
+            for (int i = 0; i < lim; i++) 
+                sum += sA[threadIdx.y*blockDim.x + i] * sB[threadIdx.x + i*blockDim.x];
+        }
+
+        // Sincronizar hebras
+        __syncthreads();
     }
-    // C = α*(A@B)+β*C
-    C[i * N + j] = tmp;
-  }
+
+    if(iy < M && ix < N)
+        C[iy*N + ix] = sum;
 }
