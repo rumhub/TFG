@@ -106,9 +106,12 @@
 \contentsline {section}{\numberline {4.1}Convolución como GEMM }{62}{section.4.1}%
 \contentsline {subsection}{\numberline {4.1.1}Memoria requerida al emplear GEMM}{63}{subsection.4.1.1}%
 \contentsline {section}{\numberline {4.2}Retropropagación GEMM en capa convolucional}{64}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Capa totalmente conectada como GEMM}{67}{section.4.3}%
+\contentsline {section}{\numberline {4.3}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{67}{section.4.3}%
 \contentsline {subsection}{\numberline {4.3.1}Propagación hacia delante}{67}{subsection.4.3.1}%
-\contentsline {section}{\numberline {4.4}CUDA}{68}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Multiplicación de matrices en CUDA}{68}{subsection.4.4.1}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{71}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{71}{section.5.1}%
+\contentsline {subsection}{\numberline {4.3.2}Retropropagación}{68}{subsection.4.3.2}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada}{68}{section*.141}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{69}{section*.144}%
+\contentsline {section}{\numberline {4.4}CUDA}{70}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Multiplicación de matrices en CUDA}{70}{subsection.4.4.1}%
+\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{73}{chapter.5}%
+\contentsline {section}{\numberline {5.1}cuDNN}{73}{section.5.1}%

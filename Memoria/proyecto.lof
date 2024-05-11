@@ -68,7 +68,11 @@
 \contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{65}{figure.caption.137}%
 \contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{66}{figure.caption.138}%
 \contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{67}{figure.caption.139}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectad}}{67}{figure.caption.140}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{69}{figure.caption.141}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{70}{figure.caption.142}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{67}{figure.caption.140}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{68}{figure.caption.142}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{68}{figure.caption.143}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{69}{figure.caption.145}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{69}{figure.caption.146}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{71}{figure.caption.147}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{72}{figure.caption.148}%
 \addvspace {10\p@ }

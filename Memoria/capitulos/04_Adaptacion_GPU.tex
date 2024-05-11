@@ -42,7 +42,7 @@ Como ambos gradientes se pueden implementar como convoluciones, y en la sección
 	\label{fig:conv_std_vs_gemm_backprop_pesos}
 \end{figure}
 
-\section{Capa totalmente conectada como GEMM}
+\section{Capa totalmente conectada como GEMM \cite{nvidia_back_fully_GEMM}}
 \subsection{Propagación hacia delante}
 
 \begin{figure}[H]
@@ -56,8 +56,42 @@ Como ambos gradientes se pueden implementar como convoluciones, y en la sección
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.25]{imagenes/gemm_fully_forward_minibatch.jpg}  
-	\caption{Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectad}
+	\caption{Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}
 	\label{fig:gemm_fully_forward_minibatch}
+\end{figure}
+
+\subsection{Retropropagación}
+
+\subsubsection{Gradiente respecto a la entrada}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.25]{imagenes/gemm_fully_back_input.jpg}  
+	\caption{Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}
+	\label{fig:gemm_fully_back_input}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.25]{imagenes/gemm_fully_back_input_minibatch.jpg}  
+	\caption{Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}
+	\label{fig:gemm_fully_back_input_minibatch}
+\end{figure}
+
+\subsubsection{Gradiente respecto a los pesos}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.25]{imagenes/gemm_fully_back_w.jpg}  
+	\caption{Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}
+	\label{fig:gemm_fully_back_w}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.25]{imagenes/gemm_fully_back_w_minibatch.jpg}  
+	\caption{Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}
+	\label{fig:gemm_fully_back_w_minibatch}
 \end{figure}
 
 \section{CUDA}
@@ -86,6 +120,4 @@ Sin embargo, esta última implementación carece de los beneficios de la memoria
 	\label{fig:mult_matrix_cuda_v4}
 \end{figure}
 Para realizar el cálculo de cada valor de C es necesario multiplicar una fila de A por una columna de B. Es decir, multiplicar dos vectores de K elementos. Una idea inicial consiste en cargar 2K elementos en memoria compartida para posteriormente usarlos. Sin embargo, si cada hebra de cada bloque requiere 2K elementos, esto no es viable pues la memoria compartida es limitada y escasa. En su lugar, un mejor enfoque consiste en, dado un bloque 2D de dimensiones TILExTILE, almacenar 2*TILE*TILE. Su objetivo es dividir el cálculo de cada valor de C en iteraciones, y en cada una de ellas, cada hebra multiplica TILE elementos de A por TILE de B, además de acumular y sumar los resultados obtenidos en cada iteración. \cite{nvidia_mult_matrix_v4} \\
-
-
 

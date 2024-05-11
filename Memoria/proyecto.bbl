@@ -230,6 +230,13 @@ H.~Howie Huang¶ Zhufan Wang†‡ Weimin Zheng†‡ †Department of
 \newblock Performance analysis of gpu-based convolutional neural networks.
 \newblock {\em International Conference on Parallel Processing}, 2016.
 
+\bibitem{nvidia_back_fully_GEMM}
+NVIDIA.
+\newblock Linear/fully-connected layers user's guide, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/performance/dl-performance-fully-connected/index.html}
+  [Accessed:11/05/2024].
+
 \bibitem{cuda_mult_matrix_v3}
 Mary Thomas.
 \newblock Comp 605: Introduction to parallel computing lecture : Cuda
