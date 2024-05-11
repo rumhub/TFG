@@ -107,6 +107,6 @@
 \contentsline {subsection}{\numberline {4.1.1}Memoria requerida al emplear GEMM}{63}{subsection.4.1.1}%
 \contentsline {section}{\numberline {4.2}Retropropagación GEMM en capa convolucional}{64}{section.4.2}%
 \contentsline {section}{\numberline {4.3}CUDA}{66}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Multiplicación de matrices en CUDA}{66}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.1}Multiplicación de matrices en CUDA}{67}{subsection.4.3.1}%
 \contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{69}{chapter.5}%
 \contentsline {section}{\numberline {5.1}cuDNN}{69}{section.5.1}%
