@@ -56,6 +56,8 @@ class Convolutional
         void escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins);
         void matrizTranspuesta(float* matrix, int rows, int cols);
         void unroll(int C, int n, int K, float *X, float *X_unroll);
+        void unroll_1dim(int C, int H, int W, int K, float *X, float *X_unroll);
+        void unroll_3dim(int C, int H, int W, int K, float *X, float *X_unroll);
 
         // Aplicar padding
         void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad);
@@ -90,8 +92,8 @@ __global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, cons
 
     // Convertir de índices de hebra a índices de matriz 
   	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x, 
-        idA = iy*K + ix, idB = iy*N + ix, id_tile = threadIdx.y * blockDim.x + threadIdx.x, iy_tile_B = iy, ix_tile_A = ix;;
-    int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+        idA = iy*K + ix, idB = iy*N + ix, id_tile = threadIdx.y * blockDim.x + threadIdx.x;
+    //int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
     int n_tiles = (K + blockDim.x - 1) / blockDim.x;
 
     // Punteros a A y B
