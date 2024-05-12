@@ -377,72 +377,30 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
 /*
     @brief          Escalar los pesos para evitar que los gradientes "exploten"
     @clip_value     Valor a emplear para realizar el "clip" o escalado
-    @maxs           Se asigna una posición a cada hebra. Contiene el valor máximo encontrado
-    @mins           Se asigna una posición a cada hebra. Contiene el valor mínimo encontrado
     @return         Se actualizan los valores de w (pesos de la red)
 */
-void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins)
+void FullyConnected::escalar_pesos(float clip_value)
 {
-    /*
-    // Cada hebra busca el máximo y mínimo de su conjunto de datos
-    int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
-    maxs[thr_id] = this->w[0][0][0];
-    mins[thr_id] = this->w[0][0][0];
+    // Calcular el máximo y el mínimo de los pesos
+    float max = this->w[0][0][0], min = this->w[0][0][0];
 
-    // Buscar máximo y mínimo locales
-    for(int i=0; i<this->w.size(); ++i)
-    {
-        // Reparto de carga
-        n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
-
-        if(thr_id == n_thrs - 1)
-            n_imgs = this->w[i].size() - n_imgs * thr_id;
-
-        // Cada hebra busca en "n_imgs" pesos
-        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
-            for(int k=0; k<this->w[i][j].size(); ++k)
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
             {
-                if(maxs[thr_id] < this->w[i][j][k])
-                    maxs[thr_id] = this->w[i][j][k];
+                if(max < this->w[i][j][k])
+                    max = this->w[i][j][k];
                 
-                if(mins[thr_id] > this->w[i][j][k])
-                    mins[thr_id] = this->w[i][j][k];
+                if(min > this->w[i][j][k])
+                    min = this->w[i][j][k];
             }
-    }
-
-    #pragma omp barrier
-
-    // Buscar valor ḿaximo y mínimo globales
-    #pragma omp master
-    {
-        for(int i=1; i<n_thrs; ++i)
-        {
-            if(maxs[0] < maxs[i])
-                maxs[0] = maxs[i];
-            
-            if(mins[0] > mins[i])
-                mins[0] = mins[i];
-        }
-    }
-    #pragma omp barrier
-
+    
     // Realizar gradient clipping
-    float scaling_factor = clip_value / std::max(std::abs(maxs[0]), std::abs(mins[0]));
-    for(int i=0; i<this->w.size(); ++i)
-    {
-        // Reparto de carga
-        n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
-
-        if(thr_id == n_thrs - 1)
-            n_imgs = this->w[i].size() - n_imgs * thr_id;
-
-        // Cada hebra actualiza "n_imgs" pesos
-        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
-            for(int k=0; k<this->w[i][j].size(); ++k)
+    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
                 this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
-
-    }
-    */
 }
 
 /*
@@ -451,53 +409,92 @@ void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector
     @grad_b         Gradiente de cada sesgo de la red
     @return         Se actualizar los valores de w y bias (pesos y sesgos de la red)
 */
-void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b)
+void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b)
 {
-    /*
-    int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
+    // Actualizar pesos
+    for(int j=0; j<this->w.size(); j++)
+        for(int k=0; k<this->w[j].size(); k++)
+            for(int p=0; p<this->w[j][k].size(); p++)
+                this->w[j][k][p] -= this->lr * grad_pesos[j][k][p];
 
-    // Pesos
-    for(int c=0; c<this->w.size(); ++c)
-    {
-        // Reparto de carga
-        n_imgs = this->w[c].size() / n_thrs, n_imgs_ant = this->w[c].size() / n_thrs;
-
-        if(thr_id == n_thrs - 1)
-            n_imgs = this->w[c].size() - n_imgs * thr_id;
-
-        // Cada hebra actualiza "n_imgs" pesos
-        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
-            for(int k=0; k<this->w[c][j].size(); ++k)
-                this->w[c][j][k] -= this->lr * grad_pesos[0][c][j][k];
-    }
-
-    // Bias
-    for(int c=0; c<this->bias.size(); ++c)
-    {
-        // Reparto de carga
-        n_imgs = this->bias[c].size() / n_thrs, n_imgs_ant = this->bias[c].size() / n_thrs;
-
-        if(thr_id == n_thrs - 1)
-            n_imgs = this->bias[c].size() - n_imgs * thr_id;
-
-        // Cada hebra actualiza "n_imgs" sesgos
-        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
-            this->bias[c][j] -= this->lr * grad_b[0][c][j];
-    }
-    */
+    // Actualizar bias
+    for(int i=0; i<this->bias.size(); i++)
+        for(int j=0; j<this->bias[i].size(); j++)
+            this->bias[i][j] -= this->lr * grad_b[i][j];
 }
+
 
 int main()
 {
     vector<int> capas = {3, 2};
     vector<float> X = {1, 1, 1};
-    vector<vector<float>> a, z;
-    FullyConnected fully(capas, 0.01);
-
+    vector<vector<float>> a, z, grad_b;
+    vector<vector<vector<float>>> w, grad_pesos;
+    FullyConnected fully(capas, 0.1);
+    w = fully.get_pesos();
     a = fully.get_a();
     z = a;
+    grad_pesos = w;
+    grad_b = a;
+
+    for(int i=0; i<w.size(); i++)
+        for(int j=0; j<w[i].size(); j++)
+            for(int k=0; k<w[i][j].size(); k++)
+                w[i][j][k] = 0.7;
+
+    for(int i=0; i<w.size(); i++)
+        for(int j=0; j<w[i].size(); j++)
+            for(int k=0; k<w[i][j].size(); k++)
+                grad_pesos[i][j][k] = 1;
+            
+    for(int i=0; i<z.size(); i++)
+        for(int j=0; j<z[i].size(); j++)
+            grad_b[i][j] = 0;
+
+
+
+
+    //fully.set_pesos(w);
 
     fully.forwardPropagation(X, a, z);
+    /*
+    cout << "z: " << endl;
+    for(int i=0; i<z.size(); i++)
+    {
+        for(int j=0; j<z[i].size(); j++)
+            cout << z[i][j] << " " << endl;
+        cout << endl;
+    }
+    */
+    w = fully.get_pesos();
+    cout << "pesos: " << endl;
+    for(int i=0; i<w.size(); i++)
+    {
+        for(int j=0; j<w[i].size(); j++)
+        {
+            for(int k=0; k<w[i][j].size(); k++)
+                cout << w[i][j][k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+    fully.actualizar_parametros(grad_pesos, grad_b);
+    fully.escalar_pesos(2);
+    w = fully.get_pesos();
+
+    cout << "pesos: " << endl;
+    for(int i=0; i<w.size(); i++)
+    {
+        for(int j=0; j<w[i].size(); j++)
+        {
+            for(int k=0; k<w[i][j].size(); k++)
+                cout << w[i][j][k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
 
     return 0;
 }

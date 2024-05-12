@@ -36,14 +36,19 @@ class FullyConnected
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y, const int &ini);
 
         // Modificación de parámetros
-        void actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b);
-        void escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins);
+        void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);
+        void escalar_pesos(float clip_value);
         void generar_pesos(const int &capa);
 
         // Gets
         vector<vector<vector<float>>> get_pesos(){return this->w;};
         vector<vector<float>> get_bias(){return this->bias;};
         vector<vector<float>> get_a(){return this->a;};
+
+
+        // Debug
+        void set_pesos(const vector<vector<vector<float>>> &w_){this->w = w_;};
+
 };
 
 #endif
