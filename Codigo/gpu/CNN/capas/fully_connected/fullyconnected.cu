@@ -383,6 +383,7 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
 */
 void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins)
 {
+    /*
     // Cada hebra busca el máximo y mínimo de su conjunto de datos
     int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
     maxs[thr_id] = this->w[0][0][0];
@@ -441,6 +442,7 @@ void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector
                 this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
 
     }
+    */
 }
 
 /*
@@ -451,6 +453,7 @@ void FullyConnected::escalar_pesos(float clip_value, vector<float> &maxs, vector
 */
 void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>> &grad_pesos, vector<vector<vector<float>>> &grad_b)
 {
+    /*
     int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
 
     // Pesos
@@ -481,4 +484,20 @@ void FullyConnected::actualizar_parametros(vector<vector<vector<vector<float>>>>
         for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
             this->bias[c][j] -= this->lr * grad_b[0][c][j];
     }
+    */
+}
+
+int main()
+{
+    vector<int> capas = {3, 2};
+    vector<float> X = {1, 1, 1};
+    vector<vector<float>> a, z;
+    FullyConnected fully(capas, 0.01);
+
+    a = fully.get_a();
+    z = a;
+
+    fully.forwardPropagation(X, a, z);
+
+    return 0;
 }

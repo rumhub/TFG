@@ -53,7 +53,7 @@ class Convolutional
         void generar_pesos();
         void reset_gradients(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias);
         void actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias);
-        void escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins);
+        void escalar_pesos(float clip_value);
         void matrizTranspuesta(float* matrix, int rows, int cols);
         void unroll(int C, int n, int K, float *X, float *X_unroll);
         void unroll_1dim(int C, int H, int W, int K, float *X, float *X_unroll);

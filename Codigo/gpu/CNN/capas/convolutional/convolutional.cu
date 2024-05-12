@@ -812,72 +812,32 @@ void Convolutional::printMatrix_vector(const vector<vector<vector<float>>> &X) {
 /*
     @brief          Escalar los pesos para evitar que los gradientes "exploten"
     @clip_value     Valor a emplear para realizar el "clip" o escalado
-    @maxs           Se asigna una posición a cada hebra. Contiene el valor máximo encontrado
-    @mins           Se asigna una posición a cada hebra. Contiene el valor mínimo encontrado
     @return         Se actualizan los valores de w (pesos de la capa)
 */
-void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<float> &mins)
+void Convolutional::escalar_pesos(float clip_value)
 {
-    /*
-    // Cada hebra busca el máximo y mínimo de su conjunto de datos
-    int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
-    maxs[thr_id] = this->w[0][0][0][0];
-    mins[thr_id] = this->w[0][0][0][0];
+    // Calculate the maximum and minimum values of weights
+    float max = this->w[0][0][0][0], min = this->w[0][0][0][0];
 
-    // Buscar máximo y mínimo locales
-    for(int i=0; i<this->w.size(); ++i)
-    {
-        // Reparto de carga
-        n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
-
-        if(thr_id == n_thrs - 1)
-            n_imgs = this->w[i].size() - n_imgs * thr_id;
-
-        // Cada hebra busca en "n_imgs" pesos
-        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
-            for(int k=0; k<this->w[i][j].size(); ++k)
-                for(int l=0; l<this->w[i][j][k].size(); ++l)
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                for(int l=0; l<this->w[i][j][k].size(); l++)
                 {
-                    if(maxs[thr_id] < this->w[i][j][k][l])
-                        maxs[thr_id] = this->w[i][j][k][l];
+                    if(max < this->w[i][j][k][l])
+                        max = this->w[i][j][k][l];
                     
-                    if(mins[thr_id] > this->w[i][j][k][l])
-                        mins[thr_id] = this->w[i][j][k][l];
+                    if(min > this->w[i][j][k][l])
+                        min = this->w[i][j][k][l];
                 }
-    }
-    #pragma omp barrier
-
-    // Buscar valor ḿaximo y mínimo globales
-    #pragma omp master
-    {
-        for(int i=1; i<n_thrs; ++i)
-        {
-            if(maxs[0] < maxs[i])
-                maxs[0] = maxs[i];
-            
-            if(mins[0] > mins[i])
-                mins[0] = mins[i];
-        }
-    }
-    #pragma omp barrier
 
     // Perform gradient clipping
-    float scaling_factor = clip_value / std::max(std::abs(maxs[0]), std::abs(mins[0]));
-    for(int i=0; i<this->w.size(); ++i)
-    {
-        // Reparto de carga
-        n_imgs = this->w[i].size() / n_thrs, n_imgs_ant = this->w[i].size() / n_thrs;
-
-        if(thr_id == n_thrs - 1)
-            n_imgs = this->w[i].size() - n_imgs * thr_id;
-
-        // Cada hebra actualiza "n_imgs" pesos
-        for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
-            for(int k=0; k<this->w[i][j].size(); ++k)
-                for(int l=0; l<this->w[i][j][k].size(); ++l)
+    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
+    for(int i=0; i<this->w.size(); i++)
+        for(int j=0; j<this->w[i].size(); j++)
+            for(int k=0; k<this->w[i][j].size(); k++)
+                for(int l=0; l<this->w[i][j][k].size(); l++)
                     this->w[i][j][k][l] = std::max(std::min(this->w[i][j][k][l] * scaling_factor, clip_value), -clip_value);
-    }
-    */
 }
 
 /*
@@ -888,37 +848,20 @@ void Convolutional::escalar_pesos(float clip_value, vector<float> &maxs, vector<
 */
 void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias)
 {
-    /*
-    int n_thrs = 8, thr_id = omp_get_thread_num(), n_imgs, n_imgs_ant;
-
     // Actualizar pesos
-    for(int c=0; c<this->w.size(); ++c)
-    {
-        // Reparto de carga
-        n_imgs = this->w[c].size() / n_thrs, n_imgs_ant = this->w[c].size() / n_thrs;
-
-        if(thr_id == n_thrs - 1)
-            n_imgs = this->w[c].size() - n_imgs * thr_id;
-
-        // Cada hebra actualiza "n_imgs" pesos
-        for(int k=n_imgs_ant*thr_id; k<n_imgs_ant*thr_id + n_imgs; ++k)
-            for(int p=0; p<this->w[c][k].size(); ++p)
-                for(int l=0; l<this->w[c][k][p].size(); ++l)
-                    this->w[c][k][p][l] -= this->lr * grad_w[c][k][p][l];
-    }
-
-    // Actualizar Bias
-    // Reparto de carga
-    n_imgs = this->bias.size() / n_thrs, n_imgs_ant = this->bias.size() / n_thrs;
-
-    if(thr_id == n_thrs - 1)
-        n_imgs = this->bias.size() - n_imgs * thr_id;
-
-    // Cada hebra actualiza "n_imgs" sesgos
-    for(int j=n_imgs_ant*thr_id; j<n_imgs_ant*thr_id + n_imgs; ++j)
-        this->bias[j] -= this->lr * grad_bias[j];
-    */
+    for(int j=0; j<this->w.size(); j++)
+        for(int k=0; k<this->w[j].size(); k++)
+            for(int p=0; p<this->w[j][k].size(); p++)
+                for(int l=0; l<this->w[j][k][p].size(); l++)
+                    this->w[j][k][p][l] -= this->lr * grad_w[j][k][p][l];
+    
+    // Actualizar bias
+    for(int i=0; i<this->bias.size(); i++)
+        this->bias[i] -= this->lr * grad_bias[i];
+    
 }
+
+
 
 // https://towardsdatascience.com/forward-and-backward-propagation-in-convolutional-neural-networks-64365925fdfa
 // https://colab.research.google.com/drive/13MLFWdi3uRMZB7UpaJi4wGyGAZ9ftpPD?authuser=1#scrollTo=FEFgOKF4gGv2
@@ -958,6 +901,7 @@ int main()
     auto fin = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(fin - ini);
     int n_kernels = 26, K=5, H=50, W=50, H_out = H-K+1, W_out = W-K+1, pad = 0, C=100;   // C=9
+    //int n_kernels = 2, K=2, H=3, W=3, H_out = H-K+1, W_out = W-K+1, pad = 0, C=2;   // C=9
     vector<vector<vector<float>>> a, input_gpu, a_gpu;
     vector<vector<vector<vector<float>>>> grad_w, grad_w2;
     vector<float> grad_bias;
@@ -968,7 +912,7 @@ int main()
     for(int i=0; i<C; i++)
         for(int j=0; j<H; j++)
             for(int k=0; k<W; k++)
-                input[i][j][k] = (float) (i+j+k) / (C*H*W);
+                input[i][j][k] = (float) (j+k) / (H*W);
                 //h_A[i*K + j] = (rand() % 100) + 1;
                 //input[i][j][k] = 3.0;
     
@@ -979,7 +923,13 @@ int main()
     
     // Vector de sesgos
     vector<float> bias(n_kernels, 0.0);
-
+    /*
+    for(int i = 0; i < n_kernels; i++) 
+        for(int j = 0; j < C; j++)
+            for(int kx = 0; kx < K; kx++)
+                for(int ky = 0; ky < K; ky++)
+                    w[i][j][kx][ky] = (float) i+j / (n_kernels*C*2);
+    */
     // Inicializar gradientes a 0.0
     grad_w = w;
     grad_bias = bias;
@@ -994,8 +944,8 @@ int main()
 
 
     // Crear capa convolucional
-    Convolutional conv(n_kernels, K, K, input, 0.01);
-    conv.set_w(w);
+    Convolutional conv(n_kernels, K, K, input, 0.1);
+    //conv.set_w(w);
     conv.set_b(bias);
 
     // Establecer device
@@ -1104,11 +1054,12 @@ int main()
     cout << endl;
     */
 
+
    // Comprobar resultados
     bool correcto = true;
     float epsilon = 0000000.1;
     int n_errores = 0;
-    float err_medio_input = 0.0;
+    float err_medio_input = 0.0, err_medio_w = 0.0;
 
     for(int i=0; i<n_kernels; i++)
         for(int j=0; j<H_out; j++)
@@ -1117,6 +1068,7 @@ int main()
                 {
                     correcto = false;
                     cout << abs(output[i][j][k] - output_gpu[i][j][k]) << "output" << endl;
+                    n_errores++;
                 }
 
     for(int i=0; i<C; i++)
@@ -1139,6 +1091,8 @@ int main()
                 {
                     correcto = false;
                     //cout << abs(grad_w[i][j][kx][ky] - grad_w2[i][j][kx][ky]) << " pesos " << endl;
+                    n_errores++;
+                    err_medio_w += abs(grad_w[i][j][kx][ky] - grad_w2[i][j][kx][ky]);
                 }
 
 
@@ -1149,6 +1103,7 @@ int main()
     {
         cout << "Incorrecto (" << n_errores << " errores) " << endl;
         cout << "Error medio input: " << err_medio_input / C*H*W << endl;
+        cout << "Error medio w: " << err_medio_w / n_kernels*C*K*K << endl;
     }
 
     return 0;
