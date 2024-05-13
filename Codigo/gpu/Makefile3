@@ -1,0 +1,17 @@
+CXX = g++
+CXX_FLAGS = -O3 -I /usr/local/include/opencv4 -L /usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs
+CUDA = nvcc
+CUDA_FLAGS = -m64 -gencode arch=compute_50,code=sm_50
+INCLUDE_MAIN = convolutional.cu
+PATH_LEER_IMG = CNN/auxiliar
+
+.SUFFIXES :
+
+
+
+main: $(PATH_LEER_IMG)/leer_imagenes.cpp $(PATH_LEER_IMG)/leer_imagenes.h
+	$(CXX) $(PATH_LEER_IMG)/leer_imagenes.cpp $(CXX_FLAGS) -o main 
+		
+
+
+#g++ $(PATH_LEER_IMG)/leer_imagenes.cpp -c -O3 -I /usr/local/include/opencv4 -L /usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -o leer_imagenes.o 

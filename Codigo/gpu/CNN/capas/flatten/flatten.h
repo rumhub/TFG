@@ -1,6 +1,12 @@
+#ifndef FLATTEN_H
+#define FLATTEN_H
+
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <limits>
 
+using namespace std::chrono;
 using namespace std;
 
 class Flatten
@@ -21,3 +27,5 @@ class Flatten
 
         int get_canales();
 };
+
+#endif

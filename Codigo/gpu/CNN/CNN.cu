@@ -1,6 +1,4 @@
 #include "CNN.h"
-#include <vector>
-
 
 using namespace std;
 
@@ -18,6 +16,7 @@ using namespace std;
 */
 CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding,  vector<int> &capas_fully, const vector<vector<vector<float>>> &input, const float &lr)
 {
+    
     vector<vector<vector<float>>> img_in, img_out, img_in_copy;
     vector<float> flat_out;
     int H_out, W_out;
@@ -25,6 +24,12 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
     if(capas_conv.size() != padding.size())
     {
         cout << "ERROR Dimensiones de array capa convolucional y array de padding no coincidem.\n";
+        exit(-1);
+    }
+
+    if(capas_conv[0].size() != 3)
+    {
+        cout << "ERROR Dimensiones de array capa convolucional incorrectas. Ejemplo de uso, capas_conv[0] = {16, 3, 3}\n";
         exit(-1);
     }
 
@@ -41,11 +46,12 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
     img_in = input;
     this->padding = padding;
 
-    vector<float> v_1D(W_out);
+    vector<float> v_1D;
+    //vector<float> v_1D(W_out);
     vector<vector<float>> v_2D;
 
     Convolutional conv1(capas_conv[0][0], capas_conv[0][1], capas_conv[0][2], img_in, lr);
-
+    
     // Inicializar capas convolucionales y maxpool --------------------------------------------
     for(int i=0; i<n_capas_conv; ++i)
     {   
@@ -119,7 +125,6 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
         img_in = img_out;
     }
 
-    
     // Inicializar capa flatten -----------------------------------------------------------------
     this->flat = new Flatten(img_out);    
     (*this->flat).forwardPropagation(img_in, flat_out);
@@ -144,6 +149,7 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
 */
 void CNN::leer_imagenes()
 {
+    /*
     vector<vector<vector<float>>> imagen_k1;
 
     //n_imagenes = 4000;
@@ -216,6 +222,7 @@ void CNN::leer_imagenes()
         this->train_labels.push_back({1.0, 0.0});
 
     }  
+    */
 }
 
 
@@ -225,6 +232,7 @@ void CNN::leer_imagenes()
 */
 void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
 {
+    /*
     vector<vector<vector<float>>> imagen_k1;
     vector<float> v1D, y_1D;
     string ruta_ini, ruta;
@@ -271,7 +279,7 @@ void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
         // Reset todo "y_1D" a 0
         y_1D[c] = 0.0;
     }  
-
+    */
     
 }
 
@@ -282,6 +290,7 @@ void CNN::leer_imagenes_mnist(const int n_imagenes, const int n_clases)
 */
 void CNN::leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagenes_test, const int n_clases)
 {
+    /*
     vector<vector<vector<float>>> imagen_k1;
     vector<float> v1D, y_1D;
     string ruta_ini, ruta;
@@ -370,7 +379,7 @@ void CNN::leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagen
         // Reset todo "y_1D" a 0
         y_1D[c] = 0.0;
     }  
-
+    */
 }
 
 /*
@@ -380,6 +389,12 @@ void CNN::mostrar_arquitectura()
 {
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
     vector<float> flat_out;
+
+    if(this->train_imgs.size() == 0)
+    {
+        cout << "No se puede mostrar la arquitectura. No hay imágenes de entrenamiento. \n";
+        exit(-1);
+    }
 
     img_in = this->train_imgs[0];
     cout << "Dimensiones tras realizar la propagación hacia delante de una imagen" << endl;
@@ -447,6 +462,7 @@ void CNN::padding_interno(vector<vector<vector<float>>> &input, const int &pad)
 
 void CNN::train(int epocas, int mini_batch)
 {
+    /*
     double t1, t2;
     int n=this->train_imgs.size();
     int n_thrs = 8;
@@ -820,7 +836,7 @@ void CNN::train(int epocas, int mini_batch)
         evaluar_modelo_en_test();
    
     }
-  
+    */
 }
 
 
@@ -829,6 +845,7 @@ void CNN::train(int epocas, int mini_batch)
 */
 void CNN::evaluar_modelo()
 {
+    /*
     int n=this->train_imgs.size(), n_thrs = omp_get_num_threads(), n_imgs = n / n_thrs, n_imgs_ant = n / n_thrs, thr_id = omp_get_thread_num();
     double t1, t2;
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
@@ -909,6 +926,7 @@ void CNN::evaluar_modelo()
 
         cout << "Entropía cruzada: " << this->sum_entr << ",         " << t2 - t1 << " (s) " << endl << endl;
     }    
+    */
 }
 
 /*
@@ -916,30 +934,23 @@ void CNN::evaluar_modelo()
 */
 void CNN::evaluar_modelo_en_test()
 {
-    int n=this->test_imgs.size(), n_thrs = omp_get_num_threads(), n_imgs = n / n_thrs, n_imgs_ant = n / n_thrs, thr_id = omp_get_thread_num();
+    int n=this->test_imgs.size();
     double t1, t2;
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
     
     vector<float> flat_out; 
     float acc ,entr;
 
-    if(thr_id == n_thrs - 1)
-        n_imgs = n - n_imgs * thr_id;
-
-    vector<vector<float>> flat_outs(n_imgs);
+    vector<vector<float>> flat_outs(n);
 
     // Inicialización de parámetros
-    #pragma omp master
-    {
-        t1 = omp_get_wtime();
-        this->sum_acc = 0.0;
-        this->sum_entr = 0.0;
-    }
+    //t1 = omp_get_wtime();
+    acc = 0.0;
+    entr = 0.0;
 
-    #pragma omp barrier
 
-    // Cada hebra realiza la propagación hacia delante de una porción de imágenes
-    for(int img=n_imgs_ant*thr_id, k=0; img<n_imgs_ant*thr_id + n_imgs; img++, k++)
+    // Popagación hacia delante
+    for(int img=0, k=0; img<n; img++, k++)
     {
         img_in = this->test_imgs[img];
 
@@ -971,30 +982,19 @@ void CNN::evaluar_modelo_en_test()
     }
     
     // Cada hebra obtiene el accuracy y la entropía cruzada sobre una porción de imágenes
-    acc = (*this->fully).accuracy(flat_outs,this->test_labels, n_imgs_ant*thr_id);
-    entr = (*this->fully).cross_entropy(flat_outs, this->test_labels, n_imgs_ant*thr_id);
+    acc = (*this->fully).accuracy(flat_outs,this->test_labels);
+    entr = (*this->fully).cross_entropy(flat_outs, this->test_labels);
 
-    // Sumar valores de cada hebra
-    #pragma omp critical
-    {
-        this->sum_acc += acc;
-        this->sum_entr += entr;
-    }
+    // Realizar media y obtener valores finales
+    acc = acc / n * 100;
+    entr = -entr / n;
 
-    #pragma omp barrier
+    //t2 = omp_get_wtime();
 
-    // Realizar media y obtener valores totales
-    #pragma omp master
-    {
-        this->sum_acc = this->sum_acc / n * 100;
-        this->sum_entr = -this->sum_entr / n;
-
-        t2 = omp_get_wtime();
-    
-        cout << "\n------------- RESULTADOS EN TEST --------------- " << endl;
-        cout << "Accuracy: " << this->sum_acc << " %,  ";
+    cout << "\n------------- RESULTADOS EN TEST --------------- " << endl;
+    cout << "Accuracy: " << acc << " %,  ";
 
 
-        cout << "Entropía cruzada: " << this->sum_entr << ",         " << t2 - t1 << " (s) " << endl << endl;
-    }    
+    cout << "Entropía cruzada: " << entr << ",         " << endl << endl;
+    //cout << "Entropía cruzada: " << entr << ",         " << t2 - t1 << " (s) " << endl << endl;
 }

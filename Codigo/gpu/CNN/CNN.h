@@ -1,10 +1,13 @@
+#ifndef CNN_INCLUDED
+#define CNN_INCLUDED
+
 #include <iostream>
-#include "capas/convolutional/convolutional.cpp"
-#include "capas/flatten/flatten.cpp"
-#include "capas/fully_connected/fullyconnected.cpp"
-#include "capas/pooling_max/poolingMax.cpp"
-#include "auxiliar/leer_imagenes.cpp"
-#include "auxiliar/auxiliar.cpp"
+#include "capas/convolutional/convolutional.h"
+#include "capas/flatten/flatten.h"
+#include "capas/fully_connected/fullyconnected.h"
+#include "capas/pooling_max/poolingMax.h"
+//#include "auxiliar/leer_imagenes.h"
+#include "auxiliar/auxiliar.h"
 
 #include <vector>
 
@@ -23,7 +26,6 @@ class CNN
         vector<int> padding;                        // Nivel de padding en cada capa convolucional
         float lr;                           // Learning rate o Tasa ded Aprendizaje
         int n_capas_conv;                   // Número de capas convolucionales
-        float sum_acc, sum_entr;            // Suma de accuracy y de entropía cruzada
 
     public:
         // Constructor
@@ -47,3 +49,5 @@ class CNN
         // Modificar imagen
         void padding_interno(vector<vector<vector<float>>> &input, const int &pad);
 };
+
+#endif

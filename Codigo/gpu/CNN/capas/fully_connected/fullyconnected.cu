@@ -1,13 +1,6 @@
 #include "fullyconnected.h"
-#include <vector>
-#include <iostream>
-#include "math.h"
-#include "random"
-#include <stdio.h>
-#include <omp.h>
 
 using namespace std;
-
 
 /*
     CONSTRUCTOR de la clase FullyConnected
@@ -210,7 +203,7 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
     @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
     @return Valor de entropía cruzada sobre el conjunto de datos de entrada x
 */
-float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y, const int &ini)
+float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y)
 {
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=this->a.size()-1;
@@ -224,7 +217,7 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
         forwardPropagation(x[i], a, z);
 
         for(int c=0; c<this->a[n].size(); ++c)
-            if(y[ini + i][c] == 1)
+            if(y[i][c] == 1)
                 prediccion = z[n][c];
             
         sum += log(prediccion+epsilon);
@@ -239,10 +232,9 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
     @brief  Realiza la medida de Accuracy sobre un conjunto de datos
     @x      Conjunto de datos de entrada
     @y      Etiquetas de los datos de entrada
-    @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
     @return Valor de accuracy sobre el conjunto de datos de entrada x
 */
-float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y, const int &ini)
+float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
 {
     float sum =0.0, max;
     int prediccion, n=this->a.size()-1;
@@ -271,7 +263,7 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y,
         }
 
         // Ver si etiqueta real y predicción coindicen
-        sum += y[ini + i][prediccion];
+        sum += y[i][prediccion];
     }
 
     //sum = sum / x.size() * 100;
@@ -423,7 +415,7 @@ void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_p
             this->bias[i][j] -= this->lr * grad_b[i][j];
 }
 
-
+/*
 int main()
 {
     vector<int> capas = {3, 2};
@@ -465,7 +457,7 @@ int main()
             cout << z[i][j] << " " << endl;
         cout << endl;
     }
-    */
+    
     w = fully.get_pesos();
     cout << "pesos: " << endl;
     for(int i=0; i<w.size(); i++)
@@ -498,3 +490,4 @@ int main()
 
     return 0;
 }
+*/

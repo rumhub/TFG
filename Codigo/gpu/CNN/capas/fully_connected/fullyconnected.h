@@ -4,6 +4,11 @@
 
 #include <vector>
 #include <fstream>
+#include <iostream>
+#include "math.h"
+#include "random"
+#include <stdio.h>
+#include <omp.h>
 
 using namespace std;
 
@@ -32,8 +37,8 @@ class FullyConnected
         void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a, const int &n_thrs);
 
         // Medidas de evaluación
-        float accuracy(vector<vector<float>> x, vector<vector<float>> y, const int &ini);
-        float cross_entropy(vector<vector<float>> x, vector<vector<float>> y, const int &ini);
+        float accuracy(vector<vector<float>> x, vector<vector<float>> y);
+        float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
         // Modificación de parámetros
         void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);

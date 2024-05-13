@@ -1,6 +1,4 @@
-#include <opencv2/opencv.hpp>
-#include <vector>
-
+#include "leer_imagenes.h"
 using namespace std;
 using namespace cv;
 
@@ -19,6 +17,7 @@ void modificar_imagen(Mat imagen, const int &p_ini_x, const int &p_ini_y, const 
     // Esperar hasta que se presione una tecla
     waitKey(0);
 };
+
 
 void cargar_imagen_en_vector(const Mat &imagen, vector<vector<vector<float>>> &v)
 {
@@ -79,3 +78,42 @@ void mostrar_vector_como_imagen(const vector<vector<vector<float>>> &v)
     // Esperar hasta que se presione una tecla
     waitKey(0);
 };
+
+
+void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input)
+{
+    vector<vector<vector<float>>> imagen_k1;
+
+    imagenes_input.clear();
+
+    // Leer imagen
+    string ruta = "../fotos/gatos_perros/training_set/dogs/dog.1.jpg";
+
+    Mat image2 = imread(ruta), image;
+    
+    resize(image2, image, Size(32, 32));
+
+    // Cargamos la imagen en un vector 3D
+    cargar_imagen_en_vector(image, imagen_k1);
+
+    // Normalizar imagen
+    for(int i=0; i<imagen_k1.size(); i++)
+        for(int j=0; j<imagen_k1[0].size(); j++)
+            for(int k=0; k<imagen_k1[0][0].size(); k++)
+                imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255;
+            
+    // Se almacena la imagen obtenida
+    imagenes_input.push_back(imagen_k1);
+};
+
+void eee()
+{
+    cout << "EEEEE desde leer_img" << endl;
+}
+
+/*
+int main()
+{
+    return 0;
+}
+*/

@@ -1,11 +1,4 @@
-#include <vector>
 #include "flatten.h"
-#include <iostream>
-#include <chrono>
-#include <limits>
-
-using namespace std::chrono;
-using namespace std;
 
 Flatten::Flatten(const vector<vector<vector<float>>> &input)
 {              

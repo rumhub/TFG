@@ -3,8 +3,69 @@
 using namespace std::chrono;
 
 
+/*
+    Emplea tiles. Un tile por bloque. Usa memoria compartida
+*/
+__global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, const float *B, float *C)
+{
+    // Memoria compartida dinámica
+	extern __shared__ float sdata[];
 
+    // Convertir de índices de hebra a índices de matriz 
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x, 
+        idA = iy*K + ix, idB = iy*N + ix, id_tile = threadIdx.y * blockDim.x + threadIdx.x;
+    //int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+    int n_tiles = (K + blockDim.x - 1) / blockDim.x;
 
+    // Punteros a A y B
+    float *sA = sdata,
+          *sB = sdata + blockDim.x * blockDim.y;
+
+    float sum = 0.0f;    
+
+    int lim = blockDim.x;
+
+    // Si tam_bloque > tam_A
+    if(lim > K)
+        lim = K;
+
+    /*
+        Para multiplicar A(MxK) x B(KxN) hay que multiplicar una fila de A x una columna de B
+        Es decir, multiplicar KxK elementos y sumarlos
+        Un tile es más pequeño que K -> Dividir K en tiles e iterar sobre ellos
+    */
+    for(int tile=0; tile < n_tiles; ++tile)
+    {
+        idA = iy*K + tile * blockDim.x + threadIdx.x;
+        idB = (tile * blockDim.x + threadIdx.y)*N + ix;
+       
+        // Cargar submatrices de A y B en memoria compartida (tamaño tilex x tiley)
+        // Cada hebra carga en memoria compartida un elemento de A y otro de B
+        (iy < M && tile * blockDim.x + threadIdx.x < K) ? sA[id_tile] = A[idA] : sA[id_tile] = 0.0;
+        (tile * blockDim.x + threadIdx.y < K && ix < N) ? sB[id_tile] = B[idB] : sB[id_tile] = 0.0;
+
+        // Sincronizar hebras
+        __syncthreads();
+
+        // Realizar multiplicación matricial
+        if(iy < M && ix < N)
+        {
+            // Si última iteración
+            if(tile == n_tiles -1)
+                lim = K - tile * blockDim.x;
+
+            // Cada hebra calcula una posición de C (una fila de A * una columna de B)
+            for (int i = 0; i < lim; i++) 
+                sum += sA[threadIdx.y*blockDim.x + i] * sB[threadIdx.x + i*blockDim.x];
+        }
+
+        // Sincronizar hebras
+        __syncthreads();
+    }
+
+    if(iy < M && ix < N)
+        C[iy*N + ix] = sum;
+}
 
 /*
     CONSTRUCTOR de la clase Convolutional
@@ -892,6 +953,7 @@ void printMatrix_vector(const vector<vector<vector<float>>> &X) {
     }
 }
 
+/*
 int main()
 {
     // -----------------------------------------------------------------------------------------------------
@@ -929,7 +991,7 @@ int main()
             for(int kx = 0; kx < K; kx++)
                 for(int ky = 0; ky < K; ky++)
                     w[i][j][kx][ky] = (float) i+j / (n_kernels*C*2);
-    */
+    
     // Inicializar gradientes a 0.0
     grad_w = w;
     grad_bias = bias;
@@ -992,7 +1054,7 @@ int main()
         }
         cout << endl;
     }
-    */
+    
     
     cout << " -------------------------- Método GEMM -------------------------- " << endl;
     //cout << "Input" << endl;
@@ -1052,7 +1114,7 @@ int main()
         cout << endl;
     }
     cout << endl;
-    */
+    
 
 
    // Comprobar resultados
@@ -1108,3 +1170,4 @@ int main()
 
     return 0;
 }
+*/

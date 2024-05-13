@@ -1,7 +1,5 @@
-cmake_minimum_required(VERSION 2.8)
-project( main )
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-add_executable( main ../main.cpp )
-target_link_libraries( main ${OpenCV_LIBS} )
-set(CMAKE_CXX_FLAGS "-O3 -g -fopenmp")
+cmake_minimum_required(VERSION 3.9)
+project(cuda_test LANGUAGES CUDA CXX)
+set(CMAKE_CUDA_ARCHITECTURES 50)
+add_executable(cuda_test test.cu)
+
