@@ -148,13 +148,13 @@ void CNN::mostrar_arquitectura()
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
     vector<float> flat_out;
 
-    if(this->train_imgs.size() == 0)
+    if(this->h_train_imgs.size() == 0)
     {
         cout << "No se puede mostrar la arquitectura. No hay imágenes de entrenamiento. \n";
         exit(-1);
     }
 
-    img_in = this->train_imgs[0];
+    img_in = this->h_train_imgs[0];
     cout << "Dimensiones tras realizar la propagación hacia delante de una imagen" << endl;
     cout << "Imagen inicial, dimensiones: " << img_in.size() << "x" <<  img_in[0].size() << "x" << img_in[0][0].size() << endl;
 
@@ -182,6 +182,15 @@ void CNN::mostrar_arquitectura()
     cout << "Dimensiones después de una capa de flatten: " << flat_out.size() << endl;
 
 }
+
+
+
+void CNN::set_train(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y)
+{
+    this->h_train_imgs = x; 
+    this->h_train_labels = y;
+};
+
 
 /*
     @brief  Aplica padding sobre una imagen sin aumentar su tamaño
@@ -233,17 +242,29 @@ void CNN::train(int epocas, int mini_batch)
     auto fin = high_resolution_clock::now();
     auto duration = duration_cast<seconds>(fin - ini);
 
-    int n=this->train_imgs.size();
+    int n=this->h_train_imgs.size();
     vector<vector<vector<vector<vector<float>>>>> convs_outs(mini_batch), plms_outs(mini_batch), conv_grads_w(this->n_capas_conv), plms_in_copys(mini_batch), conv_a(mini_batch);       // Input y output de cada capa (por cada imagen de training)
     vector<vector<vector<vector<float>>>> convs_out(this->n_capas_conv), pools_out(this->n_capas_conv);
     vector<vector<vector<float>>> grads_pesos_fully = (*this->fully).get_pesos(), img_aux;
     vector<vector<float>> grad_x_fully, flat_outs(mini_batch), grads_bias_fully = (*this->fully).get_bias(), fully_a = (*this->fully).get_a(), fully_z = fully_a, fully_grad_a = fully_a, conv_grads_bias(this->n_capas_conv), prueba(this->n_capas_conv), max_conv(this->n_capas_conv), min_conv(this->n_capas_conv); 
     vector<int> indices(n), batch(mini_batch), tam_batches;  
     const int M = n / mini_batch;
-
+    int pad_sig;
 
     std::random_device rd;
     std::mt19937 g(rd());
+
+    /*
+    float *d_train_imgs = (float *)malloc(this->h_train_imgs.size() * this->h_train_imgs[0].size() * this->h_train_imgs[0][0].size() * this->h_train_imgs[0][0][0].size() * sizeof(float));
+
+    
+    // Copiar a GPU imágenes de entrenamiento
+    for(int i=0; i<this->h_train_imgs.size(); ++i)
+        for(int j=0; j<this->h_train_imgs[i].size(); ++j)
+            for(int k=0; k<this->h_train_imgs[i][j].size(); ++k)
+                for(int p=0; p<this->h_train_imgs[i][j][k].size(); ++p)
+
+    */
 
     //-------------------------------------------------
     // Inicializar índices
@@ -303,35 +324,35 @@ void CNN::train(int epocas, int mini_batch)
                     batch[j] = indices[mini_batch*i + j];   
 
                 
+                for(int img=0; img<tam_batches[i]; ++img)
+                    for(int j=0; j<this->n_capas_conv; ++j)
+                    {
+                        pad_sig = 0;    // Padding de la siguiente capa convolucional
+                        if(this->n_capas_conv > j+1)
+                            pad_sig = this->padding[j+1];
+
+                        padding_interno(plms_outs[img][j], pad_sig);                        
+                    }
+
+
                 // ---------------------------------------------------------------------------------------
                 for(int img=0; img<tam_batches[i]; ++img)
                 {
                     // Primera capa convolucional y maxpool -----------------------
                     // Realizar los cálculos
-                    this->convs[0].forwardPropagation(this->train_imgs[batch[img]], convs_outs[img][0], conv_a[img][0]);
-                    
-                    int pad_sig = 0;    // Padding de la siguiente capa convolucional
-                    if(this->n_capas_conv > 1)
-                        pad_sig = this->padding[1];
-
-                    padding_interno(plms_outs[img][0], pad_sig);
+                    this->convs[0].forwardPropagation(this->h_train_imgs[batch[img]], convs_outs[img][0], conv_a[img][0]);
 
                     this->plms[0].forwardPropagation(convs_outs[img][0], plms_outs[img][0], plms_in_copys[img][0], pad_sig);
 
                     
                     // Resto de capas convolucionales y maxpool ----------------------------
-                    for(int i=1; i<this->n_capas_conv; ++i)
+                    for(int j=1; j<this->n_capas_conv; ++j)
                     {
                         // Capa convolucional 
-                        this->convs[i].forwardPropagation(plms_outs[img][i-1], convs_outs[img][i], conv_a[img][i]);
+                        this->convs[j].forwardPropagation(plms_outs[img][j-1], convs_outs[img][j], conv_a[img][j]);
 
                         // Capa MaxPool 
-                        pad_sig = 0;    // Padding de la siguiente capa convolucional
-                        if(this->n_capas_conv > i+1)
-                            pad_sig = this->padding[i+1];
-
-                        padding_interno(plms_outs[img][i], pad_sig);
-                        this->plms[i].forwardPropagation(convs_outs[img][i], plms_outs[img][i], plms_in_copys[img][i], pad_sig);
+                        this->plms[j].forwardPropagation(convs_outs[img][j], plms_outs[img][j], plms_in_copys[img][j], pad_sig);
                     }
                     
                     (*this->flat).forwardPropagation(plms_outs[img][plms_outs[img].size()-1], flat_outs[img]);        
@@ -356,7 +377,7 @@ void CNN::train(int epocas, int mini_batch)
                         grads_bias_fully[j][k] = 0.0;
 
                 // Relaizar propagación hacia delante y hacia detrás en la capa totalmente conectada
-                (*this->fully).train(flat_outs, this->train_labels, batch, tam_batches[i], grads_pesos_fully, grads_bias_fully, grad_x_fully, fully_a, fully_z, fully_grad_a);
+                (*this->fully).train(flat_outs, this->h_train_labels, batch, tam_batches[i], grads_pesos_fully, grads_bias_fully, grad_x_fully, fully_a, fully_z, fully_grad_a);
 
                 // ---------------------------------------------------------------------------------------------------------------------------
                 // Capas convolucionales, de agrupación y aplanado
@@ -369,13 +390,13 @@ void CNN::train(int epocas, int mini_batch)
                 // ----------------------------------------------
 
                 // Inicializar gradientes a 0
-                for(int i=0; i<this->n_capas_conv; ++i)
-                    this->convs[i].reset_gradients(conv_grads_w[i], conv_grads_bias[i]);
+                for(int j=0; j<this->n_capas_conv; ++j)
+                    this->convs[j].reset_gradients(conv_grads_w[j], conv_grads_bias[j]);
 
                 // Cálculo de gradientes respecto a cada parámetro 
                 for(int img=0; img<tam_batches[i]; ++img)
                 {
-                    img_aux = this->train_imgs[batch[img]];
+                    img_aux = this->h_train_imgs[batch[img]];
 
                     // Última capa, su output no tiene padding
                     int i_c=this->n_capas_conv-1;
@@ -390,13 +411,13 @@ void CNN::train(int epocas, int mini_batch)
                     else
                         this->convs[i_c].backPropagation(img_aux, convs_outs[img][i_c], conv_a[img][i_c], conv_grads_w[i_c], conv_grads_bias[i_c], this->padding[i_c]);
 
-                    for(int i=this->n_capas_conv-2; i>=1; i--)
+                    for(int j=this->n_capas_conv-2; j>=1; j--)
                     {
                         // Capa MaxPool 
-                        this->plms[i].backPropagation(convs_outs[img][i], plms_outs[img][i], plms_in_copys[img][i], this->padding[i+1]);
+                        this->plms[j].backPropagation(convs_outs[img][j], plms_outs[img][j], plms_in_copys[img][j], this->padding[j+1]);
 
                         // Capa convolucional 
-                        this->convs[i].backPropagation(plms_outs[img][i-1], convs_outs[img][i], conv_a[img][i], conv_grads_w[i], conv_grads_bias[i], this->padding[i]);
+                        this->convs[j].backPropagation(plms_outs[img][j-1], convs_outs[img][j], conv_a[img][j], conv_grads_w[j], conv_grads_bias[j], this->padding[j]);
                     }
                     
                     if(this->n_capas_conv >1)
@@ -452,8 +473,8 @@ void CNN::train(int epocas, int mini_batch)
                 // Actualizar parámetros --------------------------------------------------------------------
 
                 // Actualizar parámetros de capas convolucionales 
-                for(int i=0; i<this->n_capas_conv; ++i)
-                    this->convs[i].actualizar_grads(conv_grads_w[i], conv_grads_bias[i]);
+                for(int j=0; j<this->n_capas_conv; ++j)
+                    this->convs[j].actualizar_grads(conv_grads_w[j], conv_grads_bias[j]);
 
 
                 // Actualizar parámetros de capas totalmente conectadas 
@@ -490,7 +511,7 @@ void CNN::train(int epocas, int mini_batch)
 */
 void CNN::evaluar_modelo()
 {
-    int n=this->train_imgs.size();
+    int n=this->h_train_imgs.size();
     double t1, t2;
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
     
@@ -509,7 +530,7 @@ void CNN::evaluar_modelo()
     // Realizar la propagación hacia delante
     for(int img=0; img<n; ++img)
     {
-        img_in = this->train_imgs[img];
+        img_in = this->h_train_imgs[img];
 
         // Capas convolucionales y maxpool ----------------------------
         for(int i=0; i<this->n_capas_conv; ++i)
@@ -539,8 +560,8 @@ void CNN::evaluar_modelo()
     }
     
     // Cada hebra obtiene el accuracy y la entropía cruzada sobre una porción de imágenes
-    acc = (*this->fully).accuracy(flat_outs,this->train_labels);
-    entr = (*this->fully).cross_entropy(flat_outs, this->train_labels);
+    acc = (*this->fully).accuracy(flat_outs,this->h_train_labels);
+    entr = (*this->fully).cross_entropy(flat_outs, this->h_train_labels);
 
 
     // Realizar media y obtener valores finales

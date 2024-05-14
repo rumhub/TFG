@@ -29,13 +29,19 @@ int main()
 
     //leer_imagenes_gatos_perros(train_imgs, train_labels, pad[0]);
     //leer_imagenes_mnist(train_imgs, train_labels, pad[0], 100, 10);
-    leer_imagenes_cifar10(train_imgs, train_labels, test_imgs, test_labels, pad[0], 25, 25, 10);
+    leer_imagenes_cifar10(train_imgs, train_labels, test_imgs, test_labels, pad[0], 50, 50, 10);
+
+    float *train_imgs_ptr, *train_labels_ptr, *test_imgs_ptr, *test_labels_ptr;
+    leer_imagenes_cifar10_ptr(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, pad[0], 50, 50, 10);
+
+    prueba();
+    
+    /*
     cnn.set_train(train_imgs, train_labels);
     cnn.set_test(test_imgs, test_labels);
     cnn.mostrar_arquitectura();
     cnn.train(30, 25);
-    //cnn.evaluar_modelo();
-
+    */
     /*
     vector<vector<int>> capas_conv = {{16,3,3}, {32,3,3}}, capas_pool={{2,2}, {2,2}};
     vector<int> capas_fully = {100, 10}, padding = {pad, pad};
