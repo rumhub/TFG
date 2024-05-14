@@ -1,7 +1,5 @@
 CC := g++
-NVCC := nvcc
 CFLAGS := -O3
-CUDAFLAGS := -O3 -m64 -gencode arch=compute_50,code=sm_50 -Wno-deprecated-gpu-targets
 INCLUDES := -I /usr/local/include/opencv4
 LIBS := -L /usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs
 CXX_FLAGS := $(CFLAGS) $(INCLUDES) $(LIBS)
@@ -26,20 +24,20 @@ $(PATH_OBJ)/leer_imagenes.o: $(PATH_LEER_IMG)/leer_imagenes.cpp $(PATH_LEER_IMG)
 	$(CC) -c $(PATH_LEER_IMG)/leer_imagenes.cpp  $(CXX_FLAGS) -o $(PATH_OBJ)/leer_imagenes.o 
 
 # GPU -------------------------------------
-$(PATH_OBJ)/CNN.o: $(PATH_CNN)/CNN.cu $(PATH_CNN)/CNN.h
-	$(NVCC) -c $(CUDAFLAGS) $(PATH_CNN)/CNN.cu $(INCLUDES) $(LIBS) -o $(PATH_OBJ)/CNN.o
+$(PATH_OBJ)/CNN.o: $(PATH_CNN)/CNN.cpp $(PATH_CNN)/CNN.h
+	$(CC) -c $(CXX_FLAGS) $(PATH_CNN)/CNN.cpp $(INCLUDES) $(LIBS) -o $(PATH_OBJ)/CNN.o
 	
-$(PATH_OBJ)/convolutional.o: $(PATH_CONV)/convolutional.cu $(PATH_CONV)/convolutional.h
-	$(NVCC) -c $(CUDAFLAGS)  $(PATH_CONV)/convolutional.cu -o $(PATH_OBJ)/convolutional.o
+$(PATH_OBJ)/convolutional.o: $(PATH_CONV)/convolutional.cpp $(PATH_CONV)/convolutional.h
+	$(CC) -c $(CXX_FLAGS)  $(PATH_CONV)/convolutional.cpp -o $(PATH_OBJ)/convolutional.o
 
-$(PATH_OBJ)/flatten.o: $(PATH_FLAT)/flatten.cu $(PATH_FLAT)/flatten.h
-	$(NVCC) -c $(CUDAFLAGS)  $(PATH_FLAT)/flatten.cu -o $(PATH_OBJ)/flatten.o
+$(PATH_OBJ)/flatten.o: $(PATH_FLAT)/flatten.cpp $(PATH_FLAT)/flatten.h
+	$(CC) -c $(CXX_FLAGS)  $(PATH_FLAT)/flatten.cpp -o $(PATH_OBJ)/flatten.o
 
-$(PATH_OBJ)/poolingMax.o: $(PATH_MAXPOOL)/poolingMax.cu $(PATH_MAXPOOL)/poolingMax.h
-	$(NVCC) -c $(CUDAFLAGS)  $(PATH_MAXPOOL)/poolingMax.cu -o $(PATH_OBJ)/poolingMax.o
+$(PATH_OBJ)/poolingMax.o: $(PATH_MAXPOOL)/poolingMax.cpp $(PATH_MAXPOOL)/poolingMax.h
+	$(CC) -c $(CXX_FLAGS)  $(PATH_MAXPOOL)/poolingMax.cpp -o $(PATH_OBJ)/poolingMax.o
 
-$(PATH_OBJ)/fullyconnected.o: $(PATH_FULLY)/fullyconnected.cu $(PATH_FULLY)/fullyconnected.h
-	$(NVCC) -c $(CUDAFLAGS)  $(PATH_FULLY)/fullyconnected.cu -o $(PATH_OBJ)/fullyconnected.o
+$(PATH_OBJ)/fullyconnected.o: $(PATH_FULLY)/fullyconnected.cpp $(PATH_FULLY)/fullyconnected.h
+	$(CC) -c $(CXX_FLAGS)  $(PATH_FULLY)/fullyconnected.cpp -o $(PATH_OBJ)/fullyconnected.o
 
 run: $(PATH_BIN)/main
 	./$(PATH_BIN)/main
