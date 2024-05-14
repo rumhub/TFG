@@ -18,6 +18,7 @@ int main()
     vector<float> output;
     vector<vector<int>> capas_conv = {{6,3,3}, {8,3,3}}, capas_pool = {{2, 2}, {2, 2}};
     vector<int> capas = {50, 10}, pad = {1, 1};
+    int n_imgs_train = 50, n_imgs_test = 50, n_clases = 10;
     leer_imagen(input);
 
     Flatten flat(input[0]);
@@ -29,10 +30,37 @@ int main()
 
     //leer_imagenes_gatos_perros(train_imgs, train_labels, pad[0]);
     //leer_imagenes_mnist(train_imgs, train_labels, pad[0], 100, 10);
-    leer_imagenes_cifar10(train_imgs, train_labels, test_imgs, test_labels, pad[0], 50, 50, 10);
+    leer_imagenes_cifar10(train_imgs, train_labels, test_imgs, test_labels, pad[0], n_imgs_train, n_imgs_test, n_clases);
 
+    
     float *train_imgs_ptr, *train_labels_ptr, *test_imgs_ptr, *test_labels_ptr;
-    leer_imagenes_cifar10_ptr(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, pad[0], 50, 50, 10);
+
+    const unsigned int img_size = 32 + 2*pad[0], tam_img = img_size*img_size*3; // 3 -> RGB
+    train_imgs_ptr = (float *)malloc(tam_img * n_imgs_train * n_clases * sizeof(float));
+    train_labels_ptr = (float *)malloc(n_imgs_train*n_clases * n_clases * sizeof(float));
+
+    leer_imagenes_cifar10_ptr(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, pad[0], n_imgs_train, n_imgs_test, n_clases);
+    
+    
+    int n_errores = 0;
+    int n = train_imgs.size(), c = train_imgs[0].size(), h = train_imgs[0][0].size(), w = train_imgs[0][0][0].size();
+    for(int i=0; i<n; i++)
+        for(int j=0; j<c; j++)
+            for(int k=0; k<h; k++)
+                for(int p=0; p<w; p++)
+                    if(train_imgs[i][j][k][p] != train_imgs_ptr[i*c*h*w + j*h*w + k*w +p])
+                    {
+                        //cout << train_imgs[i][j][k][p] << " vs " << train_imgs_ptr[i*c*h*w + j*h*w + k*w +p] << endl;
+                        n_errores++;
+                    }
+    
+    cout << "Errores: " << n_errores << endl;
+    
+    for(int i=0; i<train_labels.size(); i++)
+        for(int j=0; j<train_labels[i].size(); j++)
+            if(train_labels[i][j] != train_labels_ptr[i*train_labels[i].size() + j])
+                cout << train_labels[i][j] << " vs " << train_labels_ptr[i*train_labels[i].size() + j] << endl;
+    
 
     prueba();
     

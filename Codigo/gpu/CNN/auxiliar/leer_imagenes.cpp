@@ -50,7 +50,7 @@ void cargar_imagen_en_vector(const Mat &imagen, vector<vector<vector<float>>> &v
     v.push_back(canal_azul);
 };
 
-void cargar_imagen_en_vector_ptr(const Mat &imagen, float *v)
+void cargar_imagen_en_vector_ptr(const Mat &imagen, float *v, int H, int W)
 {
     vector<vector<float>> canal_rojo, canal_verde, canal_azul;
     vector<float> fila_rojo, fila_verde, fila_azul;
@@ -78,9 +78,9 @@ void cargar_imagen_en_vector_ptr(const Mat &imagen, float *v)
     for(int i=0; i<imagen.rows; ++i)
         for(int j=0; j<imagen.cols; ++j)
         {
-            v[i*imagen.cols +j] = canal_rojo[i][j];
-            v[i*imagen.cols +j + imagen.rows * imagen.cols] = canal_verde[i][j];
-            v[i*imagen.cols +j + imagen.rows * imagen.cols*2] = canal_azul[i][j];
+            v[i*W +j] = canal_rojo[i][j];
+            v[i*W +j + H * W] = canal_verde[i][j];
+            v[i*W +j + H * W*2] = canal_azul[i][j];
         }
 
 };
@@ -90,9 +90,10 @@ void prueba()
     cout << "Prueba" << endl;
 
 
-    int pad=1;
+    int pad=2;
     vector<vector<vector<float>>> imagen_k1;
-    float *img = (float *)malloc((TAM_IMAGE * TAM_IMAGE *3 +2*pad) * sizeof(float));  // 3 -> RGB
+    const unsigned int img_size = TAM_IMAGE + 2*pad, tam_img = img_size*img_size*3; // 3 -> RGB
+    float *img = (float *)malloc(tam_img * sizeof(float));  // 3 -> RGB
     
     // Leer imagen
     string ruta = "../fotos/gatos_perros/training_set/dogs/dog.1.jpg";
@@ -104,19 +105,49 @@ void prueba()
     // Cargamos la imagen en un vector 3D
     cargar_imagen_en_vector(image, imagen_k1);
 
-    cargar_imagen_en_vector_ptr(image, img);
+
+
+    cargar_imagen_en_vector_ptr(image, img, img_size, img_size);
 
     aplicar_padding(imagen_k1, pad);
-    aplicar_padding_ptr(img, 3, TAM_IMAGE, TAM_IMAGE, pad);
 
+
+    /*
+    for(int c_=0; c_<3; c_++)
+    {
+        for(int i=0; i<img_size; ++i)
+        {
+            for(int j=0; j<img_size; ++j)
+                cout << img[c_*img_size*img_size +i*img_size + j] << " ";
+            cout << endl;   
+        } 
+        cout << endl;  
+    }
+    */
+
+    aplicar_padding_ptr(img, 3, img_size, img_size, pad);
+
+    /*
+    for(int c_=0; c_<3; c_++)
+    {
+        for(int i=0; i<img_size; ++i)
+        {
+            for(int j=0; j<img_size; ++j)
+                cout << img[c_*img_size*img_size +i*img_size + j] << " ";
+            cout << endl;   
+        } 
+        cout << endl;  
+    }
+    */
     
     for(int c=0; c<3; c++)
-    for(int i=0; i<TAM_IMAGE; ++i)
-        for(int j=0; j<TAM_IMAGE; ++j)
+    for(int i=0; i<img_size; ++i)
+        for(int j=0; j<img_size; ++j)
         {
-                if(img[c*TAM_IMAGE*TAM_IMAGE + i*TAM_IMAGE +j] != imagen_k1[c][i][j])
-            cout << img[c*TAM_IMAGE*TAM_IMAGE + i*TAM_IMAGE +j] << " vs " << imagen_k1[c][i][j] << endl;
+                if(img[c*img_size*img_size + i*img_size +j] != imagen_k1[c][i][j])
+            cout << img[c*img_size*img_size + i*img_size +j] << " vs " << imagen_k1[c][i][j] << endl;
         }
+    
     
 }
 
@@ -235,40 +266,44 @@ void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
 
 
 void aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad)
-{
-    
-    for(int i=0; i<C; ++i)
-        for(int j=H-1; j>H-1-pad; j--)
-            for(int k=W-1; k>W-1-pad; k--)
-                imagen_3D[i*H*W + j*W + k] = imagen_3D[i*H*W + (j+1)*W + k-1];
+{   
 
-    
     for(int c_=0; c_<C; c_++)
     {
         // Traslado vertical en "pad unidades"
-        for(int j=H-1; j>0; j--)
-        {
-            for(int k=0; k<W; k++)
-                imagen_3D[c_*H*W + j*W + k] = imagen_3D[c_*H*W + (j-1)*W + k];
-        }
+        for(int p=0; p<pad; p++)
+            for(int j=H-1; j>0; j--)
+                for(int k=0; k<W; k++)
+                    imagen_3D[c_*H*W + j*W + k] = imagen_3D[c_*H*W + (j-1)*W + k];
+            
 
         // Inicializar a 0.0 las "pad" primeras filas
         for(int i=0; i<pad; i++)
             for(int j=0; j<W; j++)
                 imagen_3D[c_*H*W + i*W + j] = 0.0;
 
+        // Inicializar a 0.0 las "pad" últimas filas
+        for(int i=H-1; i>H-1-pad; i--)
+            for(int j=0; j<W; j++)
+                imagen_3D[c_*H*W + i*W + j] = 0.0;
 
         // Traslado horizontal en "pad unidades"
-        for(int j=0; j<H; j++)
-        {
-            for(int k=W-1; k>0; k--)
-                imagen_3D[c_*H*W + j*W + k] = imagen_3D[c_*H*W + j*W + k-1];
-        }
+        for(int p=0; p<pad; p++)
+            for(int j=0; j<H; j++)
+                for(int k=W-1; k>0; k--)
+                    imagen_3D[c_*H*W + j*W + k] = imagen_3D[c_*H*W + j*W + k-1];
+            
 
         // Inicializar a 0.0 las "pad" primeras columnas
         for(int i=0; i<H; i++)
             for(int j=0; j<pad; j++)
                 imagen_3D[c_*H*W + i*W + j] = 0.0;   
+
+        // Inicializar a 0.0 las "pad" últimas columnas
+        for(int i=0; i<H; i++)
+            for(int j=W-1; j>W-1-pad; j--)
+                imagen_3D[c_*H*W + i*W + j] = 0.0;   
+
     }
 
     /*
@@ -300,25 +335,22 @@ void aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad)
     for(int c_=0; c_<c; c_++)
     {
         // Traslado vertical en "pad unidades"
-        for(int j=h-1; j>0; j--)
-        {
-            for(int k=0; k<w; k++)
-                v[c_*h*w + j*w + k] = v[c_*h*w + (j-1)*w + k];
-        }
+        for(int p=0; p<pad; p++)
+            for(int j=h-1; j>0; j--)
+                for(int k=0; k<w; k++)
+                    v[c_*h*w + j*w + k] = v[c_*h*w + (j-1)*w + k];
 
         // Inicializar a 0.0 las "pad" primeras filas
         for(int i=0; i<pad; i++)
             for(int j=0; j<w; j++)
                 v[c_*h*w + i*w + j] = 0.0;
 
-
         // Traslado horizontal en "pad unidades"
-        for(int j=0; j<h; j++)
-        {
-            for(int k=w-1; k>0; k--)
-                v[c_*h*w + j*w + k] = v[c_*h*w + j*w + k-1];
-        }
-
+        for(int p=0; p<pad; p++)
+            for(int j=0; j<h; j++)
+                for(int k=w-1; k>0; k--)
+                    v[c_*h*w + j*w + k] = v[c_*h*w + j*w + k-1];
+            
         // Inicializar a 0.0 las "pad" primeras columnas
         for(int i=0; i<h; i++)
             for(int j=0; j<pad; j++)
@@ -338,7 +370,6 @@ void aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad)
     }
     */
     
-
 };
 
 /*
@@ -594,18 +625,17 @@ void leer_imagenes_cifar10_ptr(float *train_imgs, float *train_labels, float *te
 {
     vector<float> v1D;
     string ruta_ini, ruta;
-    const unsigned int img_size = TAM_IMAGE + 2*pad, tam_img = img_size*img_size*3;
-    float *img = (float *)malloc(tam_img * sizeof(float));  // 3 -> RGB
+    const unsigned int img_size = TAM_IMAGE + 2*pad, tam_img = img_size*img_size*3; // 3 -> RGB
+    float *img = nullptr, *label = nullptr;  
 
     // tam_img*3 porque las imágenes son RGB
-    train_imgs = (float *)malloc(tam_img * n_imagenes_train * n_clases * sizeof(float));
-    test_labels = (float *)malloc(tam_img * n_imagenes_test * n_clases * sizeof(float));
+    //train_imgs = (float *)malloc(tam_img * n_imagenes_train * n_clases * sizeof(float));
+    //test_labels = (float *)malloc(tam_img * n_imagenes_test * n_clases * sizeof(float));
 
     float *y_1D = (float *)malloc(n_clases * sizeof(float));
 
     for(int i=0; i<n_clases; ++i)
         y_1D[i] = 0.0;
-    
 
     // TRAIN ------------------------------------------------------------------------
     // Leer n_imagenes de la clase c
@@ -624,23 +654,23 @@ void leer_imagenes_cifar10_ptr(float *train_imgs, float *train_labels, float *te
 
             image = image2;
 
+            img = train_imgs + c*(n_imagenes_train-1)*tam_img + (p-1)*tam_img;  // Almacenar imagen actual en la CNN
+            label = train_labels + c*(n_imagenes_train-1)*n_clases + (p-1)*n_clases;    // Almacenar etiqueta de la imagen actual en la CNN
+
             // Cargamos la imagen en un vector 3D
-            cargar_imagen_en_vector_ptr(image, img);
+            cargar_imagen_en_vector_ptr(image, img, img_size, img_size);
 
             // Normalizar imagen
             for(int i=0; i<tam_img; ++i)
                 img[i] /= 255.0;
 
-            /*
             // Aplicamos padding a la imagen de entrada
-            aplicar_padding(imagen_k1, pad);
+            aplicar_padding_ptr(img, 3, img_size, img_size, pad);
 
-            // Almacenamos las imágenes de entrada de la CNN
-            train_imgs.push_back(imagen_k1);
 
-            // Establecemos que la imagen tiene una etiqueta, 1 = perro, 0 = gato
-            train_labels.push_back(y_1D);
-            */
+            // Establecemos la etiqueta de la imagen
+            for(int i=0; i<n_clases; ++i)
+                label[i] = y_1D[i];
         }
 
         // Reset todo "y_1D" a 0

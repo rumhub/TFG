@@ -6,11 +6,12 @@
 using namespace std;
 using namespace cv;
 
+//#define TAM_IMAGE 4
 #define TAM_IMAGE 32
 
 void modificar_imagen(Mat imagen, const int &p_ini_x, const int &p_ini_y, const int &p_fin_x, const int &p_fin_y, const int &color_r, const int &color_g, const int &color_b);
 void cargar_imagen_en_vector(const Mat &imagen, vector<vector<vector<float>>> &v);
-void cargar_imagen_en_vector_ptr(const Mat &imagen, float *v);
+void cargar_imagen_en_vector_ptr(const Mat &imagen, float *v, int H, int W);
 Mat de_vector_a_imagen(const vector<vector<vector<float>>> &v);
 void mostrar_vector_como_imagen(const vector<vector<vector<float>>> &v);
 void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input);
