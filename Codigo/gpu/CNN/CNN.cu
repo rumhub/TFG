@@ -605,31 +605,24 @@ void CNN::train(int epocas, int mini_batch)
 */
 void CNN::evaluar_modelo()
 {
-    /*
-    int n=this->train_imgs.size(), n_thrs = omp_get_num_threads(), n_imgs = n / n_thrs, n_imgs_ant = n / n_thrs, thr_id = omp_get_thread_num();
+    int n=this->train_imgs.size();
     double t1, t2;
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
     
     vector<float> flat_out; 
     float acc ,entr;
 
-    if(thr_id == n_thrs - 1)
-        n_imgs = n - n_imgs * thr_id;
 
-    vector<vector<float>> flat_outs(n_imgs);
+    vector<vector<float>> flat_outs(n);
 
     // Inicialización de parámetros
-    #pragma omp master
-    {
-        t1 = omp_get_wtime();
-        this->sum_acc = 0.0;
-        this->sum_entr = 0.0;
-    }
+    //t1 = omp_get_wtime();
+    acc = 0.0;
+    entr = 0.0;
 
-    #pragma omp barrier
 
-    // Cada hebra realiza la propagación hacia delante de una porción de imágenes
-    for(int img=n_imgs_ant*thr_id, k=0; img<n_imgs_ant*thr_id + n_imgs; ++img, ++k)
+    // Realizar la propagación hacia delante
+    for(int img=0; img<n; ++img)
     {
         img_in = this->train_imgs[img];
 
@@ -657,36 +650,26 @@ void CNN::evaluar_modelo()
         // Capa de aplanado
         (*this->flat).forwardPropagation(img_out, flat_out);
 
-        flat_outs[k] = flat_out;
+        flat_outs[img] = flat_out;
     }
     
     // Cada hebra obtiene el accuracy y la entropía cruzada sobre una porción de imágenes
-    acc = (*this->fully).accuracy(flat_outs,this->train_labels, n_imgs_ant*thr_id);
-    entr = (*this->fully).cross_entropy(flat_outs, this->train_labels, n_imgs_ant*thr_id);
+    acc = (*this->fully).accuracy(flat_outs,this->train_labels);
+    entr = (*this->fully).cross_entropy(flat_outs, this->train_labels);
 
-    // Sumar valores de cada hebra
-    #pragma omp critical
-    {
-        this->sum_acc += acc;
-        this->sum_entr += entr;
-    }
 
-    #pragma omp barrier
+    // Realizar media y obtener valores finales
+    acc = acc / n * 100;
+    entr = -entr / n;
 
-    // Realizar media y obtener valores totales
-    #pragma omp master
-    {
-        this->sum_acc = this->sum_acc / n * 100;
-        this->sum_entr = -this->sum_entr / n;
+    //t2 = omp_get_wtime();
 
-        t2 = omp_get_wtime();
+    cout << "Accuracy: " << acc << " %,  ";
+
+
+    cout << "Entropía cruzada: " << entr << ",         " << endl << endl;
+    //cout << "Entropía cruzada: " << entr << ",         " << t2 - t1 << " (s) " << endl << endl;
     
-        cout << "Accuracy: " << this->sum_acc << " %,  ";
-
-
-        cout << "Entropía cruzada: " << this->sum_entr << ",         " << t2 - t1 << " (s) " << endl << endl;
-    }    
-    */
 }
 
 /*
@@ -710,7 +693,7 @@ void CNN::evaluar_modelo_en_test()
 
 
     // Popagación hacia delante
-    for(int img=0, k=0; img<n; img++, k++)
+    for(int img=0; img<n; img++)
     {
         img_in = this->test_imgs[img];
 
@@ -738,7 +721,7 @@ void CNN::evaluar_modelo_en_test()
         // Capa de aplanado
         (*this->flat).forwardPropagation(img_out, flat_out);
 
-        flat_outs[k] = flat_out;
+        flat_outs[img] = flat_out;
     }
     
     // Cada hebra obtiene el accuracy y la entropía cruzada sobre una porción de imágenes

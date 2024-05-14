@@ -33,6 +33,7 @@ int main()
     leer_imagenes_cifar10(train_imgs, train_labels, test_imgs, test_labels, pad[0], 100, 100, 10);
     cnn.set_train(train_imgs, train_labels);
     cnn.mostrar_arquitectura();
+    cnn.evaluar_modelo();
 
     /*
     vector<vector<int>> capas_conv = {{16,3,3}, {32,3,3}}, capas_pool={{2,2}, {2,2}};
