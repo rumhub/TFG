@@ -34,7 +34,7 @@ class FullyConnected
         void forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z);
 
         // Cálculo de gradientes
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a, const int &n_thrs);
+        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a);
 
         // Medidas de evaluación
         float accuracy(vector<vector<float>> x, vector<vector<float>> y);

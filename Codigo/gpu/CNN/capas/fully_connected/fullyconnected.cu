@@ -283,10 +283,9 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     @a          Neuronas de la red antes de aplicar la función de activación
     @z          Neuronas de la red después de aplicar la función de activación
     @grad_a     Gradiente respecto a cada neurona de la red antes de aplicar la función de activación
-    @n_thrs     Número de hebras a emplear
     @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
 */
-void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a, const int &n_thrs)
+void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
 {
     float epsilon = 0.000000001;
     int i_output = this->a.size()-1, i_last_h = i_output-1; // índice de la capa output, Índice de la capa h1 respectivamente

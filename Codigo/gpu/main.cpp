@@ -16,9 +16,8 @@ int main()
     vector<vector<vector<vector<float>>>> input, train_imgs, test_imgs;
     vector<vector<float>> train_labels, test_labels;
     vector<float> output;
-    vector<int> capas = {3, 10}, pad = {1, 1};
-    vector<vector<int>> capas_conv = {{5, 3, 3}, {6, 3, 3}}, capas_pool = {{2, 2}, {2, 2}};
-    int n_imagenes;
+    vector<vector<int>> capas_conv = {{6,3,3}, {8,3,3}}, capas_pool = {{2, 2}, {2, 2}};
+    vector<int> capas = {50, 10}, pad = {1, 1};
     leer_imagen(input);
 
     Flatten flat(input[0]);
@@ -26,14 +25,16 @@ int main()
     Convolutional conv(2, 2, 2, input[0], 0.1);
     FullyConnected fully(capas, 0.1);
 
-    CNN cnn(capas_conv, capas_pool, pad, capas, input[0], 0.1);
+    CNN cnn(capas_conv, capas_pool, pad, capas, input[0], 0.001);
 
     //leer_imagenes_gatos_perros(train_imgs, train_labels, pad[0]);
     //leer_imagenes_mnist(train_imgs, train_labels, pad[0], 100, 10);
-    leer_imagenes_cifar10(train_imgs, train_labels, test_imgs, test_labels, pad[0], 100, 100, 10);
+    leer_imagenes_cifar10(train_imgs, train_labels, test_imgs, test_labels, pad[0], 25, 25, 10);
     cnn.set_train(train_imgs, train_labels);
+    cnn.set_test(test_imgs, test_labels);
     cnn.mostrar_arquitectura();
-    cnn.evaluar_modelo();
+    cnn.train(30, 25);
+    //cnn.evaluar_modelo();
 
     /*
     vector<vector<int>> capas_conv = {{16,3,3}, {32,3,3}}, capas_pool={{2,2}, {2,2}};

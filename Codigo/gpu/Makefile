@@ -1,7 +1,7 @@
 CC := g++
 NVCC := nvcc
 CFLAGS := -O3
-CUDAFLAGS := -m64 -gencode arch=compute_50,code=sm_50
+CUDAFLAGS := -m64 -gencode arch=compute_50,code=sm_50 -Wno-deprecated-gpu-targets
 INCLUDES := -I /usr/local/include/opencv4
 LIBS := -L /usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs
 CXX_FLAGS := $(CFLAGS) $(INCLUDES) $(LIBS)

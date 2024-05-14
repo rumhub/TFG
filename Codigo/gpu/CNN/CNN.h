@@ -10,6 +10,9 @@
 #include "auxiliar/auxiliar.h"
 
 #include <vector>
+#include <random>
+
+using namespace std;
 
 class CNN
 {
@@ -45,6 +48,7 @@ class CNN
         void padding_interno(vector<vector<vector<float>>> &input, const int &pad);
 
         void set_train(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->train_imgs = x; this->train_labels = y;};
+        void set_test(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->test_imgs = x; this->test_labels = y;};
 };
 
 #endif
