@@ -16,14 +16,14 @@ PATH_BIN = bin
 
 # CPP -------------------------------------
 $(PATH_BIN)/main: $(PATH_OBJ)/main.o $(PATH_OBJ)/leer_imagenes.o $(PATH_OBJ)/convolutional.o $(PATH_OBJ)/flatten.o $(PATH_OBJ)/poolingMax.o $(PATH_OBJ)/fullyconnected.o $(PATH_OBJ)/CNN.o
-	$(CC) main.cpp $(PATH_OBJ)/leer_imagenes.o $(PATH_OBJ)/convolutional.o $(PATH_OBJ)/flatten.o $(PATH_OBJ)/poolingMax.o $(PATH_OBJ)/fullyconnected.o $(PATH_OBJ)/CNN.o $(INCLUDES) $(LIBS) -o $(PATH_BIN)/main -lcudart
+	$(CC) main.cpp $(PATH_OBJ)/leer_imagenes.o $(PATH_OBJ)/convolutional.o $(PATH_OBJ)/flatten.o $(PATH_OBJ)/poolingMax.o $(PATH_OBJ)/fullyconnected.o $(PATH_OBJ)/CNN.o $(CXX_FLAGS) -o $(PATH_BIN)/main -lcudart
 	
 $(PATH_OBJ)/main.o: main.cpp 
-	$(CC) -c main.cpp $(INCLUDES) $(LIBS) -o $(PATH_OBJ)/main.o 
+	$(CC) -c main.cpp $(CXX_FLAGS) -o $(PATH_OBJ)/main.o 
 
 # OPENCV -------------------------------------
 $(PATH_OBJ)/leer_imagenes.o: $(PATH_LEER_IMG)/leer_imagenes.cpp $(PATH_LEER_IMG)/leer_imagenes.h
-	$(CC) -c $(PATH_LEER_IMG)/leer_imagenes.cpp  $(INCLUDES) $(LIBS) -o $(PATH_OBJ)/leer_imagenes.o 
+	$(CC) -c $(PATH_LEER_IMG)/leer_imagenes.cpp  $(CXX_FLAGS) -o $(PATH_OBJ)/leer_imagenes.o 
 
 # GPU -------------------------------------
 $(PATH_OBJ)/CNN.o: $(PATH_CNN)/CNN.cu $(PATH_CNN)/CNN.h

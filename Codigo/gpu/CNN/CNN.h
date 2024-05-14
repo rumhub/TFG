@@ -31,11 +31,6 @@ class CNN
         // Constructor
         CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding, vector<int> &capas_fully, const vector<vector<vector<float>>> &input, const float &lr);
 
-        // Leer imágenes de entrada
-        void leer_imagenes();
-        void leer_imagenes_mnist(const int n_imagenes, const int n_clases);
-        void leer_imagenes_cifar10(const int &n_imagenes_train, const int &n_imagenes_test, const int n_clases);
-        
         // Mostrar arquitectura
         void mostrar_arquitectura();
 
@@ -48,6 +43,8 @@ class CNN
 
         // Modificar imagen
         void padding_interno(vector<vector<vector<float>>> &input, const int &pad);
+
+        void set_train(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->train_imgs = x; this->train_labels = y;};
 };
 
 #endif
