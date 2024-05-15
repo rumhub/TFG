@@ -111,6 +111,18 @@ PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, in
     this->bytes_input = C*H*W * sizeof(float); 
     this->bytes_output = C*H_out*W_out * sizeof(float);
 
+    // Tamaño de bloque
+    this->block.x = kernel_fils;
+    this->block.y = kernel_cols;
+
+    // Tamaño de grid
+    this->grid.x = ceil( (float)(W + block.x -1) / block.x); 
+    this->grid.y = ceil((float)(H + block.y -1) / block.y);
+
+    // Reserva memoria en device
+    cudaMalloc((void **) &d_input, bytes_input);
+    cudaMalloc((void **) &d_input_copy, bytes_input);
+    cudaMalloc((void **) &d_output, bytes_output);
 
     if(this->H % kernel_fils != 0 || this->W % kernel_cols != 0)
         cout << "Warning. Las dimensiones del volumen de entrada(" << this->H << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
@@ -168,20 +180,10 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
 
 
 void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input_copy)
-{
+{    
     // Inicializar input_copy a 0
     for(int i=0; i<C*H*W; i++)
-        input_copy[i] = 0.0;
-
-    // Crear tamaño de bloque y grid
-    dim3 block(kernel_fils, kernel_cols);
-    dim3 grid(ceil( (float)(W + block.x -1) / block.x), ceil((float)(H + block.y -1) / block.y));
-
-    // Reserva memoria en device
-    float *d_input, *d_input_copy, *d_output;
-    cudaMalloc((void **) &d_input, bytes_input);
-    cudaMalloc((void **) &d_input_copy, bytes_input);
-    cudaMalloc((void **) &d_output, bytes_output);
+        input_copy[i] = 0.0;    
 
     // Copiar datos de CPU a GPU
     cudaMemcpy(d_input, input, bytes_input, cudaMemcpyHostToDevice);
@@ -191,8 +193,6 @@ void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input
 
     cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
     cudaMemcpy(input_copy, d_input_copy, bytes_input, cudaMemcpyDeviceToHost);
-
-    cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);
 };
 
 void PoolingMax::backPropagationGPU(float *input, float *output, float *input_copy)
@@ -200,16 +200,6 @@ void PoolingMax::backPropagationGPU(float *input, float *output, float *input_co
     // Inicializar input a 0
     for(int i=0; i<C*H*W; i++)
         input[i] = 0.0;
-
-    // Crear tamaño de bloque y grid
-    dim3 block(kernel_fils, kernel_cols);
-    dim3 grid(ceil( (float)(W + block.x -1) / block.x), ceil((float)(H + block.y -1) / block.y));
-
-    // Reserva memoria en device
-    float *d_input, *d_input_copy, *d_output;
-    cudaMalloc((void **) &d_input, bytes_input);
-    cudaMalloc((void **) &d_input_copy, bytes_input);
-    cudaMalloc((void **) &d_output, bytes_output);
 
     // Copiar datos de CPU a GPU
     cudaMemcpy(d_input, input, bytes_input, cudaMemcpyHostToDevice);
@@ -220,7 +210,6 @@ void PoolingMax::backPropagationGPU(float *input, float *output, float *input_co
     maxpool_back<<<grid, block>>>(C, H, W, kernel_fils, d_input, d_input_copy, d_output, pad);
     
     cudaMemcpy(input, d_input, bytes_input, cudaMemcpyDeviceToHost);
-    cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);
 };
 
 void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output)
@@ -380,7 +369,6 @@ int main()
     aux->mostrar_imagen(input_cpu);
 
     PoolingMax plm1(K, K, input_cpu);
-    PoolingMax plm_gpu(K, K, C, H, W, pad);
 
     plm1.forwardPropagation(input_cpu, output_cpu, input_copy_cpu, pad);
 
@@ -407,8 +395,25 @@ int main()
 
 
     // ---------------- GPU --------------------------
+    PoolingMax plm_gpu(K, K, C, H, W, pad);
+
+    // FORWARD CAPA MAXPOOL ---------------------------------------------------------------------------------------------------------------
+    // Inicializar input_copy a 0
+    for(int i=0; i<C*H*W; i++)
+        input_copy_gpu[i] = 0.0;    
+
+    cudaMemcpy(plm_gpu.get_d_input(), input_gpu, plm_gpu.get_bytes_input(), cudaMemcpyHostToDevice);
+
+    // Realizar MaxPool
+    maxpool_forward<<<plm_gpu.get_grid(), plm_gpu.get_block()>>>(C, H, W, K, plm_gpu.get_d_input(), plm_gpu.get_d_input_copy(), plm_gpu.get_d_output(), plm_gpu.get_pad());
+
+    cudaMemcpy(output_gpu, plm_gpu.get_d_output(), plm_gpu.get_bytes_output(), cudaMemcpyDeviceToHost);
+    cudaMemcpy(input_copy_gpu, plm_gpu.get_d_input_copy(), plm_gpu.get_bytes_input(), cudaMemcpyDeviceToHost);
+    // FORWARD CAPA MAXPOOL ---------------------------------------------------------------------------------------------------------------
+    
+
     cout << " ------------------ GPU ---------------------" << endl;
-    plm_gpu.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu);
+    //plm_gpu.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu);
 
     cout << "Output\n";
     aux->mostrar_imagen3D(output_gpu, C, H_out_pad, W_out_pad);
@@ -419,7 +424,23 @@ int main()
     for(int i=0; i<C*H_out_pad*W_out_pad; i++)
         output_gpu[i] = 9.0;
     
-    plm_gpu.backPropagationGPU(input_gpu, output_gpu, input_copy_gpu);
+    // BACK CAPA MAXPOOL ---------------------------------------------------------------------------------------
+    // Inicializar input a 0
+    for(int i=0; i<C*H*W; i++)
+        input_gpu[i] = 0.0;
+
+    // Copiar datos de CPU a GPU
+    cudaMemcpy(plm_gpu.get_d_input(), input_gpu, plm_gpu.get_bytes_input(), cudaMemcpyHostToDevice);
+    cudaMemcpy(plm_gpu.get_d_input_copy(), input_copy_gpu, plm_gpu.get_bytes_input(), cudaMemcpyHostToDevice);
+    cudaMemcpy(plm_gpu.get_d_output(), output_gpu, plm_gpu.get_bytes_output(), cudaMemcpyHostToDevice);
+    
+    // Realizar MaxPool
+    maxpool_back<<<plm_gpu.get_grid(), plm_gpu.get_block()>>>(C, H, W, K, plm_gpu.get_d_input(), plm_gpu.get_d_input_copy(), plm_gpu.get_d_output(), plm_gpu.get_pad());
+    
+    cudaMemcpy(input_gpu, plm_gpu.get_d_input(), plm_gpu.get_bytes_input(), cudaMemcpyDeviceToHost);
+    // BACK CAPA MAXPOOL ---------------------------------------------------------------------------------------
+
+    //plm_gpu.backPropagationGPU(input_gpu, output_gpu, input_copy_gpu);
 
     cout << "Input\n";
     aux->mostrar_imagen3D(input_gpu, C, H, W);

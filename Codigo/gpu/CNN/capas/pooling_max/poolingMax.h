@@ -42,11 +42,23 @@ class PoolingMax
         int bytes_input;    // Bytes de la imagen de entrada
         int bytes_output;   // Bytes de la imagen de salida
 
+        // Tamaño de bloque
+        dim3 block;
+
+        // Tamaño de grid
+        dim3 grid;
+
+        // Posiciones en GPU
+        float *d_input = nullptr;       // Imagen de entrada
+        float *d_input_copy = nullptr;      // Copia de la imagen de entrada
+        float *d_output = nullptr;      // Imagen de salida
+
 
     public:
         PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
         PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad);
         PoolingMax(){};
+        ~PoolingMax(){cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);};
 
         // CPU -------------------------------------------
         // Aplica padding a un conjunto de imágenes 2D
@@ -62,7 +74,16 @@ class PoolingMax
         int get_kernel_fils(){return this->kernel_fils;};
         int get_kernel_cols(){return this->kernel_cols;};
         int get_image_canales(){return this->C;};
+        int get_bytes_input(){return this->bytes_input;};
+        int get_bytes_output(){return this->bytes_output;};
+        int get_pad(){return this->pad;};
 
+        // GPU
+        float * get_d_input(){return this->d_input;};
+        float * get_d_input_copy(){return this->d_input_copy;};
+        float * get_d_output(){return this->d_output;};
+        dim3 get_block(){return this->block;};
+        dim3 get_grid(){return this->grid;};
 };
 
 
