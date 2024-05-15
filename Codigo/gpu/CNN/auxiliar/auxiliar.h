@@ -17,6 +17,7 @@ class Aux
 
         void mostrar_imagen(vector<vector<vector<vector<float>>>> imagenes);
 
+        void mostrar_imagen3D(float *X, int C, int H, int W);
 };
 
 #endif

@@ -1,5 +1,5 @@
 #include "poolingMax.h"
-//#include "../../auxiliar/auxiliar.cpp"
+#include "../../auxiliar/auxiliar.cpp"
 
 using namespace std;
 
@@ -143,34 +143,20 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
 };
 
 
-void PoolingMax::forwardPropagationGPU(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad)
+void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input_copy, const int &pad, const int &C, const int &H, const int &W)
 {
-    int M = input.size(), K=kernel_fils, n_veces_fils = input[0].size() / K , n_veces_cols = input[0][0].size() / K;
-    float max;
-    
-    if(input_copy.size() != input.size() || input_copy[0].size() != input[0].size() || input_copy[0][0].size() != input[0][0].size())
-    {
-        cout << "Error. En la capa Max_Pool no coinciden las dimensiones de input e input_copy. " << endl;
-        exit(-1);
-    }
-
     // Inicializamos input_copy a 0
-    for(int i=0; i<input_copy.size(); ++i)
-    for(int j=0; j<input_copy[0].size(); ++j)
-        for(int k=0; k<input_copy[0][0].size(); ++k)
-            input_copy[i][j][k] = 0.0;
+    for(int i=0; i<C*H*W; i++)
+        input_copy[i] = 0.0;
 
-    int C = input.size(), H = input[0].size(), W =input[0][0].size(), H_out = H/ this->kernel_fils +2*pad, W_out = W / this->kernel_cols +2*pad;
+    //Aux *aux = new Aux();
+    //aux->mostrar_imagen3D(input, C, H, W);
+    int K = this->kernel_fils, H_out = H/ K +2*pad, W_out = W / K +2*pad;
     int bytes_input = C*H*W * sizeof(float), bytes_output = C*H_out*W_out * sizeof(float);
 
     // Crear tamaño de bloque y grid
     dim3 block(K, K);
     dim3 grid(ceil( (float)(W + block.x -1) / block.x), ceil((float)(H + block.y -1) / block.y));
-
-    // Reserva memoria en host
-    float *h_input = (float *)malloc(bytes_input), 
-          *h_input_copy = (float *)malloc(bytes_input), 
-          *h_output = (float *)malloc(bytes_output);
 
     // Reserva memoria en device
     float *d_input, *d_input_copy, *d_output;
@@ -178,33 +164,16 @@ void PoolingMax::forwardPropagationGPU(vector<vector<vector<float>>> &input, vec
     cudaMalloc((void **) &d_input_copy, bytes_input);
     cudaMalloc((void **) &d_output, bytes_output);
 
-    // Copiar entrada en CPU
-    for(int i=0; i<C; i++)
-        for(int j=0; j<H; j++)
-            for(int k=0; k<W; k++)
-                h_input[i*H*W + j*W + k] = input[i][j][k];
-
     // Copiar datos de CPU a GPU
-    cudaMemcpy(d_input, h_input, bytes_input, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_input, input, bytes_input, cudaMemcpyHostToDevice);
 
     // Realizar MaxPool
     maxpool_forward<<<grid, block>>>(C, H, W, K, d_input, d_input_copy, d_output, pad);
 
-    cudaMemcpy(h_output, d_output, bytes_output, cudaMemcpyDeviceToHost);
-    cudaMemcpy(h_input_copy, d_input_copy, bytes_input, cudaMemcpyDeviceToHost);
+    cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
+    cudaMemcpy(input_copy, d_input_copy, bytes_input, cudaMemcpyDeviceToHost);
 
-    // Copiar datos de GPU a CPU
-    for(int i=0; i<C; i++)
-        for(int j=0; j<H_out; j++)
-            for(int k=0; k<W_out; k++)
-                output[i][j][k] = h_output[i*H_out*W_out + j*W_out + k];
-
-    // Inicializamos input_copy a 0
-    for(int i=0; i<C; ++i)
-        for(int j=0; j<H; ++j)
-            for(int k=0; k<W; ++k)
-                input_copy[i][j][k] = h_input_copy[i*H*W + j*W +k];
-
+    cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);
 };
 
 void PoolingMax::backPropagationGPU(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output)
@@ -321,7 +290,7 @@ void PoolingMax::mostrar_tam_kernel()
     cout << "Estructura kernel "<< this->kernel_fils << "x" << this->kernel_cols << "x" << this->image_canales << endl; 
 }
 
-/*
+
 void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
 {
     vector<vector<vector<float>>> imagen_3D_aux;
@@ -385,16 +354,37 @@ void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
 int main() 
 {
     int C=2, H=8, W=8, K=2, H_out = H/K, W_out = W/K;
-    vector<vector<vector<float>>> input_cpu(C, vector<vector<float>>(H, vector<float>(W, 0))), input_copy_cpu = input_cpu, input_gpu, input_copy_gpu;
-    vector<vector<vector<float>>> output_cpu(C, vector<vector<float>>(H_out, vector<float>(W_out, 0))), output_gpu;
+    vector<vector<vector<float>>> input_cpu(C, vector<vector<float>>(H, vector<float>(W, 0))), input_copy_cpu = input_cpu;
+    vector<vector<vector<float>>> output_cpu(C, vector<vector<float>>(H_out, vector<float>(W_out, 0)));
+    float *input_gpu = (float *)malloc(H*C*W * sizeof(float)),
+          *input_copy_gpu = (float *)malloc(H*C*W * sizeof(float));
 
+    // Input
     for(int i=0; i<C; i++)
         for(int j=0; j<H; j++)
             for(int k=0; k<W; k++)
+            {
                 input_cpu[i][j][k] = (rand() % 100) + 1;
+                input_gpu[i*H*W + j*W + k] = input_cpu[i][j][k];
+                input_copy_gpu[i*H*W + j*W + k] = input_cpu[i][j][k];
+            }
+    input_copy_cpu = input_cpu;
 
 
     int pad = 1;    // Padding se mete en capas convolucionales. Por tanto, si metemos padding de pad, antes de la capa pooling_max (input) hay que quitarlo al hacer backprop
+
+    // Output
+    int H_out_pad = H/K + 2*pad, W_out_pad = W/K + 2*pad;
+    float *output_gpu = (float *)malloc(H_out_pad*C*W_out_pad * sizeof(float));
+
+    for(int i=0; i<C; i++)
+        for(int j=0; j<H_out_pad; j++)
+            for(int k=0; k<W_out_pad; k++)
+            {
+                output_gpu[i*H_out_pad*W_out_pad + j*W_out_pad + k] = 0.0;
+            }
+
+
     Aux *aux = new Aux();
 
     cout << "--------------- SIMULACIÓN GRADIENTE ------------------ " << endl;
@@ -402,13 +392,9 @@ int main()
     // Aplicamos padding al output
     // Output viene ya con las dimensiones tras aplicar padding
     aplicar_padding(output_cpu, pad);
-    output_gpu = output_cpu;
 
     cout << "------------ Imagen inicial: ------------" << endl;
     aux->mostrar_imagen(input_cpu);
-    input_copy_cpu = input_cpu;
-    input_gpu = input_cpu;
-    input_copy_gpu = input_copy_cpu;
 
     PoolingMax plm1(K, K, input_cpu);
 
@@ -438,9 +424,11 @@ int main()
 
     // ---------------- GPU --------------------------
     cout << " ------------------ GPU ---------------------" << endl;
-    plm1.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu, pad);
-    aux->mostrar_imagen(output_gpu);
+    plm1.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu, pad, C, H, W);
+
+    aux->mostrar_imagen3D(output_gpu, C, H_out_pad, W_out_pad);
     
+    /*
     cout << "------------ Back Propagation: ------------" << endl;
     // Cambiamos el output porque contendrá un gradiente desconocido
     for(int i=0; i<output_cpu.size(); i++)
@@ -452,8 +440,10 @@ int main()
 
     cout << "Input\n";
     aux->mostrar_imagen(input_gpu);
-    
+    */
+   
+    free(input_gpu); free(input_copy_gpu); free(output_gpu);
 
     return 0;
 }
-*/
+

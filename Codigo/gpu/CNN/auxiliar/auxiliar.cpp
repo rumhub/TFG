@@ -45,3 +45,19 @@ void Aux::mostrar_imagen(vector<vector<vector<vector<float>>>> imagenes)
     }
 
 };
+
+
+void Aux::mostrar_imagen3D(float *X, int C, int H, int W)
+{
+    for(int i=0; i<C; i++)
+    {
+        for(int j=0; j<H; j++)
+        {
+            for(int k=0; k<W; k++)
+                cout << X[i*H*W + j*W + k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+}
+
