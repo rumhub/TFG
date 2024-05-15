@@ -40,7 +40,7 @@ class PoolingMax
 
         void backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
         
-        void backPropagationGPU(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
+        void backPropagationGPU(float *input, float *output, float *input_copy, const int &pad_output, const int &C, const int &H, const int &W);
 
         void mostrar_tam_kernel();
 
