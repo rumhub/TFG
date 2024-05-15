@@ -33,17 +33,17 @@ class PoolingMax
         PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W);
         PoolingMax(){};
 
+        // CPU -------------------------------------------
         // Aplica padding a un conjunto de imágenes 2D
         void forwardPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad);
-
-        void forwardPropagationGPU(float *input, float *output, float *input_copy, const int &pad, const int &C, const int &H, const int &W);
-
         void backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
-        
+
+        // GPU ------------------------------------------
+        void forwardPropagationGPU(float *input, float *output, float *input_copy, const int &pad, const int &C, const int &H, const int &W);        
         void backPropagationGPU(float *input, float *output, float *input_copy, const int &pad_output, const int &C, const int &H, const int &W);
 
+        // Comunes ------------------------------------------
         void mostrar_tam_kernel();
-
         int get_kernel_fils(){return this->kernel_fils;};
         int get_kernel_cols(){return this->kernel_cols;};
         int get_image_canales(){return this->image_canales;};

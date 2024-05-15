@@ -31,7 +31,18 @@ class Convolutional
         vector<float> bias;                     // Un bias por filtro, https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
         float lr;                               // Learning Rate o Tasa de Aprendizaje
 
+        // GPU -------------------
+        float *w_ptr = nullptr;
+        float *bias_ptr = nullptr;
     public:
+
+        // GPU ------------------------------------------
+        Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, float lr);
+        void forwardPropagationGEMM(float *input, float *output, float *a, int C, int H, int W);
+        void backPropagationGEMM(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
+        void generar_pesos_ptr();
+
+        // CPU ------------------------------------------
 
         // Constructores
         Convolutional(int n_kernels, int kernel_fils, int kernel_cols, const vector<vector<vector<float>>> &input, float lr);
@@ -44,12 +55,9 @@ class Convolutional
         // Propagación hacia delante
         void forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a);
 
-        void forwardPropagationGEMM(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a);
-
         // Retropropagación
         void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
         
-        void backPropagationGEMM(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
 
         // Modificación de parámetros
         void generar_pesos();
