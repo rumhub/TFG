@@ -39,7 +39,7 @@ class Convolutional
         // GPU ------------------------------------------
         Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, float lr);
         void forwardPropagationGEMM(float *input, float *output, float *a, int C, int H, int W);
-        void backPropagationGEMM(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
+        void backPropagationGEMM(float *input, float *output, float *a, float *grad_w, float *grad_bias, int C, int H, int W);
         void generar_pesos_ptr();
 
         // CPU ------------------------------------------
@@ -56,7 +56,7 @@ class Convolutional
         void forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a);
 
         // Retropropagación
-        void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias, const int &pad);
+        void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias);
         
 
         // Modificación de parámetros
