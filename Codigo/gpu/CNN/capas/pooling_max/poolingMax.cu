@@ -81,24 +81,39 @@ PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<fl
 {
     this->kernel_fils = kernel_fils;
     this->kernel_cols = kernel_cols;
-    this->image_fils = input[0].size();
-    this->image_cols = input[0][0].size();
-    this->image_canales = input.size();
+    this->C = input.size();
+    this->H = input[0].size();
+    this->W = input[0][0].size();
 
-    if(this->image_fils % kernel_fils != 0 || this->image_cols % kernel_cols != 0)
-        cout << "Warning. Las dimensiones del volumen de entrada(" << this->image_fils << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
+    if(H % kernel_fils != 0 || W % kernel_cols != 0)
+        cout << "Warning. Las dimensiones del volumen de entrada(" << H << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
 };
 
-PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W)
+PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad)
 {
+    // Kernel
     this->kernel_fils = kernel_fils;
     this->kernel_cols = kernel_cols;
-    this->image_canales = C;
-    this->image_fils = H;
-    this->image_cols = W;
 
-    if(this->image_fils % kernel_fils != 0 || this->image_cols % kernel_cols != 0)
-        cout << "Warning. Las dimensiones del volumen de entrada(" << this->image_fils << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
+    // Dimensiones de la imagen de entrada
+    this->C = C;
+    this->H = H;
+    this->W = W;
+
+    // Dimensiones de la imagen de salida
+    this->H_out = H/this->kernel_fils +2*pad;
+    this->W_out = W/this->kernel_cols +2*pad;
+
+    // Padding
+    this->pad = pad;
+
+    // Bytes necesarios
+    this->bytes_input = C*H*W * sizeof(float); 
+    this->bytes_output = C*H_out*W_out * sizeof(float);
+
+
+    if(this->H % kernel_fils != 0 || this->W % kernel_cols != 0)
+        cout << "Warning. Las dimensiones del volumen de entrada(" << this->H << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
 };
 
 // Idea de input_copy --> Inicializar a 0. Cada kernel se quedará solo con 1 valor, pues lo pones a 1 en input_copy para luego saber cuál era al hacer backpropagation
@@ -152,19 +167,14 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
 };
 
 
-void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input_copy, const int &pad, const int &C, const int &H, const int &W)
+void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input_copy)
 {
     // Inicializar input_copy a 0
     for(int i=0; i<C*H*W; i++)
         input_copy[i] = 0.0;
 
-    //Aux *aux = new Aux();
-    //aux->mostrar_imagen3D(input, C, H, W);
-    int K = this->kernel_fils, H_out = H/ K +2*pad, W_out = W / K +2*pad;
-    int bytes_input = C*H*W * sizeof(float), bytes_output = C*H_out*W_out * sizeof(float);
-
     // Crear tamaño de bloque y grid
-    dim3 block(K, K);
+    dim3 block(kernel_fils, kernel_cols);
     dim3 grid(ceil( (float)(W + block.x -1) / block.x), ceil((float)(H + block.y -1) / block.y));
 
     // Reserva memoria en device
@@ -177,7 +187,7 @@ void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input
     cudaMemcpy(d_input, input, bytes_input, cudaMemcpyHostToDevice);
 
     // Realizar MaxPool
-    maxpool_forward<<<grid, block>>>(C, H, W, K, d_input, d_input_copy, d_output, pad);
+    maxpool_forward<<<grid, block>>>(C, H, W, kernel_fils, d_input, d_input_copy, d_output, pad);
 
     cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
     cudaMemcpy(input_copy, d_input_copy, bytes_input, cudaMemcpyDeviceToHost);
@@ -185,19 +195,14 @@ void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input
     cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);
 };
 
-void PoolingMax::backPropagationGPU(float *input, float *output, float *input_copy, const int &pad_output, const int &C, const int &H, const int &W)
+void PoolingMax::backPropagationGPU(float *input, float *output, float *input_copy)
 {
     // Inicializar input a 0
     for(int i=0; i<C*H*W; i++)
         input[i] = 0.0;
 
-
-    int K = this->kernel_fils, H_out = H/ K +2*pad_output, W_out = W / K +2*pad_output;
-    
-    int bytes_input = C*H*W * sizeof(float), bytes_output = C*H_out*W_out * sizeof(float);
-
     // Crear tamaño de bloque y grid
-    dim3 block(K, K);
+    dim3 block(kernel_fils, kernel_cols);
     dim3 grid(ceil( (float)(W + block.x -1) / block.x), ceil((float)(H + block.y -1) / block.y));
 
     // Reserva memoria en device
@@ -212,7 +217,7 @@ void PoolingMax::backPropagationGPU(float *input, float *output, float *input_co
     cudaMemcpy(d_output, output, bytes_output, cudaMemcpyHostToDevice);
     
     // Realizar MaxPool
-    maxpool_back<<<grid, block>>>(C, H, W, K, d_input, d_input_copy, d_output, pad_output);
+    maxpool_back<<<grid, block>>>(C, H, W, kernel_fils, d_input, d_input_copy, d_output, pad);
     
     cudaMemcpy(input, d_input, bytes_input, cudaMemcpyDeviceToHost);
     cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);
@@ -220,7 +225,7 @@ void PoolingMax::backPropagationGPU(float *input, float *output, float *input_co
 
 void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output)
 {
-    int n_canales = this->image_canales, n_veces_fils = this->image_fils / kernel_fils, n_veces_cols = this->image_cols / kernel_cols;
+    int n_canales = this->C, n_veces_fils = this->H / kernel_fils, n_veces_cols = this->W / kernel_cols;
     int fila, columna;
     float max = 0.0;
     int output_fil = 0, output_col = 0;
@@ -245,9 +250,9 @@ void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vec
                 max = output[t][pad_output + output_fil][pad_output + output_col];
 
                 // Para cada subregión, realizar el pooling
-                for(int k=i; k<(i+kernel_fils)  && k<this->image_fils; ++k)
+                for(int k=i; k<(i+kernel_fils)  && k<this->H; ++k)
                 {
-                    for(int h=j; h<(j+kernel_cols) && h<this->image_cols; ++h)
+                    for(int h=j; h<(j+kernel_cols) && h<this->W; ++h)
                     {
                         // Si es el valor máximo, dejarlo como estaba
                         if(input_copy[t][k][h] != 0)
@@ -265,7 +270,7 @@ void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vec
 
 void PoolingMax::mostrar_tam_kernel()
 {
-    cout << "Estructura kernel "<< this->kernel_fils << "x" << this->kernel_cols << "x" << this->image_canales << endl; 
+    cout << "Estructura kernel "<< this->kernel_fils << "x" << this->kernel_cols << "x" << this->C << endl; 
 }
 
 
@@ -375,7 +380,7 @@ int main()
     aux->mostrar_imagen(input_cpu);
 
     PoolingMax plm1(K, K, input_cpu);
-    PoolingMax plm_gpu(K, K, C, H, W);
+    PoolingMax plm_gpu(K, K, C, H, W, pad);
 
     plm1.forwardPropagation(input_cpu, output_cpu, input_copy_cpu, pad);
 
@@ -403,7 +408,7 @@ int main()
 
     // ---------------- GPU --------------------------
     cout << " ------------------ GPU ---------------------" << endl;
-    plm_gpu.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu, pad, C, H, W);
+    plm_gpu.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu);
 
     cout << "Output\n";
     aux->mostrar_imagen3D(output_gpu, C, H_out_pad, W_out_pad);
@@ -414,7 +419,7 @@ int main()
     for(int i=0; i<C*H_out_pad*W_out_pad; i++)
         output_gpu[i] = 9.0;
     
-    plm_gpu.backPropagationGPU(input_gpu, output_gpu, input_copy_gpu, pad, C, H, W);
+    plm_gpu.backPropagationGPU(input_gpu, output_gpu, input_copy_gpu);
 
     cout << "Input\n";
     aux->mostrar_imagen3D(input_gpu, C, H, W);

@@ -22,15 +22,30 @@ using namespace std;
 class PoolingMax
 {
     private:
-        int kernel_fils;
-        int kernel_cols;
-        int image_fils;
-        int image_cols;
-        int image_canales;
-        
+        // Kernel de pesos
+        int kernel_fils;        // Filas del kernel de pesos
+        int kernel_cols;        // Columnas del kernel de pesos
+
+        // Dimensiones de la imagen de entrada
+        int C;              // Canales de profundidad de la imgen de entrada
+        int H;              // Filas de la imagen de entrada (por canal de profundidad)
+        int W;              // Columnas de la imagen de entrada (por canal de profundidad)
+
+        // Dimensiones de la imagen de salida
+        int H_out;          // Filas de la imagen de salida (por canal de profundidad)
+        int W_out;          // Filas de la imagen de salida (por canal de profundidad)
+
+        // Padding
+        int pad;            // Cantidad de padding a aplicar sobre la imagen de salida
+
+        // Bytes requeridos por cada imagen
+        int bytes_input;    // Bytes de la imagen de entrada
+        int bytes_output;   // Bytes de la imagen de salida
+
+
     public:
         PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
-        PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W);
+        PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad);
         PoolingMax(){};
 
         // CPU -------------------------------------------
@@ -39,14 +54,14 @@ class PoolingMax
         void backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
 
         // GPU ------------------------------------------
-        void forwardPropagationGPU(float *input, float *output, float *input_copy, const int &pad, const int &C, const int &H, const int &W);        
-        void backPropagationGPU(float *input, float *output, float *input_copy, const int &pad_output, const int &C, const int &H, const int &W);
+        void forwardPropagationGPU(float *input, float *output, float *input_copy);        
+        void backPropagationGPU(float *input, float *output, float *input_copy);
 
         // Comunes ------------------------------------------
         void mostrar_tam_kernel();
         int get_kernel_fils(){return this->kernel_fils;};
         int get_kernel_cols(){return this->kernel_cols;};
-        int get_image_canales(){return this->image_canales;};
+        int get_image_canales(){return this->C;};
 
 };
 
