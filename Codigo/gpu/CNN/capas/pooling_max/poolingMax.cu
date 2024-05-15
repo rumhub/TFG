@@ -84,12 +84,21 @@ PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<fl
     this->image_fils = input[0].size();
     this->image_cols = input[0][0].size();
     this->image_canales = input.size();
-    this->n_filas_eliminadas = 0;
 
     if(this->image_fils % kernel_fils != 0 || this->image_cols % kernel_cols != 0)
         cout << "Warning. Las dimensiones del volumen de entrada(" << this->image_fils << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
-    
+};
 
+PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W)
+{
+    this->kernel_fils = kernel_fils;
+    this->kernel_cols = kernel_cols;
+    this->image_canales = C;
+    this->image_fils = H;
+    this->image_cols = W;
+
+    if(this->image_fils % kernel_fils != 0 || this->image_cols % kernel_cols != 0)
+        cout << "Warning. Las dimensiones del volumen de entrada(" << this->image_fils << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
 };
 
 // Idea de input_copy --> Inicializar a 0. Cada kernel se quedará solo con 1 valor, pues lo pones a 1 en input_copy para luego saber cuál era al hacer backpropagation
@@ -366,6 +375,7 @@ int main()
     aux->mostrar_imagen(input_cpu);
 
     PoolingMax plm1(K, K, input_cpu);
+    PoolingMax plm_gpu(K, K, C, H, W);
 
     plm1.forwardPropagation(input_cpu, output_cpu, input_copy_cpu, pad);
 
@@ -393,7 +403,7 @@ int main()
 
     // ---------------- GPU --------------------------
     cout << " ------------------ GPU ---------------------" << endl;
-    plm1.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu, pad, C, H, W);
+    plm_gpu.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu, pad, C, H, W);
 
     cout << "Output\n";
     aux->mostrar_imagen3D(output_gpu, C, H_out_pad, W_out_pad);
@@ -404,7 +414,7 @@ int main()
     for(int i=0; i<C*H_out_pad*W_out_pad; i++)
         output_gpu[i] = 9.0;
     
-    plm1.backPropagationGPU(input_gpu, output_gpu, input_copy_gpu, pad, C, H, W);
+    plm_gpu.backPropagationGPU(input_gpu, output_gpu, input_copy_gpu, pad, C, H, W);
 
     cout << "Input\n";
     aux->mostrar_imagen3D(input_gpu, C, H, W);

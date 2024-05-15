@@ -27,10 +27,10 @@ class PoolingMax
         int image_fils;
         int image_cols;
         int image_canales;
-        int n_filas_eliminadas;
         
     public:
         PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
+        PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W);
         PoolingMax(){};
 
         // Aplica padding a un conjunto de imágenes 2D
