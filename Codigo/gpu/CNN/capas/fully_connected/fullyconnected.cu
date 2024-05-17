@@ -65,6 +65,154 @@ FullyConnected::FullyConnected(const vector<int> &capas, const float &lr)
             this->bias[i][j] = 0.0;
 };
 
+
+/*
+    CONSTRUCTOR de la clase FullyConnected
+    --------------------------------------
+  
+    @capas  Vector de enteros que indica el número de neuronas por capa. Habrá capas.size() capas y cada una contendrá capas[i] neuronas
+    @lr     Learning Rate o Tasa de Aprendizaje
+*/
+FullyConnected::FullyConnected(int *capas, int n_capas, float lr)
+{
+    
+    vector<float> neuronas_capa, w_1D;
+    vector<vector<float>> w_2D;
+    int n_neuronas = 0, n_pesos = 0;
+    this->n_capas = n_capas;
+    this->capas = (int *)malloc(n_capas * sizeof(int));
+    this->i_capa = (int *)malloc(n_capas * sizeof(int));
+    this->i_w_ptr = (int *)malloc(n_capas * sizeof(int));
+
+    // Neuronas ------------------------------------------------------------------
+    for(int i=0; i<n_capas; i++)
+    {
+        this->i_capa[i] = n_neuronas;
+        n_neuronas += capas[i];
+        this->capas[i] = capas[i];
+    }
+
+    this->a_ptr = (float *)malloc(n_neuronas * sizeof(float));
+    this->z_ptr = (float *)malloc(n_neuronas * sizeof(float));
+    this->bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
+
+
+    // Mostrar neuronas
+    //mostrar_neuronas();
+    
+
+    // Pesos ------------------------------------------------------------------
+    for(int i=0; i<n_capas-1; i++)
+    {
+        this->i_w_ptr[i] = n_pesos;
+        n_pesos += capas[i] * capas[i+1];   // Cada neurona de la capa actual se conecta a cada neurona de la capa siguiente
+    }
+    
+    this->w_ptr = (float *)malloc(n_pesos * sizeof(float));
+
+    // Learning Rate
+    this->lr = lr;
+    
+    // Inicializar pesos mediante inicialización He
+    for(int i=0; i<n_capas-1; ++i)
+        this->generar_pesos_ptr(i);
+
+    /*
+    // Mostrar pesos
+    cout << "Pesos" << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+            {
+                cout << "W(" << j << "," << k << "): ";
+                cout << this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+    */
+
+    // Inicializar bias con un valor de 0.0
+    for(int i=0; i<n_neuronas; i++)
+        this->bias_ptr[i] = 0.0;
+};
+
+void FullyConnected::mostrar_pesos_ptr()
+{
+    // Mostrar pesos
+    cout << "Pesos" << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+            {
+                cout << "W(" << j << "," << k << "): ";
+                cout << this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void FullyConnected::mostrar_pesos()
+{
+    cout << "Pesos" << endl;
+    for(int i=0; i<w.size(); i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<w[i].size(); j++)
+        {
+            for(int k=0; k<w[i][j].size(); k++)
+            {
+                cout << "W(" << j << "," << k << "): ";
+                cout << w[i][j][k] << " ";
+
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void FullyConnected::mostrar_neuronas_ptr()
+{
+    // Mostrar neuronas
+    cout << "Neuronas" << endl;
+    for(int i=0; i<n_capas; i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<capas[i]; j++)
+            cout << this->z_ptr[i_capa[i] + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+}
+
+
+void FullyConnected::mostrar_neuronas(const vector<vector<float>> &z)
+{
+    // Mostrar neuronas
+    cout << "Neuronas" << endl;
+    for(int i=0; i<a.size(); i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<a[i].size(); j++)
+            cout << z[i][j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+}
+
 /*
     @brief  Genera los pesos entre 2 capas de neuronas
     @capa   Capa a generar los pesos con la siguiente
@@ -77,10 +225,39 @@ void FullyConnected::generar_pesos(const int &capa)
     std::mt19937 gen(rd());
     std::normal_distribution<float> distribution(0.0, sqrt(2.0 / this->a[capa].size())); 
 
+    int cont = 0;
     for(int i=0; i<this->a[capa].size(); ++i)
         for(int j=0; j<this->a[capa+1].size(); ++j)
             this->w[capa][i][j] = distribution(gen);
 }
+
+void FullyConnected::copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_)
+{
+    for(int i=0; i<w_.size(); i++)
+        for(int j=0; j<w_[i].size(); j++)
+            for(int k=0; k<w_[i][j].size(); k++)
+                w_ptr[i_w_ptr[i] + j*capas[i+1] + k] = w_[i][j][k];
+}
+
+
+/*
+    @brief  Genera los pesos entre 2 capas de neuronas
+    @capa   Capa a generar los pesos con la siguiente
+    @return Se actualizan los valores de w (pesos de la red)
+*/
+void FullyConnected::generar_pesos_ptr(const int &capa)
+{
+    // Inicialización He
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<float> distribution(0.0, sqrt(2.0 / this->capas[capa])); 
+
+    int cont = 0;
+    for(int i=0; i<this->capas[capa]; ++i)
+        for(int j=0; j<this->capas[capa+1]; ++j)
+            this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
+}
+
 
 /*
     @brief      Función de activación ReLU
@@ -195,6 +372,81 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
         } 
     }
 }
+
+/*
+    @brief  Propagación hacia delante por toda la red totalmente conectada
+    @x      Valores de entrada a la red
+    @a      Neuronas de la red antes de aplicar la función de activación
+    @z      Neuronas de la red después de aplicar la función de activación
+
+    @return Se actualizan los valores de @a y @z
+*/
+void FullyConnected::forwardPropagation_ptr(float *x, int tam_x, float *a, float *z)
+{
+    float max, sum = 0.0, epsilon = 0.000000001;
+
+    // Introducimos input -------------------------------------------------------
+    for(int i=0; i<tam_x; ++i)
+    {
+        z_ptr[i] = x[i];
+        a_ptr[i] = x[i];
+    }
+
+    
+    // Forward Propagation ------------------------------------------------------------
+    // Por cada capa
+    for(int i=0; i<n_capas -1; ++i)
+    {
+
+        // Por cada neurona de la capa siguiente
+        for(int k=0; k<capas[i+1]; ++k)
+        {
+            // Reset siguiente capa
+            a_ptr[i_capa[i+1] + k] = 0.0;
+
+            for(int j=0; j<capas[i]; ++j)
+                a_ptr[i_capa[i+1] + k] += z_ptr[i_capa[i] + j] * w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
+
+            // Aplicar bias o sesgo
+            a_ptr[i_capa[i+1] + k] += this->bias_ptr[i_capa[i+1] + k];
+        }
+
+        // Aplicamos función de activación asociada a la capa actual -------------------------------
+
+        // En capas ocultas se emplea ReLU como función de activación
+        if(i < n_capas - 2)
+        {
+            for(int k=0; k<capas[i+1]; ++k)
+                z_ptr[i_capa[i+1] + k] = relu(a_ptr[i_capa[i+1] + k]);
+        }else
+        {
+            // En la capa output se emplea softmax como función de activación
+            sum = 0.0;
+            max = a_ptr[i_capa[i+1]];
+
+            // Normalizar -----------------------------------------------------------------
+            // Encontrar el máximo
+            for(int k=0; k<capas[i+1]; ++k)
+                if(max < this->a_ptr[i_capa[i+1] + k])
+                    max = a_ptr[i_capa[i+1] + k];
+            
+            // Normalizar
+            for(int k=0; k<capas[i+1]; ++k)
+                a_ptr[i_capa[i+1] + k] = a_ptr[i_capa[i+1] + k] - max;
+            
+            // Calculamos la suma exponencial de todas las neuronas de la capa output ---------------------
+            for(int k=0; k<capas[i+1]; ++k)
+                sum += exp(a_ptr[i_capa[i+1] + k]);
+
+            for(int k=0; k<capas[i+1]; ++k)
+                z_ptr[i_capa[i+1] + k] = exp(a_ptr[i_capa[i+1] + k]) / sum;
+        } 
+    }
+    
+}
+
+
+
 
 /*
     @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
@@ -490,3 +742,52 @@ int main()
     return 0;
 }
 */
+
+int main()
+{
+    // CPU --------------
+    cout << " ---------- CPU ---------- " << endl; 
+    int tam_x = 10;
+    vector<int> capas = {tam_x, 20, 30, 2};
+    vector<vector<float>> a_cpu, z_cpu;
+    vector<float> x_cpu;
+    FullyConnected fully_cpu(capas, 0.1);
+    a_cpu = fully_cpu.get_a();
+    z_cpu = fully_cpu.get_a();
+
+    for(int i=0; i<tam_x; i++)
+        x_cpu.push_back(i);
+
+    fully_cpu.forwardPropagation(x_cpu, a_cpu, z_cpu);
+    fully_cpu.mostrar_neuronas(z_cpu);
+    //fully_cpu.mostrar_pesos();
+
+    // GPU --------------
+    cout << " ---------- GPU ---------- " << endl; 
+    int n_capas = 4;
+    int *capas_ptr = (int *)malloc(n_capas * sizeof(int));
+    capas_ptr[0] = tam_x;
+    capas_ptr[1] = 20;
+    capas_ptr[2] = 30;
+    capas_ptr[3] = 2;
+    FullyConnected fully_gpu(capas_ptr, n_capas, 0.1);
+
+    int n_neuronas = 0;
+    for(int i=0; i<n_capas; i++)
+        n_neuronas += capas_ptr[i];
+
+    float *x_gpu = (float *)malloc(tam_x * sizeof(float));
+    
+    for(int i=0; i<tam_x; i++)
+        x_gpu[i] = x_cpu[i];
+
+    float *a_gpu = (float *)malloc(n_neuronas * sizeof(float));
+    float *z_gpu = (float *)malloc(n_neuronas * sizeof(float));
+
+    fully_gpu.copiar_w_de_vector_a_ptr(fully_cpu.get_pesos());
+    fully_gpu.forwardPropagation_ptr(x_gpu, tam_x, a_gpu, z_gpu);
+    fully_gpu.mostrar_neuronas_ptr();
+    //fully_gpu.mostrar_pesos_ptr();
+
+    return 0;
+}

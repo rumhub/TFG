@@ -15,12 +15,33 @@ using namespace std;
 class FullyConnected
 {
     protected:
+        // CPU -----------------------------
         vector<vector<vector<float>>> w;    // Pesos
         vector<vector<float>> a;        // Neuronas
         vector<vector<float>> bias;     // Bias o Sesgos
         float lr;   // Learning Rate o Tasa de Aprendizaje
 
+        // GPU -----------------------------
+        float * w_ptr = nullptr;
+        float * bias_ptr = nullptr;
+        float * a_ptr = nullptr;
+        float * z_ptr = nullptr;
+        int n_capas;
+        int *capas = nullptr;
+        int *i_w_ptr = nullptr;     // Índice de cada capa de pesos
+        int *i_capa = nullptr;      // Índice de cada capa de neuronas
+
     public:
+        // GPU ---------------------------------------
+        FullyConnected(int *capas, int n_capas, float lr);
+        ~FullyConnected(){free(w_ptr); free(bias_ptr); free(a_ptr); free(capas); free(i_w_ptr); free(i_capa);};
+        void generar_pesos_ptr(const int &capa);
+        void forwardPropagation_ptr(float *x, int tam_x, float *a, float *z);
+        void mostrar_neuronas_ptr();
+        void copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_);
+        void mostrar_pesos_ptr();
+
+        // CPU ---------------------------------------
         // Constructores
         FullyConnected(const vector<int> &capas, const float & lr=0.1);
         FullyConnected(){};
@@ -53,7 +74,8 @@ class FullyConnected
 
         // Debug
         void set_pesos(const vector<vector<vector<float>>> &w_){this->w = w_;};
-
+        void mostrar_neuronas(const vector<vector<float>> &z);
+        void mostrar_pesos();
 };
 
 #endif
