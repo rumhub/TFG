@@ -381,12 +381,12 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 
     @return Se actualizan los valores de @a y @z
 */
-void FullyConnected::forwardPropagation_ptr(float *x, int tam_x, float *a, float *z)
+void FullyConnected::forwardPropagation_ptr(float *x, float *a, float *z)
 {
     float max, sum = 0.0, epsilon = 0.000000001;
 
     // Introducimos input -------------------------------------------------------
-    for(int i=0; i<tam_x; ++i)
+    for(int i=0; i<capas[0]; ++i)
     {
         z_ptr[i] = x[i];
         a_ptr[i] = x[i];
@@ -445,6 +445,35 @@ void FullyConnected::forwardPropagation_ptr(float *x, int tam_x, float *a, float
     
 }
 
+
+/*
+    @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
+    @x      Conjunto de datos de entrada
+    @y      Etiquetas de los datos de entrada
+    @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
+    @return Valor de entropía cruzada sobre el conjunto de datos de entrada x
+*/
+float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos)
+{
+    float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
+    int n=n_capas-1;
+
+    for(int i=0; i<n_datos; ++i)
+    {
+        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
+        forwardPropagation_ptr(x_i, this->a_ptr, this->z_ptr);
+
+        for(int c=0; c<capas[n]; ++c)
+            if(y[i*capas[n] + c] == 1)                      // Cada y[i] tiene valores como neuronas hay en la última capa. 1 neurona y 1 valor por clase. One-hot.
+                prediccion = z_ptr[i_capa[n] + c];
+            
+        sum += log(prediccion+epsilon);
+    }
+
+    //sum = -sum / x.size();
+
+    return sum;
+}
 
 
 
@@ -743,14 +772,36 @@ int main()
 }
 */
 
+void mostrar_ptr_2D(float *x, int H, int W)
+{
+    for(int i=0; i<H; i++)
+    {
+        for(int j=0; j<W; j++)
+            cout << x[i*W + j] << " ";
+        cout << endl;
+    }
+}
+
+void mostrar_vector_2D(vector<vector<float>> x)
+{
+    for(int i=0; i<x.size(); i++)
+    {
+        for(int j=0; j<x[i].size(); j++)
+            cout << x[i][j] << " ";
+        cout << endl;
+    }
+}
+
+
 int main()
 {
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
-    int tam_x = 10;
-    vector<int> capas = {tam_x, 20, 30, 2};
-    vector<vector<float>> a_cpu, z_cpu;
+    int tam_x = 10, n_datos = 2, n_clases = 2;
+    vector<int> capas = {tam_x, 20, 30, n_clases};
+    vector<vector<float>> a_cpu, z_cpu, y_cpu = {{1.0, 0.0}, {0.0, 1.0}};
     vector<float> x_cpu;
+    vector<vector<float>> X_cpu;
     FullyConnected fully_cpu(capas, 0.1);
     a_cpu = fully_cpu.get_a();
     z_cpu = fully_cpu.get_a();
@@ -758,9 +809,15 @@ int main()
     for(int i=0; i<tam_x; i++)
         x_cpu.push_back(i);
 
-    fully_cpu.forwardPropagation(x_cpu, a_cpu, z_cpu);
-    fully_cpu.mostrar_neuronas(z_cpu);
+    for(int i=0; i<n_datos; i++)
+        X_cpu.push_back(x_cpu);
+
+    //fully_cpu.forwardPropagation(x_cpu, a_cpu, z_cpu);
+    //fully_cpu.mostrar_neuronas(z_cpu);
     //fully_cpu.mostrar_pesos();
+    mostrar_vector_2D(X_cpu);
+    mostrar_vector_2D(y_cpu);
+    cout << "Entr: " << fully_cpu.cross_entropy(X_cpu, y_cpu) << endl;
 
     // GPU --------------
     cout << " ---------- GPU ---------- " << endl; 
@@ -769,7 +826,7 @@ int main()
     capas_ptr[0] = tam_x;
     capas_ptr[1] = 20;
     capas_ptr[2] = 30;
-    capas_ptr[3] = 2;
+    capas_ptr[3] = n_clases;
     FullyConnected fully_gpu(capas_ptr, n_capas, 0.1);
 
     int n_neuronas = 0;
@@ -777,17 +834,32 @@ int main()
         n_neuronas += capas_ptr[i];
 
     float *x_gpu = (float *)malloc(tam_x * sizeof(float));
+    float *X_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
+    float *y_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
     
     for(int i=0; i<tam_x; i++)
         x_gpu[i] = x_cpu[i];
+
+    for(int i=0; i<n_datos; i++)
+        for(int j=0; j<tam_x; j++)
+            X_gpu[i*tam_x + j] = X_cpu[i][j];
+
+    for(int i=0; i<n_datos; i++)
+        for(int j=0; j<n_clases; j++)
+            y_gpu[i*n_clases + j] = y_cpu[i][j];
+
 
     float *a_gpu = (float *)malloc(n_neuronas * sizeof(float));
     float *z_gpu = (float *)malloc(n_neuronas * sizeof(float));
 
     fully_gpu.copiar_w_de_vector_a_ptr(fully_cpu.get_pesos());
-    fully_gpu.forwardPropagation_ptr(x_gpu, tam_x, a_gpu, z_gpu);
-    fully_gpu.mostrar_neuronas_ptr();
+    //fully_gpu.forwardPropagation_ptr(x_gpu, a_gpu, z_gpu);
+    //fully_gpu.mostrar_neuronas_ptr();
     //fully_gpu.mostrar_pesos_ptr();
+    mostrar_ptr_2D(X_gpu, n_datos, tam_x);
+    mostrar_ptr_2D(y_gpu, n_datos, n_clases);
+    cout << "Entr: " << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos) << endl;
+
 
     return 0;
 }
