@@ -453,37 +453,6 @@ void FullyConnected::forwardPropagation_ptr(float *x, float *a, float *z)
     @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
     @return Valor de entropía cruzada sobre el conjunto de datos de entrada x
 */
-float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos)
-{
-    float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
-    int n=n_capas-1;
-
-    for(int i=0; i<n_datos; ++i)
-    {
-        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
-        forwardPropagation_ptr(x_i, this->a_ptr, this->z_ptr);
-
-        for(int c=0; c<capas[n]; ++c)
-            if(y[i*capas[n] + c] == 1)                      // Cada y[i] tiene valores como neuronas hay en la última capa. 1 neurona y 1 valor por clase. One-hot.
-                prediccion = z_ptr[i_capa[n] + c];
-            
-        sum += log(prediccion+epsilon);
-    }
-
-    //sum = -sum / x.size();
-
-    return sum;
-}
-
-
-
-/*
-    @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
-    @x      Conjunto de datos de entrada
-    @y      Etiquetas de los datos de entrada
-    @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
-    @return Valor de entropía cruzada sobre el conjunto de datos de entrada x
-*/
 float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float>> y)
 {
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
@@ -508,6 +477,78 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
 
     return sum;
 }
+
+/*
+    @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
+    @x      Conjunto de datos de entrada
+    @y      Etiquetas de los datos de entrada
+    @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
+    @return Valor de entropía cruzada sobre el conjunto de datos de entrada x
+*/
+float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos)
+{
+    float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
+    int n=n_capas-1;
+
+    for(int i=0; i<n_datos; ++i)
+    {
+        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
+        forwardPropagation_ptr(x_i, this->a_ptr, this->z_ptr);
+
+        for(int c=0; c<capas[n]; ++c)
+            if(y[i*capas[n] + c] == 1)                      // Cada y[i] tiene valores como neuronas hay en la última capa. 1 neurona y 1 valor por clase. One-hot.
+                prediccion = z_ptr[i_capa[n] + c];
+            
+        sum += log(prediccion+epsilon);
+    }
+
+    //sum = -sum / x.size();
+
+    return sum;
+}
+
+
+/*
+    @brief  Realiza la medida de Accuracy sobre un conjunto de datos
+    @x      Conjunto de datos de entrada
+    @y      Etiquetas de los datos de entrada
+    @return Valor de accuracy sobre el conjunto de datos de entrada x
+*/
+float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos)
+{
+    float sum =0.0, max;
+    int prediccion, n=n_capas-1;
+
+    for(int i=0; i<n_datos; ++i)
+    {
+        // Propagación hacia delante de la entrada x[i] a lo largo de la red
+        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
+        forwardPropagation_ptr(x_i, this->a_ptr, this->z_ptr);
+
+
+        // Inicialización
+        max = z_ptr[i_capa[n]];
+        prediccion = 0;
+
+        // Obtener valor más alto de la capa output
+        for(int c=1; c<capas[n]; ++c)
+        {
+            if(max < z_ptr[i_capa[n] + c])
+            {
+                max = z_ptr[i_capa[n] + c];
+                prediccion = c;
+            }
+        }
+
+        // Ver si etiqueta real y predicción coindicen
+        sum += y[i*capas[n] + prediccion];
+    }
+
+    //sum = sum / x.size() * 100;
+
+    return sum;
+}
+
 
 /*
     @brief  Realiza la medida de Accuracy sobre un conjunto de datos
@@ -799,7 +840,7 @@ int main()
     cout << " ---------- CPU ---------- " << endl; 
     int tam_x = 10, n_datos = 2, n_clases = 2;
     vector<int> capas = {tam_x, 20, 30, n_clases};
-    vector<vector<float>> a_cpu, z_cpu, y_cpu = {{1.0, 0.0}, {0.0, 1.0}};
+    vector<vector<float>> a_cpu, z_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
     vector<float> x_cpu;
     vector<vector<float>> X_cpu;
     FullyConnected fully_cpu(capas, 0.1);
@@ -818,6 +859,7 @@ int main()
     mostrar_vector_2D(X_cpu);
     mostrar_vector_2D(y_cpu);
     cout << "Entr: " << fully_cpu.cross_entropy(X_cpu, y_cpu) << endl;
+    cout << "Acc: " << fully_cpu.accuracy(X_cpu, y_cpu) << endl;
 
     // GPU --------------
     cout << " ---------- GPU ---------- " << endl; 
@@ -859,6 +901,7 @@ int main()
     mostrar_ptr_2D(X_gpu, n_datos, tam_x);
     mostrar_ptr_2D(y_gpu, n_datos, n_clases);
     cout << "Entr: " << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos) << endl;
+    cout << "Acc: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos) << endl;
 
 
     return 0;

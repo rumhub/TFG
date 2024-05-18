@@ -41,6 +41,7 @@ class FullyConnected
         void copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_);
         void mostrar_pesos_ptr();
         float cross_entropy_ptr(float *x, float *y, int n_datos);
+        float accuracy_ptr(float *x, float *y, int n_datos);
 
         // CPU ---------------------------------------
         // Constructores
