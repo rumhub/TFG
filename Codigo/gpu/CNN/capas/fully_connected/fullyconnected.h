@@ -23,12 +23,7 @@ class FullyConnected
 
         // GPU -----------------------------
         float * w_ptr = nullptr;
-        float * grad_w_ptr = nullptr;
         float * bias_ptr = nullptr;
-        float * grad_bias_ptr = nullptr;
-        float * a_ptr = nullptr;
-        float * z_ptr = nullptr;
-        float * grad_a_ptr = nullptr;
         int n_capas;
         int *capas = nullptr;
         int *i_w_ptr = nullptr;     // Índice de cada capa de pesos
@@ -37,16 +32,15 @@ class FullyConnected
     public:
         // GPU ---------------------------------------
         FullyConnected(int *capas, int n_capas, float lr);
-        ~FullyConnected(){free(w_ptr); free(bias_ptr); free(a_ptr); free(capas); free(i_w_ptr); free(i_capa);};
+        ~FullyConnected(){free(w_ptr); free(bias_ptr); free(capas); free(i_w_ptr); free(i_capa);};
         void generar_pesos_ptr(const int &capa);
         void forwardPropagation_ptr(float *x, float *a, float *z);
-        void mostrar_neuronas_ptr();
+        void mostrar_neuronas_ptr(float *z_ptr);
         void copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_);
         void mostrar_pesos_ptr();
-        void mostrar_grad_pesos_ptr();
-        float cross_entropy_ptr(float *x, float *y, int n_datos);
-        float accuracy_ptr(float *x, float *y, int n_datos);
-        void train_ptr(float *x, float *y, int *batch, const int &n_datos, float *grad_x);
+        float cross_entropy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
+        float accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
+        void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
 
         // CPU ---------------------------------------
         // Constructores

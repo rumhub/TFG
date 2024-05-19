@@ -92,15 +92,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr)
         this->capas[i] = capas[i];
     }
 
-    this->a_ptr = (float *)malloc(n_neuronas * sizeof(float));
-    this->z_ptr = (float *)malloc(n_neuronas * sizeof(float));
-    this->grad_a_ptr = (float *)malloc(n_neuronas * sizeof(float));
     this->bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
-    this->grad_bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       
-
-    // Inicializar gradientes de sesgos a 0.0
-    for(int i=0; i<n_neuronas; i++)
-        grad_bias_ptr[i] = 0.0;
 
     // Mostrar neuronas
     //mostrar_neuronas();
@@ -114,11 +106,6 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr)
     }
     
     this->w_ptr = (float *)malloc(n_pesos * sizeof(float));
-    this->grad_w_ptr = (float *)malloc(n_pesos * sizeof(float));
-
-    // Inicializar gradientes de pesos a 0.0
-    for(int i=0; i<n_pesos; i++)
-        grad_w_ptr[i] = 0.0;
 
     // Learning Rate
     this->lr = lr;
@@ -173,26 +160,6 @@ void FullyConnected::mostrar_pesos_ptr()
     cout << endl;
 }
 
-void FullyConnected::mostrar_grad_pesos_ptr()
-{
-    // Mostrar pesos
-    cout << "Pesos" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        cout << "Capa " << i << endl;
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-            {
-                cout << "W(" << j << "," << k << "): ";
-                cout << this->grad_w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
 
 void FullyConnected::mostrar_pesos()
 {
@@ -215,7 +182,7 @@ void FullyConnected::mostrar_pesos()
     cout << endl;
 }
 
-void FullyConnected::mostrar_neuronas_ptr()
+void FullyConnected::mostrar_neuronas_ptr(float *z_ptr)
 {
     // Mostrar neuronas
     cout << "Neuronas" << endl;
@@ -223,7 +190,7 @@ void FullyConnected::mostrar_neuronas_ptr()
     {
         cout << "Capa " << i << endl;
         for(int j=0; j<capas[i]; j++)
-            cout << this->z_ptr[i_capa[i] + j] << " ";
+            cout << z_ptr[i_capa[i] + j] << " ";
         cout << endl;
     }
     cout << endl;
@@ -412,7 +379,7 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 
     @return Se actualizan los valores de @a y @z
 */
-void FullyConnected::forwardPropagation_ptr(float *x, float *a, float *z)
+void FullyConnected::forwardPropagation_ptr(float *x, float *a_ptr, float *z_ptr)
 {
     float max, sum = 0.0, epsilon = 0.000000001;
 
@@ -458,7 +425,7 @@ void FullyConnected::forwardPropagation_ptr(float *x, float *a, float *z)
             // Normalizar -----------------------------------------------------------------
             // Encontrar el máximo
             for(int k=0; k<capas[i+1]; ++k)
-                if(max < this->a_ptr[i_capa[i+1] + k])
+                if(max < a_ptr[i_capa[i+1] + k])
                     max = a_ptr[i_capa[i+1] + k];
             
             // Normalizar
@@ -516,7 +483,7 @@ float FullyConnected::cross_entropy(vector<vector<float>> x, vector<vector<float
     @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...} 
     @return Valor de entropía cruzada sobre el conjunto de datos de entrada x
 */
-float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos)
+float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr)
 {
     float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
     int n=n_capas-1;
@@ -524,7 +491,7 @@ float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos)
     for(int i=0; i<n_datos; ++i)
     {
         float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
-        forwardPropagation_ptr(x_i, this->a_ptr, this->z_ptr);
+        forwardPropagation_ptr(x_i, a_ptr, z_ptr);
 
         for(int c=0; c<capas[n]; ++c)
             if(y[i*capas[n] + c] == 1)                      // Cada y[i] tiene valores como neuronas hay en la última capa. 1 neurona y 1 valor por clase. One-hot.
@@ -545,7 +512,7 @@ float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos)
     @y      Etiquetas de los datos de entrada
     @return Valor de accuracy sobre el conjunto de datos de entrada x
 */
-float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos)
+float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr)
 {
     float sum =0.0, max;
     int prediccion, n=n_capas-1;
@@ -554,8 +521,7 @@ float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos)
     {
         // Propagación hacia delante de la entrada x[i] a lo largo de la red
         float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
-        forwardPropagation_ptr(x_i, this->a_ptr, this->z_ptr);
-
+        forwardPropagation_ptr(x_i, a_ptr, z_ptr);
 
         // Inicialización
         max = z_ptr[i_capa[n]];
@@ -640,7 +606,7 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
 */
 //void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
-void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_datos, float *grad_x)
+void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr)
 {
     float epsilon = 0.000000001;
     int i_output = n_capas -1, i_last_h = i_output-1; // índice de la capa output, Índice de la capa h1 respectivamente
@@ -649,7 +615,7 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
     {
         // Propagación hacia delante
         float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
-        forwardPropagation_ptr(x_i, this->a_ptr, this->z_ptr);
+        forwardPropagation_ptr(x_i, a_ptr, z_ptr);
         
         // Propagación hacia detrás
         // Inicializar a 0 gradiente respecto a input
@@ -1008,30 +974,60 @@ int main()
     fully_cpu.train(X_cpu, y_cpu, batch_cpu, n_datos, grad_w_cpu, grad_b_cpu, grad_x_cpu, a_cpu, z_cpu, grad_a_cpu);
     //fully_cpu.mostrar_neuronas(grad_b_cpu);
 
+    // Mostrar neuronas
+    cout << "Neuronas" << endl;
+    for(int i=0; i<grad_b_cpu.size(); i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<grad_b_cpu[i].size(); j++)
+            cout << grad_a_cpu[i][j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+
+
     // GPU --------------
     cout << " ---------- GPU ---------- " << endl; 
     int n_capas = 4;
     int *capas_ptr = (int *)malloc(n_capas * sizeof(int));
-    capas_ptr[0] = tam_x;
-    capas_ptr[1] = 2;
-    capas_ptr[2] = 3;
-    capas_ptr[3] = n_clases;
+    int *i_capa = (int *)malloc(n_capas * sizeof(int));
+
+    for(int i=0; i<n_capas; i++)
+        capas_ptr[i] = capas[i];
     FullyConnected fully_gpu(capas_ptr, n_capas, 0.1);
 
-    int n_neuronas = 0;
-    for(int i=0; i<n_capas; i++)
-        n_neuronas += capas_ptr[i];
+    int n_neuronas = 0, n_pesos = 0;
 
-    float *x_gpu = (float *)malloc(tam_x * sizeof(float));
+    // Pesos ------------------------------------------------------------------
+    int *i_w_ptr = (int *)malloc(n_capas * sizeof(int));
+
+    // Neuronas ------------------------------------------------------------------
+    for(int i=0; i<n_capas; i++)
+    {
+        i_capa[i] = n_neuronas;
+        n_neuronas += capas_ptr[i];
+        capas_ptr[i] = capas[i];
+    }
+
+    for(int i=0; i<n_capas-1; i++)
+    {
+        i_w_ptr[i] = n_pesos;
+        n_pesos += capas_ptr[i] * capas_ptr[i+1];   // Cada neurona de la capa actual se conecta a cada neurona de la capa siguiente
+    }
+    
+    float *grad_w_ptr = (float *)malloc(n_pesos * sizeof(float));
+
+    // Inicializar gradientes de pesos a 0.0
+    for(int i=0; i<n_pesos; i++)
+        grad_w_ptr[i] = 0.0;
+
+    // Entrada y salida ------------------------------------------------------------------
     float *X_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
     float *y_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
     int *batch_gpu = (int *)malloc(n_datos * sizeof(int));
     
     for(int i=0; i<n_datos; i++)
         batch_gpu[i] = i;
-
-    for(int i=0; i<tam_x; i++)
-        x_gpu[i] = x_cpu[i];
 
     for(int i=0; i<n_datos; i++)
         for(int j=0; j<tam_x; j++)
@@ -1042,23 +1038,39 @@ int main()
             y_gpu[i*n_clases + j] = y_cpu[i][j];
 
 
-    float *a_gpu = (float *)malloc(n_neuronas * sizeof(float));
-    float *z_gpu = (float *)malloc(n_neuronas * sizeof(float));
+    float *a_ptr = (float *)malloc(n_neuronas * sizeof(float));
+    float *z_ptr = (float *)malloc(n_neuronas * sizeof(float));
+    float *grad_bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       
+    float *grad_a_ptr = (float *)malloc(n_neuronas * sizeof(float));
+
+    // Inicializar gradientes de sesgos a 0.0
+    for(int i=0; i<n_neuronas; i++)
+        grad_bias_ptr[i] = 0.0;
 
     fully_gpu.copiar_w_de_vector_a_ptr(fully_cpu.get_pesos());
-    //fully_gpu.forwardPropagation_ptr(x_gpu, a_gpu, z_gpu);
     //fully_gpu.mostrar_neuronas_ptr();
     //fully_gpu.mostrar_pesos_ptr();
     mostrar_ptr_2D(X_gpu, n_datos, tam_x);
     mostrar_ptr_2D(y_gpu, n_datos, n_clases);
-    cout << "Entr: " << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos) << endl;
-    cout << "Acc: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos) << endl;
+    cout << "Entr: " << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
+    cout << "Acc: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
 
     float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
-    fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_x_gpu);
+    fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
     //fully_gpu.mostrar_grad_pesos_ptr();
     
+    // Mostrar neuronas
+    cout << "Neuronas" << endl;
+    for(int i=0; i<n_capas; i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<capas[i]; j++)
+            cout << grad_a_ptr[i_capa[i] + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
 
+    free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(y_gpu); free(batch_gpu); free(a_ptr); free(z_ptr); free(grad_x_gpu); free(grad_bias_ptr); free(grad_a_ptr);
 
     return 0;
 }
