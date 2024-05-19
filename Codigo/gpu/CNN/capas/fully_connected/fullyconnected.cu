@@ -94,8 +94,13 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr)
 
     this->a_ptr = (float *)malloc(n_neuronas * sizeof(float));
     this->z_ptr = (float *)malloc(n_neuronas * sizeof(float));
+    this->grad_a_ptr = (float *)malloc(n_neuronas * sizeof(float));
     this->bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
+    this->grad_bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       
 
+    // Inicializar gradientes de sesgos a 0.0
+    for(int i=0; i<n_neuronas; i++)
+        grad_bias_ptr[i] = 0.0;
 
     // Mostrar neuronas
     //mostrar_neuronas();
@@ -109,6 +114,11 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr)
     }
     
     this->w_ptr = (float *)malloc(n_pesos * sizeof(float));
+    this->grad_w_ptr = (float *)malloc(n_pesos * sizeof(float));
+
+    // Inicializar gradientes de pesos a 0.0
+    for(int i=0; i<n_pesos; i++)
+        grad_w_ptr[i] = 0.0;
 
     // Learning Rate
     this->lr = lr;
@@ -155,6 +165,27 @@ void FullyConnected::mostrar_pesos_ptr()
             {
                 cout << "W(" << j << "," << k << "): ";
                 cout << this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void FullyConnected::mostrar_grad_pesos_ptr()
+{
+    // Mostrar pesos
+    cout << "Pesos" << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+            {
+                cout << "W(" << j << "," << k << "): ";
+                cout << this->grad_w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
             }
             cout << endl;
         }
@@ -593,6 +624,102 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     return sum;
 }
 
+
+/*
+    @brief      Entrenamiento de la red
+    @x          Conjunto de datos de entrada
+    @y          Etiquetas asociadas a cada dato de entrada
+    @batch      Conjunto de índices desordenados tal que para cada dato de entrada x[i], este está asociado con y[batch[i]]
+    @n_datos    Número de datos con los que entrenar
+    @grad_pesos Gradiente de cada peso de la red
+    @grad_b     Gradiente de cada bias de la red
+    @grad_x     Gradiente respecto a la entrada x
+    @a          Neuronas de la red antes de aplicar la función de activación
+    @z          Neuronas de la red después de aplicar la función de activación
+    @grad_a     Gradiente respecto a cada neurona de la red antes de aplicar la función de activación
+    @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
+*/
+//void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
+void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_datos, float *grad_x)
+{
+    float epsilon = 0.000000001;
+    int i_output = n_capas -1, i_last_h = i_output-1; // índice de la capa output, Índice de la capa h1 respectivamente
+
+    for(int i=0; i<n_datos; ++i)
+    {
+        // Propagación hacia delante
+        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
+        forwardPropagation_ptr(x_i, this->a_ptr, this->z_ptr);
+        
+        // Propagación hacia detrás
+        // Inicializar a 0 gradiente respecto a input
+        for(int _i = 0; _i < n_capas; ++_i)
+            for(int j = 0; j < capas[_i]; ++j)
+                grad_a_ptr[i_capa[_i] + j] = 0.0;
+
+        // Capa SoftMax -----------------------------------------------
+        // Se calcula gradiente del error respecto a cada Z_k
+        for(int k=0; k<capas[i_output]; ++k)
+            grad_a_ptr[i_capa[i_output] + k] = z_ptr[i_capa[i_output] + k] - y[batch[i]*capas[i_output] + k];
+            // grad_Zk = O_k - y_k
+
+
+        // Pesos h_last - Softmax
+        for(int p=0; p<capas[i_last_h]; ++p)
+            for(int k=0; k<capas[i_output]; ++k)
+                grad_w_ptr[i_w_ptr[i_last_h] + p*capas[i_last_h+1] + k] += grad_a_ptr[i_capa[i_output] + k] * z_ptr[i_capa[i_last_h] + p];
+                //                                 grad_Zk                  *  z^i_last_h_p
+        
+        // Sesgos capa softmax
+        for(int k=0; k<capas[i_output]; ++k)
+            grad_bias_ptr[i_capa[i_output] + k] += grad_a_ptr[i_capa[i_output] + k];
+            // bk = grad_Zk
+
+        // Última capa oculta -----------------------------------------------
+        for(int p=0; p<capas[i_last_h]; ++p)      
+            for(int k=0; k<capas[i_output]; ++k)
+                grad_a_ptr[i_capa[i_last_h] + p] += grad_a_ptr[i_capa[i_output] + k] * w_ptr[i_w_ptr[i_last_h] + p*capas[i_last_h+1] + k] * deriv_relu(a_ptr[i_capa[i_last_h] + p]);
+                //                              grad_Zk           *  w^i_last_h_pk          * ...
+                
+        // Capas ocultas intermedias
+        for(int capa= i_last_h; capa > 1; capa--)
+        {
+            // Pesos
+            for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
+                for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
+                    grad_w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act] * z_ptr[i_capa[capa-1] + i_ant];
+
+            // Bias
+            for(int i_act = 0; i_act < capas[capa]; ++i_act)
+                grad_bias_ptr[i_capa[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act];
+            
+            // Grad input
+            for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
+                for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
+                    grad_a_ptr[i_capa[capa-1] + i_ant] += grad_a_ptr[i_capa[capa] + i_act] * w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] * deriv_relu(a_ptr[i_capa[capa-1] + i_ant]);
+        }
+        
+        
+        // Capa input
+        // Pesos
+        int capa=1;
+        for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
+            for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
+                grad_w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act] * z_ptr[i_capa[capa-1] + i_ant];
+        
+        // Grad input
+        for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
+            for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
+                grad_a_ptr[i_capa[capa-1] + i_ant] += grad_a_ptr[i_capa[capa] + i_act] * w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act];
+
+        // Copiar gradiente respecto a input de primera capa en grad_x[i]
+        for(int j=0; j<capas[0]; j++)
+            grad_x[i*capas[0] + j] = grad_a_ptr[j];
+    } 
+}
+
+
+
 /*
     @brief      Entrenamiento de la red
     @x          Conjunto de datos de entrada
@@ -838,20 +965,37 @@ int main()
 {
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
-    int tam_x = 10, n_datos = 2, n_clases = 2;
-    vector<int> capas = {tam_x, 20, 30, n_clases};
-    vector<vector<float>> a_cpu, z_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
+    int tam_x = 3, n_datos = 2, n_clases = 2;
+    vector<int> capas = {tam_x, 2, 3, n_clases};
+    vector<vector<float>> a_cpu, z_cpu, grad_a_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
+    vector<vector<vector<float>>> grad_w_cpu;
     vector<float> x_cpu;
-    vector<vector<float>> X_cpu;
+    vector<vector<float>> X_cpu, grad_b_cpu, grad_x_cpu;
+    vector<int> batch_cpu(n_datos);
     FullyConnected fully_cpu(capas, 0.1);
     a_cpu = fully_cpu.get_a();
     z_cpu = fully_cpu.get_a();
+    grad_a_cpu = fully_cpu.get_a();
+    grad_w_cpu = fully_cpu.get_pesos();
+    grad_b_cpu = fully_cpu.get_bias();
+
+    for(int i=0; i<n_datos; i++)
+        batch_cpu[i] = i;
 
     for(int i=0; i<tam_x; i++)
         x_cpu.push_back(i);
 
     for(int i=0; i<n_datos; i++)
         X_cpu.push_back(x_cpu);
+
+    for(int i=0; i<grad_w_cpu.size(); i++)
+        for(int j=0; j<grad_w_cpu[i].size(); j++)
+            for(int k=0; k<grad_w_cpu[i][j].size(); k++)
+                grad_w_cpu[i][j][k] = 0.0;
+
+    for(int i=0; i<grad_b_cpu.size(); i++)
+        for(int j=0; j<grad_b_cpu[i].size(); j++)
+            grad_b_cpu[i][j] = 0.0;
 
     //fully_cpu.forwardPropagation(x_cpu, a_cpu, z_cpu);
     //fully_cpu.mostrar_neuronas(z_cpu);
@@ -861,13 +1005,16 @@ int main()
     cout << "Entr: " << fully_cpu.cross_entropy(X_cpu, y_cpu) << endl;
     cout << "Acc: " << fully_cpu.accuracy(X_cpu, y_cpu) << endl;
 
+    fully_cpu.train(X_cpu, y_cpu, batch_cpu, n_datos, grad_w_cpu, grad_b_cpu, grad_x_cpu, a_cpu, z_cpu, grad_a_cpu);
+    //fully_cpu.mostrar_neuronas(grad_b_cpu);
+
     // GPU --------------
     cout << " ---------- GPU ---------- " << endl; 
     int n_capas = 4;
     int *capas_ptr = (int *)malloc(n_capas * sizeof(int));
     capas_ptr[0] = tam_x;
-    capas_ptr[1] = 20;
-    capas_ptr[2] = 30;
+    capas_ptr[1] = 2;
+    capas_ptr[2] = 3;
     capas_ptr[3] = n_clases;
     FullyConnected fully_gpu(capas_ptr, n_capas, 0.1);
 
@@ -878,7 +1025,11 @@ int main()
     float *x_gpu = (float *)malloc(tam_x * sizeof(float));
     float *X_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
     float *y_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
+    int *batch_gpu = (int *)malloc(n_datos * sizeof(int));
     
+    for(int i=0; i<n_datos; i++)
+        batch_gpu[i] = i;
+
     for(int i=0; i<tam_x; i++)
         x_gpu[i] = x_cpu[i];
 
@@ -902,6 +1053,11 @@ int main()
     mostrar_ptr_2D(y_gpu, n_datos, n_clases);
     cout << "Entr: " << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos) << endl;
     cout << "Acc: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos) << endl;
+
+    float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
+    fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_x_gpu);
+    //fully_gpu.mostrar_grad_pesos_ptr();
+    
 
 
     return 0;

@@ -23,9 +23,12 @@ class FullyConnected
 
         // GPU -----------------------------
         float * w_ptr = nullptr;
+        float * grad_w_ptr = nullptr;
         float * bias_ptr = nullptr;
+        float * grad_bias_ptr = nullptr;
         float * a_ptr = nullptr;
         float * z_ptr = nullptr;
+        float * grad_a_ptr = nullptr;
         int n_capas;
         int *capas = nullptr;
         int *i_w_ptr = nullptr;     // Índice de cada capa de pesos
@@ -40,8 +43,10 @@ class FullyConnected
         void mostrar_neuronas_ptr();
         void copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_);
         void mostrar_pesos_ptr();
+        void mostrar_grad_pesos_ptr();
         float cross_entropy_ptr(float *x, float *y, int n_datos);
         float accuracy_ptr(float *x, float *y, int n_datos);
+        void train_ptr(float *x, float *y, int *batch, const int &n_datos, float *grad_x);
 
         // CPU ---------------------------------------
         // Constructores
