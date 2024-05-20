@@ -84,6 +84,11 @@ class PoolingMax
         float * get_d_output(){return this->d_output;};
         dim3 get_block(){return this->block;};
         dim3 get_grid(){return this->grid;};
+        int get_H(){return this->H;};
+        int get_W(){return this->W;};
+        int get_C(){return this->C;};
+        int get_H_out(){return this->H_out;};
+        int get_W_out(){return this->W_out;};
 };
 
 

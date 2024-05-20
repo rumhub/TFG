@@ -74,6 +74,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
         // H_out = H / K + 2*pad
         H = H / i_capas_pool[0] + 2*pad_sig;
         W = W / i_capas_pool[0] + 2*pad_sig;
+
         //this->outputs.push_back(img_out);
         cout << "Capa " << i << " tras pool: " << C << "x" << H << "x" << W << endl;
     }
@@ -102,43 +103,20 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
 */
 void CNN::mostrar_arquitectura()
 {
-    /*
-    vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
-    vector<float> flat_out;
-
-    if(this->h_train_imgs.size() == 0)
+    cout << "\n-----------Arquitectura de la red-----------\n";
+    cout << "Padding por capa: ";
+    for(int i=0; i<this->n_capas_conv; i++)
+        cout << this->padding[i] << " ";
+    cout << endl;
+    
+    for(int i=0; i<this->n_capas_conv; i++)
     {
-        cout << "No se puede mostrar la arquitectura. No hay imágenes de entrenamiento. \n";
-        exit(-1);
+        cout << "Dimensiones de entrada a " << this->convs[i].get_n_kernels() << " kernels " << this->convs[i].get_kernel_fils() << "x" << this->convs[i].get_kernel_cols() << " convolucionales: " << this->convs[i].get_C() << "x" << this->convs[i].get_H() << "x" << this->convs[i].get_W() << endl;
+        cout << "Dimensiones de entrada a un kernel " << this->plms[i].get_kernel_fils() << "x" << this->plms[i].get_kernel_cols() << " MaxPool: " << this->plms[i].get_C() << "x" << this->plms[i].get_H() << "x" << this->plms[i].get_W() << endl;
     }
 
-    img_in = this->h_train_imgs[0];
-    cout << "Dimensiones tras realizar la propagación hacia delante de una imagen" << endl;
-    cout << "Imagen inicial, dimensiones: " << img_in.size() << "x" <<  img_in[0].size() << "x" << img_in[0][0].size() << endl;
-
-    // Inicializar capas convolucionales y maxpool --------------------------------------------
-    for(int i=0; i<n_capas_conv; ++i)
-    {
-        // Capas convolucionales ------------------------------------------------
-        conv_a = this->outputs[i*2];
-        this->convs[i].forwardPropagation(img_in, this->outputs[i*2], conv_a);
-        img_in = this->outputs[i*2];
-        cout << "Dimensiones tras " << this->convs[i].get_n_kernels() << " capas convolucionales de " << this->convs[i].get_kernel_fils() << "x" << this->convs[i].get_kernel_cols() << ": " << this->outputs[i*2].size() << "x" << this->outputs[i*2][0].size() << "x" << this->outputs[i*2][0][0].size() << endl;
-
-        // Capas MaxPool -----------------------------------------------------------
-        img_in_copy = img_in;
-        int pad_sig = 0;    // Padding de la siguiente capa convolucional
-        if(this->n_capas_conv > i+1)
-            pad_sig = this->padding[i+1];
-
-        this->plms[i].forwardPropagation(img_in, this->outputs[i*2+1], img_in_copy, pad_sig);
-        cout << "Dimensiones tras una capa MaxPool de " << this->plms[i].get_kernel_fils() << "x" << this->plms[i].get_kernel_cols() << ": " << this->outputs[i*2+1].size() << "x" << this->outputs[i*2+1][0].size() << "x" << this->outputs[i*2+1][0][0].size() << endl;
-        img_in = this->outputs[i*2+1];
-    }
-
-    (*this->flat).forwardPropagation(img_in, flat_out);
-    cout << "Dimensiones después de una capa de flatten: " << flat_out.size() << endl;
-    */
+    // Volúmen de salida de la última capa MaxPool
+    cout << "Dimensiones de salida de un kernel " << this->plms[this->n_capas_conv-1].get_kernel_fils() << "x" << this->plms[this->n_capas_conv-1].get_kernel_cols() << " MaxPool: " << this->plms[this->n_capas_conv-1].get_C() << "x" << this->plms[this->n_capas_conv-1].get_H_out() << "x" << this->plms[this->n_capas_conv-1].get_W_out() << endl;
 }
 
 
@@ -649,6 +627,7 @@ int main()
     padding[1] = 2;
 
     CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr);
+    cnn.mostrar_arquitectura();
 
     free(capas_fully); free(capas_conv); free(capas_pool); free(padding);
     return 0;

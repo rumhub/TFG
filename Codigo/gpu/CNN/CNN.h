@@ -25,7 +25,6 @@ class CNN
         Flatten * flat;             // Capa flatten
         vector<vector<vector<vector<float>>>> h_train_imgs;   // Imágenes de entrenamiento
         vector<vector<vector<vector<float>>>> test_imgs;   // Imágenes de test
-        vector<vector<vector<vector<float>>>> outputs;      // Imágenes con las dimensiones del output de capas conv y pooling
         vector<vector<float>> h_train_labels;             // Etiqueta de cada imagen de training
         vector<vector<float>> test_labels;             // Etiqueta de cada imagen de test
         int *padding = nullptr;                        // Nivel de padding en cada capa convolucional
