@@ -974,7 +974,7 @@ void mostrar_vector_2D(vector<vector<float>> x)
     }
 }
 
-
+/*
 int main()
 {
     // CPU --------------
@@ -1108,3 +1108,4 @@ int main()
 
     return 0;
 }
+*/

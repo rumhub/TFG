@@ -12,132 +12,89 @@
     @input          Volumen 3D de entrada. Se tendrán en cuenta sus dimensiones para crear las estructuras necesarias y permitir un posterior entrenamiento con volúmenes de iguales dimensiones.
     @lr             Learning Rate o Tasa de Aprendizaje
 */
-CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding,  vector<int> &capas_fully, const vector<vector<vector<float>>> &input, const float &lr)
+CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr)
 {
-    
-    vector<vector<vector<float>>> img_in, img_out, img_in_copy;
-    vector<float> flat_out;
-    int H_out, W_out;
+    int * i_capas_conv = nullptr;
+    int * i_capas_pool = nullptr;
 
-    if(capas_conv.size() != padding.size())
-    {
-        cout << "ERROR Dimensiones de array capa convolucional y array de padding no coincidem.\n";
-        exit(-1);
-    }
+    // Ejemplo de uso, capas_conv[0] = {16, 3, 3}
 
-    if(capas_conv[0].size() != 3)
-    {
-        cout << "ERROR Dimensiones de array capa convolucional incorrectas. Ejemplo de uso, capas_conv[0] = {16, 3, 3}\n";
-        exit(-1);
-    }
-
-    if(input.size() <= 0)
+    if(C <= 0)
     {
         cout << "ERROR. Hay que proporcionar un input a la red. \n";
         exit(-1);
     }
 
-    this->n_capas_conv = capas_conv.size();
+    this->n_capas_conv = n_capas_conv;
     this->lr = lr;
     this->convs = new Convolutional[this->n_capas_conv];
     this->plms = new PoolingMax[this->n_capas_conv];
-    img_in = input;
-    this->padding = padding;
+    this->padding = (int *)malloc(n_capas_conv * sizeof(int));
+
+    for(int i=0; i<n_capas_conv; i++)
+        this->padding[i] = padding[i];
 
     vector<float> v_1D;
     //vector<float> v_1D(W_out);
     vector<vector<float>> v_2D;
 
-    Convolutional conv1(capas_conv[0][0], capas_conv[0][1], capas_conv[0][2], img_in, lr);
+    cout << "Input: " << C << "x" << H << "x" << W << endl;
+    // Padding de la primera capa
+    H += 2*padding[0];
+    W += 2*padding[0];
+    Convolutional conv1(capas_conv[0], capas_conv[1], capas_conv[2], C, H, W, lr);
     
+    cout << "Capa 0, padding inicial: " << C << "x" << H << "x" << W << endl;
+
     // Inicializar capas convolucionales y maxpool --------------------------------------------
     for(int i=0; i<n_capas_conv; ++i)
     {   
-        if(i == 0) 
-            conv1.aplicar_padding(img_in, padding[i]);
-
-        // Crear imagen output ----------------------------------------
-        // H_out = fils_img   -       K          + 1;
-        H_out = img_in[0].size() - capas_conv[i][1] + 1;
-        W_out = img_in[0][0].size() - capas_conv[i][2] + 1;
-
-        v_1D.clear();
-        for(int j=0; j<W_out; ++j)
-            v_1D.push_back(0.0);
-        
-        v_2D.clear();
-        for(int j=0; j<H_out; ++j)
-            v_2D.push_back(v_1D);
-        
-
-        img_out.clear();
-        for(int j=0; j<capas_conv[i][0]; ++j)
-            img_out.push_back(v_2D);
-        
-        
-        this->outputs.push_back(img_out);
-
+        i_capas_conv = capas_conv + 3*i;
+        i_capas_pool = tams_pool + 2*i;
         // Capas convolucionales ------------------------------------------------
         //                  nºkernels          filas_kernel      cols_kernel
-        Convolutional conv(capas_conv[i][0], capas_conv[i][1], capas_conv[i][2], img_in, lr); 
+        Convolutional conv(i_capas_conv[0], i_capas_conv[1], i_capas_conv[2], C, H, W, lr);
         this->convs[i] = conv;
-        vector<vector<vector<float>>> conv_a = img_out;
-        this->convs[i].forwardPropagation(img_in, img_out, conv_a);
-        img_in = img_out;
-        
-        // Crear imagen output ----------------------------------------
-        // H_out = fils_img   -       K          + 1;
-        H_out = img_in[0].size() / tams_pool[i][0];
-        W_out = img_in[0][0].size() / tams_pool[i][1];
 
+        // H_out = H - K + 1
+        C = i_capas_conv[0];
+        H = H - i_capas_conv[1] + 1;
+        W = W - i_capas_conv[2] + 1;
 
-        v_1D.clear();
-        v_2D.clear();
-        img_out.clear();
-
-        for(int j=0; j<W_out; ++j)
-            v_1D.push_back(0.0);
-
-        for(int j=0; j<H_out; ++j)
-            v_2D.push_back(v_1D);
-
-        for(int j=0; j<capas_conv[i][0]; ++j)
-            img_out.push_back(v_2D);
-        
-
+        cout << "Capa " << i << " tras conv: " << C << "x" << H << "x" << W << endl;
 
         // Capas MaxPool -----------------------------------------------------------
-        //           filas_kernel_pool  cols_kernel_pool
-        PoolingMax plm(tams_pool[i][0], tams_pool[i][1], img_in);
-        img_in_copy = img_in;
-        this->plms[i] = plm;
-
         int pad_sig = 0;    // Padding de la siguiente capa convolucional
         if(this->n_capas_conv > i+1)
             pad_sig = this->padding[i+1];
+        //           filas_kernel_pool  cols_kernel_pool
+        PoolingMax plm(i_capas_pool[0], i_capas_pool[1], C, H, W, pad_sig);
+        this->plms[i] = plm;
 
-        conv1.aplicar_padding(img_out, pad_sig);
-        this->outputs.push_back(img_out);
-
-        this->plms[i].forwardPropagation(img_in, img_out, img_in_copy, pad_sig);
-        img_in = img_out;
+        // H_out = H / K + 2*pad
+        H = H / i_capas_pool[0] + 2*pad_sig;
+        W = W / i_capas_pool[0] + 2*pad_sig;
+        //this->outputs.push_back(img_out);
+        cout << "Capa " << i << " tras pool: " << C << "x" << H << "x" << W << endl;
     }
 
-    // Inicializar capa flatten -----------------------------------------------------------------
-    this->flat = new Flatten(img_out);    
-    (*this->flat).forwardPropagation(img_in, flat_out);
-
-    // Conectamos capa flatten con capa totalmente conectada
-    capas_fully.insert(capas_fully.begin(),(int) flat_out.size());
-
+    
     // Inicializar capa fullyconnected -----------------------------------------
-    if(capas_fully[0] != (int) flat_out.size())
-    {
-        cout << "ERROR. Dimensión capa input de la fullyconnected (" << capas_fully[0]  <<") layer no coincide con la dimensión que produce la capa flatten (" << (int) flat_out.size() <<"). \n";
-        exit(-1);
-    }
+    int *capas_fully_ptr = (int *)malloc((n_capas_fully+1) * sizeof(int));
 
-    this->fully = new FullyConnected(capas_fully, lr);
+    capas_fully_ptr[0] = C*H*W;
+
+    for(int i=1; i<n_capas_fully+1; i++)
+        capas_fully_ptr[i] = capas_fully[i-1];
+
+    this->fully = new FullyConnected(capas_fully_ptr, n_capas_fully+1, lr);
+
+    // Mostrar
+    cout << "Capa fully: " << endl;
+    for(int i=0; i<n_capas_fully+1; i++)
+        cout << capas_fully_ptr[i] << endl;
+
+    free(capas_fully_ptr);
 }
 
 /*
@@ -145,6 +102,7 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
 */
 void CNN::mostrar_arquitectura()
 {
+    /*
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
     vector<float> flat_out;
 
@@ -180,7 +138,7 @@ void CNN::mostrar_arquitectura()
 
     (*this->flat).forwardPropagation(img_in, flat_out);
     cout << "Dimensiones después de una capa de flatten: " << flat_out.size() << endl;
-
+    */
 }
 
 
@@ -238,6 +196,7 @@ void shuffle(vector<int> vec, mt19937& rng) {
 
 void CNN::train(int epocas, int mini_batch)
 {
+    /*
     auto ini = high_resolution_clock::now();
     auto fin = high_resolution_clock::now();
     auto duration = duration_cast<seconds>(fin - ini);
@@ -265,7 +224,7 @@ void CNN::train(int epocas, int mini_batch)
                 for(int p=0; p<this->h_train_imgs[i][j][k].size(); ++p)
 
     */
-
+   /*
     //-------------------------------------------------
     // Inicializar índices
     //-------------------------------------------------
@@ -502,7 +461,7 @@ void CNN::train(int epocas, int mini_batch)
         }
         evaluar_modelo_en_test();
    
-    
+    */
 }
 
 
@@ -511,6 +470,7 @@ void CNN::train(int epocas, int mini_batch)
 */
 void CNN::evaluar_modelo()
 {
+    /*
     int n=this->h_train_imgs.size();
     double t1, t2;
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
@@ -575,7 +535,7 @@ void CNN::evaluar_modelo()
 
     cout << "Entropía cruzada: " << entr << ",         " << endl << endl;
     //cout << "Entropía cruzada: " << entr << ",         " << t2 - t1 << " (s) " << endl << endl;
-    
+    */
 }
 
 /*
@@ -583,6 +543,7 @@ void CNN::evaluar_modelo()
 */
 void CNN::evaluar_modelo_en_test()
 {
+    /*
     int n=this->test_imgs.size();
     double t1, t2;
     vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
@@ -646,4 +607,49 @@ void CNN::evaluar_modelo_en_test()
 
     cout << "Entropía cruzada: " << entr << ",         " << endl << endl;
     //cout << "Entropía cruzada: " << entr << ",         " << t2 - t1 << " (s) " << endl << endl;
+    */
+}
+
+int main()
+{
+    //vector<vector<int>> capas_conv = {{3, 3, 3}, {3, 5, 5}}, tams_pool = {{2, 2}, {2, 2}};
+    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2;
+    int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
+        *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
+        *capas_pool = (int *)malloc(n_capas_conv*2 * sizeof(int)),
+        *padding = (int *)malloc(n_capas_conv * sizeof(int));
+    float lr = 0.1;
+    int i=0;
+    capas_fully[0] = 2;
+    capas_fully[1] = 3;
+
+    // Primera capa convolucional
+    capas_conv[i*3 +0] = 4;      // 4 kernels
+    capas_conv[i*3 +1] = 3;      // kernels de 3 filas
+    capas_conv[i*3 +2] = 3;      // kernels de 2 columnas
+
+    i = 1;
+    // Segunda capa convolucional
+    capas_conv[i*3 +0] = 7;      // 7 kernels
+    capas_conv[i*3 +1] = 5;      // kernels de 5 filas
+    capas_conv[i*3 +2] = 5;      // kernels de 5 columnas
+
+    i=0;
+    // Primera capa MaxPool
+    capas_pool[i*2 +0] = 2;      // kernels de 2 filas
+    capas_pool[i*2 +1] = 2;      // kernels de 2 columnas
+
+    i = 1;
+    // Segunda capa MaxPool
+    capas_pool[i*2 +0] = 2;      // kernels de 2 filas
+    capas_pool[i*2 +1] = 2;      // kernels de 2 columnas
+    
+    // Padding
+    padding[0] = 1;
+    padding[1] = 2;
+
+    CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr);
+
+    free(capas_fully); free(capas_conv); free(capas_pool); free(padding);
+    return 0;
 }

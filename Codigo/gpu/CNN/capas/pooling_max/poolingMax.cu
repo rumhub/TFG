@@ -321,7 +321,7 @@ void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
     imagen_3D = imagen_3D_aux;
 };
 
-
+/*
 // https://leonardoaraujosantos.gitbook.io/artificial-inteligence/machine_learning/deep_learning/pooling_layer
 int main() 
 {
@@ -479,4 +479,4 @@ int main()
 
     return 0;
 }
-
+*/

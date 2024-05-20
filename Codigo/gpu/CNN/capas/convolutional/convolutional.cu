@@ -925,7 +925,7 @@ void printMatrix_vector(const vector<vector<vector<float>>> &X) {
     }
 }
 
-
+/*
 int main()
 {
     // -----------------------------------------------------------------------------------------------------
@@ -1019,7 +1019,7 @@ int main()
 
     grad_w2 = grad_w;
     */
-
+   /*
     //cout << "Input" << endl;
     conv.backPropagation(input_cpu, output_cpu, a_cpu, grad_w_cpu, grad_bias_cpu);
     //printMatrix_vector(input_cpu);
@@ -1047,7 +1047,7 @@ int main()
         cout << endl;
     }
     */
-    
+    /*
     cout << " -------------------------- Método GEMM -------------------------- " << endl;
     Convolutional conv_gpu(n_kernels, K, K, C, H, W, 0.1);
     
@@ -1069,7 +1069,7 @@ int main()
         cout << endl;
     }
     */
-      
+    /*
     //cout << "-- Backprop --" << endl;
     conv_gpu.backPropagationGEMM(input_gpu, output_gpu, a_gpu, grad_w_gpu, grad_bias_gpu);
     cudaDeviceSynchronize();
@@ -1112,7 +1112,7 @@ int main()
         cout << endl;
     }
     */
-
+   /*
    // Comprobar resultados
     bool correcto = true;
     float epsilon = 0000000.1;
@@ -1169,3 +1169,4 @@ int main()
 
     return 0;
 }
+*/

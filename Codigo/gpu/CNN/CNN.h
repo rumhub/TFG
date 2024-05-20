@@ -28,13 +28,14 @@ class CNN
         vector<vector<vector<vector<float>>>> outputs;      // Imágenes con las dimensiones del output de capas conv y pooling
         vector<vector<float>> h_train_labels;             // Etiqueta de cada imagen de training
         vector<vector<float>> test_labels;             // Etiqueta de cada imagen de test
-        vector<int> padding;                        // Nivel de padding en cada capa convolucional
+        int *padding = nullptr;                        // Nivel de padding en cada capa convolucional
         float lr;                           // Learning rate o Tasa ded Aprendizaje
         int n_capas_conv;                   // Número de capas convolucionales
 
     public:
         // Constructor
-        CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_pool, const vector<int> &padding, vector<int> &capas_fully, const vector<vector<vector<float>>> &input, const float &lr);
+        CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr);
+        ~CNN(){free(padding);}
 
         // Mostrar arquitectura
         void mostrar_arquitectura();
