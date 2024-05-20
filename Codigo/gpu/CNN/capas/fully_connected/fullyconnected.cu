@@ -785,6 +785,35 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
     @clip_value     Valor a emplear para realizar el "clip" o escalado
     @return         Se actualizan los valores de w (pesos de la red)
 */
+void FullyConnected::escalar_pesos_ptr(float clip_value)
+{
+    // Calcular el máximo y el mínimo de los pesos
+    float max = this->w[0][0][0], min = this->w[0][0][0];
+
+    for(int i=0; i<n_capas-1; i++)
+        for(int j=0; j<capas[i]; j++)
+            for(int k=0; k<capas[i+1]; k++)
+            {
+                if(max < this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k])
+                    max = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
+                
+                if(min > this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k])
+                    min = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
+            }
+
+    // Realizar gradient clipping
+    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
+    for(int i=0; i<n_capas-1; i++)
+        for(int j=0; j<capas[i]; j++)
+            for(int k=0; k<capas[i+1]; k++)
+                this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] = std::max(std::min(this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k], clip_value), -clip_value);
+}
+
+/*
+    @brief          Escalar los pesos para evitar que los gradientes "exploten"
+    @clip_value     Valor a emplear para realizar el "clip" o escalado
+    @return         Se actualizan los valores de w (pesos de la red)
+*/
 void FullyConnected::escalar_pesos(float clip_value)
 {
     // Calcular el máximo y el mínimo de los pesos
@@ -815,7 +844,26 @@ void FullyConnected::escalar_pesos(float clip_value)
     @grad_b         Gradiente de cada sesgo de la red
     @return         Se actualizar los valores de w y bias (pesos y sesgos de la red)
 */
-void FullyConnected::actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b)
+void FullyConnected::actualizar_parametros_ptr(float *grad_pesos, float *grad_b)
+{
+    // Actualizar pesos
+    for(int i=0; i<n_capas-1; i++)
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+                this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
+
+    for(int i=0; i<n_capas; i++)
+        for(int j=0; j<capas[i]; j++)
+            this->bias_ptr[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
+}
+
+/*
+    @brief          Actualizar los pesos y sesgos de la red
+    @grad_pesos     Gradiente de cada peso de la red
+    @grad_b         Gradiente de cada sesgo de la red
+    @return         Se actualizar los valores de w y bias (pesos y sesgos de la red)
+*/
+void FullyConnected::actualizar_parametros(const vector<vector<vector<float>>> &grad_pesos, const vector<vector<float>> &grad_b)
 {
     // Actualizar pesos
     for(int j=0; j<this->w.size(); j++)
@@ -965,25 +1013,19 @@ int main()
 
     //fully_cpu.forwardPropagation(x_cpu, a_cpu, z_cpu);
     //fully_cpu.mostrar_neuronas(z_cpu);
-    //fully_cpu.mostrar_pesos();
     mostrar_vector_2D(X_cpu);
     mostrar_vector_2D(y_cpu);
     cout << "Entr: " << fully_cpu.cross_entropy(X_cpu, y_cpu) << endl;
     cout << "Acc: " << fully_cpu.accuracy(X_cpu, y_cpu) << endl;
 
+    vector<vector<vector<float>>> w_cpu_copy = fully_cpu.get_pesos();
+    
     fully_cpu.train(X_cpu, y_cpu, batch_cpu, n_datos, grad_w_cpu, grad_b_cpu, grad_x_cpu, a_cpu, z_cpu, grad_a_cpu);
-    //fully_cpu.mostrar_neuronas(grad_b_cpu);
+    fully_cpu.actualizar_parametros(grad_w_cpu, grad_b_cpu);
+    fully_cpu.escalar_pesos(2);
+    fully_cpu.mostrar_pesos();
+    
 
-    // Mostrar neuronas
-    cout << "Neuronas" << endl;
-    for(int i=0; i<grad_b_cpu.size(); i++)
-    {
-        cout << "Capa " << i << endl;
-        for(int j=0; j<grad_b_cpu[i].size(); j++)
-            cout << grad_a_cpu[i][j] << " ";
-        cout << endl;
-    }
-    cout << endl;
 
 
     // GPU --------------
@@ -1047,28 +1089,20 @@ int main()
     for(int i=0; i<n_neuronas; i++)
         grad_bias_ptr[i] = 0.0;
 
-    fully_gpu.copiar_w_de_vector_a_ptr(fully_cpu.get_pesos());
+    fully_gpu.copiar_w_de_vector_a_ptr(w_cpu_copy);
     //fully_gpu.mostrar_neuronas_ptr();
-    //fully_gpu.mostrar_pesos_ptr();
     mostrar_ptr_2D(X_gpu, n_datos, tam_x);
     mostrar_ptr_2D(y_gpu, n_datos, n_clases);
     cout << "Entr: " << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
     cout << "Acc: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
 
+    
     float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
     fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
-    //fully_gpu.mostrar_grad_pesos_ptr();
+    fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
+    fully_gpu.escalar_pesos_ptr(2);
+    fully_gpu.mostrar_pesos_ptr();
     
-    // Mostrar neuronas
-    cout << "Neuronas" << endl;
-    for(int i=0; i<n_capas; i++)
-    {
-        cout << "Capa " << i << endl;
-        for(int j=0; j<capas[i]; j++)
-            cout << grad_a_ptr[i_capa[i] + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
 
     free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(y_gpu); free(batch_gpu); free(a_ptr); free(z_ptr); free(grad_x_gpu); free(grad_bias_ptr); free(grad_a_ptr);
 

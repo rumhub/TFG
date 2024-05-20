@@ -41,6 +41,8 @@ class FullyConnected
         float cross_entropy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
         float accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
         void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
+        void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
+        void escalar_pesos_ptr(float clip_value);
 
         // CPU ---------------------------------------
         // Constructores
@@ -63,7 +65,7 @@ class FullyConnected
         float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
 
         // Modificación de parámetros
-        void actualizar_parametros(vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b);
+        void actualizar_parametros(const vector<vector<vector<float>>> &grad_pesos, const vector<vector<float>> &grad_b);
         void escalar_pesos(float clip_value);
         void generar_pesos(const int &capa);
 
