@@ -30,6 +30,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     this->convs = new Convolutional[this->n_capas_conv];
     this->plms = new PoolingMax[this->n_capas_conv];
     this->padding = (int *)malloc(n_capas_conv * sizeof(int));
+    this->n_clases = capas_fully[n_capas_fully-1];
 
     for(int i=0; i<n_capas_conv; i++)
         this->padding[i] = padding[i];
@@ -38,14 +39,11 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     //vector<float> v_1D(W_out);
     vector<vector<float>> v_2D;
 
-    cout << "Input: " << C << "x" << H << "x" << W << endl;
     // Padding de la primera capa
     H += 2*padding[0];
     W += 2*padding[0];
     Convolutional conv1(capas_conv[0], capas_conv[1], capas_conv[2], C, H, W, lr);
     
-    cout << "Capa 0, padding inicial: " << C << "x" << H << "x" << W << endl;
-
     // Inicializar capas convolucionales y maxpool --------------------------------------------
     for(int i=0; i<n_capas_conv; ++i)
     {   
@@ -61,8 +59,6 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
         H = H - i_capas_conv[1] + 1;
         W = W - i_capas_conv[2] + 1;
 
-        cout << "Capa " << i << " tras conv: " << C << "x" << H << "x" << W << endl;
-
         // Capas MaxPool -----------------------------------------------------------
         int pad_sig = 0;    // Padding de la siguiente capa convolucional
         if(this->n_capas_conv > i+1)
@@ -74,9 +70,6 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
         // H_out = H / K + 2*pad
         H = H / i_capas_pool[0] + 2*pad_sig;
         W = W / i_capas_pool[0] + 2*pad_sig;
-
-        //this->outputs.push_back(img_out);
-        cout << "Capa " << i << " tras pool: " << C << "x" << H << "x" << W << endl;
     }
 
     
@@ -90,11 +83,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
 
     this->fully = new FullyConnected(capas_fully_ptr, n_capas_fully+1, lr);
 
-    // Mostrar
-    cout << "Capa fully: " << endl;
-    for(int i=0; i<n_capas_fully+1; i++)
-        cout << capas_fully_ptr[i] << endl;
-
+    // Liberar memoria
     free(capas_fully_ptr);
 }
 
@@ -105,8 +94,9 @@ void CNN::mostrar_arquitectura()
 {
     cout << "\n-----------Arquitectura de la red-----------\n";
     cout << "Padding por capa: ";
-    for(int i=0; i<this->n_capas_conv; i++)
-        cout << this->padding[i] << " ";
+    for(int i=0; i<this->n_capas_conv-1; i++)
+        cout << this->padding[i] << ", ";
+    cout << this->padding[this->n_capas_conv-1];
     cout << endl;
     
     for(int i=0; i<this->n_capas_conv; i++)
@@ -117,15 +107,62 @@ void CNN::mostrar_arquitectura()
 
     // Volúmen de salida de la última capa MaxPool
     cout << "Dimensiones de salida de un kernel " << this->plms[this->n_capas_conv-1].get_kernel_fils() << "x" << this->plms[this->n_capas_conv-1].get_kernel_cols() << " MaxPool: " << this->plms[this->n_capas_conv-1].get_C() << "x" << this->plms[this->n_capas_conv-1].get_H_out() << "x" << this->plms[this->n_capas_conv-1].get_W_out() << endl;
+
+    // Capas totalmente conectadas
+    int * capas = this->fully->get_capas();
+
+    cout << "Capas totalmente concetadas: ";
+    for(int i=0; i<this->fully->get_n_capas()-1; i++)
+        cout << capas[i] << ", ";
+    cout << capas[this->fully->get_n_capas()-1];
+    
+    cout << endl;
 }
 
-
-
-void CNN::set_train(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y)
+void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, int W)
 {
-    this->h_train_imgs = x; 
-    this->h_train_labels = y;
-};
+    this->n_imagenes = n_imgs;
+    this->train_imgs = (float *)malloc(n_imagenes*C*H*W * sizeof(float));
+    this->train_labels = (float *)malloc(n_imagenes*n_clases * sizeof(float));
+
+    if(this->n_clases != n_clases)
+        cout << "\n\nError. Número de clases distinto al establecido previamente en la arquitectura de la red. " << this->n_clases << " != " << n_clases << endl << endl;
+
+    for(int i=0; i<n_imagenes*C*H*W; i++)
+        train_imgs[i] = x[i];
+    
+    for(int i=0; i<n_imagenes*n_clases; i++)
+        train_labels[i] = y[i];
+
+
+    // Mostrar imágenes
+    cout << "\nX\n";
+    for(int i=0; i<n_imgs; i++)
+    {
+        for(int j=0; j<C; j++)
+        {
+            for(int k=0; k<H; k++)
+            {
+                for(int p=0; p<W; p++)
+                    cout << x[i*C*H*W + j*H*W + k*W + p] << " ";
+                cout << endl;
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    cout << "\nY\n";
+    for(int i=0; i<n_imgs; i++)
+    {
+        for(int j=0; j<n_clases; j++)
+            cout << y[i*n_clases + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+    
+}
 
 
 /*
@@ -591,15 +628,19 @@ void CNN::evaluar_modelo_en_test()
 int main()
 {
     //vector<vector<int>> capas_conv = {{3, 3, 3}, {3, 5, 5}}, tams_pool = {{2, 2}, {2, 2}};
-    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2;
+    int C=3, H=4, W=4, n_capas_fully = 2, n_capas_conv = 2, n_imagenes = 1, n_clases = 4;
     int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
         *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
         *capas_pool = (int *)malloc(n_capas_conv*2 * sizeof(int)),
         *padding = (int *)malloc(n_capas_conv * sizeof(int));
+        
+    float *X = (float *)malloc(n_imagenes*C*H*W * sizeof(float)),
+        *Y = (float *)malloc(n_imagenes*n_clases * sizeof(float));
+
     float lr = 0.1;
     int i=0;
     capas_fully[0] = 2;
-    capas_fully[1] = 3;
+    capas_fully[1] = n_clases;
 
     // Primera capa convolucional
     capas_conv[i*3 +0] = 4;      // 4 kernels
@@ -609,8 +650,8 @@ int main()
     i = 1;
     // Segunda capa convolucional
     capas_conv[i*3 +0] = 7;      // 7 kernels
-    capas_conv[i*3 +1] = 5;      // kernels de 5 filas
-    capas_conv[i*3 +2] = 5;      // kernels de 5 columnas
+    capas_conv[i*3 +1] = 3;      // kernels de 5 filas
+    capas_conv[i*3 +2] = 3;      // kernels de 5 columnas
 
     i=0;
     // Primera capa MaxPool
@@ -626,8 +667,22 @@ int main()
     padding[0] = 1;
     padding[1] = 2;
 
+    // Input
+    for(int i=0; i<n_imagenes*C*H*W; i++)
+        X[i] = i;
+
+    // Etiquetas
+    for(int i=0; i<n_imagenes; i++)
+        for(int j=0; j<n_clases; j++)
+            Y[i*n_clases + j] = 0.0;
+
+    // Poner que todas las imágenes pertecen a la clase 1, por ejemplo
+    for(int i=0; i<n_imagenes; i++)
+        Y[i*n_clases + 1] = 1.0;
+
     CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr);
     cnn.mostrar_arquitectura();
+    cnn.set_train(X, Y, n_imagenes, n_clases, C, H, W);
 
     free(capas_fully); free(capas_conv); free(capas_pool); free(padding);
     return 0;

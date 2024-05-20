@@ -73,6 +73,8 @@ class FullyConnected
         vector<vector<vector<float>>> get_pesos(){return this->w;};
         vector<vector<float>> get_bias(){return this->bias;};
         vector<vector<float>> get_a(){return this->a;};
+        int get_n_capas(){return this->n_capas;};
+        int * get_capas(){return this->capas;};
 
 
         // Debug

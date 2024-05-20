@@ -23,13 +23,15 @@ class CNN
         PoolingMax * plms;          // Capas MaxPool
         FullyConnected *fully;      // Red Fullyconnected
         Flatten * flat;             // Capa flatten
-        vector<vector<vector<vector<float>>>> h_train_imgs;   // Imágenes de entrenamiento
+        float *train_imgs = nullptr;   // Imágenes de entrenamiento
         vector<vector<vector<vector<float>>>> test_imgs;   // Imágenes de test
-        vector<vector<float>> h_train_labels;             // Etiqueta de cada imagen de training
+        float *train_labels = nullptr;             // Etiqueta de cada imagen de training
         vector<vector<float>> test_labels;             // Etiqueta de cada imagen de test
         int *padding = nullptr;                        // Nivel de padding en cada capa convolucional
         float lr;                           // Learning rate o Tasa ded Aprendizaje
         int n_capas_conv;                   // Número de capas convolucionales
+        int n_imagenes;
+        int n_clases;
 
     public:
         // Constructor
@@ -49,7 +51,7 @@ class CNN
         // Modificar imagen
         void padding_interno(vector<vector<vector<float>>> &input, const int &pad);
 
-        void set_train(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y);
+        void set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, int W);
         void set_test(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->test_imgs = x; this->test_labels = y;};
 };
 
