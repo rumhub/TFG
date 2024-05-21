@@ -791,8 +791,8 @@ void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<f
 void FullyConnected::escalar_pesos_ptr(float clip_value)
 {
     // Calcular el máximo y el mínimo de los pesos
-    float max = this->w[0][0][0], min = this->w[0][0][0];
-
+    float max = this->w_ptr[0], min = this->w_ptr[0];
+    
     for(int i=0; i<n_capas-1; i++)
         for(int j=0; j<capas[i]; j++)
             for(int k=0; k<capas[i+1]; k++)
@@ -803,7 +803,7 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
                 if(min > this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k])
                     min = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
             }
-
+    
     // Realizar gradient clipping
     float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
     for(int i=0; i<n_capas-1; i++)
