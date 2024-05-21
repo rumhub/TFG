@@ -32,11 +32,19 @@ class CNN
         int n_capas_conv;                   // Número de capas convolucionales
         int n_imagenes;
         int n_clases;
+        int max_H, max_W, max_C;
+
+        float *img_in = nullptr;
+        float *img_out = nullptr;
+        float *img_in_copy = nullptr;
+        float *conv_a = nullptr;
+        float *a_ptr = nullptr;
+        float *z_ptr = nullptr;
 
     public:
         // Constructor
         CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr);
-        ~CNN(){free(padding);}
+        ~CNN(){free(padding); free(train_imgs); free(train_labels); free(img_in); free(img_out); free(img_in_copy); free(conv_a); free(a_ptr); free(z_ptr);}
 
         // Mostrar arquitectura
         void mostrar_arquitectura();
@@ -53,6 +61,9 @@ class CNN
 
         void set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, int W);
         void set_test(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->test_imgs = x; this->test_labels = y;};
+
+        // Debug
+        void mostrar_ptr(float *x, int C, int H, int W);
 };
 
 #endif

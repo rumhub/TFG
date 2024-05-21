@@ -91,6 +91,7 @@ PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<fl
 
 PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad)
 {
+    
     // Kernel
     this->kernel_fils = kernel_fils;
     this->kernel_cols = kernel_cols;
@@ -126,6 +127,7 @@ PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, in
 
     if(this->H % kernel_fils != 0 || this->W % kernel_cols != 0)
         cout << "Warning. Las dimensiones del volumen de entrada(" << this->H << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
+    
 };
 
 // Idea de input_copy --> Inicializar a 0. Cada kernel se quedará solo con 1 valor, pues lo pones a 1 en input_copy para luego saber cuál era al hacer backpropagation
@@ -181,6 +183,7 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
 
 void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input_copy)
 {    
+    
     // Inicializar input_copy a 0
     for(int i=0; i<C*H*W; i++)
         input_copy[i] = 0.0;    
@@ -193,6 +196,7 @@ void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input
 
     cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
     cudaMemcpy(input_copy, d_input_copy, bytes_input, cudaMemcpyDeviceToHost);
+    
 };
 
 void PoolingMax::backPropagationGPU(float *input, float *output, float *input_copy)

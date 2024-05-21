@@ -1,6 +1,18 @@
 #include "CNN.h"
 
 /*
+void checkCudaErrors(cudaError_t err) {
+    if (err != cudaSuccess) {
+        std::cerr << "CUDA error: " << cudaGetErrorString(err) << std::endl;
+        exit(err);
+    }else
+    {
+        cout << "Todo correcto!" << endl;
+    }
+}
+*/
+
+/*
     CONSTRUCTOR de la clase CNN
     --------------------------------------
   
@@ -31,6 +43,9 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     this->plms = new PoolingMax[this->n_capas_conv];
     this->padding = (int *)malloc(n_capas_conv * sizeof(int));
     this->n_clases = capas_fully[n_capas_fully-1];
+    this->max_H = 0;
+    this->max_W = 0;
+    this->max_C = 0;
 
     for(int i=0; i<n_capas_conv; i++)
         this->padding[i] = padding[i];
@@ -42,13 +57,22 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     // Padding de la primera capa
     H += 2*padding[0];
     W += 2*padding[0];
-    Convolutional conv1(capas_conv[0], capas_conv[1], capas_conv[2], C, H, W, lr);
     
+    if(max_C < C)
+        max_C = C;
+
+    if(max_H < H)
+        max_H = H;
+    
+    if(max_W < W)
+        max_W = W;
+
     // Inicializar capas convolucionales y maxpool --------------------------------------------
     for(int i=0; i<n_capas_conv; ++i)
     {   
         i_capas_conv = capas_conv + 3*i;
         i_capas_pool = tams_pool + 2*i;
+
         // Capas convolucionales ------------------------------------------------
         //                  nºkernels          filas_kernel      cols_kernel
         Convolutional conv(i_capas_conv[0], i_capas_conv[1], i_capas_conv[2], C, H, W, lr);
@@ -58,6 +82,15 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
         C = i_capas_conv[0];
         H = H - i_capas_conv[1] + 1;
         W = W - i_capas_conv[2] + 1;
+
+        if(max_C < C)
+            max_C = C;
+
+        if(max_H < H)
+            max_H = H;
+        
+        if(max_W < W)
+            max_W = W;
 
         // Capas MaxPool -----------------------------------------------------------
         int pad_sig = 0;    // Padding de la siguiente capa convolucional
@@ -70,6 +103,15 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
         // H_out = H / K + 2*pad
         H = H / i_capas_pool[0] + 2*pad_sig;
         W = W / i_capas_pool[0] + 2*pad_sig;
+
+        if(max_C < C)
+            max_C = C;
+
+        if(max_H < H)
+            max_H = H;
+        
+        if(max_W < W)
+            max_W = W;
     }
 
     
@@ -82,6 +124,28 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
         capas_fully_ptr[i] = capas_fully[i-1];
 
     this->fully = new FullyConnected(capas_fully_ptr, n_capas_fully+1, lr);
+
+    // Reserva de espacio para posteriores operaciones
+    int tam_img_max = max_C*max_H*max_W;
+    //int tam_img_max = max_C*max_H*max_W;
+
+    this->img_in = (float *)malloc(tam_img_max * sizeof(float));
+    this->img_out = (float *)malloc(tam_img_max * sizeof(float)); 
+    this->img_in_copy = (float *)malloc(tam_img_max * sizeof(float)); 
+    this->conv_a = (float *)malloc(tam_img_max * sizeof(float));
+    this->a_ptr = (float *)malloc(this->fully->get_n_neuronas() * sizeof(float));
+    this->z_ptr = (float *)malloc(this->fully->get_n_neuronas() * sizeof(float)); 
+
+    // Borrar ----------------------------------------------------------------------------------------------------------------------------------------------------
+    // Borrar ----------------------------------------------------------------------------------------------------------------------------------------------------
+    for(int i=0; i<tam_img_max; i++)
+    {
+        img_in[i] = 1.0;
+        img_out[i] = 2.0;
+        conv_a[i] = 3.0;
+    }
+    // Borrar ----------------------------------------------------------------------------------------------------------------------------------------------------
+    // Borrar ----------------------------------------------------------------------------------------------------------------------------------------------------
 
     // Liberar memoria
     free(capas_fully_ptr);
@@ -134,7 +198,7 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
     for(int i=0; i<n_imagenes*n_clases; i++)
         train_labels[i] = y[i];
 
-
+    /*
     // Mostrar imágenes
     cout << "\nX\n";
     for(int i=0; i<n_imgs; i++)
@@ -161,7 +225,7 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
         cout << endl;
     }
     cout << endl;
-    
+    */
 }
 
 
@@ -479,69 +543,96 @@ void CNN::train(int epocas, int mini_batch)
     */
 }
 
+void CNN::mostrar_ptr(float *x, int C, int H, int W)
+{
+    cout << "\nX\n";
+    for(int j=0; j<C; j++)
+    {
+        for(int k=0; k<H; k++)
+        {
+            for(int p=0; p<W; p++)
+                cout << x[j*H*W + k*W + p] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
 
 /*
     @brief  Evalúa el modelo sobre los datos de entrenamiento. Las medidas de evaluación son Accuracy y Entropía Cruzada
 */
 void CNN::evaluar_modelo()
 {
-    /*
-    int n=this->h_train_imgs.size();
-    double t1, t2;
-    vector<vector<vector<float>>> img_in, img_out, img_in_copy, conv_a;
-    
-    vector<float> flat_out; 
-    float acc ,entr;
+    float acc=0.0,entr=0.0;
+    int C, H, W;
 
-
-    vector<vector<float>> flat_outs(n);
-
-    // Inicialización de parámetros
-    //t1 = omp_get_wtime();
-    acc = 0.0;
-    entr = 0.0;
-
-
+    int j1;
     // Realizar la propagación hacia delante
-    for(int img=0; img<n; ++img)
+    for(int img=0; img<n_imagenes; ++img)
     {
-        img_in = this->h_train_imgs[img];
+        // Copiar imagen de entrenamiento en img_in
+        C = this->convs[0].get_C();
+        H = this->convs[0].get_H();
+        W = this->convs[0].get_W();
+        for(int i=0; i<C; i++)
+            for(int j=0; j<H; j++)
+                for(int k=0; k<W; k++)
+                    img_in[i*H*W + j*W + k] = train_imgs[i*H*W + j*W + k + img*C*H*W];
 
+        cout << "imagen de train: " << endl;
+        mostrar_ptr(img_in, C, H, W);
+        
         // Capas convolucionales y maxpool ----------------------------
         for(int i=0; i<this->n_capas_conv; ++i)
         {
             // Capa convolucional 
-            img_out = this->outputs[i*2];
-            conv_a = img_out;
-            this->convs[i].forwardPropagation(img_in, img_out, conv_a);
-            img_in = img_out;
+            this->convs[i].forwardPropagationGEMM(img_in, img_out, conv_a);
+
+            // Copiar img_out en img_in
+            C = this->convs[i].get_n_kernels();
+            H = this->convs[i].get_H_out();
+            W = this->convs[i].get_W_out();
+
+            for(int i=0; i<C; i++)
+                for(int j=0; j<H; j++)
+                    for(int k=0; k<W; k++)
+                        img_in[i*H*W + j*W + k] = img_out[i*H*W + j*W + k];
+
+            cout << "Salida conv: " << endl;
+            mostrar_ptr(img_in, C, H, W);
+            cin >> j1;
 
             // Capa MaxPool 
-            img_out = this->outputs[i*2+1];
-            img_in_copy = img_in;
-
             int pad_sig = 0;    // Padding de la siguiente capa convolucional
             if(this->n_capas_conv > i+1)
                 pad_sig = this->padding[i+1];
 
-            this->plms[i].forwardPropagation(img_in, img_out, img_in_copy, pad_sig);
-            img_in = img_out;
+            this->plms[i].forwardPropagationGPU(img_in, img_out, img_in_copy);
+
+            // Copiar img_out en img_in
+            H = this->plms[i].get_H_out();
+            W = this->plms[i].get_W_out();
+            for(int i=0; i<C; i++)
+                for(int j=0; j<H; j++)
+                    for(int k=0; k<W; k++)
+                        img_in[i*H*W + j*W + k] = img_out[i*H*W + j*W + k];
+
+            cout << "Salida MaxPool: " << endl;
+            mostrar_ptr(img_in, C, H, W);
+            cin >> j1;
         }
         
-        // Capa de aplanado
-        (*this->flat).forwardPropagation(img_out, flat_out);
-
-        flat_outs[img] = flat_out;
     }
     
     // Cada hebra obtiene el accuracy y la entropía cruzada sobre una porción de imágenes
-    acc = (*this->fully).accuracy(flat_outs,this->h_train_labels);
-    entr = (*this->fully).cross_entropy(flat_outs, this->h_train_labels);
-
+    acc = (*this->fully).accuracy_ptr(img_out, this->train_labels, n_imagenes, a_ptr, z_ptr);
+    entr = (*this->fully).cross_entropy_ptr(img_out, this->train_labels, n_imagenes, a_ptr, z_ptr);
 
     // Realizar media y obtener valores finales
-    acc = acc / n * 100;
-    entr = -entr / n;
+    acc = acc / n_imagenes * 100;
+    entr = -entr / n_imagenes;
 
     //t2 = omp_get_wtime();
 
@@ -550,7 +641,6 @@ void CNN::evaluar_modelo()
 
     cout << "Entropía cruzada: " << entr << ",         " << endl << endl;
     //cout << "Entropía cruzada: " << entr << ",         " << t2 - t1 << " (s) " << endl << endl;
-    */
 }
 
 /*
@@ -628,7 +718,7 @@ void CNN::evaluar_modelo_en_test()
 int main()
 {
     //vector<vector<int>> capas_conv = {{3, 3, 3}, {3, 5, 5}}, tams_pool = {{2, 2}, {2, 2}};
-    int C=3, H=4, W=4, n_capas_fully = 2, n_capas_conv = 2, n_imagenes = 1, n_clases = 4;
+    int C=2, H=10, W=10, n_capas_fully = 2, n_capas_conv = 2, n_imagenes = 2, n_clases = 4;
     int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
         *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
         *capas_pool = (int *)malloc(n_capas_conv*2 * sizeof(int)),
@@ -643,13 +733,13 @@ int main()
     capas_fully[1] = n_clases;
 
     // Primera capa convolucional
-    capas_conv[i*3 +0] = 4;      // 4 kernels
+    capas_conv[i*3 +0] = 3;      // 4 kernels
     capas_conv[i*3 +1] = 3;      // kernels de 3 filas
     capas_conv[i*3 +2] = 3;      // kernels de 2 columnas
 
     i = 1;
     // Segunda capa convolucional
-    capas_conv[i*3 +0] = 7;      // 7 kernels
+    capas_conv[i*3 +0] = 3;      // 7 kernels
     capas_conv[i*3 +1] = 3;      // kernels de 5 filas
     capas_conv[i*3 +2] = 3;      // kernels de 5 columnas
 
@@ -664,8 +754,8 @@ int main()
     capas_pool[i*2 +1] = 2;      // kernels de 2 columnas
     
     // Padding
-    padding[0] = 1;
-    padding[1] = 2;
+    padding[0] = 0;
+    padding[1] = 0;
 
     // Input
     for(int i=0; i<n_imagenes*C*H*W; i++)
@@ -683,6 +773,7 @@ int main()
     CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr);
     cnn.mostrar_arquitectura();
     cnn.set_train(X, Y, n_imagenes, n_clases, C, H, W);
+    cnn.evaluar_modelo();
 
     free(capas_fully); free(capas_conv); free(capas_pool); free(padding);
     return 0;

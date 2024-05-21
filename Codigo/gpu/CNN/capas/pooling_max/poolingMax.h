@@ -58,7 +58,7 @@ class PoolingMax
         PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
         PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad);
         PoolingMax(){};
-        ~PoolingMax(){cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);};
+        ~PoolingMax(){/*cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);*/};
 
         // CPU -------------------------------------------
         // Aplica padding a un conjunto de imágenes 2D

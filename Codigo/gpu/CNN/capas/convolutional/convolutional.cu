@@ -3,6 +3,7 @@
 using namespace std::chrono;
 
 
+
 /*
     Emplea tiles. Un tile por bloque. Usa memoria compartida
 */
@@ -134,6 +135,14 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
 */
 Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr)
 {
+    // Establecer device
+    int dev = 0;
+    cudaDeviceProp deviceProp;
+    cudaGetDeviceProperties(&deviceProp, dev);
+    //cout << "Estableciendo dispotisivo para GPU...\n";
+    //printf("Usando el dispositivo %d: %s\n", dev, deviceProp.name);
+    cudaSetDevice(dev);
+
     // Kernels de pesos
     this->n_kernels = n_kernels;
     this->kernel_fils = kernel_fils;
@@ -156,18 +165,18 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     // Dimensiones de los pesos como matriz 2D
     this->fils_w = this->n_kernels;
     this->cols_w = kernel_fils*kernel_cols*C;
-
+    
     // Tamaños de los volúmenes "desenrrollados"
     this->bytes_input_unroll = fils_input_unroll * cols_input_unroll *sizeof(float);    // Espacio para la entrada 'desenrrollada'
     this->bytes_output = cols_input_unroll * fils_w *sizeof(float);              // Espacio para la salida
     this->bytes_w = fils_w * cols_w * sizeof(float);
-
+    
     // Learning Rate
     this->lr = lr;
-
+    
     // Pesos
-    this->w_ptr = (float *)malloc(n_kernels * C * kernel_fils * kernel_cols * sizeof(float));
-
+    this->w_ptr = (float *)malloc(fils_w * cols_w * sizeof(float));
+    
     // Inicializar pesos mediante Inicialización He
     this->generar_pesos_ptr();
 
@@ -180,7 +189,7 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
 
     // CPU -------------------
     this->h_input_unroll = (float*)malloc(bytes_input_unroll);  // Volumen de entrada 'desenrrollado'
-
+    
     // GPU -------------------------
     // Tamaño de bloque
     this->block.x = BLOCK_SIZE;
@@ -241,8 +250,6 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     cudaMalloc((void **) &d_output, n_kernels*H_out*W_out * sizeof(float));
     cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll);
     cudaMalloc((void **) &d_grad_w, this->n_kernels*C*kernel_fils*kernel_cols * sizeof(float));
-
-
 };
 
 /*
@@ -256,11 +263,11 @@ void Convolutional::generar_pesos_ptr()
     mt19937 gen(rd());
     normal_distribution<float> distribution(0.0, sqrt(2.0 / (this->n_kernels * this->C * this->kernel_fils * this->kernel_fils)));
 
-    for(int i=0; i<this->n_kernels; ++i)
-        for(int j=0; j<this->C; ++j)
-            for(int k=0; k<this->kernel_fils; ++k)
-                for(int p=0; p<this->kernel_cols; ++p)
-                    this->w_ptr[i*this->C*this->kernel_fils*this->kernel_cols + j*this->kernel_fils*this->kernel_cols + k*this->kernel_cols + p ] = 1.0;
+    for(int i=0; i<n_kernels; ++i)
+        for(int j=0; j<C; ++j)
+            for(int k=0; k<kernel_fils; ++k)
+                for(int p=0; p<kernel_cols; ++p)
+                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = 1.0;
                     //this->w_ptr[i*this->kernel_depth*this->kernel_fils*this->kernel_cols + j*this->kernel_fils*this->kernel_cols + k*this->kernel_cols + p ] = distribution(gen);
 
 
@@ -432,6 +439,15 @@ void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &inpu
             }
 };
 
+void checkCudaErrors(cudaError_t err) {
+    if (err != cudaSuccess) {
+        std::cerr << "CUDA error: " << cudaGetErrorString(err) << std::endl;
+        exit(err);
+    }else
+    {
+        cout << "Todo correcto!" << endl;
+    }
+}
 
 /*
     @brief      Propagación hacia delante a lo largo de toda la capa convolucional
@@ -442,16 +458,16 @@ void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &inpu
 */
 void Convolutional::forwardPropagationGEMM(float *input, float *output, float *a)
 {
-    // "Desenrrollado" de la entrada
     this->unroll(C, H, kernel_fils, input, h_input_unroll);    
 
     // Copiar de CPU a GPU
     cudaMemcpy(d_input_unroll, h_input_unroll, bytes_input_unroll, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
 
+    cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
+    
     // Multiplicación de matrices
     multiplicarMatricesGPU<<<grid_forward, block, smem>>>(fils_w, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a);
-
+    
     // Paso de GPU a CPU
     cudaMemcpy(a, d_a, bytes_output, cudaMemcpyDeviceToHost);
     
@@ -466,6 +482,7 @@ void Convolutional::forwardPropagationGEMM(float *input, float *output, float *a
         for(int j = 0; j < H_out; j++)
             for(int k = 0; k < W_out; k++)
                 output[i*H_out*W_out +j*W_out +k] = activationFunction(a[i*H_out*W_out +j*W_out +k]);
+    checkCudaErrors(cudaGetLastError());
 };
 
 
@@ -474,7 +491,6 @@ void Convolutional::unroll(int C, int n, int K, float *X, float *X_unroll){
     int W_out = n-K+1;
     int w_base;
     int W = H_out * W_out;
-
     for(int c=0; c<C; c++)
     {
         w_base = c * (K*K);
@@ -485,13 +501,11 @@ void Convolutional::unroll(int C, int n, int K, float *X, float *X_unroll){
                     for(int w=0; w < W_out; w++){
                         int w_unroll = h * W_out + w;
                         X_unroll[h_unroll*W + w_unroll] = X[c*n*n + (h+p)*n + (w+q)];
-                        //cout << X[c*n*n + (h+p)*n + (w+q)] << " ";
                     }
                 }
-
         
     } 
-    //cout << " ---------------------232 ------------------ " << endl;
+
 }
 
 void Convolutional::unroll_1dim(int C, int H, int W, int K, float *X, float *X_unroll){
@@ -1019,7 +1033,7 @@ int main()
 
     grad_w2 = grad_w;
     */
-   /*
+    /*
     //cout << "Input" << endl;
     conv.backPropagation(input_cpu, output_cpu, a_cpu, grad_w_cpu, grad_bias_cpu);
     //printMatrix_vector(input_cpu);
@@ -1112,7 +1126,7 @@ int main()
         cout << endl;
     }
     */
-   /*
+    /*
    // Comprobar resultados
     bool correcto = true;
     float epsilon = 0000000.1;

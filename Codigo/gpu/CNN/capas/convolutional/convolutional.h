@@ -106,9 +106,9 @@ class Convolutional
         void forwardPropagationGEMM(float *input, float *output, float *a);
         void backPropagationGEMM(float *input, float *output, float *a, float *grad_w, float *grad_bias);
         void generar_pesos_ptr();
-        ~Convolutional(){cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); cudaFree(w_ptr); cudaFree(bias_ptr); free(h_input_unroll); free(output_pad); free(grad_w_it);
-                        free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll); cudaFree(d_output_unroll); cudaFree(d_matriz_pesos); cudaFree(d_input);
-                        cudaFree(d_input_back_unroll);};
+        ~Convolutional(){/*cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); free(w_ptr); free(bias_ptr); free(h_input_unroll); free(output_pad); free(grad_w_it);
+                        free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll); /*cudaFree(d_output_unroll); cudaFree(d_matriz_pesos); cudaFree(d_input);
+                        cudaFree(d_input_back_unroll);*/};
 
         // CPU ------------------------------------------
 
@@ -149,6 +149,9 @@ class Convolutional
         int get_H(){return this->H;};
         int get_W(){return this->W;};
         int get_C(){return this->C;};
+        int get_H_out(){return this->H_out;};
+        int get_W_out(){return this->W_out;};
+
         // https://calvinfeng.gitbook.io/machine-learning-notebook/supervised-learning/convolutional-neural-network/convolution_operation
 
         // Debug
