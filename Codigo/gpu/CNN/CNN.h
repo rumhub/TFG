@@ -33,7 +33,11 @@ class CNN
         int n_imagenes;
         int n_clases;
         int max_H, max_W, max_C;
-
+        int *i_conv_out = nullptr;
+        int *i_conv_in = nullptr;
+        int *i_plm_out = nullptr;
+        int *i_plm_in = nullptr;
+        
         float *img_in = nullptr;
         float *img_out = nullptr;
         float *img_in_copy = nullptr;

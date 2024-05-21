@@ -29,6 +29,7 @@ class FullyConnected
         int *i_w_ptr = nullptr;     // Índice de cada capa de pesos
         int *i_capa = nullptr;      // Índice de cada capa de neuronas
         int n_neuronas;
+        int n_pesos;
 
     public:
         // GPU ---------------------------------------
@@ -77,6 +78,7 @@ class FullyConnected
         int get_n_capas(){return this->n_capas;};
         int * get_capas(){return this->capas;};
         int get_n_neuronas(){return this->n_neuronas;};
+        int get_n_pesos(){return this->n_pesos;};
 
         // Debug
         void set_pesos(const vector<vector<vector<float>>> &w_){this->w = w_;};

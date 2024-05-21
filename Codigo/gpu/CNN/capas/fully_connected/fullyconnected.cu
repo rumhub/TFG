@@ -106,6 +106,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr)
         n_pesos += capas[i] * capas[i+1];   // Cada neurona de la capa actual se conecta a cada neurona de la capa siguiente
     }
     
+    this->n_pesos = n_pesos;
     this->w_ptr = (float *)malloc(n_pesos * sizeof(float));
 
     // Learning Rate

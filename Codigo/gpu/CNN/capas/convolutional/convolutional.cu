@@ -482,7 +482,6 @@ void Convolutional::forwardPropagationGEMM(float *input, float *output, float *a
         for(int j = 0; j < H_out; j++)
             for(int k = 0; k < W_out; k++)
                 output[i*H_out*W_out +j*W_out +k] = activationFunction(a[i*H_out*W_out +j*W_out +k]);
-    checkCudaErrors(cudaGetLastError());
 };
 
 
