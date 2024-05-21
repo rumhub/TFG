@@ -860,10 +860,10 @@ void Convolutional::printMatrix_vector(const vector<vector<vector<float>>> &X) {
     @clip_value     Valor a emplear para realizar el "clip" o escalado
     @return         Se actualizan los valores de w (pesos de la capa)
 */
-void Convolutional::escalar_pesos(float clip_value)
+void Convolutional::escalar_pesos_ptr(float clip_value)
 {
     // Calculate the maximum and minimum values of weights
-    float max = this->w[0][0][0][0], min = this->w[0][0][0][0];
+    float max = this->w_ptr[0], min = this->w_ptr[0];
 
     for(int i=0; i<this->w.size(); i++)
         for(int j=0; j<this->w[i].size(); j++)
@@ -885,6 +885,59 @@ void Convolutional::escalar_pesos(float clip_value)
                 for(int l=0; l<this->w[i][j][k].size(); l++)
                     this->w[i][j][k][l] = std::max(std::min(this->w[i][j][k][l] * scaling_factor, clip_value), -clip_value);
 }
+
+/*
+    @brief          Escalar los pesos para evitar que los gradientes "exploten"
+    @clip_value     Valor a emplear para realizar el "clip" o escalado
+    @return         Se actualizan los valores de w (pesos de la capa)
+*/
+void Convolutional::escalar_pesos(float clip_value)
+{
+    // Calculate the maximum and minimum values of weights
+    float max = this->w[0][0][0][0], min = this->w[0][0][0][0];
+
+    for(int i=0; i<this->n_kernels; i++)
+        for(int j=0; j<this->C; j++)
+            for(int k=0; k<this->H; k++)
+                for(int l=0; l<this->W; l++)
+                {
+                    if(max < this->w_ptr[i*C*H*W + j*H*W + k*W + l])
+                        max = this->w[i][j][k][l];
+                    
+                    if(min > this->w_ptr[i*C*H*W + j*H*W + k*W + l])
+                        min = this->w_ptr[i*C*H*W + j*H*W + k*W + l];
+                }
+
+    // Perform gradient clipping
+    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
+    for(int i=0; i<this->n_kernels; i++)
+        for(int j=0; j<this->C; j++)
+            for(int k=0; k<this->H; k++)
+                for(int l=0; l<this->W; l++)
+                    this->w_ptr[i*C*H*W + j*H*W + k*W + l] = std::max(std::min(this->w_ptr[i*C*H*W + j*H*W + k*W + l] * scaling_factor, clip_value), -clip_value);
+}
+
+
+/*
+    @brief          Actualizar los pesos y sesgos de la capa
+    @grad_w         Gradiente de cada peso de la capa
+    @grad_b         Gradiente de cada sesgo de la capa
+    @return         Se actualizar los valores de w y bias (pesos y sesgos de la capa)
+*/
+void Convolutional::actualizar_grads_ptr(float *grad_w, float *grad_bias)
+{
+    // Actualizar pesos
+    for(int i=0; i<n_kernels; ++i)
+        for(int j=0; j<C; ++j)
+            for(int k=0; k<kernel_fils; ++k)
+                for(int p=0; p<kernel_cols; ++p)
+                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p] -= this->lr * grad_w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p];
+
+    // Actualizar bias
+    for(int i=0; i<this->n_kernels; i++)
+        this->bias_ptr[i] -= this->lr * grad_bias[i];
+}
+
 
 /*
     @brief          Actualizar los pesos y sesgos de la capa

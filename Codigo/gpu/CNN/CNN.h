@@ -37,7 +37,9 @@ class CNN
         int *i_conv_in = nullptr;
         int *i_plm_out = nullptr;
         int *i_plm_in = nullptr;
-        
+        int *i_w = nullptr;
+        int *i_b = nullptr;
+
         float *img_in = nullptr;
         float *img_out = nullptr;
         float *img_in_copy = nullptr;
@@ -62,6 +64,9 @@ class CNN
 
         // Modificar imagen
         void padding_interno(vector<vector<vector<float>>> &input, const int &pad);
+
+        void padding_interno_ptr(float *input, int C, int H, int W, const int &pad);
+
 
         void set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, int W);
         void set_test(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->test_imgs = x; this->test_labels = y;};

@@ -106,6 +106,8 @@ class Convolutional
         void forwardPropagationGEMM(float *input, float *output, float *a);
         void backPropagationGEMM(float *input, float *output, float *a, float *grad_w, float *grad_bias);
         void generar_pesos_ptr();
+        void actualizar_grads_ptr(float *grad_w, float *grad_bias);
+        void escalar_pesos_ptr(float clip_value);
         ~Convolutional(){/*cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); free(w_ptr); free(bias_ptr); free(h_input_unroll); free(output_pad); free(grad_w_it);
                         free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll); /*cudaFree(d_output_unroll); cudaFree(d_matriz_pesos); cudaFree(d_input);
                         cudaFree(d_input_back_unroll);*/};
