@@ -108,14 +108,19 @@ class Convolutional
         void generar_pesos_ptr();
         void actualizar_grads_ptr(float *grad_w, float *grad_bias);
         void escalar_pesos_ptr(float clip_value);
-        ~Convolutional(){/*cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); free(w_ptr); free(bias_ptr); free(h_input_unroll); free(output_pad); free(grad_w_it);
-                        free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll); /*cudaFree(d_output_unroll); cudaFree(d_matriz_pesos); cudaFree(d_input);
-                        cudaFree(d_input_back_unroll);*/};
+        void aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad);
+        void copiar(const Convolutional & conv);                                                              
+        ~Convolutional();
+        /*
+        ~Convolutional(){free(h_input_unroll); free(output_pad); free(grad_w_it); free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll); 
+                               free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); cudaFree(d_output_unroll);
+                               cudaFree(d_matriz_pesos); cudaFree(d_input); cudaFree(d_input_back_unroll); cudaFree(d_output); cudaFree(d_grad_w);};
+        */
 
         // CPU ------------------------------------------
 
         // Constructores
-        Convolutional(int n_kernels, int kernel_fils, int kernel_cols, const vector<vector<vector<float>>> &input, float lr);
+        //Convolutional(int n_kernels, int kernel_fils, int kernel_cols, const vector<vector<vector<float>>> &input, float lr);
         Convolutional(){};
 
         // Funciones de activación
@@ -164,6 +169,7 @@ class Convolutional
         void printMatrix_vector(const vector<vector<vector<float>>> &X);
         void multiplicarMatrices(float* m1, int rows1, int cols1, float* m2, int cols2, float* result);
         void printMatrix_4D(float* matrix, int F, int C, int n);
+        void checkCudaErrors(cudaError_t err);
 };
 
 #endif

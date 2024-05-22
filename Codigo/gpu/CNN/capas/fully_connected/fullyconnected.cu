@@ -255,7 +255,8 @@ void FullyConnected::generar_pesos_ptr(const int &capa)
     int cont = 0;
     for(int i=0; i<this->capas[capa]; ++i)
         for(int j=0; j<this->capas[capa+1]; ++j)
-            this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = 1.0;
+            this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
+            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = 1.0;
             //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
 }
 

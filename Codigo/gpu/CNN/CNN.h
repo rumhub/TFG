@@ -19,10 +19,10 @@ using namespace std::chrono;
 class CNN
 {
     private:
-        Convolutional * convs;      // Capas convolucionales
-        PoolingMax * plms;          // Capas MaxPool
-        FullyConnected *fully;      // Red Fullyconnected
-        Flatten * flat;             // Capa flatten
+        Convolutional * convs = nullptr;      // Capas convolucionales
+        PoolingMax * plms = nullptr;          // Capas MaxPool
+        FullyConnected *fully = nullptr;      // Red Fullyconnected
+        Flatten * flat = nullptr;             // Capa flatten
         float *train_imgs = nullptr;   // Imágenes de entrenamiento
         vector<vector<vector<vector<float>>>> test_imgs;   // Imágenes de test
         float *train_labels = nullptr;             // Etiqueta de cada imagen de training
@@ -50,7 +50,8 @@ class CNN
     public:
         // Constructor
         CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr);
-        ~CNN(){free(padding); free(train_imgs); free(train_labels); free(img_in); free(img_out); free(img_in_copy); free(conv_a); free(a_ptr); free(z_ptr);}
+        ~CNN(){free(train_imgs); free(train_labels); free(padding); free(i_conv_out); free(i_conv_in); free(i_plm_out); free(i_plm_in); free(i_w);
+               free(i_b); free(img_in); free(img_out); free(img_in_copy); free(conv_a); free(a_ptr); free(z_ptr);};
 
         // Mostrar arquitectura
         void mostrar_arquitectura();
@@ -73,6 +74,7 @@ class CNN
 
         // Debug
         void mostrar_ptr(float *x, int C, int H, int W);
+        void prueba();
 };
 
 #endif

@@ -52,13 +52,15 @@ class PoolingMax
         float *d_input = nullptr;       // Imagen de entrada
         float *d_input_copy = nullptr;      // Copia de la imagen de entrada
         float *d_output = nullptr;      // Imagen de salida
-
+        bool liberar_memoria;
 
     public:
         PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
         PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad);
-        PoolingMax(){};
-        ~PoolingMax(){/*cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);*/};
+        PoolingMax(){liberar_memoria = false;};
+        void copiar(const PoolingMax & plm);
+
+        ~PoolingMax(){if(this->liberar_memoria){cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);}};
 
         // CPU -------------------------------------------
         // Aplica padding a un conjunto de imágenes 2D
