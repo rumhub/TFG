@@ -37,7 +37,8 @@ __global__ void maxpool_forward(int C, int H, int W, int K, float *X, float *X_c
         Y[idY] = max;
 
         // Establecer posición del máximo
-        X_copy[pos_max] = 1.0;
+        if(pos_max < C*H*W)
+            X_copy[pos_max] = 1.0;
 
         // Actualizar índice para siguiente capa
         idY += tam_capaY;
@@ -235,14 +236,18 @@ void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input
     for(int i=0; i<C*H*W; i++)
         input_copy[i] = 0.0;    
 
+    
     // Copiar datos de CPU a GPU
     cudaMemcpy(d_input, input, bytes_input, cudaMemcpyHostToDevice);
 
+    
     // Realizar MaxPool
     maxpool_forward<<<grid, block>>>(C, H, W, kernel_fils, d_input, d_input_copy, d_output, pad);
 
+    /*
     cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
     cudaMemcpy(input_copy, d_input_copy, bytes_input, cudaMemcpyDeviceToHost);
+    */
 };
 
 void PoolingMax::backPropagationGPU(float *input, float *output, float *input_copy)
@@ -371,7 +376,7 @@ void aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
     imagen_3D = imagen_3D_aux;
 };
 
-/*
+
 // https://leonardoaraujosantos.gitbook.io/artificial-inteligence/machine_learning/deep_learning/pooling_layer
 int main() 
 {

@@ -75,6 +75,7 @@ class CNN
         // Debug
         void mostrar_ptr(float *x, int C, int H, int W);
         void prueba();
+        void mostrar_train_img(int n_img, int C, int H, int W);
 };
 
 #endif
