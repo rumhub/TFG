@@ -533,7 +533,7 @@ void CNN::train(int epocas, int mini_batch)
         ini = high_resolution_clock::now();
 
         // Desordenar vector de índices
-        shuffle(indices, n, g);
+        //shuffle(indices, n, g);
 
         
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
@@ -567,7 +567,7 @@ void CNN::train(int epocas, int mini_batch)
                 img_conv_a = conv_a + img*tam_out_convs + i_conv_out[0];
                 this->convs[0].forwardPropagationGEMM(img_train, img_conv_out, img_conv_a);
 
-                /*
+                
                 cout << "Input" << endl;
                 for(int i_=0; i_<this->convs[0].get_C(); i_++)
                 {
@@ -612,14 +612,12 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
-                */
                 
                 
                 img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[0];
                 img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[0];
                 this->plms[0].forwardPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
                 
-                /*
                 cout << "Input MaxPool 0" << endl;
                 for(int i_=0; i_<this->convs[0].get_n_kernels(); i_++)
                 {
@@ -666,7 +664,6 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
-                */
                 
                 
                 // Resto de capas convolucionales y maxpool ----------------------------
@@ -679,7 +676,7 @@ void CNN::train(int epocas, int mini_batch)
                     img_conv_a = conv_a + img*tam_out_convs + i_conv_out[j];
                     this->convs[j].forwardPropagationGEMM(img_plms_out, img_conv_out, img_conv_a);
 
-                    /*
+
                     cout << "Input Conv: " << j << ", " << this->plms[j-1].get_C() << "x" << this->plms[j-1].get_H_out() << "x" << this->plms[j-1].get_W_out() << endl;
                     for(int i_=0; i_<this->plms[j-1].get_C(); i_++)
                     {
@@ -724,7 +721,6 @@ void CNN::train(int epocas, int mini_batch)
                     cout << endl;
 
                     //cin >> k1;
-                    */
                     
                     
                     // Capa MaxPool 
@@ -732,7 +728,6 @@ void CNN::train(int epocas, int mini_batch)
                     img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[j];
                     this->plms[j].forwardPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
                     
-                    /*
                     cout << "Input MaxPool" << j << endl;
                     for(int i_=0; i_<this->convs[j].get_n_kernels(); i_++)
                     {
@@ -777,7 +772,6 @@ void CNN::train(int epocas, int mini_batch)
                     cout << endl;
 
                     //cin >> k1;
-                    */
                     
                 }  
 
@@ -795,7 +789,7 @@ void CNN::train(int epocas, int mini_batch)
                         for(int k_=0; k_<W_out; k_++)
                             img_flat_out[i_*H_out*W_out + j_*W_out + k_] = img_plms_out[i_*H_out*W_out + j_*W_out + k_];
                 
-                /*
+
                 cout << "Input Flatten (img: " << img << ") " << endl;
                 for(int i_=0; i_<C; i_++)
                 {
@@ -821,11 +815,9 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
-                */
 
             }
 
-            /*
             cout << "Output Flatten Total: " << endl;
             for(int i_=0; i_<tam_flat_out*tam_batches[i]; i_++)
             {
@@ -835,7 +827,6 @@ void CNN::train(int epocas, int mini_batch)
             cout << endl;
 
             //cin >> k1;
-            */
 
             
             
@@ -855,7 +846,6 @@ void CNN::train(int epocas, int mini_batch)
             // Realizar propagación hacia delante y hacia detrás en la capa totalmente conectada
             this->fully->train_ptr(flat_outs_batch, this->train_labels, batch, tam_batches[i], grads_pesos_fully, grads_bias_fully, grad_x_fully, a_ptr, z_ptr, grad_a_ptr);
             
-            /*
             cout << "Output Flatten Total: " << endl;
             for(int i_=0; i_<tam_flat_out*tam_batches[i]; i_++)
             {
@@ -1015,7 +1005,6 @@ void CNN::train(int epocas, int mini_batch)
             cout << endl;
 
             //cin >> k1;
-            */
 
 
                         
@@ -1023,7 +1012,6 @@ void CNN::train(int epocas, int mini_batch)
             this->fully->actualizar_parametros_ptr(grads_pesos_fully, grads_bias_fully);
             this->fully->escalar_pesos_ptr(2);
             
-            /*
             w_fully = this->fully->get_pesos_ptr();
             cout << "Pesos fully (después actualización y escalado):" << endl;
             for(int i=0; i<n_capas_fully-1; i++)
@@ -1058,7 +1046,6 @@ void CNN::train(int epocas, int mini_batch)
             cout << endl;
 
             //cin >> k1;
-            */
             
             
             // ---------------------------------------------------------------------------------------------------------------------------
@@ -1071,6 +1058,7 @@ void CNN::train(int epocas, int mini_batch)
             // ----------------------------------------------
             // ----------------------------------------------
 
+            cout << " ----------- BACKPROP ----------- " << endl;
             // Inicializar gradientes a 0
             for(int i_=0; i_<tam_kernels_conv; i_++)
                 conv_grads_w[i_] = 0.0;
@@ -1095,7 +1083,7 @@ void CNN::train(int epocas, int mini_batch)
                 // Usar grad_x_fully[img] en vez de plms_outs[img][i_c] en la última capa MaxPool
                 img_grad_x_fully = grad_x_fully + img*this->fully->get_capas()[0];
                 
-                /*
+
                 // -------------------------------------------------------------------------------------
                 // -------------------------------------------------------------------------------------
                 
@@ -1115,17 +1103,47 @@ void CNN::train(int epocas, int mini_batch)
                 }
                 cout << endl;
 
-                cin >> k1;
+                //cin >> k1;
 
                 // -------------------------------------------------------------------------------------
                 // -------------------------------------------------------------------------------------
-                */
-
-                
+                                
                 // Capa MaxPool 
                 img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[i_c];
                 img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[i_c];
                 this->plms[i_c].backPropagationGPU(img_conv_out, img_grad_x_fully, img_plms_in_copy);
+
+
+                cout << "Input MaxPool b: " << i_c << endl;
+                for(int i_=0; i_<this->convs[i_c].get_n_kernels(); i_++)
+                {
+                    for(int j_=0; j_<this->convs[i_c].get_H_out(); j_++)
+                    {
+                        for(int k_=0; k_<this->convs[i_c].get_W_out(); k_++)
+                            cout << img_conv_out[i_*this->convs[i_c].get_H_out()*this->convs[i_c].get_W_out() + j_*this->convs[i_c].get_W_out() + k_] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+
+                //cin >> k1;
+
+                cout << "PLM_in_copys b: " << i_c << endl;
+                for(int i_=0; i_<this->plms[i_c].get_C(); i_++)
+                {
+                    for(int j_=0; j_<this->plms[i_c].get_H(); j_++)
+                    {
+                        for(int k_=0; k_<this->plms[i_c].get_W(); k_++)
+                            cout << img_plms_in_copy[i_*this->plms[i_c].get_H()*this->plms[i_c].get_W() + j_*this->plms[i_c].get_W() + k_] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+
+                //cin >> k1;
+
 
                 
                 // Capa convolucional 
@@ -1141,6 +1159,85 @@ void CNN::train(int epocas, int mini_batch)
                 else
                     this->convs[i_c].backPropagationGEMM(img_in, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
                 
+
+                cout << "Output MaxPool " << i_c-1 << endl;
+                for(int i_=0; i_<this->plms[i_c-1].get_C(); i_++)
+                {
+                    for(int j_=0; j_<this->plms[i_c-1].get_H_out(); j_++)
+                    {
+                        for(int k_=0; k_<this->plms[i_c-1].get_W_out(); k_++)
+                            cout << img_plms_out[i_*this->plms[i_c-1].get_H_out()*this->plms[i_c-1].get_W_out() + j_*this->plms[i_c-1].get_W_out() + k_] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+
+                //cin >> k1;
+
+                cout << "Conv A: " << i_c << ", " << this->convs[i_c].get_n_kernels() << "x" << this->convs[i_c].get_H_out() << "x" << this->convs[i_c].get_W_out() << endl;
+                for(int i_=0; i_<this->convs[i_c].get_n_kernels(); i_++)
+                {
+                    for(int j_=0; j_<this->convs[i_c].get_H_out(); j_++)
+                    {
+                        for(int k_=0; k_<this->convs[i_c].get_W_out(); k_++)
+                            cout << img_conv_a[i_*this->convs[i_c].get_H_out()*this->convs[i_c].get_W_out() + j_*this->convs[i_c].get_W_out() + k_] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+
+                //cin >> k1;
+
+                cout << "Conv Out b: " << i_c << endl;
+                for(int i_=0; i_<this->convs[i_c].get_n_kernels(); i_++)
+                {
+                    for(int j_=0; j_<this->convs[i_c].get_H_out(); j_++)
+                    {
+                        for(int k_=0; k_<this->convs[i_c].get_W_out(); k_++)
+                            cout << img_conv_out[i_*this->convs[i_c].get_H_out()*this->convs[i_c].get_W_out() + j_*this->convs[i_c].get_W_out() + k_] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+
+                //cin >> k1;
+
+                cout << "Grad Pesos Conv b: " << i_c << endl;
+                int n_kernels = this->convs[i_c].get_n_kernels(), K = this->convs[i_c].get_kernel_fils();
+                C = this->convs[i_c].get_C();
+                for(int i=0; i<n_kernels; ++i)
+                {
+                    for(int j=0; j<C; ++j)
+                    {
+                        for(int k=0; k<K; ++k)
+                        {
+                            for(int p=0; p<K; ++p)
+                                cout << img_grad_w_conv[i*C*K*K + j*K*K + k*K + p] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+
+                //cin >> k1;
+
+
+                cout << "Grad Bias : " << i_c << endl;
+                for(int i=0; i<this->convs[i_c].get_n_kernels(); ++i)
+                {
+                    cout << img_grad_b_conv[i] << " ";
+                }
+                cout << endl;
+                
+
+                cin >> k1;
+
+                /*
                 for(int j=this->n_capas_conv-2; j>=1; j--)
                 {
                     // Capa MaxPool 
@@ -1173,10 +1270,10 @@ void CNN::train(int epocas, int mini_batch)
                     this->convs[0].backPropagationGEMM(img_in, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
                     
                 }
-                
+                */
             }
             
-            
+            /*
             // ----------------------------------------------
             // Pesos de las capas convolucionales
             // ----------------------------------------------
@@ -1206,9 +1303,9 @@ void CNN::train(int epocas, int mini_batch)
             // Actualizar parámetros de capas convolucionales 
             for(int j=0; j<this->n_capas_conv; ++j)
                 this->convs[j].escalar_pesos_ptr(2);
-            
+            */  
         }
-        
+        /*
         fin = high_resolution_clock::now();
         duration = duration_cast<seconds>(fin - ini);
         
@@ -1216,7 +1313,7 @@ void CNN::train(int epocas, int mini_batch)
         
         checkCudaErrors(cudaGetLastError());
         evaluar_modelo();
-        
+        */
         
     }
     //evaluar_modelo_en_test();

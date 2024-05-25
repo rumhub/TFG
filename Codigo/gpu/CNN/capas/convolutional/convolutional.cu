@@ -403,8 +403,8 @@ void Convolutional::generar_pesos_ptr()
         for(int j=0; j<C; ++j)
             for(int k=0; k<kernel_fils; ++k)
                 for(int p=0; p<kernel_cols; ++p)
-                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
-                    //this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = 0.5;
+                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = 0.5;
+                    //this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
 
 
 
@@ -652,9 +652,9 @@ void Convolutional::unroll_1dim(int C, int H, int W, int K, float *X, float *X_u
 
     for(int i=0; i<C; i++)
     {
-        for(int k=0; k<W_out; k++)
+        for(int j=0; j<H_out; j++)
         {
-            for(int j=0; j<H_out; j++)
+            for(int k=0; k<W_out; k++)
             {
                 // Guardar K*K elementos de "convolución"
                 for(int ky=0; ky < K; ky++)
@@ -917,6 +917,7 @@ void Convolutional::backPropagationGEMM(float *input, float *output, float *a, f
     // "Desenrrollar" imágenes
     unroll_3dim(n_kernels, H_out_pad, W_out_pad, kernel_fils, output_pad, h_output_unroll);    
     unroll_1dim(C, H, W, H_out, input, h_input_back_unroll);
+    
     matrizTranspuesta(h_input_back_unroll, kernel_fils*kernel_cols*C, H_out*W_out);
     matrizTranspuesta(h_output_unroll, cols_output_unroll, fils_output_unroll);
 
@@ -949,9 +950,9 @@ void Convolutional::backPropagationGEMM(float *input, float *output, float *a, f
                     grad_w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + kx*kernel_cols + ky] += grad_w_it[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + kx*kernel_cols + ky]; 
 
     // Calcular el gradiente del bias
-    for(int i=0; i<n_kernels; ++i)
-        for(int j=0; j<H_out; ++j)    
-            for(int k=0; k<W_out; ++k)
+    for(int i=0; i<n_kernels; i++)
+        for(int j=0; j<H_out; j++)    
+            for(int k=0; k<W_out; k++)
                 grad_bias[i] += output[i*H_out*W_out + j*W_out + k];
 };
 
