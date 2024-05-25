@@ -546,7 +546,9 @@ void leer_imagenes_cifar10(vector<vector<vector<vector<float>>>> &train_imgs, ve
 
             Mat image2 = imread(ruta), image;
 
-            image = image2;
+            resize(image2, image, Size(TAM_IMAGE, TAM_IMAGE));
+
+            //image = image2;
 
             // Cargamos la imagen en un vector 3D
             cargar_imagen_en_vector(image, imagen_k1);
@@ -587,7 +589,7 @@ void leer_imagenes_cifar10(vector<vector<vector<vector<float>>>> &train_imgs, ve
 
             Mat image2 = imread(ruta), image;
 
-            image = image2;
+            //image = image2;
 
             // Cargamos la imagen en un vector 3D
             cargar_imagen_en_vector(image, imagen_k1);
@@ -651,8 +653,10 @@ void leer_imagenes_cifar10_ptr(float *train_imgs, float *train_labels, float *te
             ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".png";
 
             Mat image2 = imread(ruta), image;
+            
+            resize(image2, image, Size(TAM_IMAGE, TAM_IMAGE));
 
-            image = image2;
+            //image = image2;
 
             img = train_imgs + c*(n_imagenes_train-1)*tam_img + (p-1)*tam_img;  // Almacenar imagen actual en la CNN
             label = train_labels + c*(n_imagenes_train-1)*n_clases + (p-1)*n_clases;    // Almacenar etiqueta de la imagen actual en la CNN
@@ -698,7 +702,9 @@ void leer_imagenes_cifar10_ptr(float *train_imgs, float *train_labels, float *te
 
             Mat image2 = imread(ruta), image;
 
-            image = image2;
+            resize(image2, image, Size(TAM_IMAGE, TAM_IMAGE));
+
+            //image = image2;
 
             // Cargamos la imagen en un vector 3D
             cargar_imagen_en_vector(image, imagen_k1);

@@ -239,15 +239,14 @@ void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input
     
     // Copiar datos de CPU a GPU
     cudaMemcpy(d_input, input, bytes_input, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_input_copy, input_copy, bytes_input, cudaMemcpyHostToDevice);
 
     
     // Realizar MaxPool
     maxpool_forward<<<grid, block>>>(C, H, W, kernel_fils, d_input, d_input_copy, d_output, pad);
 
-    /*
     cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
     cudaMemcpy(input_copy, d_input_copy, bytes_input, cudaMemcpyDeviceToHost);
-    */
 };
 
 void PoolingMax::backPropagationGPU(float *input, float *output, float *input_copy)

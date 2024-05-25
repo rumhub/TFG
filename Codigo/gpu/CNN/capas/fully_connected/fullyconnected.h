@@ -72,6 +72,8 @@ class FullyConnected
         void generar_pesos(const int &capa);
 
         // Gets
+        float * get_pesos_ptr(){return this->w_ptr;};
+        float * get_bias_ptr(){return this->bias_ptr;};
         vector<vector<vector<float>>> get_pesos(){return this->w;};
         vector<vector<float>> get_bias(){return this->bias;};
         vector<vector<float>> get_a(){return this->a;};
@@ -84,6 +86,8 @@ class FullyConnected
         void set_pesos(const vector<vector<vector<float>>> &w_){this->w = w_;};
         void mostrar_neuronas(const vector<vector<float>> &z);
         void mostrar_pesos();
+        int * get_i_w_ptr(){return this->i_w_ptr;};
+        int * get_i_capa(){return this->i_capa;};
 };
 
 #endif

@@ -256,8 +256,7 @@ void FullyConnected::generar_pesos_ptr(const int &capa)
     for(int i=0; i<this->capas[capa]; ++i)
         for(int j=0; j<this->capas[capa+1]; ++j)
             this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
-            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = 1.0;
-            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
+            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = (float) (i+1)/10;
 }
 
 
@@ -388,7 +387,7 @@ void FullyConnected::forwardPropagation_ptr(float *x, float *a_ptr, float *z_ptr
     float max, sum = 0.0, epsilon = 0.000000001;
 
     // Introducimos input -------------------------------------------------------
-    for(int i=0; i<capas[0]; ++i)
+    for(int i=0; i<capas[0]; i++)
     {
         z_ptr[i] = x[i];
         a_ptr[i] = x[i];
@@ -520,11 +519,12 @@ float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr
 {
     float sum =0.0, max;
     int prediccion, n=n_capas-1;
+    float *x_i = nullptr;
 
-    for(int i=0; i<n_datos; ++i)
+    for(int i=0; i<n_datos; i++)
     {
         // Propagación hacia delante de la entrada x[i] a lo largo de la red
-        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
+        x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
         forwardPropagation_ptr(x_i, a_ptr, z_ptr);
 
         // Inicialización
