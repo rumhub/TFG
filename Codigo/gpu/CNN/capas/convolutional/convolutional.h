@@ -152,7 +152,9 @@ class Convolutional
         int get_kernel_cols(){return this->kernel_cols;};
         int get_n_kernels(){return this->n_kernels;};
         vector<vector<vector<vector<float>>>> get_pesos(){return this->w;};
+        float * get_pesos_ptr(){return this->w_ptr;};
         vector<float> get_bias(){return this->bias;};
+        float * get_bias_ptr(){return this->bias_ptr;};
         int get_H(){return this->H;};
         int get_W(){return this->W;};
         int get_C(){return this->C;};

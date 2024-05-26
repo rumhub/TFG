@@ -403,11 +403,8 @@ void Convolutional::generar_pesos_ptr()
         for(int j=0; j<C; ++j)
             for(int k=0; k<kernel_fils; ++k)
                 for(int p=0; p<kernel_cols; ++p)
-                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = 0.5;
-                    //this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
-
-
-
+                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
+                    //this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = (float) (i+j+k+p)/(n_kernels*C*kernel_fils*kernel_cols);
 }
 
 
@@ -1004,25 +1001,25 @@ void Convolutional::escalar_pesos_ptr(float clip_value)
     // Calculate the maximum and minimum values of weights
     float max = this->w_ptr[0], min = this->w_ptr[0];
 
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                for(int l=0; l<this->w[i][j][k].size(); l++)
+    for(int i=0; i<n_kernels; ++i)
+        for(int j=0; j<C; ++j)
+            for(int k=0; k<kernel_fils; ++k)
+                for(int p=0; p<kernel_cols; ++p)
                 {
-                    if(max < this->w[i][j][k][l])
-                        max = this->w[i][j][k][l];
+                    if(max < this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ])
+                        max = this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ];
                     
-                    if(min > this->w[i][j][k][l])
-                        min = this->w[i][j][k][l];
+                    if(min > this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ])
+                        min = this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ];
                 }
 
     // Perform gradient clipping
     float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                for(int l=0; l<this->w[i][j][k].size(); l++)
-                    this->w[i][j][k][l] = std::max(std::min(this->w[i][j][k][l] * scaling_factor, clip_value), -clip_value);
+    for(int i=0; i<n_kernels; ++i)
+        for(int j=0; j<C; ++j)
+            for(int k=0; k<kernel_fils; ++k)
+                for(int p=0; p<kernel_cols; ++p)
+                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = std::max(std::min(this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] * scaling_factor, clip_value), -clip_value);
 }
 
 /*

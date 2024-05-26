@@ -33,7 +33,7 @@ int main()
     cnn.set_train(train_imgs, train_labels);
     cnn.set_test(test_imgs, test_labels);
     cnn.mostrar_arquitectura();
-    cnn.train(30, 25);
+    cnn.train(20, 32);
     //cnn.evaluar_modelo();
 
     /*

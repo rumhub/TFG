@@ -533,7 +533,7 @@ void CNN::train(int epocas, int mini_batch)
         ini = high_resolution_clock::now();
 
         // Desordenar vector de índices
-        //shuffle(indices, n, g);
+        shuffle(indices, n, g);
 
         
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
@@ -567,7 +567,7 @@ void CNN::train(int epocas, int mini_batch)
                 img_conv_a = conv_a + img*tam_out_convs + i_conv_out[0];
                 this->convs[0].forwardPropagationGEMM(img_train, img_conv_out, img_conv_a);
 
-                
+                /*
                 cout << "Input" << endl;
                 for(int i_=0; i_<this->convs[0].get_C(); i_++)
                 {
@@ -580,6 +580,11 @@ void CNN::train(int epocas, int mini_batch)
                     cout << endl;
                 }
                 cout << endl;
+
+                //cin >> k1;
+
+                cout << "Input de verdad " << endl;
+                mostrar_train_img(img);
 
                 //cin >> k1;
                 
@@ -612,12 +617,13 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
-                
+                */
                 
                 img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[0];
                 img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[0];
                 this->plms[0].forwardPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
                 
+                /*
                 cout << "Input MaxPool 0" << endl;
                 for(int i_=0; i_<this->convs[0].get_n_kernels(); i_++)
                 {
@@ -664,6 +670,7 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
+                */
                 
                 
                 // Resto de capas convolucionales y maxpool ----------------------------
@@ -676,7 +683,7 @@ void CNN::train(int epocas, int mini_batch)
                     img_conv_a = conv_a + img*tam_out_convs + i_conv_out[j];
                     this->convs[j].forwardPropagationGEMM(img_plms_out, img_conv_out, img_conv_a);
 
-
+                    /*
                     cout << "Input Conv: " << j << ", " << this->plms[j-1].get_C() << "x" << this->plms[j-1].get_H_out() << "x" << this->plms[j-1].get_W_out() << endl;
                     for(int i_=0; i_<this->plms[j-1].get_C(); i_++)
                     {
@@ -721,6 +728,7 @@ void CNN::train(int epocas, int mini_batch)
                     cout << endl;
 
                     //cin >> k1;
+                    */
                     
                     
                     // Capa MaxPool 
@@ -728,6 +736,7 @@ void CNN::train(int epocas, int mini_batch)
                     img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[j];
                     this->plms[j].forwardPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
                     
+                    /*
                     cout << "Input MaxPool" << j << endl;
                     for(int i_=0; i_<this->convs[j].get_n_kernels(); i_++)
                     {
@@ -772,7 +781,7 @@ void CNN::train(int epocas, int mini_batch)
                     cout << endl;
 
                     //cin >> k1;
-                    
+                    */
                 }  
 
                 
@@ -789,7 +798,7 @@ void CNN::train(int epocas, int mini_batch)
                         for(int k_=0; k_<W_out; k_++)
                             img_flat_out[i_*H_out*W_out + j_*W_out + k_] = img_plms_out[i_*H_out*W_out + j_*W_out + k_];
                 
-
+                /*
                 cout << "Input Flatten (img: " << img << ") " << endl;
                 for(int i_=0; i_<C; i_++)
                 {
@@ -815,18 +824,23 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
-
+                */
             }
 
+            /*
             cout << "Output Flatten Total: " << endl;
-            for(int i_=0; i_<tam_flat_out*tam_batches[i]; i_++)
+            for(int i_=0; i_<tam_batches[i]; i_++)
             {
-                cout << flat_outs_batch[i_] << " ";
+                for(int j_=0; j_<tam_flat_out; j_++)
+                    cout << flat_outs_batch[i_*tam_flat_out + j_] << " ";
+                cout << endl;
             }
             cout << endl;
             cout << endl;
 
-            //cin >> k1;
+           //cin >> k1;
+           */
+           
 
             
             
@@ -846,6 +860,7 @@ void CNN::train(int epocas, int mini_batch)
             // Realizar propagación hacia delante y hacia detrás en la capa totalmente conectada
             this->fully->train_ptr(flat_outs_batch, this->train_labels, batch, tam_batches[i], grads_pesos_fully, grads_bias_fully, grad_x_fully, a_ptr, z_ptr, grad_a_ptr);
             
+            /*
             cout << "Output Flatten Total: " << endl;
             for(int i_=0; i_<tam_flat_out*tam_batches[i]; i_++)
             {
@@ -855,9 +870,10 @@ void CNN::train(int epocas, int mini_batch)
             cout << endl;
 
             //cin >> k1;
-
+            */
             int n_clases = this->fully->get_capas()[ this->fully->get_n_capas() - 1];
             
+            /*
             cout << "Train labels: " << endl;
             for(int i_=0; i_<n_imagenes; i_++)
             {
@@ -878,6 +894,7 @@ void CNN::train(int epocas, int mini_batch)
             cout << "Nº imágenes batch: " << tam_batches[i] << endl;
 
             cout << "Pesos fully: " << endl;
+            */
             float *w_fully = this->fully->get_pesos_ptr();
 
             int n_capas_fully = this->fully->get_n_capas(),
@@ -885,6 +902,7 @@ void CNN::train(int epocas, int mini_batch)
                 *i_w_ptr = this->fully->get_i_w_ptr(),
                 *i_capa_fully = this->fully->get_i_capa();
 
+            /*
             // Mostrar pesos
             cout << "Pesos fully" << endl;
             for(int i=0; i<n_capas_fully-1; i++)
@@ -904,8 +922,8 @@ void CNN::train(int epocas, int mini_batch)
             }
             cout << endl;
 
-            //cin >> k1;
-
+           //cin >> k1;
+            
             cout << "Grad pesos" << endl;
             for(int i=0; i<n_capas_fully-1; i++)
             {
@@ -924,9 +942,9 @@ void CNN::train(int epocas, int mini_batch)
             }
             cout << endl;
 
-            //cin >> k1;
+           //cin >> k1;
 
-
+            /*
             // Mostrar neuronas
             cout << "Grad Bias" << endl;
             for(int i=0; i<n_capas_fully; i++)
@@ -941,19 +959,20 @@ void CNN::train(int epocas, int mini_batch)
 
             //cin >> k1;
 
-
+            
             cout << "Grad X Fully" << endl;
-            for(int i=0; i<tam_batches[i]; i++)
+            cout << tam_batches[i] <<  "x" << this->fully->get_capas()[0] << endl << endl;
+            for(int i_=0; i_<tam_batches[i]; i_++)
             {
-                cout << "Capa " << i << endl;
+                cout << "Capa " << i_ << endl;
                 for(int j=0; j<this->fully->get_capas()[0]; j++)
-                    cout << grad_x_fully[i*this->fully->get_capas()[0] + j] << " ";
-                cout << endl;
+                    cout << grad_x_fully[i_*this->fully->get_capas()[0] + j] << " ";
                 cout << endl;
             }
             cout << endl;
 
             //cin >> k1;
+            */
             
             // ----------------------------------------------
             // Pesos de la capa totalmente conectada
@@ -963,7 +982,7 @@ void CNN::train(int epocas, int mini_batch)
             for(int i_=0; i_<this->fully->get_n_pesos(); i_++)
                 grads_pesos_fully[i_] /= tam_batches[i];
             
-
+            /*
             cout << "Grad pesos (después media): " << endl;
             for(int i=0; i<n_capas_fully-1; i++)
             {
@@ -982,7 +1001,8 @@ void CNN::train(int epocas, int mini_batch)
             }
             cout << endl;
 
-            //cin >> k1;
+           //cin >> k1;
+           */
 
             // ----------------------------------------------
             // Bias o Sesgos de la capa totalmente conectada
@@ -992,7 +1012,7 @@ void CNN::train(int epocas, int mini_batch)
             for(int i_=0; i_<this->fully->get_n_neuronas(); i_++)
                 grads_bias_fully[i_] /= tam_batches[i];
 
-
+            /*
             cout << "Grad Bias (después media)" << endl;
             for(int i=0; i<n_capas_fully; i++)
             {
@@ -1004,7 +1024,8 @@ void CNN::train(int epocas, int mini_batch)
             }
             cout << endl;
 
-            //cin >> k1;
+           //cin >> k1;
+           */
 
 
                         
@@ -1013,6 +1034,8 @@ void CNN::train(int epocas, int mini_batch)
             this->fully->escalar_pesos_ptr(2);
             
             w_fully = this->fully->get_pesos_ptr();
+            
+            /*
             cout << "Pesos fully (después actualización y escalado):" << endl;
             for(int i=0; i<n_capas_fully-1; i++)
             {
@@ -1032,8 +1055,10 @@ void CNN::train(int epocas, int mini_batch)
             cout << endl;
 
             //cin >> k1;
+            
 
             float *bias_fully = this->fully->get_bias_ptr();
+            /*
             cout << "Bias (después actualización y escalado):" << endl;
             for(int i=0; i<n_capas_fully; i++)
             {
@@ -1046,6 +1071,7 @@ void CNN::train(int epocas, int mini_batch)
             cout << endl;
 
             //cin >> k1;
+            */
             
             
             // ---------------------------------------------------------------------------------------------------------------------------
@@ -1058,7 +1084,7 @@ void CNN::train(int epocas, int mini_batch)
             // ----------------------------------------------
             // ----------------------------------------------
 
-            cout << " ----------- BACKPROP ----------- " << endl;
+            //cout << " ----------- BACKPROP ----------- " << endl;
             // Inicializar gradientes a 0
             for(int i_=0; i_<tam_kernels_conv; i_++)
                 conv_grads_w[i_] = 0.0;
@@ -1090,6 +1116,7 @@ void CNN::train(int epocas, int mini_batch)
                 C = this->plms[this->n_capas_conv-1].get_C();
                 H_out = this->plms[this->n_capas_conv-1].get_H_out();
                 W_out = this->plms[this->n_capas_conv-1].get_W_out();
+                /*
                 cout << "Input Flatten (img: " << img << ") " << endl;
                 for(int i_=0; i_<C; i_++)
                 {
@@ -1104,6 +1131,7 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
+                */
 
                 // -------------------------------------------------------------------------------------
                 // -------------------------------------------------------------------------------------
@@ -1113,7 +1141,7 @@ void CNN::train(int epocas, int mini_batch)
                 img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[i_c];
                 this->plms[i_c].backPropagationGPU(img_conv_out, img_grad_x_fully, img_plms_in_copy);
 
-
+                /*
                 cout << "Input MaxPool b: " << i_c << endl;
                 for(int i_=0; i_<this->convs[i_c].get_n_kernels(); i_++)
                 {
@@ -1143,6 +1171,7 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
+                */
 
 
                 
@@ -1159,7 +1188,7 @@ void CNN::train(int epocas, int mini_batch)
                 else
                     this->convs[i_c].backPropagationGEMM(img_in, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
                 
-
+                /*
                 cout << "Output MaxPool " << i_c-1 << endl;
                 for(int i_=0; i_<this->plms[i_c-1].get_C(); i_++)
                 {
@@ -1204,10 +1233,11 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
 
                 //cin >> k1;
-
-                cout << "Grad Pesos Conv b: " << i_c << endl;
+                */
+                //cout << "Grad Pesos Conv b: " << i_c << endl;
                 int n_kernels = this->convs[i_c].get_n_kernels(), K = this->convs[i_c].get_kernel_fils();
                 C = this->convs[i_c].get_C();
+                /*
                 for(int i=0; i<n_kernels; ++i)
                 {
                     for(int j=0; j<C; ++j)
@@ -1224,7 +1254,7 @@ void CNN::train(int epocas, int mini_batch)
                 }
                 cout << endl;
 
-                //cin >> k1;
+               //cin >> k1;
 
 
                 cout << "Grad Bias : " << i_c << endl;
@@ -1235,9 +1265,10 @@ void CNN::train(int epocas, int mini_batch)
                 cout << endl;
                 
 
-                cin >> k1;
+               //cin >> k1;
+               */
 
-                /*
+                
                 for(int j=this->n_capas_conv-2; j>=1; j--)
                 {
                     // Capa MaxPool 
@@ -1246,6 +1277,49 @@ void CNN::train(int epocas, int mini_batch)
                     img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[j];
                     this->plms[j].backPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
                     
+                    /*
+                    cout << "Output MaxPool " << j << endl;
+                    for(int i_=0; i_<this->plms[j].get_C(); i_++)
+                    {
+                        for(int j_=0; j_<this->plms[j].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->plms[j].get_W_out(); k_++)
+                                cout << img_plms_out[i_*this->plms[j].get_H_out()*this->plms[j].get_W_out() + j_*this->plms[j].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "PLM_in_copys b: " << j << endl;
+                    for(int i_=0; i_<this->plms[j].get_C(); i_++)
+                    {
+                        for(int j_=0; j_<this->plms[j].get_H(); j_++)
+                        {
+                            for(int k_=0; k_<this->plms[j].get_W(); k_++)
+                                cout << img_plms_in_copy[i_*this->plms[j].get_H()*this->plms[j].get_W() + j_*this->plms[j].get_W() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "Conv Out b: " << j << endl;
+                    for(int i_=0; i_<this->convs[j].get_n_kernels(); i_++)
+                    {
+                        for(int j_=0; j_<this->convs[j].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->convs[j].get_W_out(); k_++)
+                                cout << img_conv_out[i_*this->convs[j].get_H_out()*this->convs[j].get_W_out() + j_*this->convs[j].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    //cin >> k1;
+                    */
+
                     // Capa convolucional 
                     img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[j-1];
                     img_conv_a = conv_a + img*tam_out_convs + i_conv_out[j];
@@ -1253,6 +1327,77 @@ void CNN::train(int epocas, int mini_batch)
                     img_grad_b_conv = conv_grads_bias + i_b[j];
                     this->convs[j].backPropagationGEMM(img_plms_out, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
                     
+                    /*
+                    cout << "Conv A: " << j << ", " << this->convs[j].get_n_kernels() << "x" << this->convs[j].get_H_out() << "x" << this->convs[j].get_W_out() << endl;
+                    for(int i_=0; i_<this->convs[j].get_n_kernels(); i_++)
+                    {
+                        for(int j_=0; j_<this->convs[j].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->convs[j].get_W_out(); k_++)
+                                cout << img_conv_a[i_*this->convs[j].get_H_out()*this->convs[j].get_W_out() + j_*this->convs[j].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "Conv Out b: " << j << endl;
+                    for(int i_=0; i_<this->convs[j].get_n_kernels(); i_++)
+                    {
+                        for(int j_=0; j_<this->convs[j].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->convs[j].get_W_out(); k_++)
+                                cout << img_conv_out[i_*this->convs[j].get_H_out()*this->convs[j].get_W_out() + j_*this->convs[j].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+
+                    cout << "Output MaxPool " << j-1 << endl;
+                    for(int i_=0; i_<this->plms[j-1].get_C(); i_++)
+                    {
+                        for(int j_=0; j_<this->plms[j-1].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->plms[j-1].get_W_out(); k_++)
+                                cout << img_plms_out[i_*this->plms[j-1].get_H_out()*this->plms[j-1].get_W_out() + j_*this->plms[j-1].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+
+                    cout << "Grad Pesos Conv b: " << j << endl;
+                    n_kernels = this->convs[j].get_n_kernels(), K = this->convs[j].get_kernel_fils();
+                    C = this->convs[j].get_C();
+                    for(int i=0; i<n_kernels; ++i)
+                    {
+                        for(int j=0; j<C; ++j)
+                        {
+                            for(int k=0; k<K; ++k)
+                            {
+                                for(int p=0; p<K; ++p)
+                                    cout << img_grad_w_conv[i*C*K*K + j*K*K + k*K + p] << " ";
+                                cout << endl;
+                            }
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "Grad Bias : " << j << endl;
+                    for(int i=0; i<this->convs[j].get_n_kernels(); ++i)
+                    {
+                        cout << img_grad_b_conv[i] << " ";
+                    }
+                    cout << endl;
+
+                   //cin >> k1;
+                   */
+
                 }
                 
                 
@@ -1263,17 +1408,133 @@ void CNN::train(int epocas, int mini_batch)
                     img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[0];
                     this->plms[0].backPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
 
-                    
+                    /*
+                    cout << "Output MaxPool " << 0 << endl;
+                    for(int i_=0; i_<this->plms[0].get_C(); i_++)
+                    {
+                        for(int j_=0; j_<this->plms[0].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->plms[0].get_W_out(); k_++)
+                                cout << img_plms_out[i_*this->plms[0].get_H_out()*this->plms[0].get_W_out() + j_*this->plms[0].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "PLM_in_copys b: " << 0 << endl;
+                    for(int i_=0; i_<this->plms[0].get_C(); i_++)
+                    {
+                        for(int j_=0; j_<this->plms[0].get_H(); j_++)
+                        {
+                            for(int k_=0; k_<this->plms[0].get_W(); k_++)
+                                cout << img_plms_in_copy[i_*this->plms[0].get_H()*this->plms[0].get_W() + j_*this->plms[0].get_W() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "Conv Out b: " << 0 << endl;
+                    for(int i_=0; i_<this->convs[0].get_n_kernels(); i_++)
+                    {
+                        for(int j_=0; j_<this->convs[0].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->convs[0].get_W_out(); k_++)
+                                cout << img_conv_out[i_*this->convs[0].get_H_out()*this->convs[0].get_W_out() + j_*this->convs[0].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    //cin >> k1;
+                    */
+
                     img_conv_a = conv_a + img*tam_out_convs + i_conv_out[0];
                     img_grad_w_conv = conv_grads_w + i_w[0];
                     img_grad_b_conv = conv_grads_bias + i_b[0];
                     this->convs[0].backPropagationGEMM(img_in, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
                     
+
+
+                    /*
+                    cout << "Conv A: " << 0 << ", " << this->convs[0].get_n_kernels() << "x" << this->convs[0].get_H_out() << "x" << this->convs[0].get_W_out() << endl;
+                    for(int i_=0; i_<this->convs[0].get_n_kernels(); i_++)
+                    {
+                        for(int j_=0; j_<this->convs[0].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->convs[0].get_W_out(); k_++)
+                                cout << img_conv_a[i_*this->convs[0].get_H_out()*this->convs[0].get_W_out() + j_*this->convs[0].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "Conv Out b: " << 0 << endl;
+                    for(int i_=0; i_<this->convs[0].get_n_kernels(); i_++)
+                    {
+                        for(int j_=0; j_<this->convs[0].get_H_out(); j_++)
+                        {
+                            for(int k_=0; k_<this->convs[0].get_W_out(); k_++)
+                                cout << img_conv_out[i_*this->convs[0].get_H_out()*this->convs[0].get_W_out() + j_*this->convs[0].get_W_out() + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+
+                    cout << "Output MaxPool " << 0 << endl;
+                    for(int i_=0; i_<C_ini; i_++)
+                    {
+                        for(int j_=0; j_<H_ini; j_++)
+                        {
+                            for(int k_=0; k_<W_ini; k_++)
+                                cout << this->img_in[i_*H_ini*W_ini + j_*W_ini + k_] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+                    */
+
+
+                    //cout << "Grad Pesos Conv b: " << 0 << endl;
+                    n_kernels = this->convs[0].get_n_kernels(), K = this->convs[0].get_kernel_fils();
+                    C = this->convs[0].get_C();
+                    /*
+                    for(int i=0; i<n_kernels; ++i)
+                    {
+                        for(int j=0; j<C; ++j)
+                        {
+                            for(int k=0; k<K; ++k)
+                            {
+                                for(int p=0; p<K; ++p)
+                                    cout << img_grad_w_conv[i*C*K*K + j*K*K + k*K + p] << " ";
+                                cout << endl;
+                            }
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "Grad Bias : " << 0 << endl;
+                    for(int i=0; i<this->convs[0].get_n_kernels(); ++i)
+                    {
+                        cout << img_grad_b_conv[i] << " ";
+                    }
+                    cout << endl;
+
+                   //cin >> k1;
+                    */
                 }
-                */
+                
             }
             
-            /*
+            
             // ----------------------------------------------
             // Pesos de las capas convolucionales
             // ----------------------------------------------
@@ -1290,8 +1551,75 @@ void CNN::train(int epocas, int mini_batch)
             for(int i_=0; i_<n_bias_conv; i_++)
                 conv_grads_bias[i_] /= tam_batches[i];
             
-            // Actualizar parámetros --------------------------------------------------------------------
+            /*
+            cout << "Grad Pesos Conv b: " << 0 << endl;
+            for(int r=0; r<n_capas_conv; r++)
+            {
+                int n_kernels = this->convs[r].get_n_kernels(), K = this->convs[r].get_kernel_fils();
+                C = this->convs[r].get_C();
+                for(int i=0; i<n_kernels; ++i)
+                {
+                    for(int j=0; j<C; ++j)
+                    {
+                        for(int k=0; k<K; ++k)
+                        {
+                            for(int p=0; p<K; ++p)
+                                cout << conv_grads_w[i_w[r] + i*C*K*K + j*K*K + k*K + p] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+            }
+            cout << endl;
+            
+            /*
+            cout << "Grad Bias : " << endl;
+            for(int r=0; r<n_capas_conv; r++)
+            {
+                for(int i=0; i<this->convs[r].get_n_kernels(); ++i)
+                {
+                    cout << conv_grads_bias[i_b[r] + i] << " ";
+                }
+                cout << endl;
+            }
+            cout << endl;
+            */
 
+           //cin >> k1;
+            
+
+
+            // Actualizar parámetros --------------------------------------------------------------------
+            /*
+            cout << "Pesos Conv b: " << endl;
+            for(int r=0; r<n_capas_conv; r++)
+            {
+                float *w_ptr = this->convs[r].get_pesos_ptr();
+                int n_kernels = this->convs[r].get_n_kernels(), K = this->convs[r].get_kernel_fils();
+                C = this->convs[r].get_C();
+                for(int i=0; i<n_kernels; ++i)
+                {
+                    for(int j=0; j<C; ++j)
+                    {
+                        for(int k=0; k<K; ++k)
+                        {
+                            for(int p=0; p<K; ++p)
+                                cout << w_ptr[i*C*K*K + j*K*K + k*K + p] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+            }
+            cout << endl;
+            */
+
+            
             // Actualizar parámetros de capas convolucionales 
             for(int j=0; j<this->n_capas_conv; ++j)
             {
@@ -1303,9 +1631,52 @@ void CNN::train(int epocas, int mini_batch)
             // Actualizar parámetros de capas convolucionales 
             for(int j=0; j<this->n_capas_conv; ++j)
                 this->convs[j].escalar_pesos_ptr(2);
-            */  
+            
+            /*
+            cout << "Pesos Conv b: " << endl;
+            for(int r=0; r<n_capas_conv; r++)
+            {
+                float *w_ptr = this->convs[r].get_pesos_ptr();
+                int n_kernels = this->convs[r].get_n_kernels(), K = this->convs[r].get_kernel_fils();
+                C = this->convs[r].get_C();
+                for(int i=0; i<n_kernels; ++i)
+                {
+                    for(int j=0; j<C; ++j)
+                    {
+                        for(int k=0; k<K; ++k)
+                        {
+                            for(int p=0; p<K; ++p)
+                                cout << w_ptr[i*C*K*K + j*K*K + k*K + p] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+            }
+            cout << endl;
+            
+            cin >> k1;
+            /*
+            cout << "Bias : " << endl;
+            for(int r=0; r<n_capas_conv; r++)
+            {
+                float *bias_ptr = this->convs[r].get_bias_ptr();
+                for(int i=0; i<this->convs[r].get_n_kernels(); ++i)
+                {
+                    cout << bias_ptr[i] << " ";
+                }
+                cout << endl;
+            }
+            cout << endl;
+
+           // cin >> k1;
+            */
+            
+
         }
-        /*
+        
         fin = high_resolution_clock::now();
         duration = duration_cast<seconds>(fin - ini);
         
@@ -1313,7 +1684,7 @@ void CNN::train(int epocas, int mini_batch)
         
         checkCudaErrors(cudaGetLastError());
         evaluar_modelo();
-        */
+        
         
     }
     //evaluar_modelo_en_test();
@@ -1430,6 +1801,20 @@ void CNN::evaluar_modelo()
         
     }
     
+    /*
+    cout << "FLAT_OUT : " << endl;
+    for(int i=0; i<this->n_imagenes; i++)
+    {
+        for(int j=0; j<tam_flat_out; j++)
+            cout << flat_outs[i*tam_flat_out + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+    int k1;
+    //cin >> k1;
+    */
+    
+
     // Cada hebra obtiene el accuracy y la entropía cruzada sobre una porción de imágenes
     acc = (*this->fully).accuracy_ptr(flat_outs, this->train_labels, n_imagenes, a_ptr, z_ptr);
     entr = (*this->fully).cross_entropy_ptr(flat_outs, this->train_labels, n_imagenes, a_ptr, z_ptr);

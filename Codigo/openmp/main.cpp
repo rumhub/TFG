@@ -42,13 +42,14 @@ int main()
 
     vector<vector<int>> capas_conv = {{16,3,3}, {32,3,3}}, capas_pool={{2,2}, {2,2}};
     vector<int> capas_fully = {100, 10}, padding = {pad, pad};
-    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.001);
+    CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.01);
     
     //cnn.leer_imagenes();
     //cnn.leer_imagenes_mnist(3000, 10);
     cnn.leer_imagenes_cifar10(100, 100, 10);
     cnn.mostrar_arquitectura();
     cnn.train(20, 32);
+    //cnn.evaluar_modelo();
 
     return 0;
 }
