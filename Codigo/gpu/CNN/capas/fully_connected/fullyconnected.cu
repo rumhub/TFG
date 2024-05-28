@@ -5,7 +5,7 @@ using namespace std;
 /*
     Emplea tiles. Un tile por bloque. Usa memoria compartida
 */
-__global__ void multiplicarMatricesGPU_fully(int M, int N, int K, const float *A, const float *B, float *C)
+__global__ void multiplicarMatricesGPU_y_add_1s(int M, int N, int K, const float *A, const float *B, float *C)
 {
     // Memoria compartida dinámica
 	extern __shared__ float sdata[];
@@ -41,7 +41,13 @@ __global__ void multiplicarMatricesGPU_fully(int M, int N, int K, const float *A
         // Cargar submatrices de A y B en memoria compartida (tamaño tilex x tiley)
         // Cada hebra carga en memoria compartida un elemento de A y otro de B
         (iy < M && tile * blockDim.x + threadIdx.x < K) ? sA[id_tile] = A[idA] : sA[id_tile] = 0.0;
-        (tile * blockDim.x + threadIdx.y < K && ix < N) ? sB[id_tile] = B[idB] : sB[id_tile] = 0.0;
+        
+        if(tile * blockDim.x + threadIdx.y < K && ix < N)
+            (tile * blockDim.x + threadIdx.y < K-1) ? sB[id_tile] = B[idB] : sB[id_tile] = 1.0;             // Añadir 1 fila de 1s al final
+        else
+            sB[id_tile] = 0.0;
+        
+        //(tile * blockDim.x + threadIdx.y < K && ix < N) ? sB[id_tile] = B[idB] : sB[id_tile] = 0.0;
 
         // Sincronizar hebras
         __syncthreads();
@@ -65,6 +71,7 @@ __global__ void multiplicarMatricesGPU_fully(int M, int N, int K, const float *A
     if(iy < M && ix < N)
         C[iy*N + ix] = sum;
 }
+
 
 /*
     CONSTRUCTOR de la clase FullyConnected
@@ -521,33 +528,24 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr)
 {
     float * capa = capasGEMM[0];
-    int cont = 0;
 
+    // Copiar entrada X en capasGEMM[0]
+    for(int i=0; i<this->capas[0]; i++)
+        for(int j=0; j<this->mini_batch; j++)
+            capa[i*mini_batch + j] = x[i*mini_batch + j];
+
+    // Pasar valores de primera capa a GPU
+    cudaMemcpy(d_capasGEMM, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
+
+    // Capas intermedias
     for(int c=0; c<n_capas-2; c++)
     {
         // Tamaño de grid para propagación hacia delante
         this->grid_forward.x = (mini_batch  + block_size -1) / block_size; 
         this->grid_forward.y = (capas[c+1] + block_size -1) / block_size;
 
-        if(c == 0)
-        {
-            for(int i=0; i<this->capas[c]; i++)
-            {
-                for(int j=0; j<this->mini_batch; j++)
-                    capa[cont++] = x[i*mini_batch + j];
-            }
-        }
-        cont = this->capas[c] * this->mini_batch;
-   
-        // Añadir última fila con todo a 1.0 para añadir bias
-        for(int i=0; i<this->mini_batch; i++)
-            capa[cont++] = 1.0;     
+        multiplicarMatricesGPU_y_add_1s<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_capasGEMM + h_i_capasGEMM[c], d_capasGEMM + h_i_capasGEMM[c+1]);
 
-        cudaMemcpy(d_capasGEMM + h_i_capasGEMM[c], capa,  mini_batch * (capas[c]+1) * sizeof(float), cudaMemcpyHostToDevice);
-        multiplicarMatricesGPU_fully<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_capasGEMM + h_i_capasGEMM[c], d_capasGEMM + h_i_capasGEMM[c+1]);
-
-        capa = capasGEMM[c+1];
-        cudaMemcpy(capa, d_capasGEMM + h_i_capasGEMM[c+1],  capas[c+1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
         cudaError_t err = cudaGetLastError();
         if (err != cudaSuccess) 
             printf("Error: %s\n", cudaGetErrorString(err));
@@ -556,17 +554,7 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
     cout << " -------------------------------------------------------- " << endl;
     capa = capasGEMM[0];
     for(int c=0; c<n_capas-2; c++)
-    {
-        cout << "CAPA " << c << " (input)" << endl;
-        for(int i=0; i<this->capas[c]+1; i++)
-        {
-            for(int j=0; j<this->mini_batch; j++)
-                cout << capa[i*mini_batch + j] << " ";
-            cout << endl;
-        }
-        cout << endl;
-        
-
+    {        
         capa = capasGEMM[c+1];
         cudaMemcpy(capa, d_capasGEMM + h_i_capasGEMM[c+1],  capas[c+1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
         cudaError_t err = cudaGetLastError();
@@ -574,7 +562,7 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
             printf("Error: %s\n", cudaGetErrorString(err));
         
 
-        cout << "CAPA " << c+1 << " A" << " (output)" << endl;
+        cout << "CAPA " << c+1 << " A" << endl;
         for(int i=0; i<this->capas[c+1]; i++)
         {
             for(int j=0; j<this->mini_batch; j++)
