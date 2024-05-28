@@ -36,12 +36,12 @@ class FullyConnected
         bool liberar_memoria;
         float ** capasGEMM = nullptr;
         int mini_batch;
-        int * h_i_capasGEMM = nullptr;
+        float * h_output = nullptr;
 
         // Punteros device
         float * d_wT = nullptr;
-        float * d_capasGEMM = nullptr;
-        int * d_i_capasGEMM = nullptr;
+        float * d_input = nullptr;
+        float * d_output = nullptr;
 
         // Tamaño de bloque
         dim3 block;
@@ -63,14 +63,14 @@ class FullyConnected
         {
             if(liberar_memoria)
             {
-                free(w_ptr); free(bias_ptr); free(capas); free(i_w_ptr); free(i_capa); free(wT_ptr); free(capas_wT); 
+                free(w_ptr); free(bias_ptr); free(capas); free(i_w_ptr); free(i_capa); free(wT_ptr); free(capas_wT); free(h_output); 
                 for(int i=0; i<n_capas; i++)
                 {
                     free(capasGEMM[i]);
                 } 
                 free(capasGEMM); 
+                cudaFree(d_input);
                 cudaFree(d_wT);
-                cudaFree(d_capasGEMM);
             }
         };
         

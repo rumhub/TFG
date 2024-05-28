@@ -144,7 +144,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     liberar_memoria = true;
     vector<float> neuronas_capa, w_1D;
     vector<vector<float>> w_2D;
-    int n_neuronas = 0, n_pesos = 0, n_neuronas_GEMM = 0;
+    int n_neuronas = 0, n_pesos = 0;
     this->mini_batch = mini_batch;
     this->n_capas = n_capas;
     this->capas = (int *)malloc(n_capas * sizeof(int));
@@ -152,7 +152,6 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     this->i_capa = (int *)malloc(n_capas * sizeof(int));
     this->i_w_ptr = (int *)malloc(n_capas * sizeof(int));
     this->capasGEMM = (float **)malloc(n_capas * sizeof(float*));
-    this->h_i_capasGEMM = (int *)malloc(n_capas * sizeof(int));
 
     // Neuronas ------------------------------------------------------------------
     for(int i=0; i<n_capas; i++)
@@ -165,14 +164,6 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
         capasGEMM[i] = (float *)malloc((capas[i]+1) * mini_batch * sizeof(float)); 
     }
     this->n_neuronas = n_neuronas;
-
-    this->h_i_capasGEMM[0] = 0;
-    for(int i=1; i<n_capas; i++)
-    {
-        this->h_i_capasGEMM[i] = h_i_capasGEMM[i-1] + (capas[i-1] + 1) * mini_batch;
-        n_neuronas_GEMM += h_i_capasGEMM[i];
-    }
-
 
     this->bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
     this->i_wT = (int *)malloc(n_capas * n_neuronas * sizeof(int));
@@ -227,12 +218,16 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     mostrar_pesos_Traspuestos_ptr();
     
 
+    h_output = (float *)malloc(capas[1] * mini_batch  * sizeof(float));
     // Punteros device
+    cudaMalloc((void **) &d_input, mini_batch * (capas[0]+1) * sizeof(float));      // Capa 0
+    
+    cudaMalloc((void **) &d_output, capas[1] * mini_batch * sizeof(float));      // Capa 0
+    
     cudaMalloc((void **) &d_wT, n_pesos * n_neuronas * sizeof(float));      // Capa 0
+
     cudaMemcpy(d_wT, wT_ptr,  n_pesos * n_neuronas * sizeof(float), cudaMemcpyHostToDevice);
     
-
-    cudaMalloc((void **) &d_capasGEMM, n_neuronas_GEMM * mini_batch * sizeof(float));      // Capa 0
 
     
     block_size = 4;
@@ -383,8 +378,8 @@ void FullyConnected::generar_pesos_ptr(const int &capa)
     int cont = 0;
     for(int i=0; i<this->capas[capa]; ++i)
         for(int j=0; j<this->capas[capa+1]; ++j)
-            this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = cont++;
-            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
+            this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
+            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = cont++;
             //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = (float) (i+1)/10;
 }
 
@@ -520,74 +515,48 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 */
 void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr)
 {
-    float * capa = capasGEMM[0];
+    int c = 0;
+    float * capa = capasGEMM[c];
+    
     int cont = 0;
-
-    for(int c=0; c<n_capas-2; c++)
+    for(int i=0; i<this->capas[c]; i++)
     {
-        // Tamaño de grid para propagación hacia delante
-        this->grid_forward.x = (mini_batch  + block_size -1) / block_size; 
-        this->grid_forward.y = (capas[c+1] + block_size -1) / block_size;
+        for(int j=0; j<this->mini_batch; j++)
+            capa[cont++] = x[i*mini_batch + j];
+    }
 
-        if(c == 0)
-        {
-            for(int i=0; i<this->capas[c]; i++)
-            {
-                for(int j=0; j<this->mini_batch; j++)
-                    capa[cont++] = x[i*mini_batch + j];
-            }
-        }
-        cont = this->capas[c] * this->mini_batch;
+    // Añadir última fila con todo a 1.0 para añadir bias
+    for(int i=0; i<this->mini_batch; i++)
+        capa[cont++] = 1.0;
+
+    cout << "CAPA 0" << endl;
+    for(int i=0; i<this->capas[c]+1; i++)
+    {
+        for(int j=0; j<this->mini_batch; j++)
+            cout << capa[i*mini_batch + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+    
+
    
-        // Añadir última fila con todo a 1.0 para añadir bias
-        for(int i=0; i<this->mini_batch; i++)
-            capa[cont++] = 1.0;     
+    cudaMemcpy(d_input, capa,  mini_batch * (capas[c]+1) * sizeof(float), cudaMemcpyHostToDevice);
 
-        cudaMemcpy(d_capasGEMM + h_i_capasGEMM[c], capa,  mini_batch * (capas[c]+1) * sizeof(float), cudaMemcpyHostToDevice);
-        multiplicarMatricesGPU_fully<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_capasGEMM + h_i_capasGEMM[c], d_capasGEMM + h_i_capasGEMM[c+1]);
+    multiplicarMatricesGPU_fully<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT, d_input, d_output);
 
-        capa = capasGEMM[c+1];
-        cudaMemcpy(capa, d_capasGEMM + h_i_capasGEMM[c+1],  capas[c+1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-        cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess) 
-            printf("Error: %s\n", cudaGetErrorString(err));
-    }
 
-    cout << " -------------------------------------------------------- " << endl;
-    capa = capasGEMM[0];
-    for(int c=0; c<n_capas-2; c++)
+    
+    cudaMemcpy(h_output, d_output,  capas[1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+
+
+    cout << "CAPA 1 A" << endl;
+    for(int i=0; i<this->capas[1]; i++)
     {
-        cout << "CAPA " << c << " (input)" << endl;
-        for(int i=0; i<this->capas[c]+1; i++)
-        {
-            for(int j=0; j<this->mini_batch; j++)
-                cout << capa[i*mini_batch + j] << " ";
-            cout << endl;
-        }
-        cout << endl;
-        
-
-        capa = capasGEMM[c+1];
-        cudaMemcpy(capa, d_capasGEMM + h_i_capasGEMM[c+1],  capas[c+1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-        cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess) 
-            printf("Error: %s\n", cudaGetErrorString(err));
-        
-
-        cout << "CAPA " << c+1 << " A" << " (output)" << endl;
-        for(int i=0; i<this->capas[c+1]; i++)
-        {
-            for(int j=0; j<this->mini_batch; j++)
-                cout << capa[i*mini_batch + j] << " ";
-            cout << endl;
-        }
+        for(int j=0; j<this->mini_batch; j++)
+            cout << h_output[i*mini_batch + j] << " ";
         cout << endl;
     }
-
-
-
-    cout << "Capa Softmax en desarrollo...\n";
-
+    cout << endl;
 
 }
 
@@ -1157,8 +1126,7 @@ int main()
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
     int tam_x = 3, n_datos = 2, n_clases = 2;
-    vector<int> capas = {tam_x, 5, 3, 7, n_clases};
-    //vector<int> capas = {tam_x, 2, 3, 2, 4, n_clases};
+    vector<int> capas = {tam_x, 2, 3, n_clases};
     vector<vector<float>> a_cpu, z_cpu, grad_a_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
     vector<vector<vector<float>>> grad_w_cpu;
     vector<float> x_cpu;
@@ -1211,7 +1179,7 @@ int main()
 
     // GPU --------------
     cout << " ---------- GPU ---------- " << endl; 
-    int n_capas = 5;
+    int n_capas = 4;
     int *capas_ptr = (int *)malloc(n_capas * sizeof(int));
     int *i_capa = (int *)malloc(n_capas * sizeof(int));
 
