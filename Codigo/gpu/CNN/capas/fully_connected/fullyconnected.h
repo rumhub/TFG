@@ -45,14 +45,18 @@ class FullyConnected
 
         // Tamaño de bloque
         dim3 block;
+        dim3 block_softmax;
 
         // Tamaño de grid
         dim3 grid_forward;          // Grid para realizar la propagación hacia delante
+        dim3 grid_softmax;          
         
         int block_size;
 
         size_t smem;            // Memoria compartida requerida por el kernel
-
+        size_t smem_softmax;
+        float * max_por_bloque = nullptr;
+        float * max_total = nullptr;
 
 
     public:
@@ -88,6 +92,7 @@ class FullyConnected
         void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
         void escalar_pesos_ptr(float clip_value);
         void matrizTranspuesta(float* matrix, int rows, int cols);
+        void matrizTranspuesta(float* X, float *Y, int rows, int cols);
 
         // CPU ---------------------------------------
         // Constructores

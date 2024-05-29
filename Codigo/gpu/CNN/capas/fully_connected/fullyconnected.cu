@@ -3,9 +3,11 @@
 using namespace std;
 
 /*
-    Emplea tiles. Un tile por bloque. Usa memoria compartida
+    Realiza una multiplicación matricial con tiles. Un tile por bloque. Usa memoria compartida.
+    Además, añade una fila al final de la matriz "B" con todos sus valores a 1.
+    Por último, al establecer el valor final de cada casilla de la matriz resultado C, aplica la función de activación ReLU.
 */
-__global__ void multiplicarMatricesGPU_y_add_1s(int M, int N, int K, const float *A, const float *B, float *C)
+__global__ void forward_capas_intermedias(int M, int N, int K, const float *A, const float *B, float *C, bool aplicar_relu)
 {
     // Memoria compartida dinámica
 	extern __shared__ float sdata[];
@@ -68,10 +70,66 @@ __global__ void multiplicarMatricesGPU_y_add_1s(int M, int N, int K, const float
         __syncthreads();
     }
 
+    // Establecer valor en matriz final
     if(iy < M && ix < N)
-        C[iy*N + ix] = sum;
+    {
+        // Aplicar ReLU si estamos en alguna capa intermedia
+        if(aplicar_relu)
+            (sum > 0) ? C[iy*N + ix] = sum : C[iy*N + ix] = 0.0;
+        else                        
+            C[iy*N + ix] = sum;     // No aplicar ReLU si estamos en SoftMax
+    }    
+    
 }
 
+/*
+    Entrada: Matrix X(MxK)
+    Salida: Y(K), cada Y[i] contiene el valor máximo de la columna X[i]
+*/
+__global__ void kernel_sofmax(int M, int K, float *X)
+{
+	int tid = threadIdx.x,
+        i = blockIdx.x * blockDim.x + threadIdx.x;
+    
+    float maximo = -9999999, sum = 0.0;
+
+    if(i < M*K) 
+    {
+        for(int j=0; j<K; j++)
+            maximo = max(maximo, X[i*K + j]);     // Cada hebra obtiene el máximo de una fila
+
+        // Sincronizar hebras
+    	__syncthreads();
+
+        // Normalizar con el valor máximo de cada fila (dato del minibatch)
+        for(int j=0; j<K; j++)
+            X[i*K + j] -= maximo;
+
+        // Sincronizar hebras
+    	__syncthreads();
+
+        // Realizar la suma exponencial de cada fila
+        for(int j=0; j<K; j++)
+            sum += expf(X[i*K + j]);
+
+        // Normalizar cada fila
+        for(int j=0; j<K; j++)
+            X[i*K + j] = expf(X[i*K + j]) / sum;
+        
+    }
+    
+}
+
+__global__ void matrizTranspuesta_GPU(float* X, float *Y, int rows, int cols)
+{
+	int tid = threadIdx.x,
+        i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // Cada hebra se encarga de una fila
+    if(i < rows)
+        for (int j = 0; j < cols; j++)
+            Y[j * rows + i] = X[i * cols + j];
+}
 
 /*
     CONSTRUCTOR de la clase FullyConnected
@@ -253,6 +311,19 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     this->smem = (2*block.x * block.y) *sizeof(float);
     
 
+    // Capa SoftMax ------------
+    this->block_softmax.x = this->block.x;
+    this->block_softmax.y = 1;
+    this->grid_softmax.x = (capas[n_capas-1]  + block_softmax.x -1) / block_softmax.x; 
+    this->grid_softmax.y = 1; 
+
+    this->smem_softmax = block_softmax.x*sizeof(float);   // Memoria compartida
+
+    this->max_por_bloque = (float *)malloc(grid_softmax.x * sizeof(float));
+    this->max_total = (float *)malloc(sizeof(float));
+    
+
+
 };
 
 void FullyConnected::mostrar_pesos_ptr()
@@ -363,7 +434,8 @@ void FullyConnected::generar_pesos(const int &capa)
     int cont = 0;
     for(int i=0; i<this->a[capa].size(); ++i)
         for(int j=0; j<this->a[capa+1].size(); ++j)
-            this->w[capa][i][j] = distribution(gen);
+            this->w[capa][i][j] = cont++;
+            //this->w[capa][i][j] = distribution(gen);
 }
 
 void FullyConnected::copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_)
@@ -390,8 +462,8 @@ void FullyConnected::generar_pesos_ptr(const int &capa)
     int cont = 0;
     for(int i=0; i<this->capas[capa]; ++i)
         for(int j=0; j<this->capas[capa+1]; ++j)
-            this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = cont++;
-            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
+            this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
+            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = cont++;
             //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = (float) (i+1)/10;
 }
 
@@ -529,6 +601,10 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
 {
     float * capa = capasGEMM[0];
 
+    float *d_softmax = nullptr;
+    
+    cudaMalloc((void **) &d_softmax, capas[n_capas-1] * mini_batch * sizeof(float)); 
+
     // Copiar entrada X en capasGEMM[0]
     for(int i=0; i<this->capas[0]; i++)
         for(int j=0; j<this->mini_batch; j++)
@@ -538,19 +614,26 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
     cudaMemcpy(d_capasGEMM, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
 
     // Capas intermedias
-    for(int c=0; c<n_capas-2; c++)
+    for(int c=0; c<n_capas-1; c++)
     {
         // Tamaño de grid para propagación hacia delante
         this->grid_forward.x = (mini_batch  + block_size -1) / block_size; 
         this->grid_forward.y = (capas[c+1] + block_size -1) / block_size;
 
-        multiplicarMatricesGPU_y_add_1s<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_capasGEMM + h_i_capasGEMM[c], d_capasGEMM + h_i_capasGEMM[c+1]);
+        // Aplicar ReLU en capas intermedias, pero en SoftMax no
+        forward_capas_intermedias<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_capasGEMM + h_i_capasGEMM[c], d_capasGEMM + h_i_capasGEMM[c+1], (c!=n_capas-2));
 
         cudaError_t err = cudaGetLastError();
         if (err != cudaSuccess) 
             printf("Error: %s\n", cudaGetErrorString(err));
     }
 
+    // Transpuesta para tener 1 fila por dato de minibatch 
+    matrizTranspuesta_GPU<<<grid_softmax, block_softmax>>>(d_capasGEMM + h_i_capasGEMM[n_capas-1], d_softmax, capas[n_capas-1], mini_batch);
+    kernel_sofmax<<<grid_softmax, block_softmax>>>(mini_batch, capas[n_capas-1], d_softmax);
+
+    // ---------------------------------------------------------------
+    // ---------------------------------------------------------------
     cout << " -------------------------------------------------------- " << endl;
     capa = capasGEMM[0];
     for(int c=0; c<n_capas-2; c++)
@@ -572,11 +655,16 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
         cout << endl;
     }
 
-
-
-    cout << "Capa Softmax en desarrollo...\n";
-
-
+    capa = capasGEMM[n_capas-1];
+    cudaMemcpy(capa, d_softmax,  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+    cout << "CAPA SoftMax " << endl;
+    for(int i=0; i<this->mini_batch; i++)
+    {
+        for(int j=0; j<this->capas[n_capas-1]; j++)
+            cout << capa[i*this->capas[n_capas-1] + j]<< " ";
+        cout << endl;
+    }
+    cout << endl;
 }
 
 
@@ -628,6 +716,7 @@ void FullyConnected::forwardPropagation_ptr(float *x, float *a_ptr, float *z_ptr
                 z_ptr[i_capa[i+1] + k] = relu(a_ptr[i_capa[i+1] + k]);
         }else
         {
+            
             // En la capa output se emplea softmax como función de activación
             sum = 0.0;
             max = a_ptr[i_capa[i+1]];
@@ -1088,6 +1177,14 @@ void FullyConnected::actualizar_parametros(const vector<vector<vector<float>>> &
             this->bias[i][j] -= this->lr * grad_b[i][j];
 }
 
+
+void FullyConnected::matrizTranspuesta(float* X, float *Y, int rows, int cols)
+{
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            Y[j * rows + i] = X[i * cols + j];
+}
+
 void FullyConnected::matrizTranspuesta(float* matrix, int rows, int cols)
 {
     // Allocate a new matrix to hold the transposed data
@@ -1144,7 +1241,7 @@ int main()
 {
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
-    int tam_x = 3, n_datos = 2, n_clases = 2;
+    int tam_x = 3, n_datos = 3, n_clases = 2;
     vector<int> capas = {tam_x, 5, 3, 7, n_clases};
     //vector<int> capas = {tam_x, 2, 3, 2, 4, n_clases};
     vector<vector<float>> a_cpu, z_cpu, grad_a_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
@@ -1152,6 +1249,9 @@ int main()
     vector<float> x_cpu;
     vector<vector<float>> X_cpu, grad_b_cpu, grad_x_cpu;
     vector<int> batch_cpu(n_datos);
+
+    
+
     /*
     FullyConnected fully_cpu(capas, 0.1);
     a_cpu = fully_cpu.get_a();
@@ -1242,7 +1342,7 @@ int main()
     for(int i=0; i<n_datos; i++)
         batch_gpu[i] = i;
 
-    int cont = 0;
+    int cont = -2;
     for(int i=0; i<n_datos; i++)
         for(int j=0; j<tam_x; j++)
         {
@@ -1251,12 +1351,12 @@ int main()
             //X_gpu[i*tam_x + j] = X_cpu[i][j];
         }
 
-
+    
     for(int i=0; i<n_datos; i++)
         for(int j=0; j<n_clases; j++)
-            y_gpu[i*n_clases + j] = y_cpu[i][j];
+            (j == 1) ? y_gpu[i*n_clases + j] = 1.0 : y_gpu[i*n_clases + j] = 0.0;
 
-
+    
     cout << "DATOS" << endl;
     for(int i=0; i<n_datos; i++)
     {
@@ -1282,7 +1382,7 @@ int main()
     }
     cout << endl;
     
-
+    
     
     float *a_ptr = (float *)malloc(n_neuronas * sizeof(float));
     float *z_ptr = (float *)malloc(n_neuronas * sizeof(float));
@@ -1293,23 +1393,23 @@ int main()
     for(int i=0; i<n_neuronas; i++)
         grad_bias_ptr[i] = 0.0;
 
-    /*
+    
     //fully_gpu.copiar_w_de_vector_a_ptr(w_cpu_copy);
     //fully_gpu.mostrar_neuronas_ptr();
     //mostrar_ptr_2D(X_gpu, n_datos, tam_x);
     //mostrar_ptr_2D(y_gpu, n_datos, n_clases);
-    cout << "Entr: " << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
-    cout << "Acc: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
+    //cout << "Entr: " << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
+    //cout << "Acc: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
 
     
-    float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
-    fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
-    fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
-    fully_gpu.escalar_pesos_ptr(2);
-    fully_gpu.mostrar_pesos_ptr();
-    */
+    //float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
+    //fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
+    //fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
+    //fully_gpu.escalar_pesos_ptr(2);
+    //fully_gpu.mostrar_pesos_ptr();
+    
 
-
+    
     cout << "a_ptr" << endl;
     for(int i=0; i<n_datos; i++)
     {
@@ -1328,12 +1428,29 @@ int main()
     cout << endl;
 
 
+    cout << "z_ptr" << endl;
+    for(int i=0; i<n_datos; i++)
+    {
+        fully_gpu.forwardPropagation_ptr(X_gpu + i*capas[0], a_ptr, z_ptr);
+        for(int c=0; c<n_capas; c++)
+        {
+            for(int j=0; j<capas[c]; j++)
+            {
+                cout << z_ptr[i_capa[c] + j] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+
+    }
+    cout << endl;
+
     // -------------------------------------------------------------
     fully_gpu.forwardPropagationGEMM(X_gpuT, a_ptr, z_ptr);
     
 
-    //free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(batch_gpu); free(a_ptr); free(z_ptr); free(grad_x_gpu); free(grad_bias_ptr); free(grad_a_ptr);
-    
+    free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(batch_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
+    //free(grad_x_gpu);
 
     return 0;
 }
