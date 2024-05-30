@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.11)  11 MAY 2024 17:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.3.11)  30 MAY 2024 09:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2323,15 +2323,15 @@ LaTeX Info: Redefining \. on input line 72.
 LaTeX Info: Redefining \% on input line 72.
 [67 <./imagenes/gemm_fully_forward.jpg> <./imagenes/gemm_fully_forward_minibatc
 h.jpg>]
-<imagenes/gemm_fully_back_input_minibatch.jpg, id=1370, 1522.68875pt x 862.2212
-5pt>
+<imagenes/gemm_fully_back_input_minibatch.jpg, id=1370, 1596.96625pt x 907.39pt
+>
 File: imagenes/gemm_fully_back_input_minibatch.jpg Graphic file (type jpg)
 <use imagenes/gemm_fully_back_input_minibatch.jpg>
 Package pdftex.def Info: imagenes/gemm_fully_back_input_minibatch.jpg  used on 
 input line 76.
-(pdftex.def)             Requested size: 380.67126pt x 215.55478pt.
+(pdftex.def)             Requested size: 399.24059pt x 226.84694pt.
 
-Overfull \hbox (20.67126pt too wide) in paragraph at lines 76--77
+Overfull \hbox (39.24059pt too wide) in paragraph at lines 76--77
  [][] 
  []
 
@@ -2847,7 +2847,7 @@ xyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 .pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
 cm/cmti10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (105 pages, 7959787 bytes).
+Output written on proyecto.pdf (105 pages, 7962952 bytes).
 PDF statistics:
  1723 PDF objects out of 1728 (max. 8388607)
  544 named destinations out of 1000 (max. 500000)
