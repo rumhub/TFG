@@ -138,6 +138,30 @@ __global__ void matrizTranspuesta_GPU(float* X, float *Y, int rows, int cols)
             Y[j * rows + i] = X[i * cols + j];
 }
 
+
+__global__ void kernel_back_sofmax(int M, int K, float *grad_a, float *Z, float *Y, int n_clases)
+{
+    int tid = threadIdx.x,
+    i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if(i < M*K) 
+    {
+        // Cada hebra se encarga de una fila
+        for(int j=0; j<K; ++j)
+            grad_a[i*K + j] = Z[i*K + j] - Y[i*n_clases + j];
+    
+    }
+
+    /*
+    // Capa SoftMax -----------------------------------------------
+    // Se calcula gradiente del error respecto a cada Z_k
+    for(int k=0; k<capas[i_output]; ++k)
+        grad_a_ptr[i_capa[i_output] + k] = z_ptr[i_capa[i_output] + k] - y[batch[i]*capas[i_output] + k];
+        // grad_Zk = O_k - y_k
+    */
+}
+
+
 /*
     CONSTRUCTOR de la clase FullyConnected
     --------------------------------------
@@ -296,7 +320,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
         }
     }
 
-    mostrar_pesos_Traspuestos_ptr();
+    //mostrar_pesos_Traspuestos_ptr();
     
 
     // Punteros device
@@ -306,6 +330,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
 
     cudaMalloc((void **) &d_z, n_neuronas_GEMM * mini_batch * sizeof(float));      
     cudaMalloc((void **) &d_a, n_neuronas_GEMM * mini_batch * sizeof(float));      
+    cudaMalloc((void **) &d_y, capas[n_capas-1] * mini_batch * sizeof(float));      
 
     
     block_size = 4;
@@ -599,7 +624,7 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 
     @return Se actualizan los valores de @a y @z
 */
-void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr)
+void FullyConnected::forwardPropagationGEMM(float *x)
 {
     float * capa = capasGEMM[0];
 
@@ -634,6 +659,7 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
 
     // ---------------------------------------------------------------
     // ---------------------------------------------------------------
+    /*
     cout << " ---------------------------- A ---------------------------- " << endl;
     capa = capasGEMM[0];
     for(int c=0; c<n_capas-1; c++)
@@ -687,7 +713,7 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
         cout << endl;
     }
     
-
+    
     capa = capasGEMM[n_capas-1];
     cudaMemcpy(capa, d_softmax,  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
     cout << "CAPA SoftMax " << endl;
@@ -698,6 +724,7 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
         cout << endl;
     }
     cout << endl;
+    */
 }
 
 
@@ -939,6 +966,47 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
 */
 //void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
+void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr)
+{
+    float epsilon = 0.000000001;
+    int i_output = n_capas -1, i_last_h = i_output-1; // índice de la capa output, Índice de la capa h1 respectivamente
+    int n_clases = capas[n_capas-1];
+    float *grad_a = (float *)malloc(capas[n_capas-1] * mini_batch * sizeof(float));
+    dim3 grid_back_softmax((mini_batch  + block_softmax.x -1) / block_softmax.x, 1); 
+    cudaMemcpy(d_y, y, n_clases * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
+
+    forwardPropagationGEMM(x);
+    kernel_back_sofmax<<<grid_back_softmax, block_softmax>>>(mini_batch, n_clases, d_a + i_capasGEMM[n_capas-1], d_softmax, d_y, n_clases);
+
+    cudaMemcpy(grad_a, d_a + i_capasGEMM[n_capas-1], capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+
+
+    cout << "grad_a" << endl;
+    for(int i=0; i<mini_batch; i++)
+    {
+        cout << "grad_a_GEMM " << i << endl;
+        for(int p=0; p<capas[n_capas-1]; p++)
+            cout << grad_a[i*capas[n_capas-1] + p] << " ";
+        cout << endl << endl;
+    }
+}
+
+
+/*
+    @brief      Entrenamiento de la red
+    @x          Conjunto de datos de entrada
+    @y          Etiquetas asociadas a cada dato de entrada
+    @batch      Conjunto de índices desordenados tal que para cada dato de entrada x[i], este está asociado con y[batch[i]]
+    @n_datos    Número de datos con los que entrenar
+    @grad_pesos Gradiente de cada peso de la red
+    @grad_b     Gradiente de cada bias de la red
+    @grad_x     Gradiente respecto a la entrada x
+    @a          Neuronas de la red antes de aplicar la función de activación
+    @z          Neuronas de la red después de aplicar la función de activación
+    @grad_a     Gradiente respecto a cada neurona de la red antes de aplicar la función de activación
+    @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
+*/
+//void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
 void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr)
 {
     float epsilon = 0.000000001;
@@ -950,6 +1018,21 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
         float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
         forwardPropagation_ptr(x_i, a_ptr, z_ptr);
         
+        // ---------------------
+        // ---------------------
+        /*
+        cout << "z_ptr " << i << endl;
+        for(int c=0; c<n_capas; c++)
+        {
+            for(int j=0; j<capas[c]; j++)
+                cout << z_ptr[i_capa[c] + j] << " ";
+            cout << endl;
+        }
+        cout << endl;
+        */
+        // ---------------------
+        // ---------------------
+
         // Propagación hacia detrás
         // Inicializar a 0 gradiente respecto a input
         for(int _i = 0; _i < n_capas; ++_i)
@@ -961,7 +1044,6 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
         for(int k=0; k<capas[i_output]; ++k)
             grad_a_ptr[i_capa[i_output] + k] = z_ptr[i_capa[i_output] + k] - y[batch[i]*capas[i_output] + k];
             // grad_Zk = O_k - y_k
-
 
         // Pesos h_last - Softmax
         for(int p=0; p<capas[i_last_h]; ++p)
@@ -1014,6 +1096,23 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
         // Copiar gradiente respecto a input de primera capa en grad_x[i]
         for(int j=0; j<capas[0]; j++)
             grad_x[i*capas[0] + j] = grad_a_ptr[j];
+
+
+        // ---------------------
+        // ---------------------
+        
+        cout << "grad_a_ptr " << i << endl;
+        for(int c=0; c<n_capas; c++)
+        {
+            for(int j=0; j<capas[c]; j++)
+                cout << grad_a_ptr[i_capa[c] + j] << " ";
+            cout << endl;
+        }
+        cout << endl;
+        
+        // ---------------------
+        // ---------------------
+
     } 
 }
 
@@ -1435,14 +1534,14 @@ int main()
     //cout << "Acc: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
 
     
-    //float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
-    //fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
+    float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
+    fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
     //fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
     //fully_gpu.escalar_pesos_ptr(2);
     //fully_gpu.mostrar_pesos_ptr();
     
 
-    
+    /*    
     cout << "a_ptr" << endl;
     for(int i=0; i<n_datos; i++)
     {
@@ -1459,7 +1558,7 @@ int main()
 
     }
     cout << endl;
-
+    
     cout << "z_ptr" << endl;
     for(int i=0; i<n_datos; i++)
     {
@@ -1476,13 +1575,15 @@ int main()
 
     }
     cout << endl;
+    */
 
     // -------------------------------------------------------------
-    fully_gpu.forwardPropagationGEMM(X_gpuT, a_ptr, z_ptr);
+    //fully_gpu.forwardPropagationGEMM(X_gpuT);
+    fully_gpu.trainGEMM(X_gpuT, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
     
 
     free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(batch_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
-    //free(grad_x_gpu);
+    free(grad_x_gpu);
 
     return 0;
 }
