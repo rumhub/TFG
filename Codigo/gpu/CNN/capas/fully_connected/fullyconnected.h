@@ -40,6 +40,7 @@ class FullyConnected
 
         // Punteros device
         float * d_wT = nullptr;
+        float * d_w = nullptr;
         float * d_z = nullptr;
         float * d_a = nullptr;
         float * d_y = nullptr;

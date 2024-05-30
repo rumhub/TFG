@@ -139,7 +139,7 @@ __global__ void matrizTranspuesta_GPU(float* X, float *Y, int rows, int cols)
 }
 
 
-__global__ void kernel_back_sofmax(int M, int K, float *grad_a, float *Z, float *Y, int n_clases)
+__global__ void kernel_back_softmax(int M, int K, float *grad_a, float *Z, float *Y, int n_clases)
 {
     int tid = threadIdx.x,
     i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -159,6 +159,75 @@ __global__ void kernel_back_sofmax(int M, int K, float *grad_a, float *Z, float 
         grad_a_ptr[i_capa[i_output] + k] = z_ptr[i_capa[i_output] + k] - y[batch[i]*capas[i_output] + k];
         // grad_Zk = O_k - y_k
     */
+}
+
+/*
+    Emplea tiles. Un tile por bloque. Usa memoria compartida
+*/
+__global__ void backprop_capas_intermedias(int M, int N, int K, const float *A, const float *B, float *C, bool aplicar_deriv_relu)
+{
+    // Memoria compartida dinámica
+	extern __shared__ float sdata[];
+
+    // Convertir de índices de hebra a índices de matriz 
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x, 
+        idA = iy*K + ix, idB = iy*N + ix, id_tile = threadIdx.y * blockDim.x + threadIdx.x;
+    //int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+    int n_tiles = (K + blockDim.x - 1) / blockDim.x;
+
+    // Punteros a A y B
+    float *sA = sdata,
+          *sB = sdata + blockDim.x * blockDim.y;
+
+    float sum = 0.0f;    
+
+    int lim = blockDim.x;
+
+    // Si tam_bloque > tam_A
+    if(lim > K)
+        lim = K;
+
+    /*
+        Para multiplicar A(MxK) x B(KxN) hay que multiplicar una fila de A x una columna de B
+        Es decir, multiplicar KxK elementos y sumarlos
+        Un tile es más pequeño que K -> Dividir K en tiles e iterar sobre ellos
+    */
+    for(int tile=0; tile < n_tiles; ++tile)
+    {
+        idA = iy*K + tile * blockDim.x + threadIdx.x;
+        idB = (tile * blockDim.x + threadIdx.y)*N + ix;
+       
+        // Cargar submatrices de A y B en memoria compartida (tamaño tilex x tiley)
+        // Cada hebra carga en memoria compartida un elemento de A y otro de B
+        (iy < M && tile * blockDim.x + threadIdx.x < K) ? sA[id_tile] = A[idA] : sA[id_tile] = 0.0;
+        (tile * blockDim.x + threadIdx.y < K && ix < N) ? sB[id_tile] = B[idB] : sB[id_tile] = 0.0;
+
+        // Sincronizar hebras
+        __syncthreads();
+
+        // Realizar multiplicación matricial
+        if(iy < M && ix < N)
+        {
+            // Si última iteración
+            if(tile == n_tiles -1)
+                lim = K - tile * blockDim.x;
+
+            // Cada hebra calcula una posición de C (una fila de A * una columna de B)
+            for (int i = 0; i < lim; i++) 
+                sum += sA[threadIdx.y*blockDim.x + i] * sB[threadIdx.x + i*blockDim.x];
+        }
+
+        // Sincronizar hebras
+        __syncthreads();
+    }
+
+    if(iy < M && ix < N)
+    {
+        if(aplicar_deriv_relu)
+            (C[iy*N + ix] > 0) ? C[iy*N + ix] = sum : C[iy*N + ix] = 0;
+        else 
+            C[iy*N + ix] = sum;
+    }
 }
 
 
@@ -325,8 +394,9 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
 
     // Punteros device
     cudaMalloc((void **) &d_wT, n_pesos * n_neuronas * sizeof(float));      
+    cudaMalloc((void **) &d_w, n_pesos * n_neuronas * sizeof(float));      
     cudaMemcpy(d_wT, wT_ptr,  n_pesos * n_neuronas * sizeof(float), cudaMemcpyHostToDevice);
-    
+    cudaMemcpy(d_w, w_ptr,  n_pesos * n_neuronas * sizeof(float), cudaMemcpyHostToDevice);
 
     cudaMalloc((void **) &d_z, n_neuronas_GEMM * mini_batch * sizeof(float));      
     cudaMalloc((void **) &d_a, n_neuronas_GEMM * mini_batch * sizeof(float));      
@@ -975,20 +1045,184 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
     dim3 grid_back_softmax((mini_batch  + block_softmax.x -1) / block_softmax.x, 1); 
     cudaMemcpy(d_y, y, n_clases * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
 
+    // Propagación hacia delante de cada dato perteneciente al minibatch
     forwardPropagationGEMM(x);
-    kernel_back_sofmax<<<grid_back_softmax, block_softmax>>>(mini_batch, n_clases, d_a + i_capasGEMM[n_capas-1], d_softmax, d_y, n_clases);
+
+    // Cálculo del gradiente respecto a la entrada de la capa SoftMax
+    kernel_back_softmax<<<grid_back_softmax, block_softmax>>>(mini_batch, n_clases, d_z + i_capasGEMM[n_capas-1], d_softmax, d_y, n_clases);
+
+
+    // Capas intermedias
+
+    // Transpuesta para tener 1 columna por dato de minibatch 
+    matrizTranspuesta_GPU<<<grid_back_softmax, block_softmax>>>(d_z + i_capasGEMM[n_capas-1], d_a + i_capasGEMM[n_capas-1], mini_batch, capas[n_capas-1]);
+
+    
+    // Capas intermedias
+    
+    for(int c=n_capas-1; c>0; c--)
+    {
+        // Tamaño de grid para propagación hacia delante
+        this->grid_forward.x = (mini_batch  + block_size -1) / block_size; 
+        this->grid_forward.y = (capas[c-1] + block_size -1) / block_size;
+
+        // Aplicar ReLU en capas intermedias, pero en SoftMax no
+        backprop_capas_intermedias<<<grid_forward, block, smem>>>(capas[c-1], mini_batch, capas[c], d_w + i_w_ptr[c-1], d_a + i_capasGEMM[c], d_a + i_capasGEMM[c-1], (c>1));
+
+        cudaError_t err = cudaGetLastError();
+        if (err != cudaSuccess) 
+            printf("Error: %s\n", cudaGetErrorString(err));
+    }
+    
+    
 
     cudaMemcpy(grad_a, d_a + i_capasGEMM[n_capas-1], capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
 
-
     cout << "grad_a" << endl;
-    for(int i=0; i<mini_batch; i++)
+    for(int i=0; i<capas[n_capas-1]; i++)
     {
-        cout << "grad_a_GEMM " << i << endl;
-        for(int p=0; p<capas[n_capas-1]; p++)
-            cout << grad_a[i*capas[n_capas-1] + p] << " ";
-        cout << endl << endl;
+        for(int p=0; p<mini_batch; p++)
+            cout << grad_a[i*mini_batch + p] << " ";
+        cout << endl;
     }
+    cout << endl << endl;
+
+    cout << " ---------------------------- A ---------------------------- " << endl;
+    float *capa = capasGEMM[0];
+    for(int c=0; c<n_capas; c++)
+    {        
+        capa = capasGEMM[c];
+        cudaMemcpy(capa, d_a + i_capasGEMM[c],  capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+        cudaError_t err = cudaGetLastError();
+        if (err != cudaSuccess) 
+            printf("Error: %s\n", cudaGetErrorString(err));
+
+        cout << "CAPA " << c << " A" << endl;
+        for(int i=0; i<this->capas[c]; i++)
+        {
+            for(int j=0; j<this->mini_batch; j++)
+                cout << capa[i*mini_batch + j] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+
+
+    /*
+    // Capas intermedias
+    for(int c=0; c<n_capas-1; c++)
+    {
+        // Tamaño de grid para propagación hacia delante
+        this->grid_forward.x = (mini_batch  + block_size -1) / block_size; 
+        this->grid_forward.y = (capas[c+1] + block_size -1) / block_size;
+
+        // Aplicar ReLU en capas intermedias, pero en SoftMax no
+        forward_capas_intermedias<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_z + i_capasGEMM[c], d_z + i_capasGEMM[c+1], d_a + i_capasGEMM[c+1], (c!=n_capas-2));
+
+        cudaError_t err = cudaGetLastError();
+        if (err != cudaSuccess) 
+            printf("Error: %s\n", cudaGetErrorString(err));
+    }
+
+    // Transpuesta para tener 1 fila por dato de minibatch 
+    matrizTranspuesta_GPU<<<grid_softmax, block_softmax>>>(d_z + i_capasGEMM[n_capas-1], d_softmax, capas[n_capas-1], mini_batch);
+    kernel_sofmax<<<grid_softmax, block_softmax>>>(mini_batch, capas[n_capas-1], d_softmax, d_a + i_capasGEMM[n_capas-1]);
+
+    
+    */
+
+
+    //forward_capas_intermedias<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_z + i_capasGEMM[c], d_z + i_capasGEMM[c+1], d_a + i_capasGEMM[c+1], (c!=n_capas-2));
+
+
+
+
+    /*
+    for(int i=0; i<n_datos; ++i)
+    {
+        // Propagación hacia delante
+        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
+        forwardPropagation_ptr(x_i, a_ptr, z_ptr);
+        
+        // ---------------------
+        // ---------------------
+        cout << "z_ptr " << i << endl;
+        for(int c=0; c<n_capas; c++)
+        {
+            for(int j=0; j<capas[c]; j++)
+                cout << z_ptr[i_capa[c] + j] << " ";
+            cout << endl;
+        }
+        cout << endl;
+        // ---------------------
+        // ---------------------
+
+        // Propagación hacia detrás
+        // Inicializar a 0 gradiente respecto a input
+        for(int _i = 0; _i < n_capas; ++_i)
+            for(int j = 0; j < capas[_i]; ++j)
+                grad_a_ptr[i_capa[_i] + j] = 0.0;
+
+        // Capa SoftMax -----------------------------------------------
+        // Se calcula gradiente del error respecto a cada Z_k
+        for(int k=0; k<capas[i_output]; ++k)
+            grad_a_ptr[i_capa[i_output] + k] = z_ptr[i_capa[i_output] + k] - y[batch[i]*capas[i_output] + k];
+            // grad_Zk = O_k - y_k
+
+
+        // Pesos h_last - Softmax
+        for(int p=0; p<capas[i_last_h]; ++p)
+            for(int k=0; k<capas[i_output]; ++k)
+                grad_w_ptr[i_w_ptr[i_last_h] + p*capas[i_last_h+1] + k] += grad_a_ptr[i_capa[i_output] + k] * z_ptr[i_capa[i_last_h] + p];
+                //                                 grad_Zk                  *  z^i_last_h_p
+        
+        // Sesgos capa softmax
+        for(int k=0; k<capas[i_output]; ++k)
+            grad_bias_ptr[i_capa[i_output] + k] += grad_a_ptr[i_capa[i_output] + k];
+            // bk = grad_Zk
+
+        // Última capa oculta -----------------------------------------------
+        for(int p=0; p<capas[i_last_h]; ++p)      
+            for(int k=0; k<capas[i_output]; ++k)
+                grad_a_ptr[i_capa[i_last_h] + p] += grad_a_ptr[i_capa[i_output] + k] * w_ptr[i_w_ptr[i_last_h] + p*capas[i_last_h+1] + k] * deriv_relu(a_ptr[i_capa[i_last_h] + p]);
+                //                              grad_Zk           *  w^i_last_h_pk          * ...
+                
+        // Capas ocultas intermedias
+        for(int capa= i_last_h; capa > 1; capa--)
+        {
+            // Pesos
+            for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
+                for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
+                    grad_w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act] * z_ptr[i_capa[capa-1] + i_ant];
+
+            // Bias
+            for(int i_act = 0; i_act < capas[capa]; ++i_act)
+                grad_bias_ptr[i_capa[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act];
+            
+            // Grad input
+            for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
+                for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
+                    grad_a_ptr[i_capa[capa-1] + i_ant] += grad_a_ptr[i_capa[capa] + i_act] * w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] * deriv_relu(a_ptr[i_capa[capa-1] + i_ant]);
+        }
+        
+        
+        // Capa input
+        // Pesos
+        int capa=1;
+        for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
+            for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
+                grad_w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act] * z_ptr[i_capa[capa-1] + i_ant];
+        
+        // Grad input
+        for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
+            for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
+                grad_a_ptr[i_capa[capa-1] + i_ant] += grad_a_ptr[i_capa[capa] + i_act] * w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act];
+
+        // Copiar gradiente respecto a input de primera capa en grad_x[i]
+        for(int j=0; j<capas[0]; j++)
+            grad_x[i*capas[0] + j] = grad_a_ptr[j];
+    } 
+    */
 }
 
 
