@@ -317,13 +317,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     this->grid_softmax.x = (capas[n_capas-1]  + block_softmax.x -1) / block_softmax.x; 
     this->grid_softmax.y = 1; 
 
-    this->smem_softmax = block_softmax.x*sizeof(float);   // Memoria compartida
-
-    this->max_por_bloque = (float *)malloc(grid_softmax.x * sizeof(float));
-    this->max_total = (float *)malloc(sizeof(float));
-    
-
-
+    cudaMalloc((void **) &d_softmax, capas[n_capas-1] * mini_batch * sizeof(float)); 
 };
 
 void FullyConnected::mostrar_pesos_ptr()
@@ -601,9 +595,6 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
 {
     float * capa = capasGEMM[0];
 
-    float *d_softmax = nullptr;
-    
-    cudaMalloc((void **) &d_softmax, capas[n_capas-1] * mini_batch * sizeof(float)); 
 
     // Copiar entrada X en capasGEMM[0]
     for(int i=0; i<this->capas[0]; i++)

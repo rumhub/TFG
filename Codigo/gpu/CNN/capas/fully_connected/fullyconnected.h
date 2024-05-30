@@ -54,9 +54,8 @@ class FullyConnected
         int block_size;
 
         size_t smem;            // Memoria compartida requerida por el kernel
-        size_t smem_softmax;
-        float * max_por_bloque = nullptr;
-        float * max_total = nullptr;
+
+        float *d_softmax = nullptr;
 
 
     public:
