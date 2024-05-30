@@ -7,7 +7,7 @@ using namespace std;
     Además, añade una fila al final de la matriz "B" con todos sus valores a 1.
     Por último, al establecer el valor final de cada casilla de la matriz resultado C, aplica la función de activación ReLU.
 */
-__global__ void forward_capas_intermedias(int M, int N, int K, const float *A, const float *B, float *C, bool aplicar_relu)
+__global__ void forward_capas_intermedias(int M, int N, int K, const float *A, const float *B, float *C, float *a, bool aplicar_relu)
 {
     // Memoria compartida dinámica
 	extern __shared__ float sdata[];
@@ -78,6 +78,10 @@ __global__ void forward_capas_intermedias(int M, int N, int K, const float *A, c
             (sum > 0) ? C[iy*N + ix] = sum : C[iy*N + ix] = 0.0;
         else                        
             C[iy*N + ix] = sum;     // No aplicar ReLU si estamos en SoftMax
+
+        // Almacenar en "a" la matriz resultado antes de aplicar la función de activación
+        a[iy*N + ix] = sum;     
+        
     }    
     
 }
@@ -86,7 +90,7 @@ __global__ void forward_capas_intermedias(int M, int N, int K, const float *A, c
     Entrada: Matrix X(MxK)
     Salida: Y(K), cada Y[i] contiene el valor máximo de la columna X[i]
 */
-__global__ void kernel_sofmax(int M, int K, float *X)
+__global__ void kernel_sofmax(int M, int K, float *X, float *a)
 {
 	int tid = threadIdx.x,
         i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -103,7 +107,10 @@ __global__ void kernel_sofmax(int M, int K, float *X)
 
         // Normalizar con el valor máximo de cada fila (dato del minibatch)
         for(int j=0; j<K; j++)
+        {
             X[i*K + j] -= maximo;
+            a[i*K + j] = X[i*K + j];
+        }
 
         // Sincronizar hebras
     	__syncthreads();
@@ -217,7 +224,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     this->i_capa = (int *)malloc(n_capas * sizeof(int));
     this->i_w_ptr = (int *)malloc(n_capas * sizeof(int));
     this->capasGEMM = (float **)malloc(n_capas * sizeof(float*));
-    this->h_i_capasGEMM = (int *)malloc(n_capas * sizeof(int));
+    this->i_capasGEMM = (int *)malloc(n_capas * sizeof(int));
 
     // Neuronas ------------------------------------------------------------------
     for(int i=0; i<n_capas; i++)
@@ -231,11 +238,11 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     }
     this->n_neuronas = n_neuronas;
 
-    this->h_i_capasGEMM[0] = 0;
+    this->i_capasGEMM[0] = 0;
     for(int i=1; i<n_capas; i++)
     {
-        this->h_i_capasGEMM[i] = h_i_capasGEMM[i-1] + (capas[i-1] + 1) * mini_batch;
-        n_neuronas_GEMM += h_i_capasGEMM[i];
+        this->i_capasGEMM[i] = i_capasGEMM[i-1] + (capas[i-1] + 1) * mini_batch;
+        n_neuronas_GEMM += i_capasGEMM[i];
     }
 
 
@@ -293,11 +300,12 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     
 
     // Punteros device
-    cudaMalloc((void **) &d_wT, n_pesos * n_neuronas * sizeof(float));      // Capa 0
+    cudaMalloc((void **) &d_wT, n_pesos * n_neuronas * sizeof(float));      
     cudaMemcpy(d_wT, wT_ptr,  n_pesos * n_neuronas * sizeof(float), cudaMemcpyHostToDevice);
     
 
-    cudaMalloc((void **) &d_capasGEMM, n_neuronas_GEMM * mini_batch * sizeof(float));      // Capa 0
+    cudaMalloc((void **) &d_z, n_neuronas_GEMM * mini_batch * sizeof(float));      
+    cudaMalloc((void **) &d_a, n_neuronas_GEMM * mini_batch * sizeof(float));      
 
     
     block_size = 4;
@@ -602,7 +610,8 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
             capa[i*mini_batch + j] = x[i*mini_batch + j];
 
     // Pasar valores de primera capa a GPU
-    cudaMemcpy(d_capasGEMM, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_z, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_a, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
 
     // Capas intermedias
     for(int c=0; c<n_capas-1; c++)
@@ -612,7 +621,7 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
         this->grid_forward.y = (capas[c+1] + block_size -1) / block_size;
 
         // Aplicar ReLU en capas intermedias, pero en SoftMax no
-        forward_capas_intermedias<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_capasGEMM + h_i_capasGEMM[c], d_capasGEMM + h_i_capasGEMM[c+1], (c!=n_capas-2));
+        forward_capas_intermedias<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_z + i_capasGEMM[c], d_z + i_capasGEMM[c+1], d_a + i_capasGEMM[c+1], (c!=n_capas-2));
 
         cudaError_t err = cudaGetLastError();
         if (err != cudaSuccess) 
@@ -620,17 +629,49 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
     }
 
     // Transpuesta para tener 1 fila por dato de minibatch 
-    matrizTranspuesta_GPU<<<grid_softmax, block_softmax>>>(d_capasGEMM + h_i_capasGEMM[n_capas-1], d_softmax, capas[n_capas-1], mini_batch);
-    kernel_sofmax<<<grid_softmax, block_softmax>>>(mini_batch, capas[n_capas-1], d_softmax);
+    matrizTranspuesta_GPU<<<grid_softmax, block_softmax>>>(d_z + i_capasGEMM[n_capas-1], d_softmax, capas[n_capas-1], mini_batch);
+    kernel_sofmax<<<grid_softmax, block_softmax>>>(mini_batch, capas[n_capas-1], d_softmax, d_a + i_capasGEMM[n_capas-1]);
 
     // ---------------------------------------------------------------
     // ---------------------------------------------------------------
-    cout << " -------------------------------------------------------- " << endl;
+    cout << " ---------------------------- A ---------------------------- " << endl;
+    capa = capasGEMM[0];
+    for(int c=0; c<n_capas-1; c++)
+    {        
+        capa = capasGEMM[c];
+        cudaMemcpy(capa, d_a + i_capasGEMM[c],  capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+        cudaError_t err = cudaGetLastError();
+        if (err != cudaSuccess) 
+            printf("Error: %s\n", cudaGetErrorString(err));
+        
+
+        cout << "CAPA " << c << " A" << endl;
+        for(int i=0; i<this->capas[c]; i++)
+        {
+            for(int j=0; j<this->mini_batch; j++)
+                cout << capa[i*mini_batch + j] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+
+    capa = capasGEMM[n_capas-1];
+    cudaMemcpy(capa, d_a + i_capasGEMM[n_capas-1],  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+    cout << "CAPA SoftMax " << endl;
+    for(int i=0; i<this->mini_batch; i++)
+    {
+        for(int j=0; j<this->capas[n_capas-1]; j++)
+            cout << capa[i*this->capas[n_capas-1] + j]<< " ";
+        cout << endl;
+    }
+    cout << endl;
+
+    cout << " ---------------------------- Z ---------------------------- " << endl;
     capa = capasGEMM[0];
     for(int c=0; c<n_capas-2; c++)
     {        
         capa = capasGEMM[c+1];
-        cudaMemcpy(capa, d_capasGEMM + h_i_capasGEMM[c+1],  capas[c+1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+        cudaMemcpy(capa, d_z + i_capasGEMM[c+1],  capas[c+1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
         cudaError_t err = cudaGetLastError();
         if (err != cudaSuccess) 
             printf("Error: %s\n", cudaGetErrorString(err));
@@ -645,6 +686,7 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *a_ptr, float *z_ptr
         }
         cout << endl;
     }
+    
 
     capa = capasGEMM[n_capas-1];
     cudaMemcpy(capa, d_softmax,  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
@@ -1417,7 +1459,6 @@ int main()
 
     }
     cout << endl;
-
 
     cout << "z_ptr" << endl;
     for(int i=0; i<n_datos; i++)
