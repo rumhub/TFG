@@ -43,6 +43,8 @@ class FullyConnected
         float * d_w = nullptr;
         float * d_z = nullptr;
         float * d_a = nullptr;
+        float * d_aT = nullptr;
+        float * d_grad_w = nullptr;
         float * d_y = nullptr;
         int * d_i_capasGEMM = nullptr;
 

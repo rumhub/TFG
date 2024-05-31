@@ -232,6 +232,71 @@ __global__ void backprop_capas_intermedias(int M, int N, int K, const float *A, 
 
 
 /*
+    Emplea tiles. Un tile por bloque. Usa memoria compartida
+*/
+__global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, const float *B, float *C)
+{
+    // Memoria compartida dinámica
+	extern __shared__ float sdata[];
+
+    // Convertir de índices de hebra a índices de matriz 
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x, 
+        idA = iy*K + ix, idB = iy*N + ix, id_tile = threadIdx.y * blockDim.x + threadIdx.x;
+    //int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+    int n_tiles = (K + blockDim.x - 1) / blockDim.x;
+
+    // Punteros a A y B
+    float *sA = sdata,
+          *sB = sdata + blockDim.x * blockDim.y;
+
+    float sum = 0.0f;    
+
+    int lim = blockDim.x;
+
+    // Si tam_bloque > tam_A
+    if(lim > K)
+        lim = K;
+
+    /*
+        Para multiplicar A(MxK) x B(KxN) hay que multiplicar una fila de A x una columna de B
+        Es decir, multiplicar KxK elementos y sumarlos
+        Un tile es más pequeño que K -> Dividir K en tiles e iterar sobre ellos
+    */
+    for(int tile=0; tile < n_tiles; ++tile)
+    {
+        idA = iy*K + tile * blockDim.x + threadIdx.x;
+        idB = (tile * blockDim.x + threadIdx.y)*N + ix;
+       
+        // Cargar submatrices de A y B en memoria compartida (tamaño tilex x tiley)
+        // Cada hebra carga en memoria compartida un elemento de A y otro de B
+        (iy < M && tile * blockDim.x + threadIdx.x < K) ? sA[id_tile] = A[idA] : sA[id_tile] = 0.0;
+        (tile * blockDim.x + threadIdx.y < K && ix < N) ? sB[id_tile] = B[idB] : sB[id_tile] = 0.0;
+
+        // Sincronizar hebras
+        __syncthreads();
+
+        // Realizar multiplicación matricial
+        if(iy < M && ix < N)
+        {
+            // Si última iteración
+            if(tile == n_tiles -1)
+                lim = K - tile * blockDim.x;
+
+            // Cada hebra calcula una posición de C (una fila de A * una columna de B)
+            for (int i = 0; i < lim; i++) 
+                sum += sA[threadIdx.y*blockDim.x + i] * sB[threadIdx.x + i*blockDim.x];
+        }
+
+        // Sincronizar hebras
+        __syncthreads();
+    }
+
+    if(iy < M && ix < N)
+        C[iy*N + ix] = sum;
+}
+
+
+/*
     CONSTRUCTOR de la clase FullyConnected
     --------------------------------------
   
@@ -395,11 +460,13 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     // Punteros device
     cudaMalloc((void **) &d_wT, n_pesos * n_neuronas * sizeof(float));      
     cudaMalloc((void **) &d_w, n_pesos * n_neuronas * sizeof(float));      
+    cudaMalloc((void **) &d_grad_w, n_pesos * n_neuronas * sizeof(float));      
     cudaMemcpy(d_wT, wT_ptr,  n_pesos * n_neuronas * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_w, w_ptr,  n_pesos * n_neuronas * sizeof(float), cudaMemcpyHostToDevice);
 
     cudaMalloc((void **) &d_z, n_neuronas_GEMM * mini_batch * sizeof(float));      
     cudaMalloc((void **) &d_a, n_neuronas_GEMM * mini_batch * sizeof(float));      
+    cudaMalloc((void **) &d_aT, n_neuronas_GEMM * mini_batch * sizeof(float));      
     cudaMalloc((void **) &d_y, capas[n_capas-1] * mini_batch * sizeof(float));      
 
     
@@ -1043,7 +1110,10 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
     int n_clases = capas[n_capas-1];
     float *grad_a = (float *)malloc(capas[n_capas-1] * mini_batch * sizeof(float));
     dim3 grid_back_softmax((mini_batch  + block_softmax.x -1) / block_softmax.x, 1); 
+    dim3 grid_transpuesta_back; 
+    dim3 grid_grad_w; 
     cudaMemcpy(d_y, y, n_clases * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
+    float *capa = capasGEMM[0];
 
     // Propagación hacia delante de cada dato perteneciente al minibatch
     forwardPropagationGEMM(x);
@@ -1053,13 +1123,14 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
 
 
     // Capas intermedias
-
     // Transpuesta para tener 1 columna por dato de minibatch 
     matrizTranspuesta_GPU<<<grid_back_softmax, block_softmax>>>(d_z + i_capasGEMM[n_capas-1], d_a + i_capasGEMM[n_capas-1], mini_batch, capas[n_capas-1]);
 
     
+    float * h_grad_w = (float *)malloc(n_pesos * sizeof(float));
+
+
     // Capas intermedias
-    
     for(int c=n_capas-1; c>0; c--)
     {
         // Tamaño de grid
@@ -1069,15 +1140,93 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
         // Aplicar ReLU en capas intermedias, pero en SoftMax no
         backprop_capas_intermedias<<<grid_forward, block, smem>>>(capas[c-1], mini_batch, capas[c], d_w + i_w_ptr[c-1], d_a + i_capasGEMM[c], d_a + i_capasGEMM[c-1], (c>1));
 
+
+        // Tamaño de grid
+        grid_transpuesta_back.x = (capas[c]  + block_size -1) / block_size; 
+        grid_transpuesta_back.y = 1;
+
+        matrizTranspuesta_GPU<<<grid_transpuesta_back, block_softmax>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
+
+
+        // Tamaño de grid
+        grid_grad_w.x = (capas[c]  + block_size -1) / block_size; 
+        grid_grad_w.y = (capas[c-1] + block_size -1) / block_size;
+
+        multiplicarMatricesGPU<<<grid_grad_w, block, smem>>>(capas[c-1], capas[c], mini_batch, d_z + i_capasGEMM[c-1], d_aT + i_capasGEMM[c], d_grad_w + i_w_ptr[c-1]);
+
+        cudaMemcpy(h_grad_w + i_w_ptr[c-1], d_grad_w + i_w_ptr[c-1],  capas[c] * capas[c-1] * sizeof(float), cudaMemcpyDeviceToHost);
+
+        /*
+        cout << " ---------------------------- A ---------------------------- " << endl;
+
+        capa = capasGEMM[c];
+        cudaMemcpy(capa, d_a + i_capasGEMM[c],  capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
         cudaError_t err = cudaGetLastError();
         if (err != cudaSuccess) 
             printf("Error: %s\n", cudaGetErrorString(err));
+
+        cout << "CAPA " << c << " A" << endl;
+        for(int i=0; i<this->capas[c]; i++)
+        {
+            for(int j=0; j<this->mini_batch; j++)
+                cout << capa[i*mini_batch + j] << " ";
+            cout << endl;
+        }
+        cout << endl;
+
+        cout << " ---------------------------- A^T ---------------------------- " << endl;
+        capa = capasGEMM[c];
+        cudaMemcpy(capa, d_aT + i_capasGEMM[c],  capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+        if (err != cudaSuccess) 
+            printf("Error: %s\n", cudaGetErrorString(err));
+
+        cout << "CAPA " << c << " A" << endl;
+        for(int i=0; i<this->mini_batch; i++)
+        {
+            for(int j=0; j<this->capas[c]; j++)
+                cout << capa[i*this->capas[c] + j] << " ";
+            cout << endl;
+        }
+        cout << endl;
+
+
+        //cudaError_t err = cudaGetLastError();
+        if (err != cudaSuccess) 
+            printf("Error: %s\n", cudaGetErrorString(err));
+        */        
     }
 
-    cudaMemcpy(grad_a, d_a + i_capasGEMM[n_capas-1], capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+    int c = 0;
 
+
+    // Mostrar pesos
+    cout << "Gradiente de Pesos GEMM" << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+            {
+                cout << "W(" << j << "," << k << "): ";
+                cout << h_grad_w[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+
+    //cudaMemcpy(grad_a, d_a + i_capasGEMM[n_capas-1], capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+    
+
+
+
+
+    /*
     cout << " ---------------------------- A ---------------------------- " << endl;
-    float *capa = capasGEMM[0];
+    //float *capa = capasGEMM[0];
     for(int c=0; c<n_capas; c++)
     {        
         capa = capasGEMM[c];
@@ -1095,6 +1244,8 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
         }
         cout << endl;
     }
+    */
+    
 
 
     /*
@@ -1323,7 +1474,7 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
 
         // ---------------------
         // ---------------------
-        
+        /*
         cout << "grad_a_ptr " << i << endl;
         for(int c=0; c<n_capas; c++)
         {
@@ -1332,11 +1483,31 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
             cout << endl;
         }
         cout << endl;
-        
+        */
         // ---------------------
         // ---------------------
 
     } 
+
+    // Mostrar pesos
+    cout << "Gradiente de Pesos" << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        cout << "Capa " << i << endl;
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+            {
+                cout << "W(" << j << "," << k << "): ";
+                cout << grad_w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    
 }
 
 
