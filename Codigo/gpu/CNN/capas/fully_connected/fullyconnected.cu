@@ -1062,7 +1062,7 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
     
     for(int c=n_capas-1; c>0; c--)
     {
-        // Tamaño de grid para propagación hacia delante
+        // Tamaño de grid
         this->grid_forward.x = (mini_batch  + block_size -1) / block_size; 
         this->grid_forward.y = (capas[c-1] + block_size -1) / block_size;
 
@@ -1073,19 +1073,8 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
         if (err != cudaSuccess) 
             printf("Error: %s\n", cudaGetErrorString(err));
     }
-    
-    
 
     cudaMemcpy(grad_a, d_a + i_capasGEMM[n_capas-1], capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-
-    cout << "grad_a" << endl;
-    for(int i=0; i<capas[n_capas-1]; i++)
-    {
-        for(int p=0; p<mini_batch; p++)
-            cout << grad_a[i*mini_batch + p] << " ";
-        cout << endl;
-    }
-    cout << endl << endl;
 
     cout << " ---------------------------- A ---------------------------- " << endl;
     float *capa = capasGEMM[0];
@@ -1607,7 +1596,8 @@ int main()
 {
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
-    int tam_x = 3, n_datos = 3, n_clases = 2;
+    int tam_x = 2, n_datos = 3, n_clases = 3;
+    //int tam_x = 3, n_datos = 3, n_clases = 2;
     vector<int> capas = {tam_x, 5, 3, 7, n_clases};
     //vector<int> capas = {tam_x, 2, 3, 2, 4, n_clases};
     vector<vector<float>> a_cpu, z_cpu, grad_a_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
@@ -1693,6 +1683,7 @@ int main()
         n_pesos += capas_ptr[i] * capas_ptr[i+1];   // Cada neurona de la capa actual se conecta a cada neurona de la capa siguiente
     }
     
+    
     float *grad_w_ptr = (float *)malloc(n_pesos * sizeof(float));
 
     // Inicializar gradientes de pesos a 0.0
@@ -1702,12 +1693,13 @@ int main()
     // Entrada y salida ------------------------------------------------------------------
     float *X_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
     float *X_gpuT = (float *)malloc(n_datos * tam_x * sizeof(float));
-    float *y_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
+    float *y_gpu = (float *)malloc(n_datos * n_clases * sizeof(float));
     int *batch_gpu = (int *)malloc(n_datos * sizeof(int));
     
     for(int i=0; i<n_datos; i++)
         batch_gpu[i] = i;
 
+    
     int cont = -2;
     for(int i=0; i<n_datos; i++)
         for(int j=0; j<tam_x; j++)
@@ -1722,7 +1714,6 @@ int main()
         for(int j=0; j<n_clases; j++)
             (j == 1) ? y_gpu[i*n_clases + j] = 1.0 : y_gpu[i*n_clases + j] = 0.0;
 
-    
     cout << "DATOS" << endl;
     for(int i=0; i<n_datos; i++)
     {
@@ -1816,8 +1807,11 @@ int main()
     fully_gpu.trainGEMM(X_gpuT, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
     
 
-    free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(batch_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
+    
+    free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
     free(grad_x_gpu);
+
+    free(batch_gpu);      
 
     return 0;
 }
