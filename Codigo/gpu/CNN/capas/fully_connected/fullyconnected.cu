@@ -184,23 +184,27 @@ __global__ void kernel_actualizar_bias(int N, float *bias, float *grad_bias, flo
     i = blockIdx.x * blockDim.x + threadIdx.x;
 
     if(i < N) 
-        bias[i] -= lr * grad_bias[i];
-    
-    /*
-    for(int i=0; i<n_capas; i++)
-        for(int j=0; j<capas[i]; j++)
-            bias_copy[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
-
-    for(int i=0; i<n_capas; i++)
-    {
-        // Tamaño de grid
-        grid_act_grad_b.x = (capas[i]  + block_size -1) / block_size; 
-        grid_act_grad_b.y = 1;
-    }
-    */
+        bias[i] -= lr * grad_bias[i];    
 }
 
+__global__ void kernel_actualizar_pesos(int M, int K, float *w, float *grad_w, float lr)
+{
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x, 
+        tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
 
+    if(iy < M && ix <K) 
+    {
+        // Cada hebra se encarga de un peso
+        w[iy*K + ix] -= lr * grad_w[iy*K + ix];
+    }
+    /*
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+                pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
+
+    */
+
+}
 
 
 /*
@@ -1589,19 +1593,71 @@ void FullyConnected::escalar_pesos(float clip_value)
 void FullyConnected::actualizar_parametros_gpu(float *grad_pesos, float *grad_b)
 {
     float *bias_copy = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
+    float *grad_pesos_copy = (float *)malloc(n_pesos * n_neuronas * sizeof(float));       
+    float *pesos_copy = (float *)malloc(n_pesos * n_neuronas * sizeof(float));       
     dim3 grid_act_grad_b;
+    dim3 grid_act_grad_w;
 
     for(int i=0; i<n_neuronas; i++)
         bias_copy[i] = this->bias_ptr[i];
 
+    for(int i=0; i<n_pesos * n_neuronas; i++)
+        pesos_copy[i] = this->w_ptr[i];
+
+    // Mostrar pesos
+    cout << "Pesos GEMM antes" << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+                cout << pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+
     // Actualizar pesos
+    for(int i=0; i<n_capas-1; i++)
+    {
+        // Tamaño de grid
+        grid_act_grad_w.x = (capas[i+1]  + block_softmax.x -1) / block_softmax.x; 
+        grid_act_grad_w.y = (capas[i]  + block_softmax.x -1) / block_softmax.x;
+        kernel_actualizar_pesos<<<grid_act_grad_w, block>>>(capas[i], capas[i+1], d_w + i_w_ptr[i], d_grad_w + i_w_ptr[i], this->lr);   
+    }
+
+    // Actualizar pesos
+    /*
     for(int i=0; i<n_capas-1; i++)
         for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
             for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
+                pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
+    */    
+    cudaMemcpy(pesos_copy, d_w, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
+
+    // Mostrar pesos
+    cout << "Pesos GEMM después" << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+                cout << pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+
 
     cudaMemcpy(d_b, this->bias_ptr, n_neuronas * sizeof(float), cudaMemcpyHostToDevice);
 
+    
+
+
+    /*
     cout << "bias antes GEMM " << endl;
     for(int c=0; c<n_capas; c++)
     {
@@ -1610,10 +1666,7 @@ void FullyConnected::actualizar_parametros_gpu(float *grad_pesos, float *grad_b)
         cout << endl;
     }
     cout << endl;
-
-    //for(int i=0; i<n_capas; i++)
-    //    for(int j=0; j<capas[i]; j++)
-    //        bias_copy[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
+    */
 
     for(int i=0; i<n_capas; i++)
     {
@@ -1625,6 +1678,7 @@ void FullyConnected::actualizar_parametros_gpu(float *grad_pesos, float *grad_b)
 
     cudaMemcpy(bias_copy, d_b, n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
 
+    /*
     cout << "bias después GEMM " << endl;
     for(int c=0; c<n_capas; c++)
     {
@@ -1633,6 +1687,7 @@ void FullyConnected::actualizar_parametros_gpu(float *grad_pesos, float *grad_b)
         cout << endl;
     }
     cout << endl;
+    */
 }
 
 /*
@@ -1644,16 +1699,50 @@ void FullyConnected::actualizar_parametros_gpu(float *grad_pesos, float *grad_b)
 void FullyConnected::actualizar_parametros_ptr(float *grad_pesos, float *grad_b)
 {
     float *bias_copy = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
+    float *pesos_copy = (float *)malloc(n_pesos * n_neuronas * sizeof(float));       
 
     for(int i=0; i<n_neuronas; i++)
         bias_copy[i] = this->bias_ptr[i];
+
+    for(int i=0; i<n_pesos * n_neuronas; i++)
+        pesos_copy[i] = this->w_ptr[i];
+
+
+    // Mostrar pesos
+    cout << "Pesos antes " << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+                cout << pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
 
     // Actualizar pesos
     for(int i=0; i<n_capas-1; i++)
         for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
             for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
+                pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
 
+    // Mostrar pesos
+    cout << "Pesos después " << endl;
+    for(int i=0; i<n_capas-1; i++)
+    {
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+        {
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+                cout << pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] << " ";
+            cout << endl;
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    /*
     cout << "bias antes " << endl;
     for(int c=0; c<n_capas; c++)
     {
@@ -1662,11 +1751,13 @@ void FullyConnected::actualizar_parametros_ptr(float *grad_pesos, float *grad_b)
         cout << endl;
     }
     cout << endl;
+    */
 
     for(int i=0; i<n_capas; i++)
         for(int j=0; j<capas[i]; j++)
             bias_copy[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
 
+    /*
     cout << "bias después " << endl;
     for(int c=0; c<n_capas; c++)
     {
@@ -1675,6 +1766,7 @@ void FullyConnected::actualizar_parametros_ptr(float *grad_pesos, float *grad_b)
         cout << endl;
     }
     cout << endl;
+    */
 }
 
 /*
