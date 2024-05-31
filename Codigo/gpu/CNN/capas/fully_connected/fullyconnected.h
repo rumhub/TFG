@@ -41,6 +41,7 @@ class FullyConnected
         // Punteros device
         float * d_wT = nullptr;
         float * d_w = nullptr;
+        float * d_b = nullptr;
         float * d_z = nullptr;
         float * d_a = nullptr;
         float * d_aT = nullptr;
@@ -97,6 +98,7 @@ class FullyConnected
         void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
         void trainGEMM(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
         void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
+        void actualizar_parametros_gpu(float *grad_pesos, float *grad_b);
         void escalar_pesos_ptr(float clip_value);
         void matrizTranspuesta(float* matrix, int rows, int cols);
         void matrizTranspuesta(float* X, float *Y, int rows, int cols);

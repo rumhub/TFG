@@ -178,6 +178,31 @@ __global__ void kernel_grad_bias(int M, int K, float *grad_a, float *grad_b)
 }
 
 
+__global__ void kernel_actualizar_bias(int N, float *bias, float *grad_bias, float lr)
+{
+    int tid = threadIdx.x,
+    i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if(i < N) 
+        bias[i] -= lr * grad_bias[i];
+    
+    /*
+    for(int i=0; i<n_capas; i++)
+        for(int j=0; j<capas[i]; j++)
+            bias_copy[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
+
+    for(int i=0; i<n_capas; i++)
+    {
+        // Tamaño de grid
+        grid_act_grad_b.x = (capas[i]  + block_size -1) / block_size; 
+        grid_act_grad_b.y = 1;
+    }
+    */
+}
+
+
+
+
 /*
     Emplea tiles. Un tile por bloque. Usa memoria compartida
 */
@@ -485,6 +510,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     cudaMalloc((void **) &d_a, n_neuronas_GEMM * mini_batch * sizeof(float));      
     cudaMalloc((void **) &d_aT, n_neuronas_GEMM * mini_batch * sizeof(float));      
     cudaMalloc((void **) &d_grad_b, n_neuronas_GEMM * mini_batch * sizeof(float));      
+    cudaMalloc((void **) &d_b, n_neuronas * sizeof(float));      
     cudaMalloc((void **) &d_y, capas[n_capas-1] * mini_batch * sizeof(float));      
 
     
@@ -1132,7 +1158,6 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
     dim3 grid_grad_w; 
     dim3 grid_grad_b; 
     cudaMemcpy(d_y, y, n_clases * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
-    float *capa = capasGEMM[0];
 
     // Propagación hacia delante de cada dato perteneciente al minibatch
     forwardPropagationGEMM(x);
@@ -1164,13 +1189,11 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
         grid_grad_b.y = (capas[c]  + block_size -1) / block_size;
         kernel_grad_bias<<<grid_grad_b, block_softmax>>>(capas[c], mini_batch, d_a + i_capasGEMM[c], d_grad_b + i_capasGEMM[c]);
 
-
         // Tamaño de grid
         grid_transpuesta_back.x = (capas[c]  + block_size -1) / block_size; 
         grid_transpuesta_back.y = 1;
 
         matrizTranspuesta_GPU<<<grid_transpuesta_back, block_softmax>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
-
 
         // Tamaño de grid
         grid_grad_w.x = (capas[c]  + block_size -1) / block_size; 
@@ -1182,7 +1205,9 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
     }
 
     int c = 0;
+    float *capa = capasGEMM[0];
 
+    /*
     cout << " ---------------------------- Gradiente de bias GEMM ---------------------------- " << endl;
     //float *capa = capasGEMM[0];
     for(int c=0; c<n_capas; c++)
@@ -1198,7 +1223,7 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
         cout << endl;
     }    
 
-    
+    /*
     cout << " ---------------------------- A ---------------------------- " << endl;
     //float *capa = capasGEMM[0];
     for(int c=0; c<n_capas; c++)
@@ -1218,7 +1243,7 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
         }
         cout << endl;
     }
-    
+    */
     
     /*
     // Mostrar pesos
@@ -1238,122 +1263,6 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
         cout << endl;
     }
     cout << endl;
-    */
-
-    /*
-    // Capas intermedias
-    for(int c=0; c<n_capas-1; c++)
-    {
-        // Tamaño de grid para propagación hacia delante
-        this->grid_forward.x = (mini_batch  + block_size -1) / block_size; 
-        this->grid_forward.y = (capas[c+1] + block_size -1) / block_size;
-
-        // Aplicar ReLU en capas intermedias, pero en SoftMax no
-        forward_capas_intermedias<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_z + i_capasGEMM[c], d_z + i_capasGEMM[c+1], d_a + i_capasGEMM[c+1], (c!=n_capas-2));
-
-        cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess) 
-            printf("Error: %s\n", cudaGetErrorString(err));
-    }
-
-    // Transpuesta para tener 1 fila por dato de minibatch 
-    matrizTranspuesta_GPU<<<grid_softmax, block_softmax>>>(d_z + i_capasGEMM[n_capas-1], d_softmax, capas[n_capas-1], mini_batch);
-    kernel_sofmax<<<grid_softmax, block_softmax>>>(mini_batch, capas[n_capas-1], d_softmax, d_a + i_capasGEMM[n_capas-1]);
-
-    
-    */
-
-
-    //forward_capas_intermedias<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_z + i_capasGEMM[c], d_z + i_capasGEMM[c+1], d_a + i_capasGEMM[c+1], (c!=n_capas-2));
-
-
-
-
-    /*
-    for(int i=0; i<n_datos; ++i)
-    {
-        // Propagación hacia delante
-        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
-        forwardPropagation_ptr(x_i, a_ptr, z_ptr);
-        
-        // ---------------------
-        // ---------------------
-        cout << "z_ptr " << i << endl;
-        for(int c=0; c<n_capas; c++)
-        {
-            for(int j=0; j<capas[c]; j++)
-                cout << z_ptr[i_capa[c] + j] << " ";
-            cout << endl;
-        }
-        cout << endl;
-        // ---------------------
-        // ---------------------
-
-        // Propagación hacia detrás
-        // Inicializar a 0 gradiente respecto a input
-        for(int _i = 0; _i < n_capas; ++_i)
-            for(int j = 0; j < capas[_i]; ++j)
-                grad_a_ptr[i_capa[_i] + j] = 0.0;
-
-        // Capa SoftMax -----------------------------------------------
-        // Se calcula gradiente del error respecto a cada Z_k
-        for(int k=0; k<capas[i_output]; ++k)
-            grad_a_ptr[i_capa[i_output] + k] = z_ptr[i_capa[i_output] + k] - y[batch[i]*capas[i_output] + k];
-            // grad_Zk = O_k - y_k
-
-
-        // Pesos h_last - Softmax
-        for(int p=0; p<capas[i_last_h]; ++p)
-            for(int k=0; k<capas[i_output]; ++k)
-                grad_w_ptr[i_w_ptr[i_last_h] + p*capas[i_last_h+1] + k] += grad_a_ptr[i_capa[i_output] + k] * z_ptr[i_capa[i_last_h] + p];
-                //                                 grad_Zk                  *  z^i_last_h_p
-        
-        // Sesgos capa softmax
-        for(int k=0; k<capas[i_output]; ++k)
-            grad_bias_ptr[i_capa[i_output] + k] += grad_a_ptr[i_capa[i_output] + k];
-            // bk = grad_Zk
-
-        // Última capa oculta -----------------------------------------------
-        for(int p=0; p<capas[i_last_h]; ++p)      
-            for(int k=0; k<capas[i_output]; ++k)
-                grad_a_ptr[i_capa[i_last_h] + p] += grad_a_ptr[i_capa[i_output] + k] * w_ptr[i_w_ptr[i_last_h] + p*capas[i_last_h+1] + k] * deriv_relu(a_ptr[i_capa[i_last_h] + p]);
-                //                              grad_Zk           *  w^i_last_h_pk          * ...
-                
-        // Capas ocultas intermedias
-        for(int capa= i_last_h; capa > 1; capa--)
-        {
-            // Pesos
-            for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
-                for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
-                    grad_w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act] * z_ptr[i_capa[capa-1] + i_ant];
-
-            // Bias
-            for(int i_act = 0; i_act < capas[capa]; ++i_act)
-                grad_bias_ptr[i_capa[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act];
-            
-            // Grad input
-            for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
-                for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
-                    grad_a_ptr[i_capa[capa-1] + i_ant] += grad_a_ptr[i_capa[capa] + i_act] * w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] * deriv_relu(a_ptr[i_capa[capa-1] + i_ant]);
-        }
-        
-        
-        // Capa input
-        // Pesos
-        int capa=1;
-        for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
-            for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
-                grad_w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act] * z_ptr[i_capa[capa-1] + i_ant];
-        
-        // Grad input
-        for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
-            for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
-                grad_a_ptr[i_capa[capa-1] + i_ant] += grad_a_ptr[i_capa[capa] + i_act] * w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act];
-
-        // Copiar gradiente respecto a input de primera capa en grad_x[i]
-        for(int j=0; j<capas[0]; j++)
-            grad_x[i*capas[0] + j] = grad_a_ptr[j];
-    } 
     */
 }
 
@@ -1470,6 +1379,7 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
 
         // ---------------------
         // ---------------------
+        /*
         cout << "grad_a_ptr " << i << endl;
         for(int c=0; c<n_capas; c++)
         {
@@ -1478,6 +1388,7 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
             cout << endl;
         }
         cout << endl;
+        */
         // ---------------------
         // ---------------------
 
@@ -1502,7 +1413,7 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
     }
     cout << endl;
     */
-
+    /*
     cout << "grad_bias_ptr " << endl;
     for(int c=0; c<n_capas; c++)
     {
@@ -1511,7 +1422,7 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
         cout << endl;
     }
     cout << endl;
-
+    */    
 }
 
 
@@ -1668,6 +1579,62 @@ void FullyConnected::escalar_pesos(float clip_value)
                 this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
 }
 
+
+/*
+    @brief          Actualizar los pesos y sesgos de la red
+    @grad_pesos     Gradiente de cada peso de la red
+    @grad_b         Gradiente de cada sesgo de la red
+    @return         Se actualizar los valores de w y bias (pesos y sesgos de la red)
+*/
+void FullyConnected::actualizar_parametros_gpu(float *grad_pesos, float *grad_b)
+{
+    float *bias_copy = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
+    dim3 grid_act_grad_b;
+
+    for(int i=0; i<n_neuronas; i++)
+        bias_copy[i] = this->bias_ptr[i];
+
+    // Actualizar pesos
+    for(int i=0; i<n_capas-1; i++)
+        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
+            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
+                this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
+
+    cudaMemcpy(d_b, this->bias_ptr, n_neuronas * sizeof(float), cudaMemcpyHostToDevice);
+
+    cout << "bias antes GEMM " << endl;
+    for(int c=0; c<n_capas; c++)
+    {
+        for(int j=0; j<capas[c]; j++)
+            cout << bias_copy[i_capa[c] + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+
+    //for(int i=0; i<n_capas; i++)
+    //    for(int j=0; j<capas[i]; j++)
+    //        bias_copy[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
+
+    for(int i=0; i<n_capas; i++)
+    {
+        // Tamaño de grid
+        grid_act_grad_b.x = (capas[i]  + block_softmax.x -1) / block_softmax.x; 
+        grid_act_grad_b.y = 1;
+        kernel_actualizar_bias<<<grid_act_grad_b, block_softmax>>>(capas[i], d_b + i_capa[i], d_grad_b + i_capasGEMM[i], this->lr);
+    }
+
+    cudaMemcpy(bias_copy, d_b, n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
+
+    cout << "bias después GEMM " << endl;
+    for(int c=0; c<n_capas; c++)
+    {
+        for(int j=0; j<capas[c]; j++)
+            cout << bias_copy[i_capa[c] + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+}
+
 /*
     @brief          Actualizar los pesos y sesgos de la red
     @grad_pesos     Gradiente de cada peso de la red
@@ -1676,15 +1643,38 @@ void FullyConnected::escalar_pesos(float clip_value)
 */
 void FullyConnected::actualizar_parametros_ptr(float *grad_pesos, float *grad_b)
 {
+    float *bias_copy = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
+
+    for(int i=0; i<n_neuronas; i++)
+        bias_copy[i] = this->bias_ptr[i];
+
     // Actualizar pesos
     for(int i=0; i<n_capas-1; i++)
         for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
             for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
                 this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
 
+    cout << "bias antes " << endl;
+    for(int c=0; c<n_capas; c++)
+    {
+        for(int j=0; j<capas[c]; j++)
+            cout << bias_copy[i_capa[c] + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+
     for(int i=0; i<n_capas; i++)
         for(int j=0; j<capas[i]; j++)
-            this->bias_ptr[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
+            bias_copy[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
+
+    cout << "bias después " << endl;
+    for(int c=0; c<n_capas; c++)
+    {
+        for(int j=0; j<capas[c]; j++)
+            cout << bias_copy[i_capa[c] + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
 }
 
 /*
@@ -1936,7 +1926,7 @@ int main()
     
     float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
     fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
-    //fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
+    fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
     //fully_gpu.escalar_pesos_ptr(2);
     //fully_gpu.mostrar_pesos_ptr();
     
@@ -1980,6 +1970,7 @@ int main()
     // -------------------------------------------------------------
     //fully_gpu.forwardPropagationGEMM(X_gpuT);
     fully_gpu.trainGEMM(X_gpuT, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
+    fully_gpu.actualizar_parametros_gpu(grad_w_ptr, grad_bias_ptr);
     
 
     
