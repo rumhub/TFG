@@ -100,6 +100,7 @@ class FullyConnected
         void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
         void actualizar_parametros_gpu(float *grad_pesos, float *grad_b);
         void escalar_pesos_ptr(float clip_value);
+        void escalar_pesos_GEMM(float clip_value);
         void matrizTranspuesta(float* matrix, int rows, int cols);
         void matrizTranspuesta(float* X, float *Y, int rows, int cols);
 
@@ -138,6 +139,9 @@ class FullyConnected
         int * get_capas(){return this->capas;};
         int get_n_neuronas(){return this->n_neuronas;};
         int get_n_pesos(){return this->n_pesos;};
+
+        void set_biasGEMM(float *bias);
+        void set_wGEMM(float *w);
 
         // Debug
         void set_pesos(const vector<vector<vector<float>>> &w_){this->w = w_;};
