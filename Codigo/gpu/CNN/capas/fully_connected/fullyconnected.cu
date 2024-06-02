@@ -121,10 +121,8 @@ __global__ void kernel_sofmax(int M, int K, float *X, float *a)
 
         // Normalizar cada fila
         for(int j=0; j<K; j++)
-            X[i*K + j] = expf(X[i*K + j]) / sum;
-        
-    }
-    
+            X[i*K + j] = expf(X[i*K + j]) / sum;   
+    }    
 }
 
 __global__ void matrizTranspuesta_GPU(float* X, float *Y, int rows, int cols)
@@ -594,7 +592,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     // Capa SoftMax ------------
     this->block_softmax.x = this->block.x;
     this->block_softmax.y = 1;
-    this->grid_softmax.x = (capas[n_capas-1]  + block_softmax.x -1) / block_softmax.x; 
+    this->grid_softmax.x = (mini_batch  + block_softmax.x -1) / block_softmax.x; 
     this->grid_softmax.y = 1; 
 
     cudaMalloc((void **) &d_softmax, capas[n_capas-1] * mini_batch * sizeof(float)); 
@@ -950,7 +948,8 @@ void FullyConnected::forwardPropagationGEMM(float *x)
         cout << endl;
     }
     cout << endl;
-
+    
+    
     cout << " ---------------------------- Z ---------------------------- " << endl;
     capa = capasGEMM[0];
     for(int c=0; c<n_capas-2; c++)
@@ -984,6 +983,7 @@ void FullyConnected::forwardPropagationGEMM(float *x)
     }
     cout << endl;
     */
+    
 }
 
 
@@ -1124,6 +1124,58 @@ float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos, float *
 }
 
 
+
+/*
+    @brief  Realiza la medida de Accuracy sobre un conjunto de datos
+    @x      Conjunto de datos de entrada
+    @y      Etiquetas de los datos de entrada
+    @return Valor de accuracy sobre el conjunto de datos de entrada x
+*/
+float FullyConnected::accuracy_GEMM(float *x, float *y)
+{
+    float sum =0.0, max;
+    int prediccion, n=n_capas-1;
+
+    forwardPropagationGEMM(x);
+
+    /*
+    float *capa = capasGEMM[n_capas-1];
+    cudaMemcpy(capa, d_softmax,  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+    cout << "CAPA SoftMax " << endl;
+    for(int i=0; i<this->mini_batch; i++)
+    {
+        for(int j=0; j<this->capas[n_capas-1]; j++)
+            cout << capa[i*this->capas[n_capas-1] + j]<< " ";
+        cout << endl;
+    }
+    cout << endl;
+    */
+    /*
+    float *capa = capasGEMM[n_capas-1];
+    cudaMemcpy(capa, d_softmax,  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+    for(int i=0; i<mini_batch; i++)
+    {
+        max = capa[i*this->capas[n_capas-1]];
+        for(int j=0; j<this->capas[n_capas-1]; j++)
+        {
+            if(max < capa[i*this->capas[n_capas-1] + j])
+            {
+                max = capa[i*this->capas[n_capas-1] + j];
+                prediccion = j;
+            }            
+        }
+
+        sum += y[i*capas[n] + prediccion];
+    }
+
+    //sum = sum / x.size() * 100;
+    
+    cout << "Sum GEMM: " << sum << endl;
+    */
+    return sum;
+}
+
+
 /*
     @brief  Realiza la medida de Accuracy sobre un conjunto de datos
     @x      Conjunto de datos de entrada
@@ -1147,14 +1199,16 @@ float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr
         prediccion = 0;
 
         // Obtener valor más alto de la capa output
-        for(int c=1; c<capas[n]; ++c)
+        for(int c=0; c<capas[n]; ++c)
         {
             if(max < z_ptr[i_capa[n] + c])
             {
                 max = z_ptr[i_capa[n] + c];
                 prediccion = c;
             }
+            cout << z_ptr[i_capa[n] + c] << " ";
         }
+        cout << endl;
 
         // Ver si etiqueta real y predicción coindicen
         sum += y[i*capas[n] + prediccion];
@@ -1162,6 +1216,7 @@ float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr
 
     //sum = sum / x.size() * 100;
 
+    cout << "Sum: " << sum << endl;
     return sum;
 }
 
@@ -1616,6 +1671,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
     cudaMemcpy(pesos_copy, d_w, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
 
     // Mostrar pesos
+    
     cout << "Pesos antes " << endl;
     for(int i=0; i<n_capas-1; i++)
     {
@@ -1629,6 +1685,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
     }
     cout << endl;
     
+    
     reduceMax<<<grid_reduce, bloque_reduce, smem_reduce>>>(d_w, d_max_por_bloque, n_pesos * n_neuronas, d_max); 
     reduceMin<<<grid_reduce, bloque_reduce, smem_reduce>>>(d_w, d_min_por_bloque, n_pesos * n_neuronas, d_min); 
     kernel_escalar_pesos<<<grid_reduce, bloque_reduce>>>(d_w, n_pesos * n_neuronas, d_max, d_min, clip_value); 
@@ -1639,29 +1696,6 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
     cout << "Máximo GEMM: " << max[0] << endl;
     cout << "Mínimo GEMM: " << min[0] << endl;
     
-
-    /*
-    // Calcular el máximo y el mínimo de los pesos
-    float max = this->w_ptr[0], min = this->w_ptr[0];
-    
-    for(int i=0; i<n_capas-1; i++)
-        for(int j=0; j<capas[i]; j++)
-            for(int k=0; k<capas[i+1]; k++)
-            {
-                if(max < this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k])
-                    max = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
-                
-                if(min > this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k])
-                    min = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
-            }
-    
-    // Realizar gradient clipping
-    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
-    for(int i=0; i<n_capas-1; i++)
-        for(int j=0; j<capas[i]; j++)
-            for(int k=0; k<capas[i+1]; k++)
-                this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] = std::max(std::min(this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k], clip_value), -clip_value);
-    */
 
     cudaMemcpy(pesos_copy, d_w, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
 
@@ -1677,7 +1711,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
         }
         cout << endl;
     }
-    cout << endl;
+    cout << endl;    
 }
 
 
@@ -1688,6 +1722,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
 */
 void FullyConnected::escalar_pesos_ptr(float clip_value)
 {
+    
     // Mostrar pesos
     cout << "Pesos antes " << endl;
     for(int i=0; i<n_capas-1; i++)
@@ -1701,6 +1736,7 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
         cout << endl;
     }
     cout << endl;
+    
 
     // Calcular el máximo y el mínimo de los pesos
     float max = this->w_ptr[0], min = this->w_ptr[0];
@@ -1726,6 +1762,7 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
                 this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] = std::max(std::min(this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k], clip_value), -clip_value);
 
     // Mostrar pesos
+    
     cout << "Pesos después " << endl;
     for(int i=0; i<n_capas-1; i++)
     {
@@ -2025,7 +2062,7 @@ int main()
 {
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
-    int tam_x = 2, n_datos = 4, n_clases = 3;
+    int tam_x = 2, n_datos = 10, n_clases = 3;
     //int tam_x = 3, n_datos = 3, n_clases = 2;
     vector<int> capas = {tam_x, 5, 3, 7, n_clases};
     //vector<int> capas = {tam_x, 2, 3, 2, 4, n_clases};
@@ -2204,6 +2241,7 @@ int main()
     fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
     fully_gpu.escalar_pesos_ptr(0.5);
     //fully_gpu.mostrar_pesos_ptr();
+    //fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr);
     
 
 
@@ -2244,13 +2282,15 @@ int main()
     */
 
     // -------------------------------------------------------------
-    //fully_gpu.forwardPropagationGEMM(X_gpuT);
     fully_gpu.set_biasGEMM(bias_GEMM);
     fully_gpu.set_wGEMM(w_GEMM);
+    //fully_gpu.forwardPropagationGEMM(X_gpuT);
+    
     fully_gpu.trainGEMM(X_gpuT, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
     fully_gpu.actualizar_parametros_gpu(grad_w_ptr, grad_bias_ptr);
     fully_gpu.escalar_pesos_GEMM(0.5);
     
+    //fully_gpu.accuracy_GEMM(X_gpuT, y_gpu);
 
     
     free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);

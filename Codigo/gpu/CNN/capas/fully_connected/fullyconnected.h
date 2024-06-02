@@ -95,6 +95,7 @@ class FullyConnected
         void mostrar_pesos_Traspuestos_ptr();
         float cross_entropy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
         float accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
+        float accuracy_GEMM(float *x, float *y);
         void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
         void trainGEMM(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
         void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
