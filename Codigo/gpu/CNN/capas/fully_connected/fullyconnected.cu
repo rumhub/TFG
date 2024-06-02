@@ -324,6 +324,70 @@ __global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, cons
         C[iy*N + ix] = sum;
 }
 
+
+
+__global__ void kernel_evaluacion_modelo(int M, int K, float * X, float * Y, float *sumas) 
+{
+	int tid = threadIdx.x,
+        i = blockIdx.x * blockDim.x + threadIdx.x, predic_acc = 0;
+    
+    float predic_entr = 0.0, epsilon = 0.000000001, maximo = -9999999, sum = 0.0, entr = 0.0, acc = 0.0;
+
+    // Calcular entropía cruzada --------------------------
+    if(i < M) 
+    {
+        // Inicializar suma a 0.0
+        sumas[i] = 0.0f;
+
+        for(int j=0; j<K; j++)
+            if(Y[i*K + j] == 1)                     
+                predic_entr = X[i*K + j];
+
+        sumas[i] += log(predic_entr+epsilon);
+    }   
+
+    // Sincronizar hebras
+    __syncthreads();
+
+    if(i == 0)
+    {
+        for(int j=1; j<M; j++)
+            sumas[0] += sumas[j];
+        sumas[0] = -sumas[0] / M;
+
+        entr = sumas[0];
+    }
+
+    // Calcular Accuracy -----------------------------
+    if(i < M) 
+    {
+        for(int j=0; j<K; j++)
+        {
+            if(maximo < X[i*K + j])
+            {
+                maximo = X[i*K + j];
+                predic_acc = j;
+            }
+        }
+
+        sumas[i] = Y[i*K + predic_acc];
+    }   
+
+
+    // Sincronizar hebras
+    __syncthreads();
+
+    if(i == 0)
+    {
+        for(int j=1; j<M; j++)
+            sumas[0] += sumas[j];
+        sumas[0] = sumas[0] / M * 100;
+
+        acc = sumas[0];
+        printf("Accuracy: %f, Entropía cruzada: %f\n", acc, entr);
+    }
+}
+
 __global__ void reduceMax(float * X, float * Y, const int N, float *maximo) 
 {
 	extern __shared__ float sdata[];
@@ -596,6 +660,10 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     this->grid_softmax.y = 1; 
 
     cudaMalloc((void **) &d_softmax, capas[n_capas-1] * mini_batch * sizeof(float)); 
+
+
+    cudaMalloc((void **) &d_sum_acc_entr, mini_batch * sizeof(float));      
+
 };
 
 
@@ -881,7 +949,7 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 
     @return Se actualizan los valores de @a y @z
 */
-void FullyConnected::forwardPropagationGEMM(float *x)
+void FullyConnected::forwardPropagationGEMM(float *x, float *y)
 {
     float * capa = capasGEMM[0];
 
@@ -894,6 +962,7 @@ void FullyConnected::forwardPropagationGEMM(float *x)
     // Pasar valores de primera capa a GPU
     cudaMemcpy(d_z, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_a, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_y, y, capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
 
     // Capas intermedias
     for(int c=0; c<n_capas-1; c++)
@@ -1118,61 +1187,22 @@ float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos, float *
         sum += log(prediccion+epsilon);
     }
 
-    //sum = -sum / x.size();
+    sum = -sum / n_datos;
 
     return sum;
 }
 
 
-
 /*
-    @brief  Realiza la medida de Accuracy sobre un conjunto de datos
+    @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
     @x      Conjunto de datos de entrada
     @y      Etiquetas de los datos de entrada
-    @return Valor de accuracy sobre el conjunto de datos de entrada x
+    @return Evaluación del modelo sobre el conjunto de datos de entrada x
 */
-float FullyConnected::accuracy_GEMM(float *x, float *y)
+void FullyConnected::evaluar_modelo_GEMM(float *x, float *y)
 {
-    float sum =0.0, max;
-    int prediccion, n=n_capas-1;
-
-    forwardPropagationGEMM(x);
-
-    /*
-    float *capa = capasGEMM[n_capas-1];
-    cudaMemcpy(capa, d_softmax,  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-    cout << "CAPA SoftMax " << endl;
-    for(int i=0; i<this->mini_batch; i++)
-    {
-        for(int j=0; j<this->capas[n_capas-1]; j++)
-            cout << capa[i*this->capas[n_capas-1] + j]<< " ";
-        cout << endl;
-    }
-    cout << endl;
-    */
-    /*
-    float *capa = capasGEMM[n_capas-1];
-    cudaMemcpy(capa, d_softmax,  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-    for(int i=0; i<mini_batch; i++)
-    {
-        max = capa[i*this->capas[n_capas-1]];
-        for(int j=0; j<this->capas[n_capas-1]; j++)
-        {
-            if(max < capa[i*this->capas[n_capas-1] + j])
-            {
-                max = capa[i*this->capas[n_capas-1] + j];
-                prediccion = j;
-            }            
-        }
-
-        sum += y[i*capas[n] + prediccion];
-    }
-
-    //sum = sum / x.size() * 100;
-    
-    cout << "Sum GEMM: " << sum << endl;
-    */
-    return sum;
+    forwardPropagationGEMM(x, y);
+    kernel_evaluacion_modelo<<<grid_softmax, this->block_softmax>>>(mini_batch, this->capas[n_capas-1], d_softmax, d_y, d_sum_acc_entr); 
 }
 
 
@@ -1206,17 +1236,14 @@ float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr
                 max = z_ptr[i_capa[n] + c];
                 prediccion = c;
             }
-            cout << z_ptr[i_capa[n] + c] << " ";
         }
-        cout << endl;
 
         // Ver si etiqueta real y predicción coindicen
         sum += y[i*capas[n] + prediccion];
     }
 
-    //sum = sum / x.size() * 100;
+    sum = sum / n_datos * 100;
 
-    cout << "Sum: " << sum << endl;
     return sum;
 }
 
@@ -1293,7 +1320,7 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
     cudaMemcpy(d_y, y, n_clases * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
 
     // Propagación hacia delante de cada dato perteneciente al minibatch
-    forwardPropagationGEMM(x);
+    forwardPropagationGEMM(x, y);
 
     // Cálculo del gradiente respecto a la entrada de la capa SoftMax
     kernel_back_softmax<<<grid_back_softmax, block_softmax>>>(mini_batch, n_clases, d_z + i_capasGEMM[n_capas-1], d_softmax, d_y, n_clases);
@@ -1671,7 +1698,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
     cudaMemcpy(pesos_copy, d_w, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
 
     // Mostrar pesos
-    
+    /*
     cout << "Pesos antes " << endl;
     for(int i=0; i<n_capas-1; i++)
     {
@@ -1684,7 +1711,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
         cout << endl;
     }
     cout << endl;
-    
+    */
     
     reduceMax<<<grid_reduce, bloque_reduce, smem_reduce>>>(d_w, d_max_por_bloque, n_pesos * n_neuronas, d_max); 
     reduceMin<<<grid_reduce, bloque_reduce, smem_reduce>>>(d_w, d_min_por_bloque, n_pesos * n_neuronas, d_min); 
@@ -1693,6 +1720,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
     cudaMemcpy(max, d_max, sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy(min, d_min, sizeof(float), cudaMemcpyDeviceToHost);
 
+    /*
     cout << "Máximo GEMM: " << max[0] << endl;
     cout << "Mínimo GEMM: " << min[0] << endl;
     
@@ -1712,6 +1740,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
         cout << endl;
     }
     cout << endl;    
+    */
 }
 
 
@@ -1722,7 +1751,7 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
 */
 void FullyConnected::escalar_pesos_ptr(float clip_value)
 {
-    
+    /*
     // Mostrar pesos
     cout << "Pesos antes " << endl;
     for(int i=0; i<n_capas-1; i++)
@@ -1736,7 +1765,7 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
         cout << endl;
     }
     cout << endl;
-    
+    */
 
     // Calcular el máximo y el mínimo de los pesos
     float max = this->w_ptr[0], min = this->w_ptr[0];
@@ -1752,8 +1781,8 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
                     min = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
             }
     
-    cout << "Máximo: " << max << endl;
-    cout << "Mínimo: " << min << endl;
+    //cout << "Máximo: " << max << endl;
+    //cout << "Mínimo: " << min << endl;
     // Realizar gradient clipping
     float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
     for(int i=0; i<n_capas-1; i++)
@@ -1762,7 +1791,7 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
                 this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] = std::max(std::min(this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k], clip_value), -clip_value);
 
     // Mostrar pesos
-    
+    /*
     cout << "Pesos después " << endl;
     for(int i=0; i<n_capas-1; i++)
     {
@@ -1775,6 +1804,7 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
         cout << endl;
     }
     cout << endl;
+    */
 }
 
 /*
@@ -2238,10 +2268,11 @@ int main()
 
     float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
     fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
-    fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
-    fully_gpu.escalar_pesos_ptr(0.5);
+    //fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
+    //fully_gpu.escalar_pesos_ptr(0.5);
     //fully_gpu.mostrar_pesos_ptr();
-    //fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr);
+    cout << "Accuracy: " << fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << ", Entropía Cruzada: " 
+    << fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr) << endl;
     
 
 
@@ -2284,14 +2315,13 @@ int main()
     // -------------------------------------------------------------
     fully_gpu.set_biasGEMM(bias_GEMM);
     fully_gpu.set_wGEMM(w_GEMM);
-    //fully_gpu.forwardPropagationGEMM(X_gpuT);
+    //fully_gpu.forwardPropagationGEMM(X_gpuT, y_gpu);
     
     fully_gpu.trainGEMM(X_gpuT, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
-    fully_gpu.actualizar_parametros_gpu(grad_w_ptr, grad_bias_ptr);
-    fully_gpu.escalar_pesos_GEMM(0.5);
+    //fully_gpu.actualizar_parametros_gpu(grad_w_ptr, grad_bias_ptr);
+    //fully_gpu.escalar_pesos_GEMM(0.5);
     
-    //fully_gpu.accuracy_GEMM(X_gpuT, y_gpu);
-
+    fully_gpu.evaluar_modelo_GEMM(X_gpuT, y_gpu);
     
     free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
     free(grad_x_gpu);

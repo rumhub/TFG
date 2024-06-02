@@ -49,6 +49,7 @@ class FullyConnected
         float * d_grad_b = nullptr;
         float * d_y = nullptr;
         int * d_i_capasGEMM = nullptr;
+        float *d_sum_acc_entr = nullptr;
 
         // Tamaño de bloque
         dim3 block;
@@ -85,17 +86,16 @@ class FullyConnected
             }
         };
         
-        
         void generar_pesos_ptr(const int &capa);
         void forwardPropagation_ptr(float *x, float *a, float *z);
-        void forwardPropagationGEMM(float *x);
+        void forwardPropagationGEMM(float *x, float *y);
         void mostrar_neuronas_ptr(float *z_ptr);
         void copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_);
         void mostrar_pesos_ptr();
         void mostrar_pesos_Traspuestos_ptr();
         float cross_entropy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
+        void evaluar_modelo_GEMM(float *x, float *y);
         float accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
-        float accuracy_GEMM(float *x, float *y);
         void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
         void trainGEMM(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
         void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
