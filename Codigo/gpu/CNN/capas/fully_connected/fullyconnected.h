@@ -86,6 +86,7 @@ class FullyConnected
             }
         };
         
+        void set_train(float *x, float *y);
         void generar_pesos_ptr(const int &capa);
         void forwardPropagation_ptr(float *x, float *a, float *z);
         void forwardPropagationGEMM(float *x, float *y);
