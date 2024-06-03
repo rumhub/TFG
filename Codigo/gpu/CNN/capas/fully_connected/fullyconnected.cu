@@ -990,21 +990,8 @@ void FullyConnected::forwardPropagation(const vector<float> &x, vector<vector<fl
 
     @return Se actualizan los valores de @a y @z
 */
-void FullyConnected::forwardPropagationGEMM(float *x, float *y)
+void FullyConnected::forwardPropagationGEMM()
 {
-    float * capa = capasGEMM[0];
-
-
-    // Copiar entrada X en capasGEMM[0]
-    for(int i=0; i<this->capas[0]; i++)
-        for(int j=0; j<this->mini_batch; j++)
-            capa[i*mini_batch + j] = x[i*mini_batch + j];
-
-    // Pasar valores de primera capa a GPU
-    cudaMemcpy(d_z, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_a, capa,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_y, y, capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
-
     // Capas intermedias
     for(int c=0; c<n_capas-1; c++)
     {
@@ -1014,10 +1001,6 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *y)
 
         // Aplicar ReLU en capas intermedias, pero en SoftMax no
         forward_capas_intermedias<<<grid_forward, block, smem>>>(capas[c+1], mini_batch, capas[c]+1, d_wT + i_wT[c], d_z + i_capasGEMM[c], d_z + i_capasGEMM[c+1], d_a + i_capasGEMM[c+1], (c!=n_capas-2));
-
-        cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess) 
-            printf("Error: %s\n", cudaGetErrorString(err));
     }
 
     // Transpuesta para tener 1 fila por dato de minibatch 
@@ -1027,6 +1010,8 @@ void FullyConnected::forwardPropagationGEMM(float *x, float *y)
     // ---------------------------------------------------------------
     // ---------------------------------------------------------------
     /*
+    float * capa = capasGEMM[0];
+
     cout << " ---------------------------- A ---------------------------- " << endl;
     capa = capasGEMM[0];
     for(int c=0; c<n_capas-1; c++)
@@ -1244,9 +1229,9 @@ float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos, float *
     @y      Etiquetas de los datos de entrada
     @return Evaluación del modelo sobre el conjunto de datos de entrada x
 */
-void FullyConnected::evaluar_modelo_GEMM(float *x, float *y)
+void FullyConnected::evaluar_modelo_GEMM()
 {
-    forwardPropagationGEMM(x, y);
+    forwardPropagationGEMM();
     kernel_evaluacion_modelo<<<grid_softmax, this->block_softmax>>>(mini_batch, this->capas[n_capas-1], d_softmax, d_y, d_sum_acc_entr); 
 }
 
@@ -1353,7 +1338,7 @@ float FullyConnected::accuracy(vector<vector<float>> x, vector<vector<float>> y)
     @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
 */
 //void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
-void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr)
+void FullyConnected::trainGEMM(float *grad_x)
 {
     float epsilon = 0.000000001;
     int i_output = n_capas -1, i_last_h = i_output-1; // índice de la capa output, Índice de la capa h1 respectivamente
@@ -1363,10 +1348,9 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
     dim3 grid_transpuesta_back; 
     dim3 grid_grad_w; 
     dim3 grid_grad_b; 
-    cudaMemcpy(d_y, y, n_clases * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
 
     // Propagación hacia delante de cada dato perteneciente al minibatch
-    forwardPropagationGEMM(x, y);
+    forwardPropagationGEMM();
 
     // Cálculo del gradiente respecto a la entrada de la capa SoftMax
     kernel_back_softmax<<<grid_back_softmax, block_softmax>>>(mini_batch, n_clases, d_z + i_capasGEMM[n_capas-1], d_softmax, d_y, n_clases);
@@ -1743,10 +1727,10 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
     cudaMalloc((void **) &d_max, sizeof(float));      
     cudaMalloc((void **) &d_min, sizeof(float));      
     
+    /*
     cudaMemcpy(pesos_copy, d_w, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
 
     // Mostrar pesos
-    /*
     cout << "Pesos antes " << endl;
     for(int i=0; i<n_capas-1; i++)
     {
@@ -1765,10 +1749,10 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
     reduceMin<<<grid_reduce, bloque_reduce, smem_reduce>>>(d_w, d_min_por_bloque, n_pesos * n_neuronas, d_min); 
     kernel_escalar_pesos<<<grid_reduce, bloque_reduce>>>(d_w, n_pesos * n_neuronas, d_max, d_min, clip_value); 
 
+    /*
     cudaMemcpy(max, d_max, sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy(min, d_min, sizeof(float), cudaMemcpyDeviceToHost);
 
-    /*
     cout << "Máximo GEMM: " << max[0] << endl;
     cout << "Mínimo GEMM: " << min[0] << endl;
     
@@ -2107,6 +2091,15 @@ void FullyConnected::actualizar_parametros(const vector<vector<vector<float>>> &
 }
 
 
+void FullyConnected::set_train(float *x, float *y)
+{
+    // Pasar valores de primera capa a GPU
+    cudaMemcpy(d_z, x,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_a, x,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_y, y, capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
+}
+
+
 void FullyConnected::matrizTranspuesta(float* X, float *Y, int rows, int cols)
 {
     for (int i = 0; i < rows; i++)
@@ -2391,13 +2384,14 @@ int main()
     // -------------------------------------------------------------
     fully_gpu.set_biasGEMM(bias_GEMM);
     fully_gpu.set_wGEMM(w_GEMM);
+    fully_gpu.set_train(X_gpuT, y_gpu);
     //fully_gpu.forwardPropagationGEMM(X_gpuT, y_gpu);
     
-    //fully_gpu.trainGEMM(X_gpuT, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
+    //fully_gpu.trainGEMM(grad_x_gpu);
     //fully_gpu.actualizar_parametros_gpu(grad_w_ptr, grad_bias_ptr);
     //fully_gpu.escalar_pesos_GEMM(0.5);
     
-    fully_gpu.evaluar_modelo_GEMM(X_gpuT, y_gpu);
+    fully_gpu.evaluar_modelo_GEMM();
     
     free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
     free(grad_x_gpu);
