@@ -50,6 +50,8 @@ class FullyConnected
         float * d_y = nullptr;
         int * d_i_capasGEMM = nullptr;
         float *d_sum_acc_entr = nullptr;
+        int * d_capas_wT, *d_capas;
+
 
         // Tamaño de bloque
         dim3 block;
