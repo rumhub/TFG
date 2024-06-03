@@ -51,6 +51,7 @@ class FullyConnected
         int * d_i_capasGEMM = nullptr;
         float *d_sum_acc_entr = nullptr;
         int * d_capas_wT, *d_capas;
+        float *d_max, *d_min;
 
 
         // Tamaño de bloque
@@ -60,10 +61,14 @@ class FullyConnected
         // Tamaño de grid
         dim3 grid_forward;          // Grid para realizar la propagación hacia delante
         dim3 grid_softmax;          
+        dim3 grid_reduce;
+        dim3 bloque_reduce;
+
         
         int block_size;
 
         size_t smem;            // Memoria compartida requerida por el kernel
+        size_t smem_reduce;
 
         float *d_softmax = nullptr;
 
@@ -85,6 +90,19 @@ class FullyConnected
                 cudaFree(d_wT);
                 cudaFree(d_z);
                 cudaFree(d_a);
+                cudaFree(d_aT);
+                cudaFree(d_w);
+                cudaFree(d_b);
+                cudaFree(d_grad_w);
+                cudaFree(d_grad_b);
+                cudaFree(d_y);
+                cudaFree(d_i_capasGEMM);
+                cudaFree(d_sum_acc_entr);
+                cudaFree(d_capas_wT);
+                cudaFree(d_capas);
+                cudaFree(d_capas_wT);
+                cudaFree(d_max);
+                cudaFree(d_min);
             }
         };
         
@@ -102,7 +120,7 @@ class FullyConnected
         void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
         void trainGEMM(float *grad_x);
         void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
-        void actualizar_parametros_gpu(float *grad_pesos, float *grad_b);
+        void actualizar_parametros_gpu();
         void escalar_pesos_ptr(float clip_value);
         void escalar_pesos_GEMM(float clip_value);
         void matrizTranspuesta(float* matrix, int rows, int cols);
