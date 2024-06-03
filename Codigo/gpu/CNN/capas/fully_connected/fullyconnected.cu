@@ -333,17 +333,19 @@ __global__ void kernel_evaluacion_modelo(int M, int K, float * X, float * Y, flo
     
     float predic_entr = 0.0, epsilon = 0.000000001, maximo = -9999999, sum = 0.0, entr = 0.0, acc = 0.0;
 
+    float *sum_entr = sumas, *sum_acc = sumas + M-1;
+
     // Calcular entropía cruzada --------------------------
     if(i < M) 
     {
         // Inicializar suma a 0.0
-        sumas[i] = 0.0f;
+        sum_entr[i] = 0.0f;
 
         for(int j=0; j<K; j++)
             if(Y[i*K + j] == 1)                     
                 predic_entr = X[i*K + j];
 
-        sumas[i] += log(predic_entr+epsilon);
+        sum_entr[i] += log(predic_entr+epsilon);
     }   
 
     // Sincronizar hebras
@@ -352,12 +354,12 @@ __global__ void kernel_evaluacion_modelo(int M, int K, float * X, float * Y, flo
     if(i == 0)
     {
         for(int j=1; j<M; j++)
-            sumas[0] += sumas[j];
-        sumas[0] = -sumas[0] / M;
+            sum_entr[0] += sum_entr[j];
+        sum_entr[0] = -sum_entr[0] / M;
 
-        entr = sumas[0];
+        entr = sum_entr[0];
     }
-
+    
     // Calcular Accuracy -----------------------------
     if(i < M) 
     {
@@ -370,7 +372,7 @@ __global__ void kernel_evaluacion_modelo(int M, int K, float * X, float * Y, flo
             }
         }
 
-        sumas[i] = Y[i*K + predic_acc];
+        sum_acc[i] = Y[i*K + predic_acc];
     }   
 
 
@@ -380,10 +382,10 @@ __global__ void kernel_evaluacion_modelo(int M, int K, float * X, float * Y, flo
     if(i == 0)
     {
         for(int j=1; j<M; j++)
-            sumas[0] += sumas[j];
-        sumas[0] = sumas[0] / M * 100;
+            sum_acc[0] += sum_acc[j];
+        sum_acc[0] = sum_acc[0] / M * 100;
 
-        acc = sumas[0];
+        acc = sum_acc[0];
         printf("Accuracy: %f, Entropía cruzada: %f\n", acc, entr);
     }
 }
@@ -701,7 +703,7 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     cudaMalloc((void **) &d_softmax, capas[n_capas-1] * mini_batch * sizeof(float)); 
 
 
-    cudaMalloc((void **) &d_sum_acc_entr, mini_batch * sizeof(float));      
+    cudaMalloc((void **) &d_sum_acc_entr, 2*mini_batch * sizeof(float));      
 
 };
 
@@ -1163,7 +1165,11 @@ void FullyConnected::forwardPropagation_ptr(float *x, float *a_ptr, float *z_ptr
                 sum += exp(a_ptr[i_capa[i+1] + k]);
 
             for(int k=0; k<capas[i+1]; ++k)
+            {
                 z_ptr[i_capa[i+1] + k] = exp(a_ptr[i_capa[i+1] + k]) / sum;
+                //cout << z_ptr[i_capa[i+1] + k] << " ";
+            }
+            //cout << endl;
         } 
     }
     
@@ -1280,6 +1286,7 @@ float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr
         // Ver si etiqueta real y predicción coindicen
         sum += y[i*capas[n] + prediccion];
     }
+    cout << endl;
 
     sum = sum / n_datos * 100;
 
@@ -1439,6 +1446,8 @@ void FullyConnected::trainGEMM(float *x, float *y, int *batch, const int &n_dato
     
     /*
     // Mostrar pesos
+    float * h_grad_w = (float *)malloc(n_pesos * n_neuronas * sizeof(float));
+    cudaMemcpy(h_grad_w, d_grad_w, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
     cout << "Gradiente de Pesos GEMM" << endl;
     for(int i=0; i<n_capas-1; i++)
     {
@@ -2161,7 +2170,7 @@ int main()
 {
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
-    int tam_x = 2, n_datos = 10, n_clases = 3;
+    int tam_x = 3, n_datos = 10, n_clases = 2;
     //int tam_x = 3, n_datos = 3, n_clases = 2;
     vector<int> capas = {tam_x, 5, 3, 7, n_clases};
     //vector<int> capas = {tam_x, 2, 3, 2, 4, n_clases};
@@ -2279,6 +2288,8 @@ int main()
         for(int j=0; j<n_clases; j++)
             (j == 1) ? y_gpu[i*n_clases + j] = 1.0 : y_gpu[i*n_clases + j] = 0.0;
 
+    fully_gpu.matrizTranspuesta(X_gpuT, n_datos, tam_x);
+    /*
     cout << "DATOS" << endl;
     for(int i=0; i<n_datos; i++)
     {
@@ -2290,9 +2301,6 @@ int main()
     }
     cout << endl;
 
-    
-    fully_gpu.matrizTranspuesta(X_gpuT, n_datos, tam_x);
-
     cout << "DATOS ^T" << endl;
     for(int i=0; i<tam_x; i++)
     {
@@ -2303,7 +2311,7 @@ int main()
         cout << endl;
     }
     cout << endl;
-    
+    */
     
     
     float *a_ptr = (float *)malloc(n_neuronas * sizeof(float));
@@ -2336,8 +2344,8 @@ int main()
         w_GEMM[i] = w_copy[i];        
 
     float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
-    fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
-    fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
+    //fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
+    //fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
     //fully_gpu.escalar_pesos_ptr(0.5);
     //fully_gpu.mostrar_pesos_ptr();
     printf("Accuracy: %f, Entropía Cruzada: %f\n", fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr), fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr));
@@ -2385,8 +2393,8 @@ int main()
     fully_gpu.set_wGEMM(w_GEMM);
     //fully_gpu.forwardPropagationGEMM(X_gpuT, y_gpu);
     
-    fully_gpu.trainGEMM(X_gpuT, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
-    fully_gpu.actualizar_parametros_gpu(grad_w_ptr, grad_bias_ptr);
+    //fully_gpu.trainGEMM(X_gpuT, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
+    //fully_gpu.actualizar_parametros_gpu(grad_w_ptr, grad_bias_ptr);
     //fully_gpu.escalar_pesos_GEMM(0.5);
     
     fully_gpu.evaluar_modelo_GEMM(X_gpuT, y_gpu);
