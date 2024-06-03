@@ -81,44 +81,24 @@ class FullyConnected
         {
             if(liberar_memoria)
             {
-                free(w_ptr); free(bias_ptr); free(capas); free(i_w_ptr); free(i_capa); free(wT_ptr); free(capas_wT); 
+                free(w_ptr); free(bias_ptr); free(capas); free(i_w_ptr); free(i_capa); free(wT_ptr); free(capas_wT); free(i_wT); free(i_capasGEMM);
                 for(int i=0; i<n_capas; i++)
-                {
                     free(capasGEMM[i]);
-                } 
+                 
                 free(capasGEMM); 
-                cudaFree(d_wT);
-                cudaFree(d_z);
-                cudaFree(d_a);
-                cudaFree(d_aT);
-                cudaFree(d_w);
-                cudaFree(d_b);
-                cudaFree(d_grad_w);
-                cudaFree(d_grad_b);
-                cudaFree(d_y);
-                cudaFree(d_i_capasGEMM);
-                cudaFree(d_sum_acc_entr);
-                cudaFree(d_capas_wT);
-                cudaFree(d_capas);
-                cudaFree(d_capas_wT);
-                cudaFree(d_max);
-                cudaFree(d_min);
+                cudaFree(d_wT); cudaFree(d_z); cudaFree(d_a); cudaFree(d_aT); cudaFree(d_w); cudaFree(d_b); cudaFree(d_grad_w); cudaFree(d_grad_b);
+                cudaFree(d_y); cudaFree(d_i_capasGEMM); cudaFree(d_sum_acc_entr); cudaFree(d_capas_wT); cudaFree(d_capas); cudaFree(d_capas_wT);
+                cudaFree(d_max); cudaFree(d_min);
             }
         };
         
         void set_train(float *x, float *y);
         void generar_pesos_ptr(const int &capa);
-        void forwardPropagation_ptr(float *x, float *a, float *z);
-        void forwardPropagationGEMM();
         void mostrar_neuronas_ptr(float *z_ptr);
         void copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_);
         void mostrar_pesos_ptr();
         void mostrar_pesos_Traspuestos_ptr();
-        float cross_entropy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
-        void evaluar_modelo_GEMM();
         float accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
-        void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
-        void trainGEMM(float *grad_x);
         void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
         void actualizar_parametros_gpu();
         void escalar_pesos_ptr(float clip_value);
@@ -128,7 +108,6 @@ class FullyConnected
 
         // CPU ---------------------------------------
         // Constructores
-        FullyConnected(const vector<int> &capas, const float & lr=0.1);
         FullyConnected(){};
 
         // Funciones de activación
@@ -137,26 +116,24 @@ class FullyConnected
         float sigmoid(const float &x);
 
         // Propagación hacia delante
-        void forwardPropagation(const vector<float> &x, vector<vector<float>> &a, vector<vector<float>> &z);
+        void forwardPropagation_ptr(float *x, float *a, float *z);
+        void forwardPropagationGEMM();
 
         // Cálculo de gradientes
-        void train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a);
+        void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
+        void trainGEMM(float *grad_x);
 
         // Medidas de evaluación
-        float accuracy(vector<vector<float>> x, vector<vector<float>> y);
-        float cross_entropy(vector<vector<float>> x, vector<vector<float>> y);
+        void evaluar_modelo_GEMM();
+        float cross_entropy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);
 
         // Modificación de parámetros
-        void actualizar_parametros(const vector<vector<vector<float>>> &grad_pesos, const vector<vector<float>> &grad_b);
         void escalar_pesos(float clip_value);
         void generar_pesos(const int &capa);
 
         // Gets
         float * get_pesos_ptr(){return this->w_ptr;};
         float * get_bias_ptr(){return this->bias_ptr;};
-        vector<vector<vector<float>>> get_pesos(){return this->w;};
-        vector<vector<float>> get_bias(){return this->bias;};
-        vector<vector<float>> get_a(){return this->a;};
         int get_n_capas(){return this->n_capas;};
         int * get_capas(){return this->capas;};
         int get_n_neuronas(){return this->n_neuronas;};
@@ -166,8 +143,6 @@ class FullyConnected
         void set_wGEMM(float *w);
 
         // Debug
-        void set_pesos(const vector<vector<vector<float>>> &w_){this->w = w_;};
-        void mostrar_neuronas(const vector<vector<float>> &z);
         void mostrar_pesos();
         int * get_i_w_ptr(){return this->i_w_ptr;};
         int * get_i_capa(){return this->i_capa;};
