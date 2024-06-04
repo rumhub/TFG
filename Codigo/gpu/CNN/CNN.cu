@@ -441,7 +441,7 @@ void CNN::train(int epocas, int mini_batch)
     float *img_grad_b_conv = nullptr;
 
 
-
+    float *y_batch = (float *)malloc(mini_batch*n_clases * sizeof(float));
 
     // -----------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
@@ -537,6 +537,39 @@ void CNN::train(int epocas, int mini_batch)
         shuffle(indices, n, g);
 
         
+
+    // ---------------------------------------------------------------
+    // ---------------------------------------------------------------
+    for(int i=0; i<mini_batch; i++)
+        for(int j=0; j<n_clases; j++)
+            y_batch[i*n_clases + j] = train_labels[indices[i]*n_clases + j];
+
+    cout << "LABELS" << endl;
+    for(int i=0; i<mini_batch; i++)
+    {
+        for(int j=0; j<n_clases; j++)
+            cout << train_labels[indices[i]*n_clases + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+
+    cout << "Y" << endl;
+    for(int i=0; i<mini_batch; i++)
+    {
+        for(int j=0; j<n_clases; j++)
+            cout << y_batch[i*n_clases + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+
+    int k2;
+    cin >> k2;
+    // ---------------------------------------------------------------
+    // ---------------------------------------------------------------
+
+
+
+
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
         for(int i=0; i<n_batches; ++i)
         {
@@ -1693,7 +1726,7 @@ void CNN::train(int epocas, int mini_batch)
 
     // Liberar memoria
     free(grad_x_fully); free(flat_outs_batch); free(conv_grads_bias); free(grads_bias_fully); free(grads_pesos_fully); free(convs_outs); free(plms_outs); free(conv_grads_w);
-    free(plms_in_copys); free(conv_a); free(indices); free(batch); free(tam_batches);
+    free(plms_in_copys); free(conv_a); free(indices); free(batch); free(tam_batches); free(y_batch);
 }
 
 void CNN::mostrar_ptr(float *x, int C, int H, int W)
@@ -1821,8 +1854,8 @@ void CNN::evaluar_modelo()
     entr = (*this->fully).cross_entropy_ptr(flat_outs, this->train_labels, n_imagenes, a_ptr, z_ptr);
 
     // Realizar media y obtener valores finales
-    acc = acc / n_imagenes * 100;
-    entr = -entr / n_imagenes;
+    //acc = acc / n_imagenes * 100;
+    //entr = -entr / n_imagenes;
 
     cout << "Accuracy: " << acc << " %,  ";
 

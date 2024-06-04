@@ -263,7 +263,7 @@ __global__ void backprop_capas_intermedias(int M, int N, int K, const float *A, 
 /*
     Emplea tiles. Un tile por bloque. Usa memoria compartida
 */
-__global__ void multiplicarMatricesGPU_fully(int M, int N, int K, const float *A, const float *B, float *C)
+__global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, const float *B, float *C)
 {
     // Memoria compartida dinámica
 	extern __shared__ float sdata[];
@@ -454,8 +454,6 @@ __global__ void min_max(float *maximos, float *minimos, const int N)
     }
 }
 
-
-
 __global__ void kernel_escalar_pesos(float * X, const int N, float *maxi, float *mini, float valor_clip) 
 {
 	int tid = threadIdx.x;
@@ -492,9 +490,11 @@ __global__ void kernel_transpuesta_pesos(int *capas_wT, int *capas, float *w, fl
 */
 FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch)
 {
-    int n_neuronas = 0, n_pesos = 0, n_neuronas_GEMM = 0;
-
+    
     liberar_memoria = true;
+    vector<float> neuronas_capa, w_1D;
+    vector<vector<float>> w_2D;
+    int n_neuronas = 0, n_pesos = 0, n_neuronas_GEMM = 0;
     this->mini_batch = mini_batch;
     this->n_capas = n_capas;
     this->capas = (int *)malloc(n_capas * sizeof(int));
@@ -504,9 +504,6 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     this->capasGEMM = (float **)malloc(n_capas * sizeof(float*));
     this->i_capasGEMM = (int *)malloc(n_capas * sizeof(int));
 
-    // Learning Rate
-    this->lr = lr;
-    
     // Neuronas ------------------------------------------------------------------
     for(int i=0; i<n_capas; i++)
     {
@@ -527,11 +524,11 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     }
 
 
-    cudaMalloc((void **) &d_grad_x,  (capas[0] + 1) * mini_batch * sizeof(float));      
-
     this->bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
     this->i_wT = (int *)malloc(n_capas * n_neuronas * sizeof(int));
 
+    // Mostrar neuronas
+    //mostrar_neuronas();
     
 
     // Pesos ------------------------------------------------------------------
@@ -550,6 +547,9 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     this->n_pesos = n_pesos;
     this->w_ptr = (float *)malloc(n_pesos * sizeof(float));
     this->wT_ptr = (float *)malloc(n_pesos * n_neuronas * sizeof(float));
+
+    // Learning Rate
+    this->lr = lr;
     
     // Inicializar pesos mediante inicialización He
     for(int i=0; i<n_capas-1; ++i)
@@ -643,19 +643,6 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
     cudaMemcpy(d_capas, capas, n_capas * sizeof(int), cudaMemcpyHostToDevice);
     
 
-
-    bloque_reduce.x = 5;
-    bloque_reduce.y = 1;
-    //dim3 bloque_reduce(32, 1);
-
-    grid_reduce.x = (n_pesos + bloque_reduce.x -1) / bloque_reduce.x;
-    grid_reduce.y = 1;
-
-    smem_reduce = (2*bloque_reduce.x * bloque_reduce.y) *sizeof(float);
-
-    cudaMalloc((void **) &d_max, grid_reduce.x * sizeof(float));      
-    cudaMalloc((void **) &d_min, grid_reduce.x * sizeof(float));      
-    
 };
 
 
@@ -713,27 +700,6 @@ void FullyConnected::mostrar_pesos_Traspuestos_ptr()
     cout << endl;
 }
 
-void FullyConnected::mostrar_pesos()
-{
-    cout << "Pesos" << endl;
-    for(int i=0; i<w.size(); i++)
-    {
-        cout << "Capa " << i << endl;
-        for(int j=0; j<w[i].size(); j++)
-        {
-            for(int k=0; k<w[i][j].size(); k++)
-            {
-                cout << "W(" << j << "," << k << "): ";
-                cout << w[i][j][k] << " ";
-
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
 void FullyConnected::mostrar_neuronas_ptr(float *z_ptr)
 {
     // Mostrar neuronas
@@ -747,15 +713,6 @@ void FullyConnected::mostrar_neuronas_ptr(float *z_ptr)
     }
     cout << endl;
 }
-
-void FullyConnected::copiar_w_de_vector_a_ptr(vector<vector<vector<float>>> w_)
-{
-    for(int i=0; i<w_.size(); i++)
-        for(int j=0; j<w_[i].size(); j++)
-            for(int k=0; k<w_[i][j].size(); k++)
-                w_ptr[i_w_ptr[i] + j*capas[i+1] + k] = w_[i][j][k];
-}
-
 
 /*
     @brief  Genera los pesos entre 2 capas de neuronas
@@ -773,7 +730,6 @@ void FullyConnected::generar_pesos_ptr(const int &capa)
     for(int i=0; i<this->capas[capa]; ++i)
         for(int j=0; j<this->capas[capa+1]; ++j)
             this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = distribution(gen);
-            //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = 0.1;
             //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = cont++;
             //this->w_ptr[i_w_ptr[capa] + i*capas[capa+1] + j] = (float) (i+1)/10;
 }
@@ -818,6 +774,7 @@ float FullyConnected::sigmoid(const float &x)
 {
     return 1/(1+exp(-x));
 }
+
 
 /*
     @brief  Propagación hacia delante por toda la red totalmente conectada
@@ -997,6 +954,7 @@ void FullyConnected::forwardPropagation_ptr(float *x, float *a_ptr, float *z_ptr
     
 }
 
+
 /*
     @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
     @x      Conjunto de datos de entrada
@@ -1143,38 +1101,11 @@ void FullyConnected::trainGEMM(float *grad_x)
         grid_grad_w.x = (capas[c]  + block_size -1) / block_size; 
         grid_grad_w.y = (capas[c-1] + block_size -1) / block_size;
 
-        multiplicarMatricesGPU_fully<<<grid_grad_w, block, smem>>>(capas[c-1], capas[c], mini_batch, d_z + i_capasGEMM[c-1], d_aT + i_capasGEMM[c], d_grad_w + i_w_ptr[c-1]);
+        multiplicarMatricesGPU<<<grid_grad_w, block, smem>>>(capas[c-1], capas[c], mini_batch, d_z + i_capasGEMM[c-1], d_aT + i_capasGEMM[c], d_grad_w + i_w_ptr[c-1]);
     }
 
-    // Gradiente respecto a input de la red ------------------------
     int c = 0;
     float *capa = capasGEMM[0];
-
-    // Tamaño de grid
-    grid_transpuesta_back.x = (capas[c]  + block_size -1) / block_size; 
-    grid_transpuesta_back.y = 1;
-
-    matrizTranspuesta_GPU<<<grid_transpuesta_back, block_softmax>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
-
-    cudaMemcpy(grad_x, d_aT + i_capasGEMM[c], capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-    
-    /*
-    cout << " ---------------------------- Grad_A GEM ---------------------------- " << endl;
-    capa = capasGEMM[c];
-    cudaMemcpy(capa, d_a + i_capasGEMM[c],  capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-    cudaError_t err = cudaGetLastError();
-    if (err != cudaSuccess) 
-        printf("Error: %s\n", cudaGetErrorString(err));
-
-    cout << "CAPA " << c << " A" << endl;
-    for(int i=0; i<this->capas[c]; i++)
-    {
-        for(int j=0; j<this->mini_batch; j++)
-            cout << capa[i*mini_batch + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-    */
 
     /*
     cout << " ---------------------------- Gradiente de bias GEMM ---------------------------- " << endl;
@@ -1192,7 +1123,7 @@ void FullyConnected::trainGEMM(float *grad_x)
         cout << endl;
     }    
 
-    
+    /*
     cout << " ---------------------------- A ---------------------------- " << endl;
     //float *capa = capasGEMM[0];
     for(int c=0; c<n_capas; c++)
@@ -1212,7 +1143,7 @@ void FullyConnected::trainGEMM(float *grad_x)
         }
         cout << endl;
     }
-    
+    */
     
     /*
     // Mostrar pesos
@@ -1449,6 +1380,19 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
     */
  
 
+    dim3 bloque_reduce(32, 1);
+    float *pesos_copy = (float *)malloc(n_pesos * sizeof(float)),
+          *max = (float *)malloc(sizeof(float)),    
+          *min = (float *)malloc(sizeof(float));    
+    dim3 grid_reduce((n_pesos + bloque_reduce.x -1) / bloque_reduce.x, 1);
+    size_t smem_reduce = (2*bloque_reduce.x * bloque_reduce.y) *sizeof(float);
+
+    float *d_max_por_bloque, *d_min_por_bloque, *d_max, *d_min;
+    cudaMalloc((void **) &d_max_por_bloque, grid_reduce.x * sizeof(float));      
+    cudaMalloc((void **) &d_min_por_bloque, grid_reduce.x * sizeof(float));      
+    cudaMalloc((void **) &d_max, sizeof(float));      
+    cudaMalloc((void **) &d_min, sizeof(float));     
+
 
     reduceMax<<<grid_reduce, bloque_reduce, smem_reduce>>>(d_w, d_max, n_pesos); 
     reduceMin<<<grid_reduce, bloque_reduce, smem_reduce>>>(d_w, d_min, n_pesos); 
@@ -1573,8 +1517,8 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
                     min = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
             }
     
-    //cout << "Máximo: " << max << endl;
-    //cout << "Mínimo: " << min << endl;
+    cout << "Máximo: " << max << endl;
+    cout << "Mínimo: " << min << endl;
     // Realizar gradient clipping
     float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
     for(int i=0; i<n_capas-1; i++)
@@ -1599,35 +1543,6 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
     */
 }
 
-/*
-    @brief          Escalar los pesos para evitar que los gradientes "exploten"
-    @clip_value     Valor a emplear para realizar el "clip" o escalado
-    @return         Se actualizan los valores de w (pesos de la red)
-*/
-void FullyConnected::escalar_pesos(float clip_value)
-{
-    // Calcular el máximo y el mínimo de los pesos
-    float max = this->w[0][0][0], min = this->w[0][0][0];
-
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-            {
-                if(max < this->w[i][j][k])
-                    max = this->w[i][j][k];
-                
-                if(min > this->w[i][j][k])
-                    min = this->w[i][j][k];
-            }
-    
-    // Realizar gradient clipping
-    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
-    for(int i=0; i<this->w.size(); i++)
-        for(int j=0; j<this->w[i].size(); j++)
-            for(int k=0; k<this->w[i][j].size(); k++)
-                this->w[i][j][k] = std::max(std::min(this->w[i][j][k], clip_value), -clip_value);
-}
-
 
 /*
     @brief          Actualizar los pesos y sesgos de la red
@@ -1635,9 +1550,14 @@ void FullyConnected::escalar_pesos(float clip_value)
     @grad_b         Gradiente de cada sesgo de la red
     @return         Se actualizar los valores de w y bias (pesos y sesgos de la red)
 */
-void FullyConnected::actualizar_parametros_gpu()
+void FullyConnected::actualizar_parametros_gpu(float *grad_pesos, float *grad_b)
 {
-    //cudaMemcpy(pesos_copy, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
+    float *bias_copy = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
+    float *grad_pesos_copy = (float *)malloc(n_pesos * sizeof(float));       
+    float *pesos_copy = (float *)malloc(n_pesos * n_neuronas * sizeof(float));       
+    dim3 grid_act_grad_b;
+    dim3 grid_act_grad_w;
+    cudaMemcpy(pesos_copy, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
     
     /*
     // Mostrar pesos
@@ -1670,14 +1590,6 @@ void FullyConnected::actualizar_parametros_gpu()
     cout << endl;
     
     */
-    
-    
-    //float *bias_copy = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
-    //float *grad_pesos_copy = (float *)malloc(n_pesos * n_neuronas * sizeof(float));       
-    //float *pesos_copy = (float *)malloc(n_pesos * n_neuronas * sizeof(float));       
-    dim3 grid_act_grad_b;
-    dim3 grid_act_grad_w;
-    
     for(int i=0; i<n_capas; i++)
     {
         // Tamaño de grid
@@ -1693,11 +1605,12 @@ void FullyConnected::actualizar_parametros_gpu()
         grid_act_grad_w.x = (capas[i+1]  + block_softmax.x -1) / block_softmax.x; 
         grid_act_grad_w.y = (capas[i]  + block_softmax.x -1) / block_softmax.x;
         kernel_actualizar_pesos<<<grid_act_grad_w, block>>>(capas[i], capas[i+1], d_w + i_w_ptr[i], d_grad_w + i_w_ptr[i], this->lr);   
+        
+
         kernel_transpuesta_pesos<<<grid_act_grad_w, block>>>(d_capas_wT, d_capas, d_w + i_w_ptr[i], d_wT + i_wT[i], i, d_b + i_capa[i+1]);
     }
-    
 
-    //cudaMemcpy(pesos_copy, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(pesos_copy, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
     
     /*
     // Mostrar pesos
@@ -1715,7 +1628,7 @@ void FullyConnected::actualizar_parametros_gpu()
     cout << endl;
     */
 
-    //cudaMemcpy(pesos_copy, d_wT, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(pesos_copy, d_wT, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
     
     /*
     // Mostrar pesos
@@ -1870,7 +1783,6 @@ void FullyConnected::matrizTranspuesta(float* matrix, int rows, int cols)
     free(transposedMatrix);
 }
 
-
 void mostrar_ptr_2D(float *x, int H, int W)
 {
     for(int i=0; i<H; i++)
@@ -1897,9 +1809,9 @@ int main()
 {
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
-    int tam_x = 3, n_datos = 2, n_clases = 3;
+    int tam_x = 3, n_datos = 10, n_clases = 2;
     //int tam_x = 3, n_datos = 3, n_clases = 2;
-    vector<int> capas = {tam_x, 5, n_clases};
+    vector<int> capas = {tam_x, 5, 3, 7, n_clases};
     //vector<int> capas = {tam_x, 2, 3, 2, 4, n_clases};
     vector<vector<float>> a_cpu, z_cpu, grad_a_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
     vector<vector<vector<float>>> grad_w_cpu;
@@ -1909,7 +1821,7 @@ int main()
 
     // GPU --------------
     cout << " ---------- GPU ---------- " << endl; 
-    int n_capas = 3;
+    int n_capas = 5;
     int *capas_ptr = (int *)malloc(n_capas * sizeof(int));
     int *i_capa = (int *)malloc(n_capas * sizeof(int));
 
@@ -1960,6 +1872,7 @@ int main()
         {
             X_gpu[i*tam_x + j] = cont;
             X_gpuT[i*tam_x + j] = cont++;
+            //X_gpu[i*tam_x + j] = X_cpu[i][j];
         }
 
     
@@ -1997,52 +1910,22 @@ int main()
     //fully_gpu.mostrar_pesos_ptr();
     printf("Accuracy: %f, Entropía Cruzada: %f\n", fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr), fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr));
     
-    
-    cout << "grad_x_gpu: " << endl;
-    for(int i=0; i<n_datos; i++)
-    {
-        for(int j=0; j<tam_x; j++)
-            cout << grad_x_gpu[i*tam_x + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-    
-
-    for(int i=0; i<n_datos; i++)
-        for(int j=0; j<tam_x; j++)
-            grad_x_gpu[i*tam_x + j] = 0.0;
-    
-
     // -------------------------------------------------------------
     fully_gpu.set_biasGEMM(bias_GEMM);
     fully_gpu.set_wGEMM(w_GEMM);
     fully_gpu.set_train(X_gpuT, y_gpu);
-    fully_gpu.forwardPropagationGEMM();
+    //fully_gpu.forwardPropagationGEMM(X_gpuT, y_gpu);
     
     fully_gpu.trainGEMM(grad_x_gpu);
-    fully_gpu.actualizar_parametros_gpu();
+    fully_gpu.actualizar_parametros_gpu(grad_w_ptr, grad_bias_ptr);
     fully_gpu.escalar_pesos_GEMM(0.5);
     
     fully_gpu.evaluar_modelo_GEMM();
     
-
-
-    cout << "grad_x_gpu: " << endl;
-    for(int i=0; i<n_datos; i++)
-    {
-        for(int j=0; j<tam_x; j++)
-            cout << grad_x_gpu[i*tam_x + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
     free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
-    free(grad_x_gpu); free(batch_gpu);      
+    free(grad_x_gpu);
 
-    cudaError_t err = cudaGetLastError();
-    if (err != cudaSuccess) 
-        printf("Error: %s\n", cudaGetErrorString(err));
-    
+    free(batch_gpu);      
 
     return 0;
 }
