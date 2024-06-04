@@ -47,21 +47,23 @@ class FullyConnected
         int * d_i_capasGEMM = nullptr;
         float *d_sum_acc_entr = nullptr;
         int * d_capas_wT, *d_capas;
+        float *d_max = nullptr;
+        float *d_min = nullptr;
+        float *d_softmax = nullptr;
 
 
         // Tamaño de bloque
-        dim3 block;
-        dim3 block_softmax;
+        dim3 block_2D;
+        dim3 block_1D;
 
         // Tamaño de grid
-        dim3 grid_forward;          // Grid para realizar la propagación hacia delante
-        dim3 grid_softmax;          
+        dim3 grid_2D;          
+        dim3 grid_1D;          
         
         int block_size;
 
-        size_t smem;            // Memoria compartida requerida por el kernel
-
-        float *d_softmax = nullptr;
+        size_t smem_2D;            // Memoria compartida requerida por el kernel
+        size_t smem_1D;
 
 
     public:
