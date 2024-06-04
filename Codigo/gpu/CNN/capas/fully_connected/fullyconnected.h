@@ -113,7 +113,7 @@ class FullyConnected
         void escalar_pesos_ptr(float clip_value);
         void escalar_pesos_GEMM(float clip_value);
         void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
-        void actualizar_parametros_gpu(float *grad_pesos, float *grad_b);
+        void actualizar_parametros_gpu();
 
         // Gets
         float * get_pesos_ptr(){return this->w_ptr;};
