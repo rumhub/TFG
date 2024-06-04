@@ -263,7 +263,7 @@ __global__ void backprop_capas_intermedias(int M, int N, int K, const float *A, 
 /*
     Emplea tiles. Un tile por bloque. Usa memoria compartida
 */
-__global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, const float *B, float *C)
+__global__ void multiplicarMatricesGPU_fully(int M, int N, int K, const float *A, const float *B, float *C)
 {
     // Memoria compartida dinámica
 	extern __shared__ float sdata[];
@@ -526,6 +526,8 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
         n_neuronas_GEMM += i_capasGEMM[i];
     }
 
+
+    cudaMalloc((void **) &d_grad_x,  (capas[0] + 1) * mini_batch * sizeof(float));      
 
     this->bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
     this->i_wT = (int *)malloc(n_capas * n_neuronas * sizeof(int));
@@ -1141,11 +1143,38 @@ void FullyConnected::trainGEMM(float *grad_x)
         grid_grad_w.x = (capas[c]  + block_size -1) / block_size; 
         grid_grad_w.y = (capas[c-1] + block_size -1) / block_size;
 
-        multiplicarMatricesGPU<<<grid_grad_w, block, smem>>>(capas[c-1], capas[c], mini_batch, d_z + i_capasGEMM[c-1], d_aT + i_capasGEMM[c], d_grad_w + i_w_ptr[c-1]);
+        multiplicarMatricesGPU_fully<<<grid_grad_w, block, smem>>>(capas[c-1], capas[c], mini_batch, d_z + i_capasGEMM[c-1], d_aT + i_capasGEMM[c], d_grad_w + i_w_ptr[c-1]);
     }
 
+    // Gradiente respecto a input de la red ------------------------
     int c = 0;
     float *capa = capasGEMM[0];
+
+    // Tamaño de grid
+    grid_transpuesta_back.x = (capas[c]  + block_size -1) / block_size; 
+    grid_transpuesta_back.y = 1;
+
+    matrizTranspuesta_GPU<<<grid_transpuesta_back, block_softmax>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
+
+    cudaMemcpy(grad_x, d_aT + i_capasGEMM[c], capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+    
+    /*
+    cout << " ---------------------------- Grad_A GEM ---------------------------- " << endl;
+    capa = capasGEMM[c];
+    cudaMemcpy(capa, d_a + i_capasGEMM[c],  capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaError_t err = cudaGetLastError();
+    if (err != cudaSuccess) 
+        printf("Error: %s\n", cudaGetErrorString(err));
+
+    cout << "CAPA " << c << " A" << endl;
+    for(int i=0; i<this->capas[c]; i++)
+    {
+        for(int j=0; j<this->mini_batch; j++)
+            cout << capa[i*mini_batch + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+    */
 
     /*
     cout << " ---------------------------- Gradiente de bias GEMM ---------------------------- " << endl;
@@ -1163,7 +1192,7 @@ void FullyConnected::trainGEMM(float *grad_x)
         cout << endl;
     }    
 
-    /*
+    
     cout << " ---------------------------- A ---------------------------- " << endl;
     //float *capa = capasGEMM[0];
     for(int c=0; c<n_capas; c++)
@@ -1183,7 +1212,7 @@ void FullyConnected::trainGEMM(float *grad_x)
         }
         cout << endl;
     }
-    */
+    
     
     /*
     // Mostrar pesos
@@ -1841,6 +1870,7 @@ void FullyConnected::matrizTranspuesta(float* matrix, int rows, int cols)
     free(transposedMatrix);
 }
 
+
 void mostrar_ptr_2D(float *x, int H, int W)
 {
     for(int i=0; i<H; i++)
@@ -1867,9 +1897,9 @@ int main()
 {
     // CPU --------------
     cout << " ---------- CPU ---------- " << endl; 
-    int tam_x = 1024, n_datos = 32, n_clases = 10;
+    int tam_x = 3, n_datos = 2, n_clases = 3;
     //int tam_x = 3, n_datos = 3, n_clases = 2;
-    vector<int> capas = {tam_x, 100, n_clases};
+    vector<int> capas = {tam_x, 5, n_clases};
     //vector<int> capas = {tam_x, 2, 3, 2, 4, n_clases};
     vector<vector<float>> a_cpu, z_cpu, grad_a_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
     vector<vector<vector<float>>> grad_w_cpu;
@@ -1967,6 +1997,21 @@ int main()
     //fully_gpu.mostrar_pesos_ptr();
     printf("Accuracy: %f, Entropía Cruzada: %f\n", fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr), fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr));
     
+    
+    cout << "grad_x_gpu: " << endl;
+    for(int i=0; i<n_datos; i++)
+    {
+        for(int j=0; j<tam_x; j++)
+            cout << grad_x_gpu[i*tam_x + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+    
+
+    for(int i=0; i<n_datos; i++)
+        for(int j=0; j<tam_x; j++)
+            grad_x_gpu[i*tam_x + j] = 0.0;
+    
 
     // -------------------------------------------------------------
     fully_gpu.set_biasGEMM(bias_GEMM);
@@ -1976,11 +2021,21 @@ int main()
     
     fully_gpu.trainGEMM(grad_x_gpu);
     fully_gpu.actualizar_parametros_gpu();
-    
     fully_gpu.escalar_pesos_GEMM(0.5);
     
     fully_gpu.evaluar_modelo_GEMM();
     
+
+
+    cout << "grad_x_gpu: " << endl;
+    for(int i=0; i<n_datos; i++)
+    {
+        for(int j=0; j<tam_x; j++)
+            cout << grad_x_gpu[i*tam_x + j] << " ";
+        cout << endl;
+    }
+    cout << endl;
+
     free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
     free(grad_x_gpu); free(batch_gpu);      
 

@@ -50,8 +50,9 @@ class FullyConnected
         float * d_y = nullptr;
         int * d_i_capasGEMM = nullptr;
         float *d_sum_acc_entr = nullptr;
-        int * d_capas_wT, *d_capas;
-        float *d_max, *d_min;
+        int * d_capas_wT = nullptr, *d_capas = nullptr;
+        float *d_max = nullptr, *d_min = nullptr;
+        float *d_grad_x = nullptr;
 
 
         // Tamaño de bloque
@@ -88,7 +89,7 @@ class FullyConnected
                 free(capasGEMM); 
                 cudaFree(d_wT); cudaFree(d_z); cudaFree(d_a); cudaFree(d_aT); cudaFree(d_w); cudaFree(d_b); cudaFree(d_grad_w); cudaFree(d_grad_b);
                 cudaFree(d_y); cudaFree(d_i_capasGEMM); cudaFree(d_sum_acc_entr); cudaFree(d_capas_wT); cudaFree(d_capas); cudaFree(d_capas_wT);
-                cudaFree(d_max); cudaFree(d_min);
+                cudaFree(d_max); cudaFree(d_min); cudaFree(d_grad_x);
             }
         };
         

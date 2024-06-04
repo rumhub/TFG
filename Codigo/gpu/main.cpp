@@ -92,7 +92,8 @@ int main()
     //vector<vector<int>> capas_conv = {{3, 3, 3}, {3, 5, 5}}, tams_pool = {{2, 2}, {2, 2}};
     //int C=3, H=5, W=5, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10;
     //int C=3, H=4, W=4, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10;
-    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10;
+    //int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
+    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 10, n_imgs_test = 10, n_clases = 10, mini_batch = 32;
     int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
         *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
         *capas_pool = (int *)malloc(n_capas_conv*2 * sizeof(int)),
@@ -135,14 +136,14 @@ int main()
     capas_pool[i*2 +1] = 2;      // kernels de 2 columnas
 
 
-    CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr);
+    CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr, mini_batch);
     //CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H-2*padding[0], W-2*padding[0], lr);
     cnn.mostrar_arquitectura();
     leer_imagenes_cifar10_ptr(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, padding[0], n_imgs_train, n_imgs_test, n_clases);
     cnn.set_train(train_imgs_ptr, train_labels_ptr, n_imgs_train, n_clases, C, H, W);
     //cnn.set_train(X, Y, n_imagenes, n_clases, C, H, W);
     //cnn.prueba();
-    cnn.train(50, 32);
+    cnn.train(50, mini_batch);
     //cnn.evaluar_modelo();
     
     /*

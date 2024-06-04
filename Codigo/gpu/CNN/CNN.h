@@ -51,7 +51,7 @@ class CNN
 
     public:
         // Constructor
-        CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr);
+        CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr, const int mini_batch);
         ~CNN(){free(train_imgs); free(train_labels); free(padding); free(i_conv_out); free(i_conv_in); free(i_plm_out); free(i_plm_in); free(i_w);
                free(i_b); free(img_in); free(img_out); free(img_in_copy); free(conv_a); free(a_ptr); free(z_ptr); free(flat_outs); free(grad_a_ptr);};
 

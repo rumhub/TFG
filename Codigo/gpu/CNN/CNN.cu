@@ -23,7 +23,7 @@ void checkCudaErrors(cudaError_t err) {
     @input          Volumen 3D de entrada. Se tendrán en cuenta sus dimensiones para crear las estructuras necesarias y permitir un posterior entrenamiento con volúmenes de iguales dimensiones.
     @lr             Learning Rate o Tasa de Aprendizaje
 */
-CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr)
+CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr, const int mini_batch)
 {
     int * i_capas_conv = nullptr;
     int * i_capas_pool = nullptr;
@@ -124,7 +124,8 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     for(int i=1; i<n_capas_fully+1; i++)
         capas_fully_ptr[i] = capas_fully[i-1];
 
-    this->fully = new FullyConnected(capas_fully_ptr, n_capas_fully+1, lr);
+
+    this->fully = new FullyConnected(capas_fully_ptr, n_capas_fully+1, lr, mini_batch);
 
     // Reserva de espacio para posteriores operaciones
     int tam_img_max = max_C*max_H*max_W;
