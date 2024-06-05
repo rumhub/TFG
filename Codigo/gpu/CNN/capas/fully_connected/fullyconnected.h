@@ -126,7 +126,7 @@ class FullyConnected
         // Sets
         void set_biasGEMM(float *bias);
         void set_wGEMM(float *w);
-        void set_train(float *x, float *y);
+        void set_train(float *x, float *y, int mini_batch);
 
         // Utilidades
         void matrizTranspuesta(float* matrix, int rows, int cols);

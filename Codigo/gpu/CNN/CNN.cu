@@ -441,7 +441,9 @@ void CNN::train(int epocas, int mini_batch)
     float *img_grad_b_conv = nullptr;
 
 
-    float *y_batch = (float *)malloc(mini_batch*n_clases * sizeof(float));
+    float *y_batch = (float *)malloc(mini_batch*n_clases * sizeof(float)),
+          *flat_outs_batch_T = (float *)malloc(mini_batch* tam_flat_out * sizeof(float)),                   
+          *grad_x_fully_gpu = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float)); 
 
     // -----------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------
@@ -536,47 +538,42 @@ void CNN::train(int epocas, int mini_batch)
         // Desordenar vector de índices
         shuffle(indices, n, g);
 
-        
-
-    // ---------------------------------------------------------------
-    // ---------------------------------------------------------------
-    for(int i=0; i<mini_batch; i++)
-        for(int j=0; j<n_clases; j++)
-            y_batch[i*n_clases + j] = train_labels[indices[i]*n_clases + j];
-
-    cout << "LABELS" << endl;
-    for(int i=0; i<mini_batch; i++)
-    {
-        for(int j=0; j<n_clases; j++)
-            cout << train_labels[indices[i]*n_clases + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "Y" << endl;
-    for(int i=0; i<mini_batch; i++)
-    {
-        for(int j=0; j<n_clases; j++)
-            cout << y_batch[i*n_clases + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
-    int k2;
-    cin >> k2;
-    // ---------------------------------------------------------------
-    // ---------------------------------------------------------------
-
-
-
-
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
         for(int i=0; i<n_batches; ++i)
         {
-            
             // Crear el batch para cada hebra ----------------------
             for(int j=0; j<tam_batches[i]; j++)
                 batch[j] = indices[mini_batch*i + j];   
+
+            // ---------------------------------------------------------------
+            // ---------------------------------------------------------------
+            for(int i_=0; i_<tam_batches[i]; i_++)
+                for(int j=0; j<n_clases; j++)
+                    y_batch[i_*n_clases + j] = train_labels[batch[i_]*n_clases + j];
+            /*
+            cout << "LABELS" << endl;
+            for(int i=0; i<mini_batch; i++)
+            {
+                for(int j=0; j<n_clases; j++)
+                    cout << train_labels[indices[i]*n_clases + j] << " ";
+                cout << endl;
+            }
+            cout << endl;
+
+            cout << "Y" << endl;
+            for(int i=0; i<mini_batch; i++)
+            {
+                for(int j=0; j<n_clases; j++)
+                    cout << y_batch[i*n_clases + j] << " ";
+                cout << endl;
+            }
+            cout << endl;
+
+            int k2;
+            cin >> k2;
+            */
+            // ---------------------------------------------------------------
+            // ---------------------------------------------------------------
 
             
             for(int img=0; img<tam_batches[i]; ++img)
@@ -891,8 +888,13 @@ void CNN::train(int epocas, int mini_batch)
             for(int i_=0; i_<this->fully->get_n_neuronas(); i_++)
                 grads_bias_fully[i_] = 0.0;
             
+
             // Realizar propagación hacia delante y hacia detrás en la capa totalmente conectada
-            this->fully->train_ptr(flat_outs_batch, this->train_labels, batch, tam_batches[i], grads_pesos_fully, grads_bias_fully, grad_x_fully, a_ptr, z_ptr, grad_a_ptr);
+            this->fully->matrizTranspuesta(flat_outs_batch, flat_outs_batch_T, tam_batches[i], tam_flat_out);
+            this->fully->set_train(flat_outs_batch_T, y_batch, tam_batches[i]);
+            this->fully->trainGEMM(grad_x_fully);
+            this->fully->actualizar_parametros_gpu();
+            this->fully->escalar_pesos_GEMM(2);
             
             /*
             cout << "Output Flatten Total: " << endl;
@@ -992,7 +994,6 @@ void CNN::train(int epocas, int mini_batch)
             cout << endl;
 
             //cin >> k1;
-
             
             cout << "Grad X Fully" << endl;
             cout << tam_batches[i] <<  "x" << this->fully->get_capas()[0] << endl << endl;
@@ -1006,16 +1007,30 @@ void CNN::train(int epocas, int mini_batch)
             cout << endl;
 
             //cin >> k1;
-            */
-            
+
+            cout << "Grad X Fully gpu" << endl;
+            cout << tam_batches[i] <<  "x" << this->fully->get_capas()[0] << endl << endl;
+            for(int i_=0; i_<tam_batches[i]; i_++)
+            {
+                cout << "Capa " << i_ << endl;
+                for(int j=0; j<this->fully->get_capas()[0]; j++)
+                    cout << grad_x_fully_gpu[i_*this->fully->get_capas()[0] + j] << " ";
+                cout << endl;
+            }
+            cout << endl;
+
+            int k2;
+            cin >> k2;
+            */            
             // ----------------------------------------------
             // Pesos de la capa totalmente conectada
             // ----------------------------------------------
             // ----------------------------------------------
             // Realizar la media de los gradientes respecto a cada peso
+            /*
             for(int i_=0; i_<this->fully->get_n_pesos(); i_++)
                 grads_pesos_fully[i_] /= tam_batches[i];
-            
+            */
             /*
             cout << "Grad pesos (después media): " << endl;
             for(int i=0; i<n_capas_fully-1; i++)
@@ -1043,9 +1058,10 @@ void CNN::train(int epocas, int mini_batch)
             // ----------------------------------------------
             // ----------------------------------------------
             // Realizar la media de los gradientes respecto a cada sesgo
+            /*
             for(int i_=0; i_<this->fully->get_n_neuronas(); i_++)
                 grads_bias_fully[i_] /= tam_batches[i];
-
+            */
             /*
             cout << "Grad Bias (después media)" << endl;
             for(int i=0; i<n_capas_fully; i++)
@@ -1064,10 +1080,25 @@ void CNN::train(int epocas, int mini_batch)
 
                         
             // Actualizar parámetros de capas totalmente conectadas 
-            this->fully->actualizar_parametros_ptr(grads_pesos_fully, grads_bias_fully);
-            this->fully->escalar_pesos_ptr(2);
+            //this->fully->actualizar_parametros_ptr(grads_pesos_fully, grads_bias_fully);
+            //this->fully->escalar_pesos_ptr(2);
             
-            w_fully = this->fully->get_pesos_ptr();
+            /*
+            // Mostrar pesos
+            cout << "Pesos fully" << endl;
+            for(int j=0; j<10; j++)   // Por cada neurona de la capa actual
+            {
+                for(int k=0; k<10; k++)     // Por cada neurona de la siguiente capa
+                    cout << w_fully[i_w_ptr[1] + j*capas_fully[1+1] + k] << " ";
+                
+                cout << endl;
+            }
+            cout << endl;
+            
+            cin >> k1;
+            */
+
+            //w_fully = this->fully->get_pesos_ptr();
             
             /*
             cout << "Pesos fully (después actualización y escalado):" << endl;

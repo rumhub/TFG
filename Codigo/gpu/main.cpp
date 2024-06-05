@@ -89,6 +89,7 @@ int main()
 
 int main()
 {
+    /*
     int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 10, n_imgs_test = 10, n_clases = 10, mini_batch = 2;
     int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
         *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
@@ -105,7 +106,8 @@ int main()
     train_imgs_ptr = (float *)malloc(tam_img * n_imgs_train * n_clases * sizeof(float));
     train_labels_ptr = (float *)malloc(n_imgs_train*n_clases * n_clases * sizeof(float));
 
-    float lr = 0.01;
+    float lr = 1;
+    //float lr = 0.01;
     int i=0;
     capas_fully[0] = 5;
     capas_fully[1] = n_clases;
@@ -117,7 +119,7 @@ int main()
 
     i = 1;
     // Segunda capa convolucional
-    capas_conv[i*3 +0] = 2;      // 7 kernels
+    capas_conv[i*3 +0] = 1;      // 7 kernels
     capas_conv[i*3 +1] = 3;      // kernels de 5 filas
     capas_conv[i*3 +2] = 3;      // kernels de 5 columnas
 
@@ -133,7 +135,7 @@ int main()
 
 
     CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr, mini_batch);
-    /*
+    
     //CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H-2*padding[0], W-2*padding[0], lr);
     cnn.mostrar_arquitectura();
     leer_imagenes_cifar10_ptr(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, padding[0], n_imgs_train, n_imgs_test, n_clases);
@@ -142,11 +144,11 @@ int main()
     //cnn.prueba();
     cnn.train(50, mini_batch);
     //cnn.evaluar_modelo();
-    */
+    */    
 
 
-    /*
-    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 10, n_imgs_test = 10, n_clases = 10, mini_batch = 32;
+    
+    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
     int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
         *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
         *capas_pool = (int *)malloc(n_capas_conv*2 * sizeof(int)),
@@ -198,7 +200,7 @@ int main()
     //cnn.prueba();
     cnn.train(50, mini_batch);
     //cnn.evaluar_modelo();
-    */
+    
     
     /*
     cnn.set_train(train_imgs, train_labels);
