@@ -7,9 +7,9 @@
 #include <chrono>
 #include "random"
 #include "omp.h"
-#include <cuda_runtime.h>
-#include <device_launch_parameters.h>
-#include <cublas_v2.h>
+//#include <cuda_runtime.h>
+//#include <device_launch_parameters.h>
+//#include <cublas_v2.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <cfloat>
@@ -68,7 +68,7 @@ class PoolingMax
         void backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
 
         // GPU ------------------------------------------
-        void forwardPropagationGPU(float *input, float *output, float *input_copy);        
+        void forwardPropagationGPU(float *input, float *output, float *input_copy);
         void backPropagationGPU(float *input, float *output, float *input_copy);
 
         // Comunes ------------------------------------------
