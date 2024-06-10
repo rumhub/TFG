@@ -115,26 +115,14 @@ De esta forma, en la Figura \ref{fig:SoftMax} se muestra un ejemplo de clasifica
 
 \begin{gather}
 	E(y, \hat{y}) = - \sum_{i=1}^{H}  [y_i * log( \hat{y}_i)]
-	\label{loss_func_softmax}
+	\label{fig:loss_func_softmax}
 \end{gather}
 
 Es una métrica empleada en aprendizaje automático para medir qué tan bien se desempeña un modelo de clasificación. La pérdida o error se mide como un valor en el rango [0-1], siendo 0 un modelo perfecto y 1 otro totalmente erróneo. \cite{Cross_entropy}
 
-H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$.
-
+En la fórmula \ref{fig:loss_func_softmax} se muestra el cálculo de la misma, donde H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$, $y_i$ representa la etiqueta real de la entrada $x_i$ empleada, y $\hat{y}_i$ representa la etiqueta que el modelo predijo para la entrada $x_i$. 
 
 % https://medium.com/mlearning-ai/understanding-loss-functions-for-classification-81c19ee72c2a
-
-\subsubsection{Sigmoid Cross Entropy Loss}
-Es un caso particular de entropía cruzada caracterizado por la presencia de un número de clases igual a 2.
-
-\begin{gather}
-	E(x) = - \frac{1}{N} \sum_{i=1}^{N}  [y_i * log( \hat{y}_i) + (1-y_i)*log(1-\hat{y_i})]
-	\label{loss_func}
-\end{gather}
-
-y = etiqueta real \\
-$\hat{y}$ = predicción 
 
 \subsection{Descenso del gradiente}
 
