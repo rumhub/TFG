@@ -95,7 +95,7 @@ Como su gradiente es 0 o 1, evita una reducción excesiva del mismo para valores
 Se trata de una función interesante en el ámbito de la clasificación binaria, pues se caracteriza por transformar un valor de entrada en una salida comprendida en el rango [0-1]. \\
 Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a saturarse con valores extremos (positivos o negativos). Por tanto, su aplicación dependerá del caso concreto a tratar. \cite{Sigmoide}
 
-\subsubsection{SoftMax}
+\subsection{Capa SoftMax}
 
 \begin{figure}[H]
 	\centering
@@ -104,7 +104,9 @@ Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a sat
 	\label{fig:SoftMax}
 \end{figure}
 
-Para n entradas, produce n salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, se pueden interpretar como la probabilidad de pertenencia a cada clase, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
+Para n entradas, produce n salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, cada salida i se puede interpretar como la probabilidad de pertenencia a la clase i, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
+De esta forma, en la Figura \ref{fig:SoftMax} se muestra un ejemplo de clasificación multiclase con 3 clases distintas. Para una entrada dada, el modelo estima que esta pertenece a la clase 0, pues este según este, dicha entrada presenta un 0.72\% de probabilidades de pertenecer a la clase 0, un 0.01\% a la clase 1, y un 0.26\% a la clase 2.
+
 \subsection{One-hot encoding}
 
 \subsection{Función de error o pérdida}
