@@ -731,7 +731,7 @@ Finalmente, se calcula la sumatoria y con ello el gradiente de la función de p�
 	\frac{\partial E}{\partial K^c_{22}} = \frac{\partial E}{\partial Y^c_{11}} * Z^c_{22} + \frac{\partial E}{\partial Y^c_{12}} * Z^c_{23} + \frac{\partial E}{\partial Y^c_{31}} * Z^c_{32} + \frac{\partial E}{\partial Y^c_{22}} * Z^c_{33}
 \end{gather}
 
-Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución entre la entrada X y el gradiente respecto a la capa de salida Y. Esto se ve con detalle en la figura \ref{fig:conv_backprop_como_convolucion_X_Y}. \cite{conv_backprop}
+Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución entre la entrada X y el gradiente respecto a la capa de salida Y. Esto se ve con detalle en la figura \ref{fig:conv_backprop_como_convolucion_X_Y} \cite{conv_backprop}.
 
 \begin{figure}[H]
 	\centering
@@ -785,7 +785,7 @@ En capas convolucionales usaremos ReLU como función de activación. Por tanto, 
 	\frac{\partial E}{\partial A^c_{33}} = \frac{\partial E}{\partial Y^c_{22}} * K^c_{22} * ReLU'(A^c_{33})
 \end{gather}
 
-Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución tipo completa o ``full'' entre el gradiente respecto a la capa de salida Y y los pesos K invertidos tanto horizontal como verticalmente. El cálculo del gradiente respecto a cada valor $x \in X$ se ve con detalle en la figura \ref{fig:conv_backprop_como_convolucion_Y_W}, mientras que la forma de invertir los pesos se muestra en la figura \ref{fig:flip_W}.  \cite{conv_backprop}
+Tal y como se observa en los cálculos obtenidos, estos coinciden con una convolución tipo completa o ``full'' entre el gradiente respecto a la capa de salida Y y los pesos K invertidos tanto horizontal como verticalmente. El cálculo del gradiente respecto a cada valor $x \in X$ se ve con detalle en la figura \ref{fig:conv_backprop_como_convolucion_Y_W}, mientras que la forma de invertir los pesos se muestra en la figura \ref{fig:flip_W} \cite{conv_backprop}.
 
 \begin{figure}[H]
 	\centering
