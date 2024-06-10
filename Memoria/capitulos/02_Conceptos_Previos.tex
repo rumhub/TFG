@@ -135,6 +135,7 @@ En la fórmula \ref{fig:loss_func_softmax} se muestra el cálculo de la misma, d
 
 Es un método de optimización iterativo que busca el mínimo local en una función diferenciable. En la figura \ref{fig:SGD} se muestra un ejemplo del mismo, donde cada punto representa una iteración del algoritmo. \\
 Su nombre viene del término 'gradiente', siendo este una generalización multivariable de la derivada y denominado por el símbolo $\nabla$. Para una función f y un punto p, este indica la dirección del máximo incremento en la misma. El descenso del gradiente usa esta información para, una vez obtenido el gradiente, desplazarse en dirección contraria, es decir, en dirección del mínimo. Además, la distancia que se recorre en cada iteración viene dada por un hiperparámetro denominado ``learning rate'' o $\alpha$ \cite{SGD_1} \cite{Gradiente} \cite{SGD_2}. \\
+A diferencia de los parámetros de un modelo (pesos y sesgos), sus hiperparámetros son establecidos por el usuario y no se ``aprenden'' durante el entrenamiento del modelo.
 
 
 \subsubsection{Entrenamiento}
