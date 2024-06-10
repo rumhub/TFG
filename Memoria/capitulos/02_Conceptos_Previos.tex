@@ -181,12 +181,12 @@ Se caracterizada por, en cada época, dividir el conjunto de entrenamiento en va
 \subsection{Inicialización de pesos y sesgos}
 
 \subsubsection{Inicialización de pesos}
-Como función de activación se empleará ReLU. Por tanto, tal y como se indica en la bibliografía, se inicializan los pesos mediante la ``inicialización He'' o ``inicialización Kaiming He''. Esta consiste en, para un peso $w$, inicializarlo según una distribución gaussiana con una media de 0.0 y una desviación típica de $\sqrt{\frac{2}{N\_in}}$, siendo $N\_in$ el número de neuronas en la capa de entrada
+Siguiendo la bibliografía \cite{importancia_ReLU} \cite{importancia_ReLU_2}, se empleará ReLU como función de activación en las capas intermedias del modelo. Por tanto, tal y como se indica en la bibliografía, se inicializan los pesos mediante la ``inicialización He'' o ``inicialización Kaiming He''. Esta consiste en, para un peso $w$, inicializarlo según una distribución gaussiana con una media de 0.0 y una desviación típica de $\sqrt{\frac{2}{N\_in}}$, siendo $N\_in$ el número de neuronas en la capa de entrada
  \cite{ini_He} \cite{ini_He_2} \cite{ini_He_code}.
 
 \subsubsection{Inicialización de sesgos}
 
-De la misma forma, se sigue la bilbiografía y los sesgos se inicializarán a 0.0 \cite{ini_bias} \cite{ini_bias_2}.
+De la misma forma, se vuelve a seguir la bibliografía, indicando esta vez una inicialización de sesgos a 0.0 \cite{ini_bias} \cite{ini_bias_2}.
 
 \subsection{Tipos de codificaciones}
 

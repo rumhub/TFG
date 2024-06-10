@@ -28,6 +28,13 @@ Chamanth mvs.
   \url{https://pub.aimind.so/no-more-confusion-on-backpropagation-7adfc271539f}
   [Accessed:07/03/2024].
 
+\bibitem{nvidia_back_fully_GEMM}
+NVIDIA.
+\newblock Linear/fully-connected layers user's guide, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/performance/dl-performance-fully-connected/index.html}
+  [Accessed:11/05/2024].
+
 \bibitem{Professional_CUDA_C}
 Ty~McKercher John~Cheng, Max~Grossman.
 \newblock {\em Professional Cuda C Programming}.
@@ -115,6 +122,20 @@ Aishwarya~V Srinivasan.
 \newblock
   \url{https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31}
   [Accessed:22/03/2024].
+
+\bibitem{importancia_ReLU}
+Jorge~Calvo Martin.
+\newblock La importancia de las funciones de activación en una red neuronal,
+  2022.
+\newblock
+  \url{https://www.linkedin.com/pulse/la-importancia-de-las-funciones-activaci%C3%B3n-en-una-red-calvo-martin/}
+  [Accessed:10/06/2024].
+
+\bibitem{importancia_ReLU_2}
+Miguel Sotaquirá.
+\newblock La función de activación, 2018.
+\newblock \url{https://www.codificandobits.com/blog/funcion-de-activacion/}
+  [Accessed:10/06/2024].
 
 \bibitem{ini_He}
 Jason Brownlee.
@@ -229,13 +250,6 @@ H.~Howie Huang¶ Zhufan Wang†‡ Weimin Zheng†‡ †Department of
   Washington~University Computer~Engineering.
 \newblock Performance analysis of gpu-based convolutional neural networks.
 \newblock {\em International Conference on Parallel Processing}, 2016.
-
-\bibitem{nvidia_back_fully_GEMM}
-NVIDIA.
-\newblock Linear/fully-connected layers user's guide, 2024.
-\newblock
-  \url{https://docs.nvidia.com/deeplearning/performance/dl-performance-fully-connected/index.html}
-  [Accessed:11/05/2024].
 
 \bibitem{cuda_mult_matrix_v3}
 Mary Thomas.
