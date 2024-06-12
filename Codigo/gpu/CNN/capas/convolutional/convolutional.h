@@ -75,23 +75,24 @@ class Convolutional
         int cols_output_unroll;
         int fils_matriz_pesos;
         int cols_matriz_pesos;
-        int fils_input_back_unroll; 
+        int fils_input_back_unroll;
         int cols_input_back_unroll;
         int bytes_output_unroll;
         int bytes_matriz_pesos;
         int bytes_input_back_unroll;
- 
+
         // GPU -------------------
         // Punteros device
         float *d_input_unroll = nullptr;        // Volumen de entrada 'desenrrollado'
-        float *d_a = nullptr; 
-        float *d_w = nullptr; 
+        float *d_a = nullptr;
+        float *d_w = nullptr;
+        float *d_b = nullptr;
 
-        float * d_output_unroll = nullptr; 
-        float *d_matriz_pesos = nullptr; 
-        float *d_input = nullptr; 
-        float *d_input_back_unroll = nullptr; 
-        float *d_output = nullptr; 
+        float * d_output_unroll = nullptr;
+        float *d_matriz_pesos = nullptr;
+        float *d_input = nullptr;
+        float *d_input_back_unroll = nullptr;
+        float *d_output = nullptr;
         float *d_grad_w = nullptr;
 
 
@@ -109,10 +110,10 @@ class Convolutional
         void actualizar_grads_ptr(float *grad_w, float *grad_bias);
         void escalar_pesos_ptr(float clip_value);
         void aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad);
-        void copiar(const Convolutional & conv);                                                              
+        void copiar(const Convolutional & conv);
         ~Convolutional();
         /*
-        ~Convolutional(){free(h_input_unroll); free(output_pad); free(grad_w_it); free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll); 
+        ~Convolutional(){free(h_input_unroll); free(output_pad); free(grad_w_it); free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll);
                                free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); cudaFree(d_output_unroll);
                                cudaFree(d_matriz_pesos); cudaFree(d_input); cudaFree(d_input_back_unroll); cudaFree(d_output); cudaFree(d_grad_w);};
         */
@@ -132,7 +133,7 @@ class Convolutional
 
         // Retropropagación
         void backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias);
-        
+
 
         // Modificación de parámetros
         void generar_pesos();
