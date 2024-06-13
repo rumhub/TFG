@@ -68,7 +68,7 @@ __global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, cons
         C[iy*N + ix] = sum;
 }
 
-__global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, const float *B, float *C, float *bias, float *output)
+__global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, const float *B, float *C, const float *bias, float *output)
 {
     // Memoria compartida dinámica
 	extern __shared__ float sdata[];
@@ -83,7 +83,8 @@ __global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, co
     float *sA = sdata,
           *sB = sdata + blockDim.x * blockDim.y;
 
-    float sum = 0.0f;
+    float sum = 0.0f, result = 0.0f;
+
     int lim = blockDim.x;
 
     // Si tam_bloque > tam_A
@@ -124,16 +125,19 @@ __global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, co
         __syncthreads();
     }
 
-    if(iy < M && ix < N)
+		if(iy < M && ix < N)
 		{
-				C[iy*N + ix] = sum + bias[iy];
+				result = sum;
+				//result = sum + bias[iy];
+				C[iy*N + ix] = result;
 
 				// ReLU
-				if(sum + bias[iy] > 0)
-					output[iy*N + ix] = sum + bias[iy];
+				if(result > 0)
+					output[iy*N + ix] = result;
 				else
 					output[iy*N + ix] = 0;
 		}
+
 }
 
 __global__ void unrollGPU(int C, int H, int W, int K, const float *X, float *X_unroll)
@@ -290,6 +294,7 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     this->bytes_input_unroll = fils_input_unroll * cols_input_unroll *sizeof(float);    // Espacio para la entrada 'desenrrollada'
     this->bytes_output = cols_input_unroll * fils_w *sizeof(float);              // Espacio para la salida
     this->bytes_w = fils_w * cols_w * sizeof(float);
+		this->bytes_bias = this->n_kernels * sizeof(float);
 
     // Learning Rate
     this->lr = lr;
@@ -322,7 +327,7 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
     cudaMalloc((void **) &d_a, bytes_output);
 		cudaMalloc((void **) &d_w, bytes_w);
-    cudaMalloc((void **) &d_b, this->n_kernels * sizeof(float));
+		cudaMalloc((void **) &d_bias, bytes_bias);
 
 
     this->pad = kernel_fils-1;
@@ -411,6 +416,7 @@ void Convolutional::copiar(const Convolutional & conv)
     this->bytes_input_unroll = conv.bytes_input_unroll;    // Espacio para la entrada 'desenrrollada'
     this->bytes_output = conv.bytes_output;              // Espacio para la salida
     this->bytes_w = conv.bytes_w;
+		this->bytes_bias = conv.bytes_bias;
 
     // Learning Rate
     this->lr = conv.lr;
@@ -426,7 +432,7 @@ void Convolutional::copiar(const Convolutional & conv)
 
     // Un bias por filtro, https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
     for(int i=0; i<n_kernels; i++)
-        this->bias_ptr[i] = 0.0;
+        this->bias_ptr[i] = conv.bias_ptr[i];
 
     // CPU -------------------
     this->h_input_unroll = (float*)malloc(bytes_input_unroll);  // Volumen de entrada 'desenrrollado'
@@ -443,7 +449,7 @@ void Convolutional::copiar(const Convolutional & conv)
     cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
     cudaMalloc((void **) &d_a, bytes_output);
     cudaMalloc((void **) &d_w, bytes_w);
-		cudaMalloc((void **) &d_b, this->n_kernels * sizeof(float));
+		cudaMalloc((void **) &d_bias, bytes_bias);
 
 
     this->pad = conv.pad;
@@ -502,6 +508,7 @@ Convolutional::~Convolutional()
         free(h_input_unroll); free(output_pad); free(grad_w_it); free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll);
         free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); cudaFree(d_output_unroll);
         cudaFree(d_matriz_pesos); cudaFree(d_input); cudaFree(d_input_back_unroll); cudaFree(d_output); cudaFree(d_grad_w);
+				cudaFree(d_bias);
     }
     cout << "Destructor: ";
     checkCudaErrors(cudaGetLastError());
@@ -717,19 +724,69 @@ void Convolutional::forwardPropagationGEMM(float *input, float *output, float *a
 		dim3 block_1D(BLOCK_SIZE, 1);
 		dim3 grid_1D((C*H*W + block_1D.x -1) / block_1D.x, 1);
 		unrollGPU<<<grid_1D, block_1D>>>(C, H, W, this->kernel_fils, d_input, d_input_unroll);
-
-		// Copiar de CPU a GPU
 		cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
+		cudaMemcpy(d_bias, this->bias_ptr, this->n_kernels * sizeof(float), cudaMemcpyHostToDevice);
+
+    // Multiplicación de matrices
+		forward_propagation_GEMM<<<grid_forward, block, smem>>>(this->n_kernels, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a, d_bias, d_output);
+
+    // Paso de GPU a CPU
+    cudaMemcpy(a, d_a, bytes_output, cudaMemcpyDeviceToHost);
+		cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
+		//checkCudaErrors(cudaGetLastError());
+};
+
+
+/*
+void Convolutional::forwardPropagationGEMM(float *input, float *output, float *a)
+{
+    this->unroll(C, H, kernel_fils, input, h_input_unroll);
+
+    // Copiar de CPU a GPU
+    cudaMemcpy(d_input_unroll, h_input_unroll, bytes_input_unroll, cudaMemcpyHostToDevice);
+
+    cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
+
+    // Multiplicación de matrices
+    multiplicarMatricesGPU<<<grid_forward, block, smem>>>(fils_w, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a);
+
+    // Paso de GPU a CPU
+    cudaMemcpy(a, d_a, bytes_output, cudaMemcpyDeviceToHost);
+
+    // Sumar bias
+    for(int i = 0; i < this->n_kernels; i++)
+        for(int j = 0; j < H_out; j++)
+            for(int k = 0; k < W_out; k++)
+                a[i*H_out*W_out +j*W_out +k] +=  this->bias_ptr[i];
+
+    // Aplicar función de activación
+    for(int i = 0; i < this->n_kernels; i++)
+        for(int j = 0; j < H_out; j++)
+            for(int k = 0; k < W_out; k++)
+                output[i*H_out*W_out +j*W_out +k] = activationFunction(a[i*H_out*W_out +j*W_out +k]);
+};
+*/
+/*
+void Convolutional::forwardPropagation_vectores_externos(float *input, float *output, float *a)
+{
+		cudaMemcpy(d_input, input, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
+
+		dim3 block_1D(BLOCK_SIZE, 1);
+		dim3 grid_1D((C*H*W + block_1D.x -1) / block_1D.x, 1);
+		unrollGPU<<<grid_1D, block_1D>>>(C, H, W, this->kernel_fils, d_input, d_input_unroll);
+
+    // Copiar de CPU a GPU
+    cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
 		cudaMemcpy(d_b, this->bias_ptr, n_kernels * sizeof(float), cudaMemcpyHostToDevice);
 
 		// Multiplicación de matrices
-		forward_propagation_GEMM<<<grid_forward, block, smem>>>(fils_w, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a, d_b, d_output);
+    forward_propagation_GEMM<<<grid_forward, block, smem>>>(fils_w, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a, d_b, d_output);
 
 		// Paso de GPU a CPU
 		cudaMemcpy(a, d_a, bytes_output, cudaMemcpyDeviceToHost);
 		cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
 };
-
+*/
 
 void Convolutional::unroll(int C, int n, int K, float *X, float *X_unroll){
     int H_out = n-K+1;

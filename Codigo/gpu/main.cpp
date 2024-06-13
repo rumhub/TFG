@@ -57,7 +57,7 @@ int main()
     cnn.set_train(train_imgs_ptr, train_labels_ptr, n_imgs_train, n_clases, C, H, W);
     //cnn.set_train(X, Y, n_imagenes, n_clases, C, H, W);
     //cnn.prueba();
-    cnn.train(10, mini_batch);
+    cnn.train(50, mini_batch);
     //cnn.evaluar_modelo();
 
 

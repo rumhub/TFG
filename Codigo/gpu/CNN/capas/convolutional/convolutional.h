@@ -80,13 +80,14 @@ class Convolutional
         int bytes_output_unroll;
         int bytes_matriz_pesos;
         int bytes_input_back_unroll;
+        int bytes_bias;
 
         // GPU -------------------
         // Punteros device
         float *d_input_unroll = nullptr;        // Volumen de entrada 'desenrrollado'
         float *d_a = nullptr;
         float *d_w = nullptr;
-        float *d_b = nullptr;
+        float *d_bias = nullptr;
 
         float * d_output_unroll = nullptr;
         float *d_matriz_pesos = nullptr;

@@ -883,7 +883,7 @@ void CNN::evaluar_modelo()
     this->fully->evaluar_modelo_GEMM();
 
     // Realizar media y obtener valores finales
-    checkCudaErrors(cudaGetLastError());
+    //checkCudaErrors(cudaGetLastError());
 }
 
 /*
