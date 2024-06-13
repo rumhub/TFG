@@ -426,8 +426,6 @@ void CNN::train(int epocas, int mini_batch)
 
 
     float *grad_x_fully = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float)), // Capa totalmente conectada
-          *grads_bias_fully = (float *)malloc(this->fully->get_n_neuronas() * sizeof(float)),
-          *grads_pesos_fully = (float *)malloc(this->fully->get_n_pesos() * sizeof(float)),
           *flat_outs_batch = (float *)malloc(mini_batch* tam_flat_out * sizeof(float)),                   // Capa de aplanado
           *plms_outs = (float *)malloc(mini_batch * tam_out_pools * sizeof(float)),                 // Capa de agrupación máxima
           *plms_in_copys = (float *)malloc(mini_batch * tam_in_pools* sizeof(float)),
@@ -450,61 +448,6 @@ void CNN::train(int epocas, int mini_batch)
     float *y_batch = (float *)malloc(mini_batch*n_clases * sizeof(float)),
           *flat_outs_batch_T = (float *)malloc(mini_batch* tam_flat_out * sizeof(float)),
           *grad_x_fully_gpu = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float));
-
-    // -----------------------------------------------------------------------------------
-    // -----------------------------------------------------------------------------------
-    /*
-    int cont = 0, cont_b = 0;
-    for(int i=0; i<this->n_capas_conv; i++)
-    {
-        int n_K = this->convs[i].get_n_kernels(), C = this->convs[i].get_C(), H = this->convs[i].get_kernel_fils(), W = this->convs[i].get_kernel_cols();
-        img_grad_w_conv = conv_grads_w + i_w[i];
-        img_grad_b_conv = conv_grads_bias + i_b[i];
-
-        for(int n=0; n<n_K; n++)
-        {
-            // Bias
-            img_grad_b_conv[n] = cont_b++;
-
-            // Conv
-            for(int j=0; j<C; j++)
-                for(int k=0; k<H; k++)
-                    for(int p=0; p<W; p++)
-                        img_grad_w_conv[n*C*H*W + j*H*W + k*W + p] = cont++;
-        }
-
-    }
-
-    // Mostrar gradientes de pesos
-    for(int i=0; i<this->n_capas_conv; i++)
-    {
-        int n_K = this->convs[i].get_n_kernels(), C = this->convs[i].get_C(), H = this->convs[i].get_kernel_fils(), W = this->convs[i].get_kernel_cols();
-        img_grad_w_conv = conv_grads_w + i_w[i];
-        img_grad_b_conv = conv_grads_bias + i_b[i];
-
-        cout << "Capa conv " << i <<  ", " << n_K << "x" << C << "x" << H << "x" << W << endl;
-        for(int n=0; n<n_K; n++)
-        {
-            cout << "(" << i << ", " << n << ") Bias: " << img_grad_b_conv[n] << endl;
-            for(int j=0; j<C; j++)
-            {
-                for(int k=0; k<H; k++)
-                {
-                    for(int p=0; p<W; p++)
-                        cout << img_grad_w_conv[n*C*H*W + j*H*W + k*W + p] << " ";
-                    cout << endl;
-                }
-                cout << endl;
-            }
-            cout << endl;
-        }
-    }
-    */
-
-
-    // -----------------------------------------------------------------------------------
-    // -----------------------------------------------------------------------------------
-
 
     const int M = n / mini_batch;
     int pad_sig, C_ini = this->convs[0].get_C(), H_ini = this->convs[0].get_H(), W_ini = this->convs[0].get_W(), tam_ini = C_ini*H_ini*W_ini;
@@ -545,8 +488,10 @@ void CNN::train(int epocas, int mini_batch)
         shuffle(indices, n, g);
 
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
+        //for(int i=0; i<n_batches-1;  ++i)
         for(int i=0; i<n_batches; ++i)
         {
+
             // Crear el batch para cada hebra ----------------------
             for(int j=0; j<tam_batches[i]; j++)
                 batch[j] = indices[mini_batch*i + j];
@@ -566,9 +511,9 @@ void CNN::train(int epocas, int mini_batch)
                     padding_interno_ptr(img_plms_out, this->plms[j].get_C(), this->plms[j].get_H_out(), this->plms[j].get_W_out(), pad_sig);
                 }
 
+
             for(int img=0; img<tam_batches[i]; ++img)
             {
-
                 // Primera capa convolucional y maxpool -----------------------
                 img_train = this->train_imgs + tam_ini*batch[img];
                 img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[0];
@@ -608,19 +553,11 @@ void CNN::train(int epocas, int mini_batch)
                             img_flat_out[i_*H_out*W_out + j_*W_out + k_] = img_plms_out[i_*H_out*W_out + j_*W_out + k_];
             }
 
+
+
             // ---------------------------------------------------------------------------------------------------------------------------
             // Capa totalmente conectada
             // ---------------------------------------------------------------------------------------------------------------------------
-
-            // Inicializar gradientes de pesos
-            for(int i_=0; i_<this->fully->get_n_pesos(); i_++)
-                grads_pesos_fully[i_] = 0.0;
-
-            // Inicializar gradientes de sesgos
-            for(int i_=0; i_<this->fully->get_n_neuronas(); i_++)
-                grads_bias_fully[i_] = 0.0;
-
-
             // Realizar propagación hacia delante y hacia detrás en la capa totalmente conectada
             this->fully->matrizTranspuesta(flat_outs_batch, flat_outs_batch_T, tam_batches[i], tam_flat_out);
             this->fully->set_train(flat_outs_batch_T, y_batch, tam_batches[i]);
@@ -671,6 +608,7 @@ void CNN::train(int epocas, int mini_batch)
                 img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[i_c];
                 img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[i_c];
                 this->plms[i_c].backPropagationGPU(img_conv_out, img_grad_x_fully, img_plms_in_copy);
+
 
                 // Capa convolucional
                 img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[i_c-1];
@@ -724,7 +662,6 @@ void CNN::train(int epocas, int mini_batch)
 
             }
 
-
             // ----------------------------------------------
             // Pesos de las capas convolucionales
             // ----------------------------------------------
@@ -740,6 +677,7 @@ void CNN::train(int epocas, int mini_batch)
             // Realizar la media
             for(int i_=0; i_<n_bias_conv; i_++)
                 conv_grads_bias[i_] /= tam_batches[i];
+
 
             // Actualizar parámetros --------------------------------------------------------------------
             // Actualizar parámetros de capas convolucionales
@@ -760,8 +698,9 @@ void CNN::train(int epocas, int mini_batch)
 
         cout << "Época: " << ep << ",                                           " << duration.count() << " (s)" << endl;
 
-        checkCudaErrors(cudaGetLastError());
         evaluar_modelo();
+
+        checkCudaErrors(cudaGetLastError());
 
 
     }
@@ -769,7 +708,7 @@ void CNN::train(int epocas, int mini_batch)
 
 
     // Liberar memoria
-    free(grad_x_fully); free(flat_outs_batch); free(conv_grads_bias); free(grads_bias_fully); free(grads_pesos_fully); free(convs_outs); free(plms_outs); free(conv_grads_w);
+    free(grad_x_fully); free(flat_outs_batch); free(conv_grads_bias); free(convs_outs); free(plms_outs); free(conv_grads_w);
     free(plms_in_copys); free(conv_a); free(indices); free(batch); free(tam_batches); free(y_batch);
 }
 

@@ -200,7 +200,7 @@ __global__ void unrollGPU(int C, int H, int W, int K, const float *X, float *X_u
     @input          Volumen 3D de entrada
     @lr             Learning Rate o Tasa de Aprendizaje
 */
-/*
+
 Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, const vector<vector<vector<float>>> &input, float lr)
 {
     this->n_kernels = n_kernels;
@@ -245,7 +245,7 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
         this->bias.push_back(0.0);
 
 };
-*/
+
 
 /*
     CONSTRUCTOR de la clase Convolutional
@@ -259,14 +259,6 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, co
 */
 Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr)
 {
-    // Establecer device
-    int dev = 0;
-    cudaDeviceProp deviceProp;
-    cudaGetDeviceProperties(&deviceProp, dev);
-    //cout << "Estableciendo dispotisivo para GPU...\n";
-    //printf("Usando el dispositivo %d: %s\n", dev, deviceProp.name);
-    cudaSetDevice(dev);
-
     // Kernels de pesos
     this->n_kernels = n_kernels;
     this->kernel_fils = kernel_fils;
@@ -323,12 +315,12 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     // Memoria compartida a nivel de bloque
     this->smem = (2*block.x * block.y) *sizeof(float);
 
+
     // Punteros device
     cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
     cudaMalloc((void **) &d_a, bytes_output);
 		cudaMalloc((void **) &d_w, bytes_w);
 		cudaMalloc((void **) &d_bias, bytes_bias);
-
 
     this->pad = kernel_fils-1;
     this->H_out_pad = H_out +2*pad;
@@ -381,14 +373,6 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
 
 void Convolutional::copiar(const Convolutional & conv)
 {
-    // Establecer device
-    int dev = 0;
-    cudaDeviceProp deviceProp;
-    cudaGetDeviceProperties(&deviceProp, dev);
-    //cout << "Estableciendo dispotisivo para GPU...\n";
-    //printf("Usando el dispositivo %d: %s\n", dev, deviceProp.name);
-    cudaSetDevice(dev);
-
     // Kernels de pesos
     this->n_kernels = conv.n_kernels;
     this->kernel_fils = conv.kernel_fils;
@@ -432,7 +416,7 @@ void Convolutional::copiar(const Convolutional & conv)
 
     // Un bias por filtro, https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
     for(int i=0; i<n_kernels; i++)
-        this->bias_ptr[i] = conv.bias_ptr[i];
+        this->bias_ptr[i] = 0.0;
 
     // CPU -------------------
     this->h_input_unroll = (float*)malloc(bytes_input_unroll);  // Volumen de entrada 'desenrrollado'
@@ -531,6 +515,7 @@ void Convolutional::generar_pesos_ptr()
             for(int k=0; k<kernel_fils; ++k)
                 for(int p=0; p<kernel_cols; ++p)
                     this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
+										//this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = 1;
                     //this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = (float) (i+j+k+p)/(n_kernels*C*kernel_fils*kernel_cols);
 }
 
@@ -1231,6 +1216,7 @@ void Convolutional::escalar_pesos(float clip_value)
 */
 void Convolutional::actualizar_grads_ptr(float *grad_w, float *grad_bias)
 {
+
     // Actualizar pesos
     for(int i=0; i<n_kernels; ++i)
         for(int j=0; j<C; ++j)
@@ -1238,9 +1224,9 @@ void Convolutional::actualizar_grads_ptr(float *grad_w, float *grad_bias)
                 for(int p=0; p<kernel_cols; ++p)
                     this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p] -= this->lr * grad_w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p];
 
-    // Actualizar bias
+		// Actualizar bias
     for(int i=0; i<this->n_kernels; i++)
-        this->bias_ptr[i] -= this->lr * grad_bias[i];
+				this->bias_ptr[i] -= this->lr * grad_bias[i];
 }
 
 
@@ -1274,6 +1260,7 @@ void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+/*
 void printMatrix_3D(float* matrix, int C, int n) {
     for (int i = 0; i < C; i++) {
         for (int j = 0; j < n; j++) {
@@ -1296,7 +1283,7 @@ void printMatrix_vector(const vector<vector<vector<float>>> &X) {
     }
 }
 
-/*
+
 int main()
 {
     // -----------------------------------------------------------------------------------------------------
@@ -1324,6 +1311,7 @@ int main()
             }
 
     a_cpu = output_cpu;
+
 
     // Output
     int H_out_pad = H-K + 1, W_out_pad = W-K + 1;
@@ -1355,21 +1343,13 @@ int main()
     }
 
 
-
     // Crear capa convolucional
     Convolutional conv(n_kernels, K, K, input_cpu, 0.1);
 
     // Establecer device
-    int dev = 0;
-    cudaDeviceProp deviceProp;
-    cudaGetDeviceProperties(&deviceProp, dev);
-    cout << "Estableciendo dispotisivo para GPU...\n";
-    printf("Usando el dispositivo %d: %s\n", dev, deviceProp.name);
-    cudaSetDevice(dev);
-
     cout << " -------------------------- Método Estándar -------------------------- " << endl;
     //cout << "Input" << endl;
-    //printMatrix_vector(input);
+    //printMatrix_vector(input_cpu);
 
     ini = high_resolution_clock::now();
     conv.forwardPropagation(input_cpu, output_cpu, a_cpu);
@@ -1390,7 +1370,7 @@ int main()
 
     grad_w2 = grad_w;
     */
-    /*
+		/*
     //cout << "Input" << endl;
     conv.backPropagation(input_cpu, output_cpu, a_cpu, grad_w_cpu, grad_bias_cpu);
     //printMatrix_vector(input_cpu);
@@ -1418,16 +1398,18 @@ int main()
         cout << endl;
     }
     */
-    /*
+		/*
     cout << " -------------------------- Método GEMM -------------------------- " << endl;
     Convolutional conv_gpu(n_kernels, K, K, C, H, W, 0.1);
 
-    //cout << "Input" << endl;
-    //printMatrix_vector(input_gpu);
+
+		//cout << "Input gpu" << endl;
+		//printMatrix_3D(input_gpu, C, H);
     ini = high_resolution_clock::now();
     conv_gpu.forwardPropagationGEMM(input_gpu, output_gpu, a_gpu);
-    /*
-    cout << "Ouput" << endl;
+
+		/*
+    cout << "Ouput gpu" << endl;
     // Inicializar output a 0
     for(int i=0; i<n_kernels; i++)
     {
@@ -1439,8 +1421,8 @@ int main()
         }
         cout << endl;
     }
-    */
-    /*
+		*/
+		/*
     //cout << "-- Backprop --" << endl;
     conv_gpu.backPropagationGEMM(input_gpu, output_gpu, a_gpu, grad_w_gpu, grad_bias_gpu);
     cudaDeviceSynchronize();
@@ -1483,9 +1465,10 @@ int main()
         cout << endl;
     }
     */
-    /*
+
+		/*
    // Comprobar resultados
-    bool correcto = true;
+		bool correcto = true;
     float epsilon = 0000000.1;
     int n_errores = 0;
     float err_medio_input = 0.0, err_medio_w = 0.0;
@@ -1496,7 +1479,7 @@ int main()
                 if(abs(output_cpu[i][j][k] - output_gpu[i*H_out*W_out + j*W_out + k]) > epsilon)
                 {
                     correcto = false;
-                    cout << abs(output_cpu[i][j][k] - output_gpu[i*H_out*W_out + j*W_out + k]) << "output" << endl;
+                    //cout << abs(output_cpu[i][j][k] - output_gpu[i*H_out*W_out + j*W_out + k]) << "output" << endl;
                     n_errores++;
                 }
 

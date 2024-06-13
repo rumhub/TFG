@@ -122,7 +122,7 @@ class Convolutional
         // CPU ------------------------------------------
 
         // Constructores
-        //Convolutional(int n_kernels, int kernel_fils, int kernel_cols, const vector<vector<vector<float>>> &input, float lr);
+        Convolutional(int n_kernels, int kernel_fils, int kernel_cols, const vector<vector<vector<float>>> &input, float lr);
         Convolutional(){};
 
         // Funciones de activación
