@@ -47,8 +47,8 @@ $(PATH_OBJ)/poolingMax.o: $(PATH_MAXPOOL)/poolingMax.cu $(PATH_MAXPOOL)/poolingM
 $(PATH_OBJ)/fullyconnected.o: $(PATH_FULLY)/fullyconnected.cu $(PATH_FULLY)/fullyconnected.h
 	$(NVCC) -c $(CUDAFLAGS)  $(PATH_FULLY)/fullyconnected.cu $(INCLUDES) -o $(PATH_OBJ)/fullyconnected.o
 
-conv: $(PATH_CONV)/convolutional.cu $(PATH_CONV)/convolutional.h
-	$(NVCC) $(CUDAFLAGS)  $(PATH_CONV)/convolutional.cu $(INCLUDES) -o conv
+pool: $(PATH_MAXPOOL)/poolingMax.cu $(PATH_MAXPOOL)/poolingMax.h
+	$(NVCC) $(CUDAFLAGS)  $(PATH_MAXPOOL)/poolingMax.cu $(INCLUDES) -o pool
 	
 run: $(PATH_BIN)/main
 	./$(PATH_BIN)/main

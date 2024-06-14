@@ -21,18 +21,30 @@ __global__ void maxpool_forward(int C, int H, int W, int K, float *X, float *X_c
     float max = FLT_MIN;
     int pos_max;
 
+    // Inicializar output
+    if(iy_Y < H_out && ix_Y < W_out)
+      Y[idY] = 0.0;
+
     if(iy_Y < H_out-2*pad && ix_Y < W_out-2*pad)    // -2*pad para quitar el padding. Como solo hay padding en la salida, usamos las mismas hebras que si no hubiera ningún padding
     for(int c=0; c<C; c++)
     {
+
         max = FLT_MIN;
         for(int i=0; i<K; i++)
             for(int j=0; j<K; j++)
+            {
+                // Inicializar input_copy a 0
+                if(iy_X + i < H && ix_X + j < W)
+                  X_copy[idX +i*W +j] = 0.0;
+
                 if(max < X[idX + i*W + j] && iy_X + i < H && ix_X + j < W)
                 {
                     max = X[idX +i*W +j];
                     pos_max = idX +i*W +j;
                 }
+            }
 
+        __syncthreads();
         // Establecer valor del píxel "IdY" de salida
         Y[idY] = max;
 
@@ -44,6 +56,7 @@ __global__ void maxpool_forward(int C, int H, int W, int K, float *X, float *X_c
         idY += tam_capaY;
         idX += tam_capaX;
     }
+
 }
 
 __global__ void maxpool_back(int C, int H, int W, int K, float *X, float *X_copy, float *Y, int pad)
@@ -232,21 +245,22 @@ void PoolingMax::forwardPropagation(vector<vector<vector<float>>> &input, vector
 
 void PoolingMax::forwardPropagationGPU(float *input, float *output, float *input_copy)
 {
-    // Inicializar input_copy a 0
-    for(int i=0; i<C*H*W; i++)
-        input_copy[i] = 0.0;
-
-
     // Copiar datos de CPU a GPU
     cudaMemcpy(d_input, input, bytes_input, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_input_copy, input_copy, bytes_input, cudaMemcpyHostToDevice);
-
 
     // Realizar MaxPool
     maxpool_forward<<<grid, block>>>(C, H, W, kernel_fils, d_input, d_input_copy, d_output, pad);
 
     cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
     cudaMemcpy(input_copy, d_input_copy, bytes_input, cudaMemcpyDeviceToHost);
+};
+
+void PoolingMax::forwardPropagation_vectores_externos(float *input, float *output, float *input_copy)
+{
+    // Realizar MaxPool
+    maxpool_forward<<<grid, block>>>(C, H, W, kernel_fils, input, input_copy, d_output, pad);
+
+    cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToDevice);
 };
 
 void PoolingMax::backPropagationGPU(float *input, float *output, float *input_copy)
@@ -454,8 +468,9 @@ int main()
     // FORWARD CAPA MAXPOOL ---------------------------------------------------------------------------------------------------------------
     // Inicializar input_copy a 0
     for(int i=0; i<C*H*W; i++)
-        input_copy_gpu[i] = 0.0;
+        input_copy_gpu[i] = 2.0;
 
+    /*
     cudaMemcpy(plm_gpu.get_d_input(), input_gpu, plm_gpu.get_bytes_input(), cudaMemcpyHostToDevice);
 
     // Realizar MaxPool
@@ -464,10 +479,13 @@ int main()
     cudaMemcpy(output_gpu, plm_gpu.get_d_output(), plm_gpu.get_bytes_output(), cudaMemcpyDeviceToHost);
     cudaMemcpy(input_copy_gpu, plm_gpu.get_d_input_copy(), plm_gpu.get_bytes_input(), cudaMemcpyDeviceToHost);
     // FORWARD CAPA MAXPOOL ---------------------------------------------------------------------------------------------------------------
-
-
+    */
+    /*
     cout << " ------------------ GPU ---------------------" << endl;
-    //plm_gpu.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu);
+    plm_gpu.forwardPropagationGPU(input_gpu, output_gpu, input_copy_gpu);
+
+    cout << "Input copy\n";
+    aux->mostrar_imagen3D(input_copy_gpu, C, H, W);
 
     cout << "Output\n";
     aux->mostrar_imagen3D(output_gpu, C, H_out_pad, W_out_pad);

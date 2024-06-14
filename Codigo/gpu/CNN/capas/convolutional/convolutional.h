@@ -106,6 +106,7 @@ class Convolutional
         // GPU ------------------------------------------
         Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr);
         void forwardPropagationGEMM(float *input, float *output, float *a);
+        void forwardPropagation_vectores_externos(float *input, float *output, float *a);
         void backPropagationGEMM(float *input, float *output, float *a, float *grad_w, float *grad_bias);
         void generar_pesos_ptr();
         void actualizar_grads_ptr(float *grad_w, float *grad_bias);

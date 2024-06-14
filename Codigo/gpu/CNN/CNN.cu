@@ -139,16 +139,13 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     this->grad_a_ptr = (float *)malloc(this->fully->get_n_neuronas() * sizeof(float));
     this->z_ptr = (float *)malloc(this->fully->get_n_neuronas() * sizeof(float));
 
-    // Borrar ----------------------------------------------------------------------------------------------------------------------------------------------------
-    // Borrar ----------------------------------------------------------------------------------------------------------------------------------------------------
-    for(int i=0; i<tam_img_max; i++)
-    {
-        this->img_in[i] = 1.0;
-        this->img_out[i] = 2.0;
-        this->conv_a[i] = 3.0;
-    }
-    // Borrar ----------------------------------------------------------------------------------------------------------------------------------------------------
-    // Borrar ----------------------------------------------------------------------------------------------------------------------------------------------------
+    // Reserva de memoria en device
+    cudaMalloc((void **) &d_img_in, tam_img_max * sizeof(float));
+    cudaMalloc((void **) &d_img_in_copy, tam_img_max * sizeof(float));
+    cudaMalloc((void **) &d_img_out, tam_img_max * sizeof(float));
+    cudaMalloc((void **) &d_conv_a, tam_img_max * sizeof(float));
+
+
 
     int i_out_c = 0, i_in_c = 0, i_out_p = 0, i_in_p = 0, i_w_ = 0, i_b_ = 0;
     for(int i=0; i<n_capas_conv; i++)
@@ -244,6 +241,8 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
     int tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out();
     this->flat_outs = (float *)malloc(this->n_imagenes* tam_flat_out * sizeof(float));
     this->flat_outs_T = (float *)malloc(n_imagenes* tam_flat_out * sizeof(float));
+
+    this->flat_outs_gpu = (float *)malloc(this->n_imagenes* tam_flat_out * sizeof(float));
 
     //cudaMalloc((void **) &this->d_flat_outs, this->n_imagenes* tam_flat_out * sizeof(float));
     //cudaMalloc((void **) &this->d_flat_outs_T, this->n_imagenes* tam_flat_out * sizeof(float));
@@ -696,11 +695,12 @@ void CNN::train(int epocas, int mini_batch)
         fin = high_resolution_clock::now();
         duration = duration_cast<seconds>(fin - ini);
 
+        evaluar_modelo();
+        cudaDeviceSynchronize();
         cout << "Época: " << ep << ",                                           " << duration.count() << " (s)" << endl;
 
-        evaluar_modelo();
 
-        checkCudaErrors(cudaGetLastError());
+        //checkCudaErrors(cudaGetLastError());
 
 
     }
@@ -711,6 +711,7 @@ void CNN::train(int epocas, int mini_batch)
     free(grad_x_fully); free(flat_outs_batch); free(conv_grads_bias); free(convs_outs); free(plms_outs); free(conv_grads_w);
     free(plms_in_copys); free(conv_a); free(indices); free(batch); free(tam_batches); free(y_batch);
 }
+
 
 void CNN::mostrar_ptr(float *x, int C, int H, int W)
 {
@@ -757,22 +758,17 @@ void CNN::evaluar_modelo()
     float acc=0.0,entr=0.0;
     int C, H, W, C_ini, H_ini, W_ini, H_out, W_out;
 
-    int tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out();
+    int tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out(),
+        tam_ini = this->convs[0].get_C() * this->convs[0].get_H() * this->convs[0].get_W();
     float *img_flat_out = nullptr;
-
+    float *img_flat_out_gpu = nullptr;
 
     // Realizar la propagación hacia delante
     for(int img=0; img<this->n_imagenes; ++img)
     {
         // Copiar imagen de entrenamiento en img_in
-        C_ini = this->convs[0].get_C();
-        H_ini = this->convs[0].get_H();
-        W_ini = this->convs[0].get_W();
-        for(int i=0; i<C_ini; i++)
-            for(int j=0; j<H_ini; j++)
-                for(int k=0; k<W_ini; k++)
-                    img_in[i*H_ini*W_ini + j*W_ini + k] = train_imgs[i*H_ini*W_ini + j*W_ini + k + img*C_ini*H_ini*W_ini];
-
+        for(int i=0; i<tam_ini; i++)
+          img_in[i] = train_imgs[i + img*tam_ini];
 
         // Capas convolucionales y maxpool ----------------------------
         for(int i=0; i<this->n_capas_conv; ++i)
@@ -780,44 +776,57 @@ void CNN::evaluar_modelo()
             // Capa convolucional
             this->convs[i].forwardPropagationGEMM(this->img_in, this->img_out, this->conv_a);
 
-            // Copiar img_out en img_in
-            C = this->convs[i].get_n_kernels();
-            H = this->convs[i].get_H_out();
-            W = this->convs[i].get_W_out();
-
-            for(int i=0; i<C; i++)
-                for(int j=0; j<H; j++)
-                    for(int k=0; k<W; k++)
-                        this->img_in[i*H*W + j*W + k] = this->img_out[i*H*W + j*W + k];
-
             // Capa MaxPool
-            this->plms[i].forwardPropagationGPU(this->img_in, this->img_out, this->img_in_copy);
-
-            // Copiar img_out en img_in
-            H = this->plms[i].get_H_out();
-            W = this->plms[i].get_W_out();
-            for(int i=0; i<C; i++)
-                for(int j=0; j<H; j++)
-                    for(int k=0; k<W; k++)
-                        this->img_in[i*H*W + j*W + k] = this->img_out[i*H*W + j*W + k];
-
+            this->plms[i].forwardPropagationGPU(this->img_out, this->img_in, this->img_in_copy);
         }
-
         // Capa flatten
         img_flat_out = flat_outs + img*tam_flat_out;
-
-        C = this->plms[this->n_capas_conv-1].get_C();
-        H_out = this->plms[this->n_capas_conv-1].get_H_out();
-        W_out = this->plms[this->n_capas_conv-1].get_W_out();
-        //img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[this->n_capas_conv-1];
-
-        for(int i_=0; i_<C; i_++)
-            for(int j_=0; j_<H_out; j_++)
-                for(int k_=0; k_<W_out; k_++)
-                    img_flat_out[i_*H_out*W_out + j_*W_out + k_] = img_out[i_*H_out*W_out + j_*W_out + k_];
+        for(int i_=0; i_<tam_flat_out; i_++)
+          img_flat_out[i_] = img_in[i_];
     }
 
+
     this->fully->matrizTranspuesta(flat_outs, flat_outs_T, n_imagenes, tam_flat_out);
+    this->fully->set_train(flat_outs_T, this->train_labels, n_imagenes);
+    this->fully->evaluar_modelo_GEMM();
+
+
+    // -----------------------------------------------------------------------------------------------------------------------------------
+    // Realizar la propagación hacia delante
+    for(int img=0; img<this->n_imagenes; ++img)
+    {
+        // Copiar imagen de entrenamiento en img_in
+        cudaMemcpy(this->d_img_in, train_imgs + img*tam_ini, tam_ini * sizeof(float), cudaMemcpyHostToDevice);
+
+        // Capas convolucionales y maxpool ----------------------------
+        for(int i=0; i<this->n_capas_conv; ++i)
+        {
+            // Capa convolucional
+            this->convs[i].forwardPropagation_vectores_externos(this->d_img_in, this->d_img_out, this->d_conv_a);
+
+            // Capa MaxPool
+            this->plms[i].forwardPropagation_vectores_externos(this->d_img_out, this->d_img_in, this->d_img_in_copy);
+        }
+
+
+        // Capa flatten
+        img_flat_out_gpu = flat_outs_gpu + img*tam_flat_out;
+        cudaMemcpy(img_flat_out_gpu, this->d_img_in, tam_flat_out * sizeof(float), cudaMemcpyDeviceToHost);
+
+
+        img_flat_out = flat_outs + img*tam_flat_out;
+        for(int i=0; i<tam_flat_out; i++)
+        {
+            if(img_flat_out_gpu[i] < img_flat_out[i])
+            {
+              cout << img_flat_out_gpu[i] << "!=" << img_flat_out[i] << endl;
+            }
+        }
+    }
+
+
+
+    this->fully->matrizTranspuesta(flat_outs_gpu, flat_outs_T, n_imagenes, tam_flat_out);
     this->fully->set_train(flat_outs_T, this->train_labels, n_imagenes);
     this->fully->evaluar_modelo_GEMM();
 
