@@ -1774,6 +1774,15 @@ void FullyConnected::set_train(float *x, float *y, int mini_batch)
     cudaMemcpy(d_y, y, capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
 }
 
+void FullyConnected::set_train_gpu(float *x, float *y, int mini_batch)
+{
+    this->mini_batch = mini_batch;
+
+    // Pasar valores de primera capa a GPU
+    cudaMemcpy(d_z, x,  mini_batch * (capas[0]) * sizeof(float), cudaMemcpyDeviceToDevice);
+    cudaMemcpy(d_a, x,  mini_batch * (capas[0]) * sizeof(float), cudaMemcpyDeviceToDevice);
+    cudaMemcpy(d_y, y, capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToDevice);
+}
 
 void FullyConnected::matrizTranspuesta(float* X, float *Y, int rows, int cols)
 {

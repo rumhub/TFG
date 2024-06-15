@@ -10,6 +10,16 @@ void checkCudaErrors(cudaError_t err) {
     }
 }
 
+__global__ void transpuesta_flat_outs(float* X, float *Y, int rows, int cols)
+{
+		int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
+
+    // Cada hebra se encarga de una fila
+    if(i < rows)
+        for (int j = 0; j < cols; j++)
+            Y[j * rows + i] = X[i * cols + j];
+}
+
 
 /*
     CONSTRUCTOR de la clase CNN
@@ -244,8 +254,9 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
 
     this->flat_outs_gpu = (float *)malloc(this->n_imagenes* tam_flat_out * sizeof(float));
 
-    //cudaMalloc((void **) &this->d_flat_outs, this->n_imagenes* tam_flat_out * sizeof(float));
-    //cudaMalloc((void **) &this->d_flat_outs_T, this->n_imagenes* tam_flat_out * sizeof(float));
+    cudaMalloc((void **) &this->d_flat_outs, this->n_imagenes* tam_flat_out * sizeof(float));
+    cudaMalloc((void **) &this->d_flat_outs_T, this->n_imagenes* tam_flat_out * sizeof(float));
+    cudaMalloc((void **) &this->d_train_labels, this->n_imagenes* n_clases * sizeof(float));
 
 
     if(this->n_clases != n_clases)
@@ -256,6 +267,8 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
 
     for(int i=0; i<n_imagenes*n_clases; i++)
         train_labels[i] = y[i];
+
+    cudaMemcpy(d_train_labels, train_labels, this->n_imagenes* n_clases * sizeof(float), cudaMemcpyHostToDevice);
 
     /*
     // Mostrar imágenes
@@ -792,6 +805,9 @@ void CNN::evaluar_modelo()
 
 
     // -----------------------------------------------------------------------------------------------------------------------------------
+    dim3 block_1D(32, 1);
+    dim3 grid_1D((this->n_imagenes  + block_1D.x -1) / block_1D.x, 1);
+
     // Realizar la propagación hacia delante
     for(int img=0; img<this->n_imagenes; ++img)
     {
@@ -808,30 +824,17 @@ void CNN::evaluar_modelo()
             this->plms[i].forwardPropagation_vectores_externos(this->d_img_out, this->d_img_in, this->d_img_in_copy);
         }
 
-
         // Capa flatten
-        img_flat_out_gpu = flat_outs_gpu + img*tam_flat_out;
-        cudaMemcpy(img_flat_out_gpu, this->d_img_in, tam_flat_out * sizeof(float), cudaMemcpyDeviceToHost);
-
-
-        img_flat_out = flat_outs + img*tam_flat_out;
-        for(int i=0; i<tam_flat_out; i++)
-        {
-            if(img_flat_out_gpu[i] < img_flat_out[i])
-            {
-              cout << img_flat_out_gpu[i] << "!=" << img_flat_out[i] << endl;
-            }
-        }
+        cudaMemcpy(d_flat_outs + img*tam_flat_out, this->d_img_in, tam_flat_out * sizeof(float), cudaMemcpyDeviceToDevice);
     }
 
-
-
-    this->fully->matrizTranspuesta(flat_outs_gpu, flat_outs_T, n_imagenes, tam_flat_out);
-    this->fully->set_train(flat_outs_T, this->train_labels, n_imagenes);
+    transpuesta_flat_outs<<<grid_1D, block_1D>>>(d_flat_outs, d_flat_outs_T, this->n_imagenes, tam_flat_out);
+    this->fully->set_train_gpu(d_flat_outs_T, this->d_train_labels, n_imagenes);
     this->fully->evaluar_modelo_GEMM();
 
+    cudaDeviceSynchronize();
     // Realizar media y obtener valores finales
-    //checkCudaErrors(cudaGetLastError());
+    checkCudaErrors(cudaGetLastError());
 }
 
 /*

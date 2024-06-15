@@ -35,7 +35,7 @@ class FullyConnected
         int * i_capasGEMM = nullptr;
 
         // Punteros device
-        float * d_wT = nullptr;     // Matriz de pesos transpuesta 
+        float * d_wT = nullptr;     // Matriz de pesos transpuesta
         float * d_w = nullptr;      // Pesos
         float * d_b = nullptr;      // Bias o Sesgos
         float * d_z = nullptr;      // Neuronas después de aplicar la función de activación
@@ -57,9 +57,9 @@ class FullyConnected
         dim3 block_1D;
 
         // Tamaño de grid
-        dim3 grid_2D;          
-        dim3 grid_1D;          
-        
+        dim3 grid_2D;
+        dim3 grid_1D;
+
         int block_size;
 
         size_t smem_2D;            // Memoria compartida requerida por el kernel
@@ -69,17 +69,17 @@ class FullyConnected
     public:
         // GPU ---------------------------------------
         FullyConnected(int *capas, int n_capas, float lr, int mini_batch);
-        
+
         ~FullyConnected()
         {
             if(liberar_memoria)
             {
-                free(w_ptr); free(bias_ptr); free(capas); free(i_w_ptr); free(i_capa); free(wT_ptr); free(capas_wT); 
+                free(w_ptr); free(bias_ptr); free(capas); free(i_w_ptr); free(i_capa); free(wT_ptr); free(capas_wT);
                 for(int i=0; i<n_capas; i++)
                 {
                     free(capasGEMM[i]);
-                } 
-                free(capasGEMM); 
+                }
+                free(capasGEMM);
                 cudaFree(d_wT);
                 cudaFree(d_z);
                 cudaFree(d_a);
@@ -127,6 +127,7 @@ class FullyConnected
         void set_biasGEMM(float *bias);
         void set_wGEMM(float *w);
         void set_train(float *x, float *y, int mini_batch);
+        void set_train_gpu(float *x, float *y, int mini_batch);
 
         // Utilidades
         void matrizTranspuesta(float* matrix, int rows, int cols);
