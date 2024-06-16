@@ -102,6 +102,7 @@ class FullyConnected
         // Cálculo de gradientes
         void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
         void trainGEMM(float *grad_x);
+        void train_vectores_externos(float *grad_x);
 
         // Medidas de evaluación
         float accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr);

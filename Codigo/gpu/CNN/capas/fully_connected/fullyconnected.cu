@@ -1198,6 +1198,57 @@ void FullyConnected::trainGEMM(float *grad_x)
     */
 }
 
+void FullyConnected::train_vectores_externos(float *grad_x)
+{
+    int n_clases = capas[n_capas-1];
+
+    grid_1D.x = (mini_batch  + block_1D.x -1) / block_1D.x;
+
+    // Propagación hacia delante de cada dato perteneciente al minibatch
+    forwardPropagationGEMM();
+
+    // Cálculo del gradiente respecto a la entrada de la capa SoftMax
+    kernel_back_softmax<<<grid_1D, block_1D>>>(mini_batch, n_clases, d_z + i_capasGEMM[n_capas-1], d_softmax, d_y, n_clases);
+
+    // Capas intermedias
+    // Transpuesta para tener 1 columna por dato de minibatch
+    matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_z + i_capasGEMM[n_capas-1], d_a + i_capasGEMM[n_capas-1], mini_batch, capas[n_capas-1]);
+
+    // Capas intermedias
+    for(int c=n_capas-1; c>0; c--)
+    {
+        // Tamaño de grid
+        this->grid_2D.x = (mini_batch  + block_2D.x -1) / block_2D.x;
+        this->grid_2D.y = (capas[c-1] + block_2D.y -1) / block_2D.y;
+
+        // Aplicar ReLU en capas intermedias, pero en SoftMax no
+        backprop_capas_intermedias<<<grid_2D, block_2D, smem_2D>>>(capas[c-1], mini_batch, capas[c], d_w + i_w_ptr[c-1], d_a + i_capasGEMM[c], d_a + i_capasGEMM[c-1], (c>1));
+
+        // Tamaño de grid
+        grid_1D.x = (capas[c]  + block_1D.x -1) / block_1D.x;
+        kernel_grad_bias<<<grid_1D, block_1D>>>(capas[c], mini_batch, d_a + i_capasGEMM[c], d_grad_b + i_capasGEMM[c]);
+
+        // Tamaño de grid
+        grid_1D.x = (capas[c]  + block_1D.x -1) / block_1D.x;
+
+        matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
+
+        // Tamaño de grid
+        grid_2D.x = (capas[c]  + block_2D.x -1) / block_2D.x;
+        grid_2D.y = (capas[c-1] + block_2D.y -1) / block_2D.y;
+
+        multiplicarMatricesGPU_fully<<<grid_2D, block_2D, smem_2D>>>(capas[c-1], capas[c], mini_batch, d_z + i_capasGEMM[c-1], d_aT + i_capasGEMM[c], d_grad_w + i_w_ptr[c-1]);
+    }
+
+    int c = 0;
+
+    // Tamaño de grid
+    grid_1D.x = (capas[c]  + block_size -1) / block_size;
+
+    matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
+
+    cudaMemcpy(grad_x, d_aT + i_capasGEMM[c], capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToDevice);
+}
 
 /*
     @brief      Entrenamiento de la red
