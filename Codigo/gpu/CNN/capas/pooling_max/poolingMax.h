@@ -71,6 +71,7 @@ class PoolingMax
         void forwardPropagationGPU(float *input, float *output, float *input_copy);
         void forwardPropagation_vectores_externos(float *input, float *output, float *input_copy);
         void backPropagationGPU(float *input, float *output, float *input_copy);
+        void backPropagation_vectores_externos(float *input, float *output, float *input_copy);
 
         // Comunes ------------------------------------------
         void mostrar_tam_kernel();

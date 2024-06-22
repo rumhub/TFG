@@ -68,6 +68,72 @@ __global__ void multiplicarMatricesGPU(int M, int N, int K, const float *A, cons
         C[iy*N + ix] = sum;
 }
 
+
+/*
+    Emplea tiles. Un tile por bloque. Usa memoria compartida
+*/
+__global__ void multiplicarMatricesGPU_calcular_grad_w(int M, int N, int K, const float *A, const float *B, float *C)
+{
+    // Memoria compartida dinámica
+	extern __shared__ float sdata[];
+
+    // Convertir de índices de hebra a índices de matriz
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x,
+        idA = iy*K + ix, idB = iy*N + ix, id_tile = threadIdx.y * blockDim.x + threadIdx.x;
+    //int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+    int n_tiles = (K + blockDim.x - 1) / blockDim.x;
+
+    // Punteros a A y B
+    float *sA = sdata,
+          *sB = sdata + blockDim.x * blockDim.y;
+
+    float sum = 0.0f;
+
+    int lim = blockDim.x;
+
+    // Si tam_bloque > tam_A
+    if(lim > K)
+        lim = K;
+
+    /*
+        Para multiplicar A(MxK) x B(KxN) hay que multiplicar una fila de A x una columna de B
+        Es decir, multiplicar KxK elementos y sumarlos
+        Un tile es más pequeño que K -> Dividir K en tiles e iterar sobre ellos
+    */
+    for(int tile=0; tile < n_tiles; ++tile)
+    {
+        idA = iy*K + tile * blockDim.x + threadIdx.x;
+        idB = (tile * blockDim.x + threadIdx.y)*N + ix;
+
+        // Cargar submatrices de A y B en memoria compartida (tamaño tilex x tiley)
+        // Cada hebra carga en memoria compartida un elemento de A y otro de B
+        (iy < M && tile * blockDim.x + threadIdx.x < K) ? sA[id_tile] = A[idA] : sA[id_tile] = 0.0;
+        (tile * blockDim.x + threadIdx.y < K && ix < N) ? sB[id_tile] = B[idB] : sB[id_tile] = 0.0;
+
+        // Sincronizar hebras
+        __syncthreads();
+
+        // Realizar multiplicación matricial
+        if(iy < M && ix < N)
+        {
+            // Si última iteración
+            if(tile == n_tiles -1)
+                lim = K - tile * blockDim.x;
+
+            // Cada hebra calcula una posición de C (una fila de A * una columna de B)
+            for (int i = 0; i < lim; i++)
+                sum += sA[threadIdx.y*blockDim.x + i] * sB[threadIdx.x + i*blockDim.x];
+        }
+
+        // Sincronizar hebras
+        __syncthreads();
+    }
+
+		__syncthreads();
+    if(iy < M && ix < N)
+        C[iy*N + ix] += sum;
+}
+
 __global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, const float *B, float *C, const float *bias, float *output)
 {
     // Memoria compartida dinámica
@@ -140,6 +206,95 @@ __global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, co
 
 }
 
+__global__ void matrizTranspuesta_conv(float* X, float *Y, int rows, int cols)
+{
+		int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
+
+    // Cada hebra se encarga de una fila
+    if(i < rows)
+        for (int j = 0; j < cols; j++)
+            Y[j * rows + i] = X[i * cols + j];
+}
+
+__global__ void reduceMax_conv(float * X, float * Y, const int N)
+{
+	extern __shared__ float sdata[];
+
+	int tid = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+
+    // Cargar los datos en memoria compartida
+	sdata[tid] = ((i < N) ? X[i] : -100000000.0f);
+	__syncthreads();
+
+
+    // Obtener el máximo local de cada bloque
+	for(int s = blockDim.x/2; s > 0; s >>= 1)
+    {
+	  if (tid < s)
+	        sdata[tid]=max(sdata[tid],sdata[tid+s]);
+	  __syncthreads();
+	}
+
+	if (tid == 0)
+        Y[blockIdx.x] = sdata[0];
+
+}
+
+__global__ void reduceMin_conv(float * X, float * Y, const int N)
+{
+	extern __shared__ float sdata[];
+
+	int tid = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+
+    // Cargar los datos en memoria compartida
+	sdata[tid] = ((i < N) ? X[i] : 100000000.0f);
+	__syncthreads();
+
+    // Obtener el máximo local de cada bloque
+	for(int s = blockDim.x/2; s > 0; s >>= 1)
+    {
+	  if (tid < s)
+	        sdata[tid]=min(sdata[tid],sdata[tid+s]);
+	  __syncthreads();
+	}
+	if (tid == 0)
+        Y[blockIdx.x] = sdata[0];
+}
+
+__global__ void min_max_conv(float *maximos, float *minimos, const int N)
+{
+	extern __shared__ float sdata[];
+
+	// int tid = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // Obtener el máximo total en todos los bloques
+    if(i == 0)
+    {
+        for(int j=1; j<gridDim.x; j++)
+        {
+            maximos[0] = max(maximos[0], maximos[j]);
+            minimos[0] = min(minimos[0], minimos[j]);
+        }
+    }
+}
+
+__global__ void kernel_escalar_pesos_conv(float * X, const int N, float *maxi, float *mini, float valor_clip)
+{
+	// int tid = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+    float maximo = abs(maxi[0]), minimo = abs(mini[0]),
+          factor_de_escala = valor_clip / max(maximo, minimo);
+
+    // Escalar los pesos
+    if(i < N)
+        X[i] = max(min(X[i] * factor_de_escala, valor_clip), -valor_clip);
+}
+
 __global__ void unrollGPU(int C, int H, int W, int K, const float *X, float *X_unroll)
 {
 		int tid = blockIdx.x * blockDim.x + threadIdx.x,
@@ -164,87 +319,163 @@ __global__ void unrollGPU(int C, int H, int W, int K, const float *X, float *X_u
 				}
 		}
 
-		/*
-		void Convolutional::unroll(int C, int n, int K, float *X, float *X_unroll){
-		    int H_out = n-K+1;
-		    int W_out = n-K+1;
-		    int w_base;
-		    int W = H_out * W_out;
-
-		    for(int c=0; c<C; c++)
-		    {
-		        w_base = c * (K*K);
-		        for(int p=0; p<K; p++)
-		            for(int q=0; q<K; q++)
-		                for(int h=0; h<H_out; h++){
-		                    int h_unroll = w_base + p*K + q;
-		                    for(int w=0; w < W_out; w++){
-		                        int w_unroll = h * W_out + w;
-		                        X_unroll[h_unroll*W + w_unroll] = X[c*n*n + (h+p)*n + (w+q)];
-		                    }
-		                }
-
-		    }
-
-		}
-		*/
 }
 
-/*
-    CONSTRUCTOR de la clase Convolutional
-    --------------------------------------
 
-    @n_kernels      Número de kernels a aplicar
-    @kernel_fils    Número de filas por kernel
-    @kernel_cols    Número de columnas por kernel
-    @input          Volumen 3D de entrada
-    @lr             Learning Rate o Tasa de Aprendizaje
-*/
-
-Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, const vector<vector<vector<float>>> &input, float lr)
+__global__ void deriv_activ_func_output(int C, int H, int W, float *output, const float *a)
 {
-    this->n_kernels = n_kernels;
-    this->C = input.size();
-    this->kernel_fils = kernel_fils;
-    this->kernel_cols = kernel_cols;
-    this->lr = lr;
-    this->w.clear();
+		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+		int pos;
 
-    vector<vector<vector<vector<float>>>> pesos_por_kernel;
-    vector<vector<vector<float>>> pesos_totales;    // Representa los pesos de un kernel (los pesos de todas sus dimensiones)
-    vector<vector<float>> pesos_kernel_2D;      // Representa los pesos de un kernel 2D
-    vector<float> pesos_fila;               // Representa los pesos de una fila de un kernel 2D. Podría verse como un kernel 1D (un array)
+		// Realizar derivada Y_out/Y_in
+		if(iy < H && ix < W)
+		{
+				for(int i=0; i<C; i++)
+				{
+						pos = i*H*W + iy*W + ix;
 
-    // Crear estructura de los pesos
-    for(int f=0; f< n_kernels; ++f) // Por cada kernel
-    {
-        for(int k=0; k< C; ++k)
-        {
-            for(int i=0; i<kernel_fils; ++i)
-            {
-                for(int j=0; j<kernel_cols; ++j)
-                {
-                    pesos_fila.push_back(0.0);
-                }
-                pesos_kernel_2D.push_back(pesos_fila);
-                pesos_fila.clear();
-            }
-            pesos_totales.push_back(pesos_kernel_2D);
-            pesos_kernel_2D.clear();
-        }
-        this->w.push_back(pesos_totales);
-        pesos_totales.clear();
-    }
+						// Derivada de ReLU, (output[pos] = output[pos] * deriv_activationFunction(a[pos]);)
+						if(a[pos] <= 0)
+							output[pos] = 0.0;
+				}
+		}
+}
 
-    // Inicializar pesos mediante Inicialización He
-    this->generar_pesos();
 
-    // Bias
-    // Un bias por filtro, https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
-    for(int i=0; i<n_kernels; i++)
-        this->bias.push_back(0.0);
+__global__ void centrar(int C, int H, int W, int H_pad, int W_pad, const float *output, float *output_pad)
+{
+		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+		int pos;
 
-};
+		// Realizar derivada Y_out/Y_in
+		if(iy < H_pad && ix < W_pad)
+				for(int i=0; i<C; i++)
+						output_pad[i*H_pad*W_pad + iy*W_pad + ix] = output[i*H*W + iy*W + ix];
+}
+
+__global__ void aplicar_padding_gpu(int C, int H, int W, const float *X, float *Y, int pad)
+{
+		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+
+		// Inicializar salida a 0.0
+		if(iy < H && ix < W)
+			for(int c=0; c<C; c++)
+				Y[c*H*W + iy*W + ix] = 0.0;
+
+		__syncthreads();
+
+		// Traslado horizontal y vertical en "pad unidades"
+		if(iy < H-2*pad && ix < W-2*pad)
+				for(int c=0; c<C; c++)
+						Y[c*H*W + (iy + pad)*W + (ix + pad)] = X[c*H*W + iy*W + ix];
+}
+
+__global__ void unroll_3dim_gpu(int C, int H, int W, int K, float *X, float *X_unroll)
+{
+		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+		int i_out, i_in;
+
+		// Calcular el tamaño de salida
+		int H_out = H - K + 1;
+		int W_out = W - K + 1;
+
+		if(iy < H_out && ix < W_out)
+		{
+				i_out = iy * W_out + ix;
+				i_in = 0;
+
+				for (int d = 0; d < C; ++d)
+						for (int ki = 0; ki < K; ++ki)
+								for (int kj = 0; kj < K; ++kj)
+										X_unroll[i_out * (K * K * C) + i_in++] = X[d * (H * W) + (iy + ki) * W + (ix + kj)];
+		}
+}
+
+
+__global__ void unroll_1dim_gpu(int C, int H, int W, int K, float *X, float *X_unroll)
+{
+		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+
+		// Calcular el tamaño de salida
+		int H_out = H - K+1, W_out = W -K +1;
+
+		if(iy < H_out && ix < W_out)
+				for(int c=0; c<C; c++)
+            for(int ky=0; ky < K; ky++)		// Guardar K*K elementos de "convolución"
+                for(int kx=0; kx<K; kx++)
+                    X_unroll[(((c * H_out + iy) * W_out + ix) * K + ky) * K + kx] = X[c*H*W + (iy+ky)*W + (ix+kx)];
+}
+
+__global__ void unroll_matriz_pesos(int C, int n_kernels, int K, float *X, float *Y)
+{
+		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+
+		if(iy < C && ix < n_kernels)
+				for(int kx = K-1; kx >= 0; kx--)
+						for(int ky = K-1; ky >=0; ky--)
+								Y[iy*n_kernels*K*K + ix*K*K + kx*K + ky] = X[ix*C*K*K + iy*K*K + kx*K + ky];
+}
+
+__global__ void acumular_grad_w(int n_kernels, int C, int K, float *grad_w, float *grad_w_it)
+{
+		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+
+		if(iy < n_kernels && ix < C)
+				for(int kx=0; kx<K; kx++)
+						for(int ky=0; ky<K; ky++)
+								grad_w[iy*C*K*K + ix*K*K + kx*K + ky] += grad_w_it[iy*C*K*K + ix*K*K + kx*K + ky];
+}
+
+
+__global__ void reduce_suma(float * X, float * Y, const int N)
+{
+	extern __shared__ float sdata[];
+
+	int tid = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+
+    // Cargar los datos en memoria compartida
+	sdata[tid] = ((i < N) ? X[i] : 0.0f);
+	__syncthreads();
+
+
+  // Obtener la suma local de cada bloque
+	for(int s = blockDim.x/2; s > 0; s >>= 1)
+  {
+	  if (tid < s)
+	        sdata[tid] += + sdata[tid+s];
+	  __syncthreads();
+	}
+
+	if (tid == 0)
+        Y[blockIdx.x] = sdata[0];
+
+}
+
+__global__ void acumular_grad_bias(float *X, float *grad_bias, int i_kernel)
+{
+	// int tid = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+
+    // Obtener la suma total en todos los bloques
+    if(i == 0)
+        for(int j=0; j<gridDim.x; j++)
+            grad_bias[i_kernel] += X[j];
+
+}
+
+
+__global__ void kernel_actualizar_pesos(int n_kernels, int C, int K, float *w, float *grad_w, float lr, int mini_batch)
+{
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+        // tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+
+    if(iy < n_kernels && ix <C)
+				for(int k=0; k<K; ++k)
+						for(int p=0; p<K; ++p)
+								w[iy*C*K*K + ix*K*K + k*K + p] -= lr * (grad_w[iy*C*K*K + ix*K*K + k*K + p] / mini_batch);
+}
 
 
 /*
@@ -312,24 +543,22 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     this->block.x = BLOCK_SIZE;
     this->block.y = BLOCK_SIZE;
 
+		block_1D.x = BLOCK_SIZE;
+		block_1D.y = 1;
+
     // Memoria compartida a nivel de bloque
     this->smem = (2*block.x * block.y) *sizeof(float);
+		this->smem_1D = (2*block_1D.x) *sizeof(float);
 
 
     // Punteros device
     cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
-    cudaMalloc((void **) &d_a, bytes_output);
 		cudaMalloc((void **) &d_w, bytes_w);
 		cudaMalloc((void **) &d_bias, bytes_bias);
 
     this->pad = kernel_fils-1;
     this->H_out_pad = H_out +2*pad;
     this->W_out_pad = W_out + 2*pad;
-
-    this->output_pad = (float *)malloc(this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
-    this->grad_w_it = (float *)malloc(this->n_kernels*this->C*this->kernel_fils*this->kernel_cols * sizeof(float));
-
-
 
     this->fils_output_unroll = kernel_fils*kernel_cols*n_kernels;
     this->cols_output_unroll = H*W;
@@ -345,29 +574,15 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     this->h_matriz_pesos = (float *)malloc(bytes_matriz_pesos);
     this->h_input_back_unroll = (float *)malloc(bytes_input_back_unroll);
 
-
-
-    // Tamaños de los grids ---------------------------------------
-    // Tamaño de grid para propagación hacia delante
-    this->grid_forward.x = (cols_input_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
-    this->grid_forward.y = (fils_w + BLOCK_SIZE -1) / BLOCK_SIZE;
-
-    // Tamaño de grid para calcular el gradiente respecto a los pesos
-    this->grid_grad_w.x = (cols_input_back_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
-    this->grid_grad_w.y = (this->n_kernels + BLOCK_SIZE -1) / BLOCK_SIZE;
-
-    // Tamao del grid para calcular el gradiente respecto a la entrada
-    this->grid_grad_input.x = (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
-    this->grid_grad_input.y = (C + BLOCK_SIZE -1) / BLOCK_SIZE;
-
-
     // Reserva de memoria en device
+		cudaMalloc((void **) &d_sum_local, (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE * sizeof(float));
+		cudaMalloc((void **) &d_output_unroll_T, bytes_output_unroll);
+		cudaMalloc((void **) &d_input_back_unroll_T, bytes_input_back_unroll);
+		cudaMalloc((void **) &d_output_centrado, this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
+		cudaMalloc((void **) &d_output_pad, this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
     cudaMalloc((void **) &d_output_unroll, bytes_output_unroll);
     cudaMalloc((void **) &d_matriz_pesos, bytes_matriz_pesos);
-    cudaMalloc((void **) &d_input, C*H*W * sizeof(float));
-    cudaMalloc((void **) &d_output, n_kernels*H_out*W_out * sizeof(float));
     cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll);
-    cudaMalloc((void **) &d_grad_w, this->n_kernels*C*kernel_fils*kernel_cols * sizeof(float));
 		cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
 		cudaMemcpy(d_bias, this->bias_ptr, this->n_kernels * sizeof(float), cudaMemcpyHostToDevice);
 };
@@ -428,24 +643,18 @@ void Convolutional::copiar(const Convolutional & conv)
     this->block.x = BLOCK_SIZE;
     this->block.y = BLOCK_SIZE;
 
+		block_1D.x = BLOCK_SIZE;
+		block_1D.y = 1;
+
     // Memoria compartida a nivel de bloque
     this->smem = (2*block.x * block.y) *sizeof(float);
+		this->smem_1D = (2*block_1D.x) *sizeof(float);
 
-    // Punteros device
-    cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
-    cudaMalloc((void **) &d_a, bytes_output);
-    cudaMalloc((void **) &d_w, bytes_w);
-		cudaMalloc((void **) &d_bias, bytes_bias);
 
 
     this->pad = conv.pad;
     this->H_out_pad = conv.H_out_pad;
     this->W_out_pad = conv.W_out_pad;
-
-    this->output_pad = (float *)malloc(this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
-    this->grad_w_it = (float *)malloc(this->n_kernels*this->C*this->kernel_fils*this->kernel_cols * sizeof(float));
-
-
 
     this->fils_output_unroll = conv.fils_output_unroll;
     this->cols_output_unroll = conv.cols_output_unroll;
@@ -461,31 +670,20 @@ void Convolutional::copiar(const Convolutional & conv)
     this->h_matriz_pesos = (float *)malloc(bytes_matriz_pesos);
     this->h_input_back_unroll = (float *)malloc(bytes_input_back_unroll);
 
-
-
-    // Tamaños de los grids ---------------------------------------
-    // Tamaño de grid para propagación hacia delante
-    this->grid_forward.x = conv.grid_forward.x;
-    this->grid_forward.y = conv.grid_forward.y;
-
-    // Tamaño de grid para calcular el gradiente respecto a los pesos
-    this->grid_grad_w.x = conv.grid_grad_w.x;
-    this->grid_grad_w.y = conv.grid_grad_w.y;
-
-    // Tamao del grid para calcular el gradiente respecto a la entrada
-    this->grid_grad_input.x = conv.grid_grad_input.x;
-    this->grid_grad_input.y = conv.grid_grad_input.y;
-
-
     // Reserva de memoria en device
+		cudaMalloc((void **) &d_sum_local, (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE * sizeof(float));
+		cudaMalloc((void **) &d_output_unroll_T, bytes_output_unroll);
+		cudaMalloc((void **) &d_input_back_unroll_T, bytes_input_back_unroll);
+		cudaMalloc((void **) &d_output_centrado, this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
+		cudaMalloc((void **) &d_output_pad, this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
+    cudaMalloc((void **) &d_w, bytes_w);
+		cudaMalloc((void **) &d_bias, bytes_bias);
+		cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
     cudaMalloc((void **) &d_output_unroll, bytes_output_unroll);
     cudaMalloc((void **) &d_matriz_pesos, bytes_matriz_pesos);
-    cudaMalloc((void **) &d_input, C*H*W * sizeof(float));
-    cudaMalloc((void **) &d_output, n_kernels*H_out*W_out * sizeof(float));
     cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll);
-    cudaMalloc((void **) &d_grad_w, this->n_kernels*C*kernel_fils*kernel_cols * sizeof(float));
 		cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
-		cudaMemcpy(d_bias, this->bias_ptr, this->n_kernels * sizeof(float), cudaMemcpyHostToDevice);
+		cudaMemcpy(d_bias, this->bias_ptr, bytes_bias, cudaMemcpyHostToDevice);
 }
 
 
@@ -493,10 +691,11 @@ Convolutional::~Convolutional()
 {
     if(h_input_unroll != nullptr)   // Si no se creó una instancia de la clase mediante constructor por defecto
     {
-        free(h_input_unroll); free(output_pad); free(grad_w_it); free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll);
-        free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); cudaFree(d_output_unroll);
-        cudaFree(d_matriz_pesos); cudaFree(d_input); cudaFree(d_input_back_unroll); cudaFree(d_output); cudaFree(d_grad_w);
-				cudaFree(d_bias);
+        free(h_input_unroll); free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll);
+        free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_w); cudaFree(d_output_unroll);
+        cudaFree(d_matriz_pesos); cudaFree(d_input_back_unroll);
+				cudaFree(d_bias); cudaFree(d_output_centrado); cudaFree(d_output_pad); cudaFree(d_input_back_unroll_T);
+				cudaFree(d_output_unroll_T); cudaFree(d_sum_local);
     }
     cout << "Destructor: ";
     checkCudaErrors(cudaGetLastError());
@@ -524,24 +723,7 @@ void Convolutional::generar_pesos_ptr()
 }
 
 
-/*
-    @brief      Inicializa los pesos de la capa convolucional según la inicialización He
-    @return     Se modifica w (los pesos de la capa)
-*/
-void Convolutional::generar_pesos()
-{
-    // Inicialización He
-    random_device rd;
-    mt19937 gen(rd());
-    normal_distribution<float> distribution(0.0, sqrt(2.0 / (this->n_kernels * this->C * this->kernel_fils * this->kernel_fils)));
 
-    for(int i=0; i<this->w.size(); ++i)
-        for(int j=0; j<this->w[0].size(); ++j)
-            for(int k=0; k<this->w[0][0].size(); ++k)
-                for(int p=0; p<this->w[0][0][0].size(); ++p)
-                    this->w[i][j][k][p] = 1.0;
-                    //this->w[i][j][k][p] = distribution(gen);
-}
 
 /*
     @brief      Función de activación ReLU
@@ -569,126 +751,6 @@ float Convolutional::deriv_activationFunction(float x)
     return result;
 }
 
-/*
-    @brief      Aplicar padding a un volumen de entrada 3D
-    @imagen_3D  Volumen 3D de entrada
-    @pad        Nivel de padding a aplicar
-    @return     Se añaden @pad niveles de padding al volumen de entrada @imagen_3D
-*/
-void Convolutional::aplicar_padding(vector<vector<vector<float>>> &imagen_3D, int pad)
-{
-    vector<vector<vector<float>>> imagen_3D_aux;
-    vector<vector<float>> imagen_aux;
-    vector<float> fila_aux;
-
-    // Por cada imagen
-    for(int i=0; i<imagen_3D.size(); ++i)
-    {
-        // Añadimos padding superior
-        for(int j=0; j<imagen_3D[i].size() + pad*2; ++j) // pad*2 porque hay padding tanto a la derecha como a la izquierda
-            fila_aux.push_back(0.0);
-
-        for(int k=0; k<pad; ++k)
-            imagen_aux.push_back(fila_aux);
-
-        fila_aux.clear();
-
-        // Padding lateral (izquierda y derecha)
-        // Por cada fila de cada imagen
-        for(int j=0; j<imagen_3D[i].size(); ++j)
-        {
-            // Añadimos padding lateral izquierdo
-            for(int t=0; t<pad; ++t)
-                fila_aux.push_back(0.0);
-
-            // Dejamos casillas centrales igual que en la imagen original
-            for(int k=0; k<imagen_3D[i][j].size(); ++k)
-                fila_aux.push_back(imagen_3D[i][j][k]);
-
-            // Añadimos padding lateral derecho
-            for(int t=0; t<pad; ++t)
-                fila_aux.push_back(0.0);
-
-            // Añadimos fila construida a la imagen
-            imagen_aux.push_back(fila_aux);
-            fila_aux.clear();
-        }
-
-        // Añadimos padding inferior
-        fila_aux.clear();
-
-        for(int j=0; j<imagen_3D[i].size() + pad*2; ++j) // pad*2 porque hay padding tanto a la derecha como a la izquierda
-            fila_aux.push_back(0.0);
-
-        for(int k=0; k<pad; ++k)
-            imagen_aux.push_back(fila_aux);
-
-        fila_aux.clear();
-
-        // Añadimos imagen creada al conjunto de imágenes
-        imagen_3D_aux.push_back(imagen_aux);
-        imagen_aux.clear();
-    }
-
-    imagen_3D = imagen_3D_aux;
-};
-
-
-/*
-    @brief      Propagación hacia delante a lo largo de toda la capa convolucional
-    @input      Volumen de entrada 3D
-    @output     Volumen de salida 3D
-    @a          Valor de las neuronas antes de aplicar la función de activación
-    @return     Se modifica @output y @a
-*/
-void Convolutional::forwardPropagation(const vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &a)
-{
-    // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
-    vector<vector<vector<float>>> input_copy;
-    vector<vector<float>> conv_imagen;
-    vector<float> conv_fila;
-
-    // nº de kernels, nº de "capas 2D" por kernel, nº de filas del kernel, nº de columnas del kernel a aplicar
-    int M = this->w.size(), depth_k = this->w[0].size(), K = this->w[0][0].size();
-
-    // nº de "capas 2D",   nº de filas del volumen de entrada
-    int C = input.size(), fils_img = input[0].size();
-
-    // nº de veces que se deslizará el kernel sobre el volumen de entrada input
-    // Suponemos nº filas = nº columnas
-    int n_veces = fils_img - K + 1;
-
-    if(C != depth_k)
-    {
-        cout << "Error. La profundidad del volumen del entrada no coincide con la profundidad de los kernels proporcionados. " << endl;
-        exit(-1);
-    }
-
-    //a = output;
-
-    // Por cada kernel M
-    for(int img_out=0; img_out<M; ++img_out)
-        for(int i=0; i<n_veces; ++i)
-            for(int j=0; j<n_veces; ++j)
-            {
-                a[img_out][i][j] = 0.0;
-
-                // Realizar convolución 3D
-                for(int c=0; c<C; ++c)
-                    for(int i_k=0; i_k<K; ++i_k)
-                        for(int j_k=0; j_k<K; ++j_k)
-                            a[img_out][i][j] += input[c][i+i_k][j+j_k] * this->w[img_out][c][i_k][j_k];
-
-                // Sumamos bias a la suma ponderada obtenida
-                a[img_out][i][j] += this->bias[img_out];
-
-
-                // Aplicamos función de activación
-                output[img_out][i][j] = activationFunction(a[img_out][i][j]);
-            }
-};
-
-
 void Convolutional::checkCudaErrors(cudaError_t err) {
     if (err != cudaSuccess) {
         std::cerr << "CUDA error: " << cudaGetErrorString(err) << std::endl;
@@ -706,265 +768,26 @@ void Convolutional::checkCudaErrors(cudaError_t err) {
     @a          Valor de las neuronas antes de aplicar la función de activación
     @return     Se modifica @output y @a
 */
-void Convolutional::forwardPropagationGEMM(float *input, float *output, float *a)
-{
-		cudaMemcpy(d_input, input, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
-
-		dim3 block_1D(BLOCK_SIZE, 1);
-		dim3 grid_1D((C*H*W + block_1D.x -1) / block_1D.x, 1);
-		unrollGPU<<<grid_1D, block_1D>>>(C, H, W, this->kernel_fils, d_input, d_input_unroll);
-
-    // Multiplicación de matrices
-		forward_propagation_GEMM<<<grid_forward, block, smem>>>(this->n_kernels, cols_input_unroll, cols_w, d_w, d_input_unroll, d_a, d_bias, d_output);
-
-    // Paso de GPU a CPU
-    cudaMemcpy(a, d_a, bytes_output, cudaMemcpyDeviceToHost);
-		cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
-		//checkCudaErrors(cudaGetLastError());
-};
-
-/*
-    @brief      Propagación hacia delante a lo largo de toda la capa convolucional
-    @input      Volumen de entrada 3D
-    @output     Volumen de salida 3D
-    @a          Valor de las neuronas antes de aplicar la función de activación
-    @return     Se modifica @output y @a
-*/
 void Convolutional::forwardPropagation_vectores_externos(float *input, float *output, float *a)
 {
-		//cudaMemcpy(d_input, input, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
-
 		dim3 block_1D(BLOCK_SIZE, 1);
 		dim3 grid_1D((C*H*W + block_1D.x -1) / block_1D.x, 1);
 		unrollGPU<<<grid_1D, block_1D>>>(C, H, W, this->kernel_fils, input, d_input_unroll);
 
 		// Multiplicación de matrices
-		forward_propagation_GEMM<<<grid_forward, block, smem>>>(this->n_kernels, cols_input_unroll, cols_w, d_w, d_input_unroll, a, d_bias, output);
-
-		// Paso de GPU a CPU
-		//cudaMemcpy(a, d_a, bytes_output, cudaMemcpyDeviceToHost);
-		//cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToHost);
-		//checkCudaErrors(cudaGetLastError());
+		this->grid.x = (cols_input_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
+		this->grid.y = (fils_w + BLOCK_SIZE -1) / BLOCK_SIZE;
+		forward_propagation_GEMM<<<grid, block, smem>>>(this->n_kernels, cols_input_unroll, cols_w, d_w, d_input_unroll, a, d_bias, output);
 };
 
 
-void Convolutional::unroll(int C, int n, int K, float *X, float *X_unroll){
-    int H_out = n-K+1;
-    int W_out = n-K+1;
-    int w_base;
-    int W = H_out * W_out;
-
-    for(int c=0; c<C; c++)
-    {
-        w_base = c * (K*K);
-        for(int p=0; p<K; p++)
-            for(int q=0; q<K; q++)
-                for(int h=0; h<H_out; h++){
-                    int h_unroll = w_base + p*K + q;
-                    for(int w=0; w < W_out; w++){
-                        int w_unroll = h * W_out + w;
-                        X_unroll[h_unroll*W + w_unroll] = X[c*n*n + (h+p)*n + (w+q)];
-                    }
-                }
-
-    }
-
-}
-
-void Convolutional::unroll_1dim(int C, int H, int W, int K, float *X, float *X_unroll){
-
-    int H_out = H - K+1, W_out = W -K +1;
-    int cont = 0;
-
-    for(int i=0; i<C; i++)
-    {
-        for(int j=0; j<H_out; j++)
-        {
-            for(int k=0; k<W_out; k++)
-            {
-                // Guardar K*K elementos de "convolución"
-                for(int ky=0; ky < K; ky++)
-                    for(int kx=0; kx<K; kx++)
-                    {
 
 
-                        X_unroll[cont++] = X[i*H*W + (j+ky)*W + (k+kx)];
-                        //X_unroll[cont++] = X[i*H*W + (j+ky)*W + (k+kx)];
-                        //cout << X[i*H*W + (j+ky)*W + (k+kx)] << " ";
-                    }
-                //cout << endl;
-            }
-        }
-    }
-    //cout << " ---------- " << endl;
-}
-
-void Convolutional::unroll_3dim(int C, int H, int W, int K, float *X, float *X_unroll){
-
-        // Calculate the size of output
-        int H_out = H - K + 1;
-        int W_out = W - K + 1;
-
-        int outputIndex = 0;
-        for (int i = 0; i < H_out; ++i) {
-            for (int j = 0; j < W_out; ++j) {
-                int inputIndex = 0;
-                for (int d = 0; d < C; ++d) {
-                    for (int ki = 0; ki < K; ++ki) {
-                        for (int kj = 0; kj < K; ++kj) {
-                            X_unroll[outputIndex * (K * K * C) + inputIndex++] = X[d * (H * W) + (i + ki) * W + (j + kj)];
-                        }
-                    }
-                }
-                ++outputIndex;
-            }
-        }
-
-}
 
 
-void Convolutional::printMatrix_3D(float* matrix, int C, int n) {
-    for (int i = 0; i < C; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++)
-                cout << matrix[i*n*n +j*n +k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
-
-void Convolutional::printMatrix(float* matrix, int h, int w) {
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < w; j++)
-            cout << matrix[i * w + j] << " ";
-        cout << endl;
-    }
-}
-
-void Convolutional::matrizTranspuesta(float* matrix, int rows, int cols)
-{
-    // Allocate a new matrix to hold the transposed data
-    float* transposedMatrix = (float*)malloc(cols * rows * sizeof(float));
-
-    if (transposedMatrix == nullptr) {
-        cerr << "Memory allocation for transposed matrix failed" << endl;
-        exit(1);
-    }
-
-    // Transpose the matrix
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            // Copy the element from original matrix at position (i, j) to
-            // transposed matrix at position (j, i)
-            transposedMatrix[j * rows + i] = matrix[i * cols + j];
-        }
-    }
-
-    // Copy the transposed data back to the original matrix
-    // This requires the original matrix to be able to hold the new dimensions
-    // i.e., it must have space for 'cols * rows' elements
-    for (int i = 0; i < cols * rows; i++) {
-        matrix[i] = transposedMatrix[i];
-    }
-
-    // Free the allocated memory for the transposed matrix
-    free(transposedMatrix);
-}
-
-/*
-    @brief      Establece el valor de todos gradientes de la capa convolucional a 0.0
-    @grad_w     Gradientes respecto a pesos
-    @grad_bias  Gradientes respecto a sesgos
-    @return     Se modifica tantp @grad_w como @grad_bias
-*/
-void Convolutional::reset_gradients(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias)
-{
-    // Reset gradientes -------------------------------------------------------------------
-
-    // Reset gradiende del bias
-    for(int k=0; k<this->n_kernels; ++k)
-        grad_bias[k] = 0.0;
-
-    // Reset del gradiente de cada peso
-    for(int i=0; i<this->w.size(); ++i)
-        for(int j=0; j<this->w[0].size(); ++j)
-            for(int k=0; k<this->w[0][0].size(); ++k)
-                for(int l=0; l<this->w[0][0][0].size(); ++l)
-                    grad_w[i][j][k][l] = 0.0;
-
-}
 
 
-/*
-    @brief      Retropropagación de la capa convolucional
-    @input      Volumen 3D de entrada de la capa
-    @output     Volumen 3D de salida de la capa
-    @a          Valor de las neuronas antes de aplicar la función de activación
-    @grad_w     Gradientes respecto a pesos
-    @grad_bias  Gradientes respecto a sesgos
-    @pad        Nivel de padding que se aplicó anteriormente
-*/
-void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> output, const vector<vector<vector<float>>> &a, vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias)
-{
-    // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
-    vector<vector<vector<float>>> grad_input = input;
-    vector<vector<float>> conv_imagen;
-    vector<float> conv_fila;
 
-    // nº de kernels, nº de filas del kernel, nº de columnas del kernel a aplicar
-    int F = this->w.size(), K = this->w[0][0].size(), C = input.size();
-
-    // Inicializar input a 0
-    for(int i=0; i<input.size(); ++i)
-        for(int j=0; j<input[0].size(); ++j)
-            for(int k=0; k<input[0][0].size(); ++k)
-                grad_input[i][j][k] = 0.0;
-
-    // Realizar derivada Y_out/Y_in
-    for(int i=0; i<output.size(); ++i)
-        for(int j=0; j<output[0].size(); ++j)
-            for(int k=0; k<output[0][0].size(); ++k)
-                output[i][j][k] = output[i][j][k] * deriv_activationFunction(a[i][j][k]);
-
-    // Suponemos nº filas = nº columnas
-    int H = input[0].size(), W = input[0][0].size();
-    int H_out = H-K+1, W_out = W-K+1;
-
-    // Convolución entre output y pesos
-    for(int f=0; f<F; ++f)  // Por cada filtro f
-    {
-        // Gradiente respecto a entrada
-        for(int i=0; i<H; ++i)
-            for(int j=0; j<W; ++j)
-                for(int c=0; c<C; ++c)  // Convolución entre salida y pesos invertidos
-                    for(int i_k=0; i_k<K; ++i_k)
-                        for(int j_k=0; j_k<K; ++j_k)
-                            if(i-i_k >= 0 && j-j_k >= 0 && i-i_k < H_out && j-j_k < W_out)
-                                grad_input[c][i][j] += output[f][i-i_k][j-j_k] * this->w[f][c][K -1 - i_k][K -1 - j_k];
-
-        // Gradiente respecto a pesos
-        for(int i=0; i<H_out; ++i)
-            for(int j=0; j<W_out; ++j)
-                for(int c=0; c<C; ++c)  // Convolución entre entrada y salida
-                    for(int i_k=0; i_k<this->kernel_fils; ++i_k)
-                        for(int j_k=0; j_k<this->kernel_cols; ++j_k)
-                            grad_w[f][c][i_k][j_k] += input[c][i + i_k][j + j_k] * output[f][i][j];
-    }
-
-
-    // Gradiente respecto a entrada
-    for(int i=0; i<input.size(); ++i)
-        for(int j=0; j<input[0].size(); ++j)
-            for(int k=0; k<input[0][0].size(); ++k)
-                input[i][j][k] = grad_input[i][j][k];
-
-    // Calcular el gradiente del bias
-    for(int i=0; i<output.size(); ++i)
-        for(int j=0; j<output[0].size(); ++j)
-            for(int k=0; k<output[0][0].size(); ++k)
-                grad_bias[i] += output[i][j][k];
-};
 
 
 
@@ -1020,104 +843,63 @@ void Convolutional::aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, i
     @grad_bias  Gradientes respecto a sesgos
     @pad        Nivel de padding que se aplicó anteriormente
 */
-void Convolutional::backPropagationGEMM(float *input, float *output, float *a, float *grad_w, float *grad_bias)
+void Convolutional::backPropagation_vectores_externos(float *input, float *output, float *a, float *grad_w, float *grad_bias)
 {
-    // https://towardsdatascience.com/convolutional-neural-networks-explained-9cc5188c4939
-    // Realizar derivada Y_out/Y_in
-    int pos;
-    for(int i=0; i<this->n_kernels; ++i)
-        for(int j=0; j<H_out; ++j)
-            for(int k=0; k<W_out; ++k)
-            {
-                pos = i*H_out*W_out + j*W_out + k;
-                output[pos] = output[pos] * deriv_activationFunction(a[pos]);
-            }
+		grid.x = (H_out  + BLOCK_SIZE -1) / BLOCK_SIZE;
+		grid.y = (W_out  + BLOCK_SIZE -1) / BLOCK_SIZE;
+		deriv_activ_func_output<<<grid, block>>>(n_kernels, H_out, W_out, output, a);
 
-    for(int i=0; i<this->n_kernels; ++i)
-        for(int j=0; j<H_out; ++j)
-            for(int k=0; k<W_out; ++k)
-                output_pad[i*H_out_pad*W_out_pad + j*W_out_pad + k] = output[i*H_out*W_out + j*W_out + k];
+		grid.x = (H_out_pad  + BLOCK_SIZE -1) / BLOCK_SIZE;
+		grid.y = (W_out_pad  + BLOCK_SIZE -1) / BLOCK_SIZE;
+		centrar<<<grid, block>>>(n_kernels, H_out, W_out, H_out_pad, W_out_pad, output, d_output_centrado);
+		aplicar_padding_gpu<<<grid, block>>>(this->n_kernels, H_out_pad, W_out_pad, d_output_centrado, d_output_pad, pad);
+		unroll_3dim_gpu<<<grid, block>>>(n_kernels, H_out_pad, W_out_pad, kernel_fils, d_output_pad, d_output_unroll);		// "Desenrrollar" volumen de salida
 
-    aplicar_padding_ptr(output_pad, this->n_kernels, H_out_pad, W_out_pad, pad);
+		// Transpuesta del volumen de salida desenrrollado
+		grid.x = (cols_output_unroll + BLOCK_SIZE -1) / BLOCK_SIZE;
+		grid.y = (fils_output_unroll + BLOCK_SIZE -1) / BLOCK_SIZE;
+		matrizTranspuesta_conv<<<grid, block>>>(d_output_unroll, d_output_unroll_T, cols_output_unroll, fils_output_unroll);
 
-    // "Desenrrollar" imágenes
-    unroll_3dim(n_kernels, H_out_pad, W_out_pad, kernel_fils, output_pad, h_output_unroll);
-    unroll_1dim(C, H, W, H_out, input, h_input_back_unroll);
+		// "Desenrrollar" volumen de entrada
+		grid.x = (H + BLOCK_SIZE -1) / BLOCK_SIZE;
+		grid.y = (W + BLOCK_SIZE -1) / BLOCK_SIZE;
+		unroll_1dim_gpu<<<grid, block>>>(C, H, W, H_out, input, d_input_back_unroll);
 
-    matrizTranspuesta(h_input_back_unroll, kernel_fils*kernel_cols*C, H_out*W_out);
-    matrizTranspuesta(h_output_unroll, cols_output_unroll, fils_output_unroll);
+		// Transpuesta del volumen de entrada desenrrollado
+		grid.x = (kernel_fils*kernel_cols*C + BLOCK_SIZE -1) / BLOCK_SIZE;
+		grid.y = (H_out*W_out + BLOCK_SIZE -1) / BLOCK_SIZE;
+		matrizTranspuesta_conv<<<grid, block>>>(d_input_back_unroll, d_input_back_unroll_T, kernel_fils*kernel_cols*C, H_out*W_out);
 
-    // Concatenar los pesos de todos los kernels para una misma capa de profundidad C
-    for(int j = 0; j < C; j++)
-        for(int i = 0; i < this->n_kernels; i++)
-            for(int kx = kernel_fils-1; kx >= 0; kx--)
-                for(int ky = kernel_cols-1; ky >=0; ky--)
-                    h_matriz_pesos[j*this->n_kernels*kernel_fils*kernel_cols + i*kernel_fils*kernel_cols + kx*kernel_cols + ky] = this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + kx*kernel_cols + ky];
-
-    // Copiar datos de CPU a GPU
-    cudaMemcpy(d_matriz_pesos, h_matriz_pesos, bytes_matriz_pesos, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_output_unroll, h_output_unroll, bytes_output_unroll, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_input_back_unroll, h_input_back_unroll, bytes_input_back_unroll, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_output, output, n_kernels*H_out*W_out * sizeof(float), cudaMemcpyHostToDevice);
+		// Desenrrollar la matriz de pesos
+		grid.x = (this->n_kernels + BLOCK_SIZE -1) / BLOCK_SIZE;
+		grid.y = (C + BLOCK_SIZE -1) / BLOCK_SIZE;
+		unroll_matriz_pesos<<<grid, block>>>(C, this->n_kernels, kernel_fils, d_w, d_matriz_pesos);
 
     // Multiplicación de matrices
-    multiplicarMatricesGPU<<<grid_grad_w, block, smem>>>(this->n_kernels, cols_input_back_unroll, H_out * W_out, d_output, d_input_back_unroll, d_grad_w);    // Gradiente respecto a pesos
-    multiplicarMatricesGPU<<<grid_grad_input, block, smem>>>(fils_matriz_pesos, cols_output_unroll, cols_matriz_pesos, d_matriz_pesos, d_output_unroll, d_input);  // Gradiente respecto a entrada
+		this->grid.x = (cols_input_back_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
+		this->grid.y = (this->n_kernels + BLOCK_SIZE -1) / BLOCK_SIZE;
+    multiplicarMatricesGPU_calcular_grad_w<<<grid, block, smem>>>(this->n_kernels, cols_input_back_unroll, H_out * W_out, output, d_input_back_unroll_T, grad_w);    // Gradiente respecto a pesos
 
-    // Paso de GPU a CPU
-    cudaMemcpy(grad_w_it, d_grad_w, this->n_kernels*C*kernel_fils*kernel_cols * sizeof(float), cudaMemcpyDeviceToHost);
-    cudaMemcpy(input, d_input, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
+		this->grid.x = (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
+    this->grid.y = (C + BLOCK_SIZE -1) / BLOCK_SIZE;
+		multiplicarMatricesGPU<<<grid, block, smem>>>(fils_matriz_pesos, cols_output_unroll, cols_matriz_pesos, d_matriz_pesos, d_output_unroll_T, input);  // Gradiente respecto a entrada
 
-    // Sumar gradiente respecto a pesos
-    for(int i=0; i<this->n_kernels; i++)
-        for(int j=0; j<C; j++)
-            for(int kx=0; kx<kernel_fils; kx++)
-                for(int ky=0; ky<kernel_cols; ky++)
-                    grad_w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + kx*kernel_cols + ky] += grad_w_it[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + kx*kernel_cols + ky];
+		// Gradiente respecto a cada sesgo
+		grid.x = (H_out*W_out + BLOCK_SIZE -1) / BLOCK_SIZE;
+		grid.y = 1;
 
-    // Calcular el gradiente del bias
-    for(int i=0; i<n_kernels; i++)
-        for(int j=0; j<H_out; j++)
-            for(int k=0; k<W_out; k++)
-                grad_bias[i] += output[i*H_out*W_out + j*W_out + k];
+		for(int i=0; i<this->n_kernels; i++)
+		{
+				reduce_suma<<<grid, block_1D, smem_1D>>>(output + i*H_out*W_out, d_sum_local, H_out*W_out);
+				acumular_grad_bias<<<grid, block_1D>>>(d_sum_local, grad_bias, i);
+		}
 };
 
 
-void Convolutional::printMatrix_4D(float* matrix, int F, int C, int n) {
-    for (int f = 0; f < F; f++) {
-        for (int i = 0; i < C; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < n; k++)
-                    cout << matrix[f*C*n*n + i*n*n +j*n +k] << " ";
-                cout << endl;
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
 
-void Convolutional::multiplicarMatrices(float* m1, int rows1, int cols1, float* m2, int cols2, float* result) {
-    for (int i = 0; i < rows1; i++)
-        for (int j = 0; j < cols2; j++) {
-            result[i * cols2 + j] = 0.0f;
 
-            for (int k = 0; k < cols1; k++)
-                result[i * cols2 + j] += m1[i * cols1 + k] * m2[k * cols2 + j];
 
-        }
-}
 
-void Convolutional::printMatrix_vector(const vector<vector<vector<float>>> &X) {
-    for (int i = 0; i < X.size(); i++) {
-        for (int j = 0; j < X[i].size(); j++) {
-            for (int k = 0; k < X[i][j].size(); k++)
-                cout << X[i][j][k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
 
 
 /*
@@ -1125,65 +907,25 @@ void Convolutional::printMatrix_vector(const vector<vector<vector<float>>> &X) {
     @clip_value     Valor a emplear para realizar el "clip" o escalado
     @return         Se actualizan los valores de w (pesos de la capa)
 */
-void Convolutional::escalar_pesos_ptr(float clip_value)
+void Convolutional::escalar_pesos_vectores_externos(float clip_value)
 {
-    // Calculate the maximum and minimum values of weights
-    float max = this->w_ptr[0], min = this->w_ptr[0];
+		int n_pesos = n_kernels * C * kernel_fils * kernel_cols;
+		grid.x = (n_pesos + block_1D.x -1) / block_1D.x;
+		grid.y = 1;
 
-    for(int i=0; i<n_kernels; ++i)
-        for(int j=0; j<C; ++j)
-            for(int k=0; k<kernel_fils; ++k)
-                for(int p=0; p<kernel_cols; ++p)
-                {
-                    if(max < this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ])
-                        max = this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ];
+		float *d_max, *d_min;
+		cudaMalloc((void **) &d_max, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float));
+		cudaMalloc((void **) &d_min, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float));
 
-                    if(min > this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ])
-                        min = this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ];
-                }
 
-    // Perform gradient clipping
-    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
-    for(int i=0; i<n_kernels; ++i)
-        for(int j=0; j<C; ++j)
-            for(int k=0; k<kernel_fils; ++k)
-                for(int p=0; p<kernel_cols; ++p)
-                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = std::max(std::min(this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] * scaling_factor, clip_value), -clip_value);
+		reduceMax_conv<<<grid, block_1D, smem_1D>>>(d_w, d_max, n_pesos);
+		reduceMin_conv<<<grid, block_1D, smem_1D>>>(d_w, d_min, n_pesos);
+		min_max_conv<<<grid, block_1D>>>(d_max, d_min, grid.x);
+		kernel_escalar_pesos_conv<<<grid, block_1D>>>(d_w, n_pesos, d_max, d_min, clip_value);
 
-		cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
+
+		cudaFree(d_max); cudaFree(d_min);
 }
-
-/*
-    @brief          Escalar los pesos para evitar que los gradientes "exploten"
-    @clip_value     Valor a emplear para realizar el "clip" o escalado
-    @return         Se actualizan los valores de w (pesos de la capa)
-*/
-void Convolutional::escalar_pesos(float clip_value)
-{
-    // Calculate the maximum and minimum values of weights
-    float max = this->w[0][0][0][0], min = this->w[0][0][0][0];
-
-    for(int i=0; i<this->n_kernels; i++)
-        for(int j=0; j<this->C; j++)
-            for(int k=0; k<this->H; k++)
-                for(int l=0; l<this->W; l++)
-                {
-                    if(max < this->w_ptr[i*C*H*W + j*H*W + k*W + l])
-                        max = this->w[i][j][k][l];
-
-                    if(min > this->w_ptr[i*C*H*W + j*H*W + k*W + l])
-                        min = this->w_ptr[i*C*H*W + j*H*W + k*W + l];
-                }
-
-    // Perform gradient clipping
-    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
-    for(int i=0; i<this->n_kernels; i++)
-        for(int j=0; j<this->C; j++)
-            for(int k=0; k<this->H; k++)
-                for(int l=0; l<this->W; l++)
-                    this->w_ptr[i*C*H*W + j*H*W + k*W + l] = std::max(std::min(this->w_ptr[i*C*H*W + j*H*W + k*W + l] * scaling_factor, clip_value), -clip_value);
-}
-
 
 /*
     @brief          Actualizar los pesos y sesgos de la capa
@@ -1191,43 +933,16 @@ void Convolutional::escalar_pesos(float clip_value)
     @grad_b         Gradiente de cada sesgo de la capa
     @return         Se actualizar los valores de w y bias (pesos y sesgos de la capa)
 */
-void Convolutional::actualizar_grads_ptr(float *grad_w, float *grad_bias)
+void Convolutional::actualizar_grads_vectores_externos(float *grad_w, float *grad_bias, int mini_batch)
 {
-
-    // Actualizar pesos
-    for(int i=0; i<n_kernels; ++i)
-        for(int j=0; j<C; ++j)
-            for(int k=0; k<kernel_fils; ++k)
-                for(int p=0; p<kernel_cols; ++p)
-                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p] -= this->lr * grad_w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p];
+		grid.x = (C  + BLOCK_SIZE -1) / BLOCK_SIZE;
+		grid.y = (n_kernels  + BLOCK_SIZE -1) / BLOCK_SIZE;
+		kernel_actualizar_pesos<<<grid, block>>>(n_kernels, C, kernel_fils, d_w, grad_w, lr, mini_batch);
 
 		// Actualizar bias
     for(int i=0; i<this->n_kernels; i++)
 				this->bias_ptr[i] -= this->lr * grad_bias[i];
 }
-
-
-/*
-    @brief          Actualizar los pesos y sesgos de la capa
-    @grad_w         Gradiente de cada peso de la capa
-    @grad_b         Gradiente de cada sesgo de la capa
-    @return         Se actualizar los valores de w y bias (pesos y sesgos de la capa)
-*/
-void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad_w, vector<float> &grad_bias)
-{
-    // Actualizar pesos
-    for(int j=0; j<this->w.size(); j++)
-        for(int k=0; k<this->w[j].size(); k++)
-            for(int p=0; p<this->w[j][k].size(); p++)
-                for(int l=0; l<this->w[j][k][p].size(); l++)
-                    this->w[j][k][p][l] -= this->lr * grad_w[j][k][p][l];
-
-    // Actualizar bias
-    for(int i=0; i<this->bias.size(); i++)
-        this->bias[i] -= this->lr * grad_bias[i];
-
-}
-
 
 
 // https://towardsdatascience.com/forward-and-backward-propagation-in-convolutional-neural-networks-64365925fdfa

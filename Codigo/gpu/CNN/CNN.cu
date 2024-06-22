@@ -141,14 +141,6 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     int tam_img_max = max_C*max_H*max_W;
     //int tam_img_max = max_C*max_H*max_W;
 
-    this->img_in = (float *)malloc(tam_img_max * sizeof(float));
-    this->img_out = (float *)malloc(tam_img_max * sizeof(float));
-    this->img_in_copy = (float *)malloc(tam_img_max * sizeof(float));
-    this->conv_a = (float *)malloc(tam_img_max * sizeof(float));
-    this->a_ptr = (float *)malloc(this->fully->get_n_neuronas() * sizeof(float));
-    this->grad_a_ptr = (float *)malloc(this->fully->get_n_neuronas() * sizeof(float));
-    this->z_ptr = (float *)malloc(this->fully->get_n_neuronas() * sizeof(float));
-
     // Reserva de memoria en device
     cudaMalloc((void **) &d_img_in, tam_img_max * sizeof(float));
     cudaMalloc((void **) &d_img_in_copy, tam_img_max * sizeof(float));
@@ -249,8 +241,6 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
     this->train_labels = (float *)malloc(n_imagenes*n_clases * sizeof(float));
 
     int tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out();
-    this->flat_outs = (float *)malloc(this->n_imagenes* tam_flat_out * sizeof(float));
-    this->flat_outs_T = (float *)malloc(n_imagenes* tam_flat_out * sizeof(float));
 
     this->flat_outs_gpu = (float *)malloc(this->n_imagenes* tam_flat_out * sizeof(float));
 
@@ -439,14 +429,8 @@ void CNN::train(int epocas, int mini_batch)
     }
 
 
-    float *grad_x_fully = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float)), // Capa totalmente conectada
-          *flat_outs_batch = (float *)malloc(mini_batch* tam_flat_out * sizeof(float)),                   // Capa de aplanado
-          *plms_outs = (float *)malloc(mini_batch * tam_out_pools * sizeof(float)),                 // Capa de agrupación máxima
-          *plms_in_copys = (float *)malloc(mini_batch * tam_in_pools* sizeof(float)),
-          *conv_grads_w = (float *)malloc(tam_kernels_conv * sizeof(float)),                        // Capa convolucional
-          *conv_grads_bias = (float *)malloc(n_bias_conv * sizeof(float)),
-          *convs_outs = (float *)malloc(mini_batch * tam_out_convs * sizeof(float)),
-          *conv_a = (float *)malloc(mini_batch * tam_out_convs * sizeof(float));
+    float *conv_grads_w = (float *)malloc(tam_kernels_conv * sizeof(float)),                        // Capa convolucional
+          *conv_grads_bias = (float *)malloc(n_bias_conv * sizeof(float));
 
     float *d_grad_x_fully, *d_flat_outs_batch, *d_plms_outs, *d_plms_in_copys, *d_conv_grads_w, *d_conv_grads_bias, *d_convs_outs, *d_conv_a;
     cudaMalloc((void **) &d_grad_x_fully, mini_batch* this->fully->get_capas()[0] * sizeof(float));
@@ -458,17 +442,8 @@ void CNN::train(int epocas, int mini_batch)
     cudaMalloc((void **) &d_convs_outs, mini_batch * tam_out_convs * sizeof(float));
     cudaMalloc((void **) &d_conv_a, mini_batch * tam_out_convs * sizeof(float));
 
-    float *grad_x_fully_gpu2 = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float));
 
 
-    float *img_train = nullptr;
-    float *img_conv_out = nullptr;
-    float *img_conv_a = nullptr;
-    float *img_plms_out = nullptr;
-    float *img_plms_in_copy = nullptr;
-    float *img_flat_out = nullptr;
-    float *img_grad_x_fully = nullptr;
-    float *img_grad_w_conv = nullptr;
     float *img_grad_b_conv = nullptr;
 
     float *d_img_train = nullptr;
@@ -482,13 +457,16 @@ void CNN::train(int epocas, int mini_batch)
     float *d_img_grad_b_conv = nullptr;
 
     float *y_batch = (float *)malloc(mini_batch*n_clases * sizeof(float)),
-          *flat_outs_batch_T = (float *)malloc(mini_batch* tam_flat_out * sizeof(float)),
           *grad_x_fully_gpu = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float));
 
     float *d_y_batch, *d_flat_outs_batch_T, *d_grad_x_fully_gpu;
     cudaMalloc((void **) &d_y_batch, mini_batch*n_clases * sizeof(float));
     cudaMalloc((void **) &d_flat_outs_batch_T, mini_batch* tam_flat_out * sizeof(float));
     cudaMalloc((void **) &d_grad_x_fully_gpu, mini_batch* this->fully->get_capas()[0] * sizeof(float));
+
+    float * prueba = (float *)malloc(4*tam_kernels_conv * sizeof(float));
+    float * d_prueba;
+    cudaMalloc((void **) &d_prueba, 32*32*32*3 * sizeof(float));
 
 
 
@@ -544,22 +522,7 @@ void CNN::train(int epocas, int mini_batch)
                     y_batch[i_*n_clases + j] = train_labels[batch[i_]*n_clases + j];
 
             for(int img=0; img<tam_batches[i]; ++img)
-                for(int j=0; j<this->n_capas_conv; ++j)
-                {
-                    pad_sig = 0;    // Padding de la siguiente capa convolucional
-                    if(this->n_capas_conv > j+1)
-                        pad_sig = this->padding[j+1];
-
-                    img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[j];
-                    padding_interno_ptr(img_plms_out, this->plms[j].get_C(), this->plms[j].get_H_out(), this->plms[j].get_W_out(), pad_sig);
-                }
-
-
-            for(int img=0; img<tam_batches[i]; ++img)
             {
-
-                // ----------------------------------------------------------------
-                // ----------------------------------------------------------------
                 cudaMemcpy(this->d_img_in, this->train_imgs + tam_ini*batch[img], tam_ini * sizeof(float), cudaMemcpyHostToDevice);
                 d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[0];
                 d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[0];
@@ -587,95 +550,20 @@ void CNN::train(int epocas, int mini_batch)
                 // Capa flatten
                 d_img_flat_out = d_flat_outs_batch + img*tam_flat_out;
                 cudaMemcpy(d_img_flat_out, d_img_plms_out, tam_flat_out * sizeof(float), cudaMemcpyDeviceToDevice);
-                // ----------------------------------------------------------------
-                // ----------------------------------------------------------------
-
-                // Primera capa convolucional y maxpool -----------------------
-                img_train = this->train_imgs + tam_ini*batch[img];
-                img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[0];
-                img_conv_a = conv_a + img*tam_out_convs + i_conv_out[0];
-                this->convs[0].forwardPropagationGEMM(img_train, img_conv_out, img_conv_a);
-
-                img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[0];
-                img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[0];
-                this->plms[0].forwardPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
-
-                // Resto de capas convolucionales y maxpool ----------------------------
-                for(int j=1; j<this->n_capas_conv; ++j)
-                {
-
-                    // Capa convolucional
-                    img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[j-1];
-                    img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[j];
-                    img_conv_a = conv_a + img*tam_out_convs + i_conv_out[j];
-                    this->convs[j].forwardPropagationGEMM(img_plms_out, img_conv_out, img_conv_a);
-
-                    // Capa MaxPool
-                    img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[j];
-                    img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[j];
-                    this->plms[j].forwardPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
-                }
-
-
-                // Copiar salida de último MaxPool en flatten
-                img_flat_out = flat_outs_batch + img*tam_flat_out;
-                C = this->plms[this->n_capas_conv-1].get_C();
-                H_out = this->plms[this->n_capas_conv-1].get_H_out();
-                W_out = this->plms[this->n_capas_conv-1].get_W_out();
-
-                for(int i_=0; i_<C; i_++)
-                    for(int j_=0; j_<H_out; j_++)
-                        for(int k_=0; k_<W_out; k_++)
-                            img_flat_out[i_*H_out*W_out + j_*W_out + k_] = img_plms_out[i_*H_out*W_out + j_*W_out + k_];
             }
 
-
-            cudaMemcpy(d_y_batch, y_batch, tam_batches[i]*n_clases * sizeof(float), cudaMemcpyHostToDevice);
-            transpuesta_flat_outs<<<grid_1D, block_1D>>>(d_flat_outs_batch, d_flat_outs_T, tam_batches[i], tam_flat_out);
-            this->fully->set_train_gpu(d_flat_outs_T, d_y_batch, tam_batches[i]);
-            this->fully->train_vectores_externos(d_grad_x_fully);
-            //this->fully->actualizar_parametros_gpu();
-            //this->fully->escalar_pesos_GEMM(2);
-
-
-            cudaMemcpy(grad_x_fully_gpu2, d_grad_x_fully, tam_batches[i]* this->fully->get_capas()[0] * sizeof(float), cudaMemcpyDeviceToHost);
-            /*
-            cout << "vectores externos" << endl;
-            for(int i_=0; i_<40; i_++)
-                cout << grad_x_fully[i_] << " ";
-            cout << endl;
-
-            for(int i_=0; i_<40; i_++)
-                grad_x_fully[i_] = 0.0;
-            */
             // ---------------------------------------------------------------------------------------------------------------------------
             // Capa totalmente conectada
             // ---------------------------------------------------------------------------------------------------------------------------
             // Realizar propagación hacia delante y hacia detrás en la capa totalmente conectada
-
-            this->fully->matrizTranspuesta(flat_outs_batch, flat_outs_batch_T, tam_batches[i], tam_flat_out);
-            this->fully->set_train(flat_outs_batch_T, y_batch, tam_batches[i]);
-            this->fully->trainGEMM(grad_x_fully);
+            cudaMemcpy(d_y_batch, y_batch, tam_batches[i]*n_clases * sizeof(float), cudaMemcpyHostToDevice);
+            transpuesta_flat_outs<<<grid_1D, block_1D>>>(d_flat_outs_batch, d_flat_outs_T, tam_batches[i], tam_flat_out);
+            this->fully->set_train_gpu(d_flat_outs_T, d_y_batch, tam_batches[i]);
+            this->fully->train_vectores_externos(d_grad_x_fully);
             this->fully->actualizar_parametros_gpu();
             this->fully->escalar_pesos_GEMM(2);
+            //cudaMemcpy(grad_x_fully, d_grad_x_fully, tam_batches[i]* this->fully->get_capas()[0] * sizeof(float), cudaMemcpyDeviceToHost);
 
-            for(int i_=0; i_<tam_batches[i]* this->fully->get_capas()[0]; i_++)
-                if(grad_x_fully_gpu2[i_] != grad_x_fully[i_])
-                {
-                  cout << grad_x_fully_gpu2[i_]  << " vs " << grad_x_fully[i_] << endl;
-
-                }
-
-
-            /*
-            cout << "gpu" << endl;
-            for(int i_=0; i_<40; i_++)
-                cout << grad_x_fully[i_] << " ";
-            cout << endl;
-
-            int k3;
-            cin >> k3;
-            */
             // ---------------------------------------------------------------------------------------------------------------------------
             // Capas convolucionales, de agrupación y aplanado
             // ---------------------------------------------------------------------------------------------------------------------------
@@ -690,96 +578,72 @@ void CNN::train(int epocas, int mini_batch)
             // Inicializar gradientes a 0
             for(int i_=0; i_<tam_kernels_conv; i_++)
                 conv_grads_w[i_] = 0.0;
+            cudaMemcpy(d_conv_grads_w, conv_grads_w, tam_kernels_conv * sizeof(float), cudaMemcpyHostToDevice);
 
             for(int i_=0; i_<n_bias_conv; i_++)
                 conv_grads_bias[i_] = 0.0;
+            cudaMemcpy(d_conv_grads_bias, conv_grads_bias, n_bias_conv * sizeof(float), cudaMemcpyHostToDevice);
+
 
             // Cálculo de gradientes respecto a cada parámetro
             for(int img=0; img<tam_batches[i]; ++img)
             {
-
-                // Realizar una copia de la imagen "img" de entrenamiento
-                //img_in = this->train_imgs + tam_ini*batch[img];
-                for(int i_=0; i_<C_ini; i_++)
-                    for(int j_=0; j_<H_ini; j_++)
-                        for(int k_=0; k_<W_ini; k_++)
-                            this->img_in[i_*H_ini*W_ini + j_*W_ini + k_] = this->train_imgs[i_*H_ini*W_ini + j_*W_ini + k_ + tam_ini*batch[img]];
-
                 // Última capa, su output no tiene padding
                 int i_c=this->n_capas_conv-1;
 
-                // Usar grad_x_fully[img] en vez de plms_outs[img][i_c] en la última capa MaxPool
-                img_grad_x_fully = grad_x_fully + img*this->fully->get_capas()[0];
+                cudaMemcpy(this->d_img_in, this->train_imgs + tam_ini*batch[img], tam_ini * sizeof(float), cudaMemcpyHostToDevice);
 
-                C = this->plms[this->n_capas_conv-1].get_C();
-                H_out = this->plms[this->n_capas_conv-1].get_H_out();
-                W_out = this->plms[this->n_capas_conv-1].get_W_out();
+                // Usar grad_x_fully[img] en vez de plms_outs[img][i_c] en la última capa MaxPool
+                d_img_grad_x_fully = d_grad_x_fully + img*this->fully->get_capas()[0];
 
                 // Capa MaxPool
-                img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[i_c];
-                img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[i_c];
-                this->plms[i_c].backPropagationGPU(img_conv_out, img_grad_x_fully, img_plms_in_copy);
-
+                d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[i_c];
+                d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[i_c];
+                this->plms[i_c].backPropagation_vectores_externos(d_img_conv_out, d_img_grad_x_fully, d_img_plms_in_copy);
 
                 // Capa convolucional
-                img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[i_c-1];
-                img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[i_c];
-                img_conv_a = conv_a + img*tam_out_convs + i_conv_out[i_c];
-                img_grad_w_conv = conv_grads_w + i_w[i_c];
-                img_grad_b_conv = conv_grads_bias + i_b[i_c];
-
+                d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[i_c-1];
+                d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[i_c];
+                d_img_grad_w_conv = d_conv_grads_w + i_w[i_c];
+                d_img_grad_b_conv = d_conv_grads_bias + i_b[i_c];
 
                 if(this->n_capas_conv > 1)
-                    this->convs[i_c].backPropagationGEMM(img_plms_out, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
+                    this->convs[i_c].backPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
                 else
-                    this->convs[i_c].backPropagationGEMM(img_in, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
-
-                int n_kernels = this->convs[i_c].get_n_kernels(), K = this->convs[i_c].get_kernel_fils();
-                C = this->convs[i_c].get_C();
+                    this->convs[i_c].backPropagation_vectores_externos(this->d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
 
                 for(int j=this->n_capas_conv-2; j>=1; j--)
                 {
                     // Capa MaxPool
-                    img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[j];
-                    img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[j];
-                    img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[j];
-                    this->plms[j].backPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
+                    d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[j];
+                    d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[j];
+                    d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[j];
+                    this->plms[j].backPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
 
                     // Capa convolucional
-                    img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[j-1];
-                    img_conv_a = conv_a + img*tam_out_convs + i_conv_out[j];
-                    img_grad_w_conv = conv_grads_w + i_w[j];
-                    img_grad_b_conv = conv_grads_bias + i_b[j];
-                    this->convs[j].backPropagationGEMM(img_plms_out, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
+                    d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[j-1];
+                    d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[j];
+                    d_img_grad_w_conv = d_conv_grads_w + i_w[j];
+                    d_img_grad_b_conv = d_conv_grads_bias + i_b[j];
+                    this->convs[j].backPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
                 }
 
 
                 if(this->n_capas_conv >1)
                 {
-                    img_conv_out = convs_outs + img*tam_out_convs + i_conv_out[0];
-                    img_plms_out = plms_outs + img*tam_out_pools + i_plm_out[0];
-                    img_plms_in_copy = plms_in_copys + img*tam_in_pools + i_plm_in[0];
-                    this->plms[0].backPropagationGPU(img_conv_out, img_plms_out, img_plms_in_copy);
+                    d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[0];
+                    d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[0];
+                    d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[0];
+                    this->plms[0].backPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
 
-                    img_conv_a = conv_a + img*tam_out_convs + i_conv_out[0];
-                    img_grad_w_conv = conv_grads_w + i_w[0];
-                    img_grad_b_conv = conv_grads_bias + i_b[0];
-                    this->convs[0].backPropagationGEMM(img_in, img_conv_out, img_conv_a, img_grad_w_conv, img_grad_b_conv);
-
-                    //cout << "Grad Pesos Conv b: " << 0 << endl;
-                    n_kernels = this->convs[0].get_n_kernels(), K = this->convs[0].get_kernel_fils();
-                    C = this->convs[0].get_C();
+                    d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[0];
+                    d_img_grad_w_conv = d_conv_grads_w + i_w[0];
+                    d_img_grad_b_conv = d_conv_grads_bias + i_b[0];
+                    this->convs[0].backPropagation_vectores_externos(d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
                 }
-
             }
+            cudaMemcpy(conv_grads_bias, d_conv_grads_bias, n_bias_conv * sizeof(float), cudaMemcpyDeviceToHost);
 
-            // ----------------------------------------------
-            // Pesos de las capas convolucionales
-            // ----------------------------------------------
-            // ----------------------------------------------
-            // Realizar la media de los gradientes respecto a cada parámetro
-            for(int i_=0; i_<tam_kernels_conv; i_++)
-                conv_grads_w[i_] /= tam_batches[i];
 
             // ----------------------------------------------
             // Bias o Sesgos de las capas convolucionales
@@ -794,14 +658,15 @@ void CNN::train(int epocas, int mini_batch)
             // Actualizar parámetros de capas convolucionales
             for(int j=0; j<this->n_capas_conv; ++j)
             {
-                img_grad_w_conv = conv_grads_w + i_w[j];
+                d_img_grad_w_conv = d_conv_grads_w + i_w[j];
                 img_grad_b_conv = conv_grads_bias + i_b[j];
-                this->convs[j].actualizar_grads_ptr(img_grad_w_conv, img_grad_b_conv);
+                this->convs[j].actualizar_grads_vectores_externos(d_img_grad_w_conv, img_grad_b_conv, tam_batches[i]);
             }
+
 
             // Actualizar parámetros de capas convolucionales
             for(int j=0; j<this->n_capas_conv; ++j)
-                this->convs[j].escalar_pesos_ptr(2);
+                this->convs[j].escalar_pesos_vectores_externos(2);
         }
 
         fin = high_resolution_clock::now();
@@ -820,8 +685,8 @@ void CNN::train(int epocas, int mini_batch)
 
 
     // Liberar memoria
-    free(grad_x_fully); free(flat_outs_batch); free(conv_grads_bias); free(convs_outs); free(plms_outs); free(conv_grads_w);
-    free(plms_in_copys); free(conv_a); free(indices); free(batch); free(tam_batches); free(y_batch);
+    free(conv_grads_bias); free(conv_grads_w);
+    free(indices); free(batch); free(tam_batches); free(y_batch);
 
     cudaFree(d_grad_x_fully); cudaFree(d_flat_outs_batch); cudaFree(d_plms_outs); cudaFree(d_plms_in_copys);
     cudaFree(d_conv_grads_w); cudaFree(d_conv_grads_bias); cudaFree(d_convs_outs); cudaFree(d_conv_a);
@@ -845,26 +710,6 @@ void CNN::mostrar_ptr(float *x, int C, int H, int W)
     cout << endl;
 }
 
-
-void CNN::prueba()
-{
-    int C_in = this->convs[0].get_C(), H_in = this->convs[0].get_H(), W_in = this->convs[0].get_W(),
-        C_out = this->convs[0].get_n_kernels(), H_out = this->convs[0].get_H_out(), W_out = this->convs[0].get_W_out();
-    float * input = (float *)malloc(C_in*H_in*W_in * sizeof(float)),
-          * output = (float *)malloc(C_out*H_out*W_out * sizeof(float)),
-          * output_a = (float *)malloc(C_out*H_out*W_out * sizeof(float));
-
-    Convolutional conv(this->convs[0].get_n_kernels(), this->convs[0].get_kernel_fils(), this->convs[0].get_kernel_cols(), C_in, H_in, W_in, 0.1);
-
-    checkCudaErrors(cudaGetLastError());
-    cout << "Entro\n";
-    this->convs[0].forwardPropagationGEMM(input, output, output_a);
-    //conv.forwardPropagationGEMM(input, output, output_a);
-    checkCudaErrors(cudaGetLastError());
-    cout << "Salgo\n";
-
-    free(input); free(output); free(output_a);
-}
 
 /*
     @brief  Evalúa el modelo sobre los datos de entrenamiento. Las medidas de evaluación son Accuracy y Entropía Cruzada

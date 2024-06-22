@@ -280,6 +280,12 @@ void PoolingMax::backPropagationGPU(float *input, float *output, float *input_co
     cudaMemcpy(input, d_input, bytes_input, cudaMemcpyDeviceToHost);
 };
 
+void PoolingMax::backPropagation_vectores_externos(float *input, float *output, float *input_copy)
+{
+    // Realizar MaxPool
+    maxpool_back<<<grid, block>>>(C, H, W, kernel_fils, input, input_copy, output, pad);
+};
+
 void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output)
 {
     int n_canales = this->C, n_veces_fils = this->H / kernel_fils, n_veces_cols = this->W / kernel_cols;

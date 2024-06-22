@@ -40,15 +40,6 @@ class CNN
         int *i_w = nullptr;
         int *i_b = nullptr;
 
-        float *img_in = nullptr;
-        float *img_out = nullptr;
-        float *img_in_copy = nullptr;
-        float *conv_a = nullptr;
-        float *a_ptr = nullptr;
-        float *grad_a_ptr = nullptr;
-        float *z_ptr = nullptr;
-        float *flat_outs = nullptr;
-        float *flat_outs_T = nullptr;
 
         // Punteros device -------------------------------
         float *flat_outs_gpu = nullptr;
@@ -64,8 +55,8 @@ class CNN
         // Constructor
         CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr, const int n_datos);
         ~CNN(){free(train_imgs); free(train_labels); free(padding); free(i_conv_out); free(i_conv_in); free(i_plm_out); free(i_plm_in); free(i_w);
-               free(i_b); free(img_in); free(img_out); free(img_in_copy); free(conv_a); free(a_ptr); free(z_ptr); free(flat_outs); free(grad_a_ptr);
-               cudaFree(d_img_in); cudaFree(d_img_in_copy); cudaFree(d_img_out); cudaFree(d_conv_a); cudaFree(d_flat_outs); cudaFree(d_flat_outs_T);
+               free(i_b);
+               cudaFree(d_img_in); cudaFree(d_img_in_copy); cudaFree(d_img_out); cudaFree(d_conv_a); cudaFree(d_flat_outs);
                cudaFree(d_train_labels);};
 
         // Mostrar arquitectura
@@ -89,7 +80,6 @@ class CNN
 
         // Debug
         void mostrar_ptr(float *x, int C, int H, int W);
-        void prueba();
         void mostrar_train_img(int n_img);
 };
 
