@@ -193,8 +193,7 @@ __global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, co
 
 		if(iy < M && ix < N)
 		{
-				result = sum;
-				//result = sum + bias[iy];
+				result = sum + bias[iy];
 				C[iy*N + ix] = result;
 
 				// ReLU
@@ -535,8 +534,6 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     for(int i=0; i<n_kernels; i++)
         this->bias_ptr[i] = 0.0;
 
-    // CPU -------------------
-    this->h_input_unroll = (float*)malloc(bytes_input_unroll);  // Volumen de entrada 'desenrrollado'
 
     // GPU -------------------------
     // Tamaño de bloque
@@ -569,10 +566,6 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     this->bytes_output_unroll = fils_output_unroll * cols_output_unroll * sizeof(float);
     this->bytes_matriz_pesos = fils_matriz_pesos * cols_matriz_pesos * sizeof(float);
     this->bytes_input_back_unroll = fils_input_unroll * cols_input_unroll * sizeof(float);
-
-    this->h_output_unroll = (float *)malloc(bytes_output_unroll);
-    this->h_matriz_pesos = (float *)malloc(bytes_matriz_pesos);
-    this->h_input_back_unroll = (float *)malloc(bytes_input_back_unroll);
 
     // Reserva de memoria en device
 		cudaMalloc((void **) &d_sum_local, (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE * sizeof(float));
@@ -635,9 +628,6 @@ void Convolutional::copiar(const Convolutional & conv)
     for(int i=0; i<n_kernels; i++)
         this->bias_ptr[i] = 0.0;
 
-    // CPU -------------------
-    this->h_input_unroll = (float*)malloc(bytes_input_unroll);  // Volumen de entrada 'desenrrollado'
-
     // GPU -------------------------
     // Tamaño de bloque
     this->block.x = BLOCK_SIZE;
@@ -666,10 +656,6 @@ void Convolutional::copiar(const Convolutional & conv)
     this->bytes_matriz_pesos = conv.bytes_matriz_pesos;
     this->bytes_input_back_unroll = conv.bytes_input_back_unroll;
 
-    this->h_output_unroll = (float *)malloc(bytes_output_unroll);
-    this->h_matriz_pesos = (float *)malloc(bytes_matriz_pesos);
-    this->h_input_back_unroll = (float *)malloc(bytes_input_back_unroll);
-
     // Reserva de memoria en device
 		cudaMalloc((void **) &d_sum_local, (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE * sizeof(float));
 		cudaMalloc((void **) &d_output_unroll_T, bytes_output_unroll);
@@ -689,14 +675,11 @@ void Convolutional::copiar(const Convolutional & conv)
 
 Convolutional::~Convolutional()
 {
-    if(h_input_unroll != nullptr)   // Si no se creó una instancia de la clase mediante constructor por defecto
-    {
-        free(h_input_unroll); free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll);
-        free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_w); cudaFree(d_output_unroll);
-        cudaFree(d_matriz_pesos); cudaFree(d_input_back_unroll);
-				cudaFree(d_bias); cudaFree(d_output_centrado); cudaFree(d_output_pad); cudaFree(d_input_back_unroll_T);
-				cudaFree(d_output_unroll_T); cudaFree(d_sum_local);
-    }
+    free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_w); cudaFree(d_output_unroll);
+    cudaFree(d_matriz_pesos); cudaFree(d_input_back_unroll);
+		cudaFree(d_bias); cudaFree(d_output_centrado); cudaFree(d_output_pad); cudaFree(d_input_back_unroll_T);
+		cudaFree(d_output_unroll_T); cudaFree(d_sum_local);
+
     cout << "Destructor: ";
     checkCudaErrors(cudaGetLastError());
 

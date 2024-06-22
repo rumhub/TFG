@@ -58,12 +58,6 @@ class Convolutional
         int bytes_output_pad;              // Espacio para la salida
         int bytes_w;              // Espacio para los pesos  como matriz 2D
 
-        // CPU -------------------
-        float *h_input_unroll = nullptr;        // Volumen de entrada 'desenrrollado'
-        float *h_output_unroll = nullptr;
-        float *h_matriz_pesos = nullptr;
-        float *h_input_back_unroll = nullptr;
-
         int fils_output_unroll;
         int cols_output_unroll;
         int fils_matriz_pesos;
