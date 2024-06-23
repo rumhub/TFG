@@ -465,15 +465,27 @@ __global__ void acumular_grad_bias(float *X, float *grad_bias, int i_kernel)
 }
 
 
-__global__ void kernel_actualizar_pesos(int n_kernels, int C, int K, float *w, float *grad_w, float lr, int mini_batch)
+__global__ void kernel_actualizar_parametros(int n_kernels, int C, int K, float *w, float *grad_w, float *bias, float *grad_bias, float lr, int mini_batch)
 {
   	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
         // tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
 
     if(iy < n_kernels && ix <C)
+		{
+				// Actualizar pesos
 				for(int k=0; k<K; ++k)
 						for(int p=0; p<K; ++p)
 								w[iy*C*K*K + ix*K*K + k*K + p] -= lr * (grad_w[iy*C*K*K + ix*K*K + k*K + p] / mini_batch);
+
+				// Actualizar bias
+				if(ix == 0)
+					bias[iy] -= lr * (grad_bias[iy] / mini_batch);
+
+
+		}
+
+
+
 }
 
 
@@ -522,17 +534,17 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     this->lr = lr;
 
     // Pesos
-    this->w_ptr = (float *)malloc(fils_w * cols_w * sizeof(float));
+    float *w_ptr = (float *)malloc(fils_w * cols_w * sizeof(float));
 
     // Inicializar pesos mediante Inicialización He
-    this->generar_pesos_ptr();
+    this->generar_pesos_ptr(w_ptr);
 
     // Bias
-    this->bias_ptr = (float *)malloc(this->n_kernels * sizeof(float));
+    float *bias_ptr = (float *)malloc(this->n_kernels * sizeof(float));
 
     // Un bias por filtro, https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
     for(int i=0; i<n_kernels; i++)
-        this->bias_ptr[i] = 0.0;
+        bias_ptr[i] = 0.0;
 
 
     // GPU -------------------------
@@ -576,8 +588,11 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     cudaMalloc((void **) &d_output_unroll, bytes_output_unroll);
     cudaMalloc((void **) &d_matriz_pesos, bytes_matriz_pesos);
     cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll);
-		cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
-		cudaMemcpy(d_bias, this->bias_ptr, this->n_kernels * sizeof(float), cudaMemcpyHostToDevice);
+		cudaMemcpy(d_w, w_ptr, bytes_w, cudaMemcpyHostToDevice);
+		cudaMemcpy(d_bias, bias_ptr, this->n_kernels * sizeof(float), cudaMemcpyHostToDevice);
+
+		free(bias_ptr);
+		free(w_ptr);
 };
 
 
@@ -616,17 +631,17 @@ void Convolutional::copiar(const Convolutional & conv)
     this->lr = conv.lr;
 
     // Pesos
-    this->w_ptr = (float *)malloc(fils_w * cols_w * sizeof(float));
+    float *w_ptr = (float *)malloc(fils_w * cols_w * sizeof(float));
 
     // Inicializar pesos mediante Inicialización He
-    this->generar_pesos_ptr();
+    this->generar_pesos_ptr(w_ptr);
 
     // Bias
-    this->bias_ptr = (float *)malloc(this->n_kernels * sizeof(float));
+    float *bias_ptr = (float *)malloc(this->n_kernels * sizeof(float));
 
     // Un bias por filtro, https://stanford.edu/~shervine/teaching/cs-230/cheatsheet-convolutional-neural-networks
     for(int i=0; i<n_kernels; i++)
-        this->bias_ptr[i] = 0.0;
+        bias_ptr[i] = 0.0;
 
     // GPU -------------------------
     // Tamaño de bloque
@@ -668,14 +683,18 @@ void Convolutional::copiar(const Convolutional & conv)
     cudaMalloc((void **) &d_output_unroll, bytes_output_unroll);
     cudaMalloc((void **) &d_matriz_pesos, bytes_matriz_pesos);
     cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll);
-		cudaMemcpy(d_w, this->w_ptr, bytes_w, cudaMemcpyHostToDevice);
-		cudaMemcpy(d_bias, this->bias_ptr, bytes_bias, cudaMemcpyHostToDevice);
+		cudaMemcpy(d_w, w_ptr, bytes_w, cudaMemcpyHostToDevice);
+		cudaMemcpy(d_bias, bias_ptr, bytes_bias, cudaMemcpyHostToDevice);
+
+
+		free(bias_ptr);
+		free(w_ptr);
 }
 
 
 Convolutional::~Convolutional()
 {
-    free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_w); cudaFree(d_output_unroll);
+    cudaFree(d_input_unroll); cudaFree(d_w); cudaFree(d_output_unroll);
     cudaFree(d_matriz_pesos); cudaFree(d_input_back_unroll);
 		cudaFree(d_bias); cudaFree(d_output_centrado); cudaFree(d_output_pad); cudaFree(d_input_back_unroll_T);
 		cudaFree(d_output_unroll_T); cudaFree(d_sum_local);
@@ -689,7 +708,7 @@ Convolutional::~Convolutional()
     @brief      Inicializa los pesos de la capa convolucional según la inicialización He
     @return     Se modifica w (los pesos de la capa)
 */
-void Convolutional::generar_pesos_ptr()
+void Convolutional::generar_pesos_ptr(float *w)
 {
     // Inicialización He
     random_device rd;
@@ -700,9 +719,7 @@ void Convolutional::generar_pesos_ptr()
         for(int j=0; j<C; ++j)
             for(int k=0; k<kernel_fils; ++k)
                 for(int p=0; p<kernel_cols; ++p)
-                    this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
-										//this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = 1;
-                    //this->w_ptr[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = (float) (i+j+k+p)/(n_kernels*C*kernel_fils*kernel_cols);
+                    w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
 }
 
 
@@ -920,11 +937,7 @@ void Convolutional::actualizar_grads_vectores_externos(float *grad_w, float *gra
 {
 		grid.x = (C  + BLOCK_SIZE -1) / BLOCK_SIZE;
 		grid.y = (n_kernels  + BLOCK_SIZE -1) / BLOCK_SIZE;
-		kernel_actualizar_pesos<<<grid, block>>>(n_kernels, C, kernel_fils, d_w, grad_w, lr, mini_batch);
-
-		// Actualizar bias
-    for(int i=0; i<this->n_kernels; i++)
-				this->bias_ptr[i] -= this->lr * grad_bias[i];
+		kernel_actualizar_parametros<<<grid, block>>>(n_kernels, C, kernel_fils, d_w, grad_w, d_bias, grad_bias, lr, mini_batch);
 }
 
 

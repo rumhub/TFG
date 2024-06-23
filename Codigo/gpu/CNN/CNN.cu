@@ -642,25 +642,14 @@ void CNN::train(int epocas, int mini_batch)
                     this->convs[0].backPropagation_vectores_externos(d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
                 }
             }
-            cudaMemcpy(conv_grads_bias, d_conv_grads_bias, n_bias_conv * sizeof(float), cudaMemcpyDeviceToHost);
-
-
-            // ----------------------------------------------
-            // Bias o Sesgos de las capas convolucionales
-            // ----------------------------------------------
-            // ----------------------------------------------
-            // Realizar la media
-            for(int i_=0; i_<n_bias_conv; i_++)
-                conv_grads_bias[i_] /= tam_batches[i];
-
 
             // Actualizar parámetros --------------------------------------------------------------------
             // Actualizar parámetros de capas convolucionales
             for(int j=0; j<this->n_capas_conv; ++j)
             {
                 d_img_grad_w_conv = d_conv_grads_w + i_w[j];
-                img_grad_b_conv = conv_grads_bias + i_b[j];
-                this->convs[j].actualizar_grads_vectores_externos(d_img_grad_w_conv, img_grad_b_conv, tam_batches[i]);
+                d_img_grad_b_conv = d_conv_grads_bias + i_b[j];
+                this->convs[j].actualizar_grads_vectores_externos(d_img_grad_w_conv, d_img_grad_b_conv, tam_batches[i]);
             }
 
 

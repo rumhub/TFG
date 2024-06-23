@@ -84,9 +84,6 @@ class Convolutional
         float *d_output_unroll_T = nullptr;
         float *d_sum_local = nullptr;
 
-
-        float *w_ptr = nullptr;
-        float *bias_ptr = nullptr;
         size_t smem;            // Memoria compartida requerida por el kernel
         size_t smem_1D;
         //float *d_max = nullptr;
@@ -98,7 +95,7 @@ class Convolutional
         Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr);
         void forwardPropagation_vectores_externos(float *input, float *output, float *a);
         void backPropagation_vectores_externos(float *input, float *output, float *a, float *grad_w, float *grad_bias);
-        void generar_pesos_ptr();
+        void generar_pesos_ptr(float *w);
         void actualizar_grads_vectores_externos(float *grad_w, float *grad_bias, int mini_batch);
         void escalar_pesos_vectores_externos(float clip_value);
         void aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad);
@@ -132,8 +129,6 @@ class Convolutional
         int get_kernel_fils(){return this->kernel_fils;};
         int get_kernel_cols(){return this->kernel_cols;};
         int get_n_kernels(){return this->n_kernels;};
-        float * get_pesos_ptr(){return this->w_ptr;};
-        float * get_bias_ptr(){return this->bias_ptr;};
         int get_H(){return this->H;};
         int get_W(){return this->W;};
         int get_C(){return this->C;};
