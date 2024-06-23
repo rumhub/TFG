@@ -209,27 +209,6 @@ void CNN::mostrar_arquitectura()
     cout << endl;
 }
 
-void CNN::mostrar_train_img(int n_img)
-{
-    int C = this->convs[0].get_C(),
-        H = this->convs[0].get_H(),
-        W = this->convs[0].get_W();
-    float *img_train = this->train_imgs + n_img*C*H*W;
-
-    cout << "\nImagen " << n_img << endl;
-    for(int j=0; j<C; j++)
-    {
-        for(int k=0; k<H; k++)
-        {
-            for(int p=0; p<W; p++)
-                cout << img_train[j*H*W + k*W + p] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
 
 void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, int W)
 {
@@ -237,7 +216,6 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
     H += 2*this->padding[0];
     W += 2*this->padding[0];
     this->n_imagenes = n_imgs * n_clases;
-    this->train_imgs = (float *)malloc(n_imagenes*C*H*W * sizeof(float));
     this->train_labels = (float *)malloc(n_imagenes*n_clases * sizeof(float));
 
     int tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out();
@@ -247,47 +225,17 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
     cudaMalloc((void **) &this->d_flat_outs, this->n_imagenes* tam_flat_out * sizeof(float));
     cudaMalloc((void **) &this->d_flat_outs_T, this->n_imagenes* tam_flat_out * sizeof(float));
     cudaMalloc((void **) &this->d_train_labels, this->n_imagenes* n_clases * sizeof(float));
+    cudaMalloc((void **) &this->d_train_imgs, n_imagenes*C*H*W * sizeof(float));
 
 
     if(this->n_clases != n_clases)
         cout << "\n\nError. Número de clases distinto al establecido previamente en la arquitectura de la red. " << this->n_clases << " != " << n_clases << endl << endl;
 
-    for(int i=0; i<n_imagenes*C*H*W; i++)
-        train_imgs[i] = x[i];
-
     for(int i=0; i<n_imagenes*n_clases; i++)
         train_labels[i] = y[i];
 
-    cudaMemcpy(d_train_labels, train_labels, this->n_imagenes* n_clases * sizeof(float), cudaMemcpyHostToDevice);
-
-    /*
-    // Mostrar imágenes
-    cout << "\nX\n";
-    for(int i=0; i<this->n_imagenes; i++)
-    {
-        for(int j=0; j<C; j++)
-        {
-            for(int k=0; k<H; k++)
-            {
-                for(int p=0; p<W; p++)
-                    cout << x[i*C*H*W + j*H*W + k*W + p] << " ";
-                cout << endl;
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "\nY\n";
-    for(int i=0; i<this->n_imagenes; i++)
-    {
-        for(int j=0; j<n_clases; j++)
-            cout << y[i*n_clases + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-    */
+    cudaMemcpy(d_train_labels, y, this->n_imagenes* n_clases * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_train_imgs, x, n_imagenes*C*H*W * sizeof(float), cudaMemcpyHostToDevice);
 }
 
 /*
@@ -523,7 +471,8 @@ void CNN::train(int epocas, int mini_batch)
 
             for(int img=0; img<tam_batches[i]; ++img)
             {
-                cudaMemcpy(this->d_img_in, this->train_imgs + tam_ini*batch[img], tam_ini * sizeof(float), cudaMemcpyHostToDevice);
+
+                cudaMemcpy(this->d_img_in, d_train_imgs + tam_ini*batch[img], tam_ini * sizeof(float), cudaMemcpyDeviceToDevice);
                 d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[0];
                 d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[0];
                 this->convs[0].forwardPropagation_vectores_externos(this->d_img_in, d_img_conv_out, d_img_conv_a);
@@ -591,7 +540,7 @@ void CNN::train(int epocas, int mini_batch)
                 // Última capa, su output no tiene padding
                 int i_c=this->n_capas_conv-1;
 
-                cudaMemcpy(this->d_img_in, this->train_imgs + tam_ini*batch[img], tam_ini * sizeof(float), cudaMemcpyHostToDevice);
+                cudaMemcpy(this->d_img_in, d_train_imgs + tam_ini*batch[img], tam_ini * sizeof(float), cudaMemcpyDeviceToDevice);
 
                 // Usar grad_x_fully[img] en vez de plms_outs[img][i_c] en la última capa MaxPool
                 d_img_grad_x_fully = d_grad_x_fully + img*this->fully->get_capas()[0];
@@ -715,7 +664,7 @@ void CNN::evaluar_modelo()
     for(int img=0; img<this->n_imagenes; ++img)
     {
         // Copiar imagen de entrenamiento en img_in
-        cudaMemcpy(this->d_img_in, train_imgs + img*tam_ini, tam_ini * sizeof(float), cudaMemcpyHostToDevice);
+        cudaMemcpy(this->d_img_in, d_train_imgs + img*tam_ini, tam_ini * sizeof(float), cudaMemcpyDeviceToDevice);
 
         // Capas convolucionales y maxpool ----------------------------
         for(int i=0; i<this->n_capas_conv; ++i)
