@@ -24,7 +24,6 @@ class CNN
         FullyConnected *fully = nullptr;      // Red Fullyconnected
         Flatten * flat = nullptr;             // Capa flatten
         vector<vector<vector<vector<float>>>> test_imgs;   // Imágenes de test
-        float *train_labels = nullptr;             // Etiqueta de cada imagen de training
         vector<vector<float>> test_labels;             // Etiqueta de cada imagen de test
         int *padding = nullptr;                        // Nivel de padding en cada capa convolucional
         float lr;                           // Learning rate o Tasa ded Aprendizaje
@@ -54,7 +53,7 @@ class CNN
     public:
         // Constructor
         CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr, const int n_datos);
-        ~CNN(){free(train_labels); free(padding); free(i_conv_out); free(i_conv_in); free(i_plm_out); free(i_plm_in); free(i_w);
+        ~CNN(){free(padding); free(i_conv_out); free(i_conv_in); free(i_plm_out); free(i_plm_in); free(i_w);
                free(i_b);
                cudaFree(d_img_in); cudaFree(d_img_in_copy); cudaFree(d_img_out); cudaFree(d_conv_a); cudaFree(d_flat_outs);
                cudaFree(d_train_labels); cudaFree(d_train_imgs);};

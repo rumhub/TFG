@@ -20,6 +20,33 @@ __global__ void transpuesta_flat_outs(float* X, float *Y, int rows, int cols)
             Y[j * rows + i] = X[i * cols + j];
 }
 
+__global__ void inicializar_indices(int* indices, int N)
+{
+    int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
+
+    // Cada hebra se encarga de un dato
+    if(i < N)
+        indices[i] = i;
+}
+
+__global__ void actualizar_batch(int *batch, int *indices, int N)
+{
+    int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
+
+    // Cada hebra se encarga de un dato
+    if(i < N)
+        batch[i] = indices[i];
+}
+
+
+__global__ void actualizar_etiquetas_batch(float *y_batch, int *batch, float *train_labels, int tam_batch, int n_clases)
+{
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+
+    // Cada hebra se encarga de un dato
+    if(iy < tam_batch && ix < n_clases)
+        y_batch[iy*n_clases + ix] = train_labels[batch[iy]*n_clases + ix];
+}
 
 /*
     CONSTRUCTOR de la clase CNN
@@ -216,7 +243,6 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
     H += 2*this->padding[0];
     W += 2*this->padding[0];
     this->n_imagenes = n_imgs * n_clases;
-    this->train_labels = (float *)malloc(n_imagenes*n_clases * sizeof(float));
 
     int tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out();
 
@@ -230,9 +256,6 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
 
     if(this->n_clases != n_clases)
         cout << "\n\nError. Número de clases distinto al establecido previamente en la arquitectura de la red. " << this->n_clases << " != " << n_clases << endl << endl;
-
-    for(int i=0; i<n_imagenes*n_clases; i++)
-        train_labels[i] = y[i];
 
     cudaMemcpy(d_train_labels, y, this->n_imagenes* n_clases * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_train_imgs, x, n_imagenes*C*H*W * sizeof(float), cudaMemcpyHostToDevice);
@@ -316,44 +339,14 @@ void shuffle(int *vec, int tam_vec, mt19937& rng) {
 }
 
 
-/*
-                cout << "Input" << endl;
-                for(int i=0; i<this->convs[0].get_C(); i++)
-                {
-                    for(int j=0; j<this->convs[0].get_H(); j++)
-                    {
-                        for(int k=0; k<this->convs[0].get_W(); k++)
-                            cout << img_train[i*this->convs[0].get_H()*this->convs[0].get_W() + j*this->convs[0].get_W() + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
-                cout << endl;
-
-                int pepe;
-                cin >> pepe;
-
-                cout << "Output" << endl;
-                for(int i=0; i<this->convs[0].get_n_kernels(); i++)
-                {
-                    for(int j=0; j<this->convs[0].get_H_out(); j++)
-                    {
-                        for(int k=0; k<this->convs[0].get_W_out(); k++)
-                            cout << img_conv_out[i*this->convs[0].get_H_out()*this->convs[0].get_W_out() + j*this->convs[0].get_W_out() + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
-                cout << endl;
-
-                cin >> pepe;
-*/
-
-
 void CNN::train(int epocas, int mini_batch)
 {
     dim3 block_1D(32, 1);
     dim3 grid_1D((mini_batch  + block_1D.x -1) / block_1D.x, 1);
+    
+    dim3 block_2D(32, 32);
+    dim3 grid_2D(2,2);
+
 
     auto ini = high_resolution_clock::now();
     auto fin = high_resolution_clock::now();
@@ -404,8 +397,7 @@ void CNN::train(int epocas, int mini_batch)
     float *d_img_grad_w_conv = nullptr;
     float *d_img_grad_b_conv = nullptr;
 
-    float *y_batch = (float *)malloc(mini_batch*n_clases * sizeof(float)),
-          *grad_x_fully_gpu = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float));
+    float *grad_x_fully_gpu = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float));
 
     float *d_y_batch, *d_flat_outs_batch_T, *d_grad_x_fully_gpu;
     cudaMalloc((void **) &d_y_batch, mini_batch*n_clases * sizeof(float));
@@ -428,8 +420,14 @@ void CNN::train(int epocas, int mini_batch)
     if(n % mini_batch != 0)
         n_batches++;
     int *indices = (int *)malloc(n * sizeof(int)),
+        *indices2 = (int *)malloc(n * sizeof(int)),
         *batch = (int *)malloc(mini_batch * sizeof(int)),
+        *batch2 = (int *)malloc(mini_batch * sizeof(int)),
         *tam_batches = (int *)malloc(n_batches * sizeof(int));
+
+    int *d_indices, *d_batch;
+    cudaMalloc((void **) &d_indices, n * sizeof(int));
+    cudaMalloc((void **) &d_batch, mini_batch * sizeof(int));
 
     //-------------------------------------------------
     // Inicializar índices
@@ -437,6 +435,23 @@ void CNN::train(int epocas, int mini_batch)
     // Inicializar vector de índices
     for(int i=0; i<n; ++i)
         indices[i] = i;
+
+
+    // ---------------------------------
+    /*
+    grid_1D.x = (n + block_1D.x -1) / block_1D.x;
+    
+    inicializar_indices<<<grid_1D, block_1D>>>(d_indices, n);
+
+    cudaMemcpy(indices2, d_indices, n * sizeof(int), cudaMemcpyDeviceToHost);
+
+    for(int i=0; i<n; i++)
+        if(indices[i] != indices2[i])
+            cout << "Error. " << indices[i] << " != " << indices2[i] << endl;
+
+    grid_1D.x = (mini_batch  + block_1D.x -1) / block_1D.x;
+    */
+    // ---------------------------------
 
     // Inicializar tamaño de mini-batches
     for(int i=0; i<M; ++i)
@@ -455,19 +470,22 @@ void CNN::train(int epocas, int mini_batch)
 
         // Desordenar vector de índices
         shuffle(indices, n, g);
+        cudaMemcpy(d_indices, indices, n * sizeof(int), cudaMemcpyHostToDevice);
 
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
-        //for(int i=0; i<n_batches-1;  ++i)
         for(int i=0; i<n_batches; ++i)
         {
+            // Establecer tamaño de grids 1D y 2D
+            grid_1D.x = (tam_batches[i]  + block_1D.x -1) / block_1D.x;
+            grid_2D.x = (n_clases  + block_2D.x -1) / block_2D.x;
+            grid_2D.y = (tam_batches[i]  + block_2D.y -1) / block_2D.y;
 
-            // Crear el batch para cada hebra ----------------------
+            // Crear batch ----------------------
             for(int j=0; j<tam_batches[i]; j++)
                 batch[j] = indices[mini_batch*i + j];
 
-            for(int i_=0; i_<tam_batches[i]; i_++)
-                for(int j=0; j<n_clases; j++)
-                    y_batch[i_*n_clases + j] = train_labels[batch[i_]*n_clases + j];
+            actualizar_batch<<<grid_1D, block_1D>>>(d_batch, d_indices + mini_batch*i, tam_batches[i]);
+            actualizar_etiquetas_batch<<<grid_2D, block_2D>>>(d_y_batch, d_batch, d_train_labels, tam_batches[i], n_clases);
 
             for(int img=0; img<tam_batches[i]; ++img)
             {
@@ -505,7 +523,6 @@ void CNN::train(int epocas, int mini_batch)
             // Capa totalmente conectada
             // ---------------------------------------------------------------------------------------------------------------------------
             // Realizar propagación hacia delante y hacia detrás en la capa totalmente conectada
-            cudaMemcpy(d_y_batch, y_batch, tam_batches[i]*n_clases * sizeof(float), cudaMemcpyHostToDevice);
             transpuesta_flat_outs<<<grid_1D, block_1D>>>(d_flat_outs_batch, d_flat_outs_T, tam_batches[i], tam_flat_out);
             this->fully->set_train_gpu(d_flat_outs_T, d_y_batch, tam_batches[i]);
             this->fully->train_vectores_externos(d_grad_x_fully);
@@ -624,11 +641,12 @@ void CNN::train(int epocas, int mini_batch)
 
     // Liberar memoria
     free(conv_grads_bias); free(conv_grads_w);
-    free(indices); free(batch); free(tam_batches); free(y_batch);
+    free(indices); free(batch); free(tam_batches);
 
     cudaFree(d_grad_x_fully); cudaFree(d_flat_outs_batch); cudaFree(d_plms_outs); cudaFree(d_plms_in_copys);
     cudaFree(d_conv_grads_w); cudaFree(d_conv_grads_bias); cudaFree(d_convs_outs); cudaFree(d_conv_a);
-    cudaFree(d_y_batch); cudaFree(d_flat_outs_batch_T); cudaFree(d_grad_x_fully_gpu);
+    cudaFree(d_y_batch); cudaFree(d_flat_outs_batch_T); cudaFree(d_grad_x_fully_gpu); cudaFree(d_indices);
+    cudaFree(d_batch);
 }
 
 
