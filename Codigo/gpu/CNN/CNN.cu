@@ -29,6 +29,16 @@ __global__ void inicializar_indices(int* indices, int N)
         indices[i] = i;
 }
 
+__global__ void inicializar_a_0(float *indices, int N)
+{
+    int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
+
+    // Cada hebra se encarga de un dato
+    if(i < N)
+        indices[i] = 0.0;
+}
+
+
 __global__ void actualizar_batch(int *batch, int *indices, int N)
 {
     int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
@@ -528,7 +538,6 @@ void CNN::train(int epocas, int mini_batch)
             this->fully->train_vectores_externos(d_grad_x_fully);
             this->fully->actualizar_parametros_gpu();
             this->fully->escalar_pesos_GEMM(2);
-            //cudaMemcpy(grad_x_fully, d_grad_x_fully, tam_batches[i]* this->fully->get_capas()[0] * sizeof(float), cudaMemcpyDeviceToHost);
 
             // ---------------------------------------------------------------------------------------------------------------------------
             // Capas convolucionales, de agrupación y aplanado
@@ -542,13 +551,11 @@ void CNN::train(int epocas, int mini_batch)
 
             //cout << " ----------- BACKPROP ----------- " << endl;
             // Inicializar gradientes a 0
-            for(int i_=0; i_<tam_kernels_conv; i_++)
-                conv_grads_w[i_] = 0.0;
-            cudaMemcpy(d_conv_grads_w, conv_grads_w, tam_kernels_conv * sizeof(float), cudaMemcpyHostToDevice);
+            grid_1D.x = (tam_kernels_conv + block_1D.x -1) / block_1D.x;
+            inicializar_a_0<<<grid_1D, block_1D>>>(d_conv_grads_w, tam_kernels_conv);
 
-            for(int i_=0; i_<n_bias_conv; i_++)
-                conv_grads_bias[i_] = 0.0;
-            cudaMemcpy(d_conv_grads_bias, conv_grads_bias, n_bias_conv * sizeof(float), cudaMemcpyHostToDevice);
+            grid_1D.x = (n_bias_conv + block_1D.x -1) / block_1D.x;
+            inicializar_a_0<<<grid_1D, block_1D>>>(d_conv_grads_bias, n_bias_conv);
 
 
             // Cálculo de gradientes respecto a cada parámetro
