@@ -50,7 +50,7 @@ int main()
     capas_pool[i*2 +1] = 2;      // kernels de 2 columnas
 
 
-    CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr, n_imgs_train);
+    CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr, n_imgs_train, mini_batch);
     //CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H-2*padding[0], W-2*padding[0], lr);
     cnn.mostrar_arquitectura();
     leer_imagenes_cifar10_ptr(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, padding[0], n_imgs_train, n_imgs_test, n_clases);

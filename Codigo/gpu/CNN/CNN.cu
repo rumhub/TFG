@@ -70,10 +70,23 @@ __global__ void actualizar_etiquetas_batch(float *y_batch, int *batch, float *tr
     @input          Volumen 3D de entrada. Se tendrán en cuenta sus dimensiones para crear las estructuras necesarias y permitir un posterior entrenamiento con volúmenes de iguales dimensiones.
     @lr             Learning Rate o Tasa de Aprendizaje
 */
-CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr, const int n_datos)
+CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr, const int n_datos, const int mini_batch)
 {
     int * i_capas_conv = nullptr;
     int * i_capas_pool = nullptr;
+
+    this->mini_batch = mini_batch;
+
+    // Inicializar tamaño de bloque 1D
+    this->block_1D.x = 32;
+    this->block_1D.y = 1;
+
+    // Inicializar tamaño de bloque 2D
+    this->block_2D.x = 32;
+    this->block_2D.y = 32;
+
+    // Inicializar tamaño de grid 1D
+    this->grid_1D.y = 1;
 
     // Ejemplo de uso, capas_conv[0] = {16, 3, 3}
 
@@ -182,7 +195,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     cudaMalloc((void **) &d_img_in, tam_img_max * sizeof(float));
     cudaMalloc((void **) &d_img_in_copy, tam_img_max * sizeof(float));
     cudaMalloc((void **) &d_img_out, tam_img_max * sizeof(float));
-    cudaMalloc((void **) &d_conv_a, tam_img_max * sizeof(float));
+    cudaMalloc((void **) &d_conv_a_eval, tam_img_max * sizeof(float));
 
 
 
@@ -209,6 +222,34 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
         i_b[i] = i_b_;
         i_b_ += this->convs[i].get_n_kernels();
     }
+
+
+
+    tam_in_convs = 0; tam_out_convs = 0; tam_in_pools = 0; tam_out_pools = 0; tam_kernels_conv = 0;
+    tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out();
+    n_bias_conv = 0;
+
+    for(int i=0; i<this->n_capas_conv; i++)
+    {
+        tam_kernels_conv += this->convs[i].get_n_kernels() * this->convs[i].get_C() * this->convs[i].get_kernel_fils() * this->convs[i].get_kernel_cols();
+        tam_in_convs += this->convs[i].get_C() * this->convs[i].get_H() * this->convs[i].get_W();
+        tam_out_convs += this->convs[i].get_n_kernels() * this->convs[i].get_H_out() * this->convs[i].get_W_out();
+        tam_out_pools += this->plms[i].get_C() * this->plms[i].get_H_out() * this->plms[i].get_W_out();
+        tam_in_pools += this->plms[i].get_C() * this->plms[i].get_H() * this->plms[i].get_W();
+        n_bias_conv += this->convs[i].get_n_kernels();
+    }
+
+    // Reserva de memoria en device
+    cudaMalloc((void **) &d_grad_x_fully, mini_batch* this->fully->get_capas()[0] * sizeof(float));
+    cudaMalloc((void **) &d_y_batch, mini_batch*n_clases * sizeof(float));
+    cudaMalloc((void **) &d_flat_outs_batch, mini_batch* tam_flat_out * sizeof(float));
+    cudaMalloc((void **) &d_plms_outs, mini_batch * tam_out_pools * sizeof(float));
+    cudaMalloc((void **) &d_plms_in_copys, mini_batch * tam_in_pools * sizeof(float));
+    cudaMalloc((void **) &d_conv_grads_w, tam_kernels_conv * sizeof(float));
+    cudaMalloc((void **) &d_conv_grads_bias, n_bias_conv * sizeof(float));
+    cudaMalloc((void **) &d_convs_outs, mini_batch * tam_out_convs * sizeof(float));
+    cudaMalloc((void **) &d_conv_a, mini_batch * tam_out_convs * sizeof(float));
+    cudaMalloc((void **) &d_batch, mini_batch * sizeof(int));
 
     // Liberar memoria
     free(capas_fully_ptr);
@@ -253,90 +294,39 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
     H += 2*this->padding[0];
     W += 2*this->padding[0];
     this->n_imagenes = n_imgs * n_clases;
+    const int M = this->n_imagenes / mini_batch;
+    n_batches = M;
+    if(this->n_imagenes % mini_batch != 0)
+        n_batches++;
 
     int tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out();
 
     this->flat_outs_gpu = (float *)malloc(this->n_imagenes* tam_flat_out * sizeof(float));
 
+    indices = (int *)malloc(this->n_imagenes * sizeof(int));
+    batch = (int *)malloc(this->mini_batch * sizeof(int));
+    tam_batches = (int *)malloc(n_batches * sizeof(int));
+    cudaMalloc((void **) &d_indices, this->n_imagenes * sizeof(int));
     cudaMalloc((void **) &this->d_flat_outs, this->n_imagenes* tam_flat_out * sizeof(float));
     cudaMalloc((void **) &this->d_flat_outs_T, this->n_imagenes* tam_flat_out * sizeof(float));
     cudaMalloc((void **) &this->d_train_labels, this->n_imagenes* n_clases * sizeof(float));
     cudaMalloc((void **) &this->d_train_imgs, n_imagenes*C*H*W * sizeof(float));
-
 
     if(this->n_clases != n_clases)
         cout << "\n\nError. Número de clases distinto al establecido previamente en la arquitectura de la red. " << this->n_clases << " != " << n_clases << endl << endl;
 
     cudaMemcpy(d_train_labels, y, this->n_imagenes* n_clases * sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(d_train_imgs, x, n_imagenes*C*H*W * sizeof(float), cudaMemcpyHostToDevice);
-}
 
-/*
-    @brief  Aplica padding sobre una imagen sin aumentar su tamaño
-    @input  Imagen sobre la cual aplicar padding
-    @pad    Nivel de padding a aplicar
-    @return Imagen @input con padding interno aplicado
-*/
-void CNN::padding_interno_ptr(float *input, int C, int H, int W, const int &pad)
-{
-    for(int i=0; i<C; ++i)
-    {
-        // Primeras "pad" filas se igualan a 0.0
-        for(int j=0; j<pad; ++j)
-            for(int k=0; k<H; ++k)
-            input[i*H*W + j*W + k] = 0.0;
 
-        // Últimas "pad" filas se igualan a 0.0
-        for(int j=H-1; j>=H - pad; j--)
-            for(int k=0; k<H; ++k)
-            input[i*H*W + j*W + k] = 0.0;
+    // Inicializar tamaño de mini-batches
+    for(int i=0; i<M; ++i)
+        tam_batches[i] = mini_batch;
 
-        // Por cada fila
-        for(int k=0; k<H; ++k)
-        {
-            // Primeras "pad" casillas se igualan a 0.0
-            for(int j=0; j<pad; ++j)
-                input[i*H*W + j*W + k] = 0.0;
+    // Último batch puede tener distinto tamaño al resto
+    if(this->n_imagenes % mini_batch != 0)
+        tam_batches[n_batches-1] = this->n_imagenes % mini_batch;
 
-            // Últimas "pad" casillas se igualan a 0.0
-            for(int j=W-1; j>=W - pad; j--)
-                input[i*H*W + j*W + k] = 0.0;
-        }
-    }
-}
-
-/*
-    @brief  Aplica padding sobre una imagen sin aumentar su tamaño
-    @input  Imagen sobre la cual aplicar padding
-    @pad    Nivel de padding a aplicar
-    @return Imagen @input con padding interno aplicado
-*/
-void CNN::padding_interno(vector<vector<vector<float>>> &input, const int &pad)
-{
-    for(int i=0; i<input.size(); ++i)
-    {
-        // Primeras "pad" filas se igualan a 0.0
-        for(int j=0; j<pad; ++j)
-            for(int k=0; k<input[i].size(); ++k)
-            input[i][j][k] = 0.0;
-
-        // Últimas "pad" filas se igualan a 0.0
-        for(int j=input[i].size()-1; j>=input[i].size() - pad; j--)
-            for(int k=0; k<input[i].size(); ++k)
-            input[i][j][k] = 0.0;
-
-        // Por cada fila
-        for(int k=0; k<input[i].size(); ++k)
-        {
-            // Primeras "pad" casillas se igualan a 0.0
-            for(int j=0; j<pad; ++j)
-                input[i][k][j] = 0.0;
-
-            // Últimas "pad" casillas se igualan a 0.0
-            for(int j=input[i][k].size()-1; j>=input[i][k].size() - pad; j--)
-                input[i][k][j] = 0.0;
-        }
-    }
 }
 
 
@@ -351,51 +341,12 @@ void shuffle(int *vec, int tam_vec, mt19937& rng) {
 
 void CNN::train(int epocas, int mini_batch)
 {
-    dim3 block_1D(32, 1);
-    dim3 grid_1D((mini_batch  + block_1D.x -1) / block_1D.x, 1);
-    
-    dim3 block_2D(32, 32);
-    dim3 grid_2D(2,2);
-
-
     auto ini = high_resolution_clock::now();
     auto fin = high_resolution_clock::now();
     auto duration = duration_cast<seconds>(fin - ini);
 
     int n=this->n_imagenes;
     int C, H_out, W_out;
-
-    int tam_in_convs = 0, tam_out_convs = 0, tam_in_pools = 0, tam_out_pools = 0, tam_kernels_conv = 0,
-        tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out(),
-        n_bias_conv = 0;
-
-    for(int i=0; i<this->n_capas_conv; i++)
-    {
-        tam_kernels_conv += this->convs[i].get_n_kernels() * this->convs[i].get_C() * this->convs[i].get_kernel_fils() * this->convs[i].get_kernel_cols();
-        tam_in_convs += this->convs[i].get_C() * this->convs[i].get_H() * this->convs[i].get_W();
-        tam_out_convs += this->convs[i].get_n_kernels() * this->convs[i].get_H_out() * this->convs[i].get_W_out();
-        tam_out_pools += this->plms[i].get_C() * this->plms[i].get_H_out() * this->plms[i].get_W_out();
-        tam_in_pools += this->plms[i].get_C() * this->plms[i].get_H() * this->plms[i].get_W();
-        n_bias_conv += this->convs[i].get_n_kernels();
-    }
-
-
-    float *conv_grads_w = (float *)malloc(tam_kernels_conv * sizeof(float)),                        // Capa convolucional
-          *conv_grads_bias = (float *)malloc(n_bias_conv * sizeof(float));
-
-    float *d_grad_x_fully, *d_flat_outs_batch, *d_plms_outs, *d_plms_in_copys, *d_conv_grads_w, *d_conv_grads_bias, *d_convs_outs, *d_conv_a;
-    cudaMalloc((void **) &d_grad_x_fully, mini_batch* this->fully->get_capas()[0] * sizeof(float));
-    cudaMalloc((void **) &d_flat_outs_batch, mini_batch* tam_flat_out * sizeof(float));
-    cudaMalloc((void **) &d_plms_outs, mini_batch * tam_out_pools * sizeof(float));
-    cudaMalloc((void **) &d_plms_in_copys, mini_batch * tam_in_pools * sizeof(float));
-    cudaMalloc((void **) &d_conv_grads_w, tam_kernels_conv * sizeof(float));
-    cudaMalloc((void **) &d_conv_grads_bias, n_bias_conv * sizeof(float));
-    cudaMalloc((void **) &d_convs_outs, mini_batch * tam_out_convs * sizeof(float));
-    cudaMalloc((void **) &d_conv_a, mini_batch * tam_out_convs * sizeof(float));
-
-
-
-    float *img_grad_b_conv = nullptr;
 
     float *d_img_train = nullptr;
     float *d_img_conv_out = nullptr;
@@ -407,37 +358,11 @@ void CNN::train(int epocas, int mini_batch)
     float *d_img_grad_w_conv = nullptr;
     float *d_img_grad_b_conv = nullptr;
 
-    float *grad_x_fully_gpu = (float *)malloc(mini_batch* this->fully->get_capas()[0] * sizeof(float));
 
-    float *d_y_batch, *d_flat_outs_batch_T, *d_grad_x_fully_gpu;
-    cudaMalloc((void **) &d_y_batch, mini_batch*n_clases * sizeof(float));
-    cudaMalloc((void **) &d_flat_outs_batch_T, mini_batch* tam_flat_out * sizeof(float));
-    cudaMalloc((void **) &d_grad_x_fully_gpu, mini_batch* this->fully->get_capas()[0] * sizeof(float));
-
-    float * prueba = (float *)malloc(4*tam_kernels_conv * sizeof(float));
-    float * d_prueba;
-    cudaMalloc((void **) &d_prueba, 32*32*32*3 * sizeof(float));
-
-
-
-    const int M = n / mini_batch;
-    int pad_sig, C_ini = this->convs[0].get_C(), H_ini = this->convs[0].get_H(), W_ini = this->convs[0].get_W(), tam_ini = C_ini*H_ini*W_ini;
+    int tam_ini = this->convs[0].get_C() * this->convs[0].get_H() * this->convs[0].get_W();
 
     std::random_device rd;
     std::mt19937 g(rd());
-
-    int n_batches = M;
-    if(n % mini_batch != 0)
-        n_batches++;
-    int *indices = (int *)malloc(n * sizeof(int)),
-        *indices2 = (int *)malloc(n * sizeof(int)),
-        *batch = (int *)malloc(mini_batch * sizeof(int)),
-        *batch2 = (int *)malloc(mini_batch * sizeof(int)),
-        *tam_batches = (int *)malloc(n_batches * sizeof(int));
-
-    int *d_indices, *d_batch;
-    cudaMalloc((void **) &d_indices, n * sizeof(int));
-    cudaMalloc((void **) &d_batch, mini_batch * sizeof(int));
 
     //-------------------------------------------------
     // Inicializar índices
@@ -445,32 +370,6 @@ void CNN::train(int epocas, int mini_batch)
     // Inicializar vector de índices
     for(int i=0; i<n; ++i)
         indices[i] = i;
-
-
-    // ---------------------------------
-    /*
-    grid_1D.x = (n + block_1D.x -1) / block_1D.x;
-    
-    inicializar_indices<<<grid_1D, block_1D>>>(d_indices, n);
-
-    cudaMemcpy(indices2, d_indices, n * sizeof(int), cudaMemcpyDeviceToHost);
-
-    for(int i=0; i<n; i++)
-        if(indices[i] != indices2[i])
-            cout << "Error. " << indices[i] << " != " << indices2[i] << endl;
-
-    grid_1D.x = (mini_batch  + block_1D.x -1) / block_1D.x;
-    */
-    // ---------------------------------
-
-    // Inicializar tamaño de mini-batches
-    for(int i=0; i<M; ++i)
-        tam_batches[i] = mini_batch;
-
-    // Último batch puede tener distinto tamaño al resto
-    if(n % mini_batch != 0)
-        tam_batches[n_batches-1] = n % mini_batch;
-
 
     int k1;
     for(int ep=0; ep<epocas; ++ep)
@@ -645,32 +544,6 @@ void CNN::train(int epocas, int mini_batch)
     }
     //evaluar_modelo_en_test();
 
-
-    // Liberar memoria
-    free(conv_grads_bias); free(conv_grads_w);
-    free(indices); free(batch); free(tam_batches);
-
-    cudaFree(d_grad_x_fully); cudaFree(d_flat_outs_batch); cudaFree(d_plms_outs); cudaFree(d_plms_in_copys);
-    cudaFree(d_conv_grads_w); cudaFree(d_conv_grads_bias); cudaFree(d_convs_outs); cudaFree(d_conv_a);
-    cudaFree(d_y_batch); cudaFree(d_flat_outs_batch_T); cudaFree(d_grad_x_fully_gpu); cudaFree(d_indices);
-    cudaFree(d_batch);
-}
-
-
-void CNN::mostrar_ptr(float *x, int C, int H, int W)
-{
-    cout << "\nX\n";
-    for(int j=0; j<C; j++)
-    {
-        for(int k=0; k<H; k++)
-        {
-            for(int p=0; p<W; p++)
-                cout << x[j*H*W + k*W + p] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
 }
 
 
@@ -695,7 +568,7 @@ void CNN::evaluar_modelo()
         for(int i=0; i<this->n_capas_conv; ++i)
         {
             // Capa convolucional
-            this->convs[i].forwardPropagation_vectores_externos(this->d_img_in, this->d_img_out, this->d_conv_a);
+            this->convs[i].forwardPropagation_vectores_externos(this->d_img_in, this->d_img_out, this->d_conv_a_eval);
 
             // Capa MaxPool
             this->plms[i].forwardPropagation_vectores_externos(this->d_img_out, this->d_img_in, this->d_img_in_copy);
