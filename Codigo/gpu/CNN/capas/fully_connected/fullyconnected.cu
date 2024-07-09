@@ -127,14 +127,12 @@ __global__ void kernel_sofmax(int M, int K, float *X, float *a)
 
 __global__ void matrizTranspuesta_GPU(float* X, float *Y, int rows, int cols)
 {
-		int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
+    int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
 
-    // Cada hebra se encarga de una fila
-    if(i < rows)
-        for (int j = 0; j < cols; j++)
-            Y[j * rows + i] = X[i * cols + j];
+    if(iy < rows)
+        Y[ix * rows + iy] = X[iy * cols + ix];
+
 }
-
 
 __global__ void kernel_back_softmax(int M, int K, float *grad_a, float *Z, float *Y, int n_clases)
 {
@@ -817,8 +815,7 @@ void FullyConnected::forwardPropagationGEMM()
     }
 
     // Transpuesta para tener 1 fila por dato de minibatch
-    this->grid_1D.x = (capas[n_capas-1]  + block_1D.x -1) / block_1D.x;
-    matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_z + i_capasGEMM[n_capas-1], d_softmax, capas[n_capas-1], mini_batch);
+    matrizTranspuesta_GPU<<<grid_2D, block_2D>>>(d_z + i_capasGEMM[n_capas-1], d_softmax, capas[n_capas-1], mini_batch);
 
     this->grid_1D.x = (mini_batch  + block_1D.x -1) / block_1D.x;
     kernel_sofmax<<<grid_1D, block_1D>>>(mini_batch, capas[n_capas-1], d_softmax, d_a + i_capasGEMM[n_capas-1]);
@@ -1059,145 +1056,6 @@ float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr
     return sum;
 }
 
-/*
-    @brief      Entrenamiento de la red
-    @x          Conjunto de datos de entrada
-    @y          Etiquetas asociadas a cada dato de entrada
-    @batch      Conjunto de índices desordenados tal que para cada dato de entrada x[i], este está asociado con y[batch[i]]
-    @n_datos    Número de datos con los que entrenar
-    @grad_pesos Gradiente de cada peso de la red
-    @grad_b     Gradiente de cada bias de la red
-    @grad_x     Gradiente respecto a la entrada x
-    @a          Neuronas de la red antes de aplicar la función de activación
-    @z          Neuronas de la red después de aplicar la función de activación
-    @grad_a     Gradiente respecto a cada neurona de la red antes de aplicar la función de activación
-    @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
-*/
-//void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
-void FullyConnected::trainGEMM(float *grad_x)
-{
-    int n_clases = capas[n_capas-1];
-
-    grid_1D.x = (mini_batch  + block_1D.x -1) / block_1D.x;
-
-    // Propagación hacia delante de cada dato perteneciente al minibatch
-    forwardPropagationGEMM();
-
-    // Cálculo del gradiente respecto a la entrada de la capa SoftMax
-    kernel_back_softmax<<<grid_1D, block_1D>>>(mini_batch, n_clases, d_z + i_capasGEMM[n_capas-1], d_softmax, d_y, n_clases);
-
-    // Capas intermedias
-    // Transpuesta para tener 1 columna por dato de minibatch
-    matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_z + i_capasGEMM[n_capas-1], d_a + i_capasGEMM[n_capas-1], mini_batch, capas[n_capas-1]);
-
-    // Capas intermedias
-    for(int c=n_capas-1; c>0; c--)
-    {
-        // Tamaño de grid
-        this->grid_2D.x = (mini_batch  + block_2D.x -1) / block_2D.x;
-        this->grid_2D.y = (capas[c-1] + block_2D.y -1) / block_2D.y;
-
-        // Aplicar ReLU en capas intermedias, pero en SoftMax no
-        backprop_capas_intermedias<<<grid_2D, block_2D, smem_2D>>>(capas[c-1], mini_batch, capas[c], d_w + i_w_ptr[c-1], d_a + i_capasGEMM[c], d_a + i_capasGEMM[c-1], (c>1));
-
-        // Tamaño de grid
-        grid_1D.x = (capas[c]  + block_1D.x -1) / block_1D.x;
-        kernel_grad_bias<<<grid_1D, block_1D>>>(capas[c], mini_batch, d_a + i_capasGEMM[c], d_grad_b + i_capasGEMM[c]);
-
-        // Tamaño de grid
-        grid_1D.x = (capas[c]  + block_1D.x -1) / block_1D.x;
-
-        matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
-
-        // Tamaño de grid
-        grid_2D.x = (capas[c]  + block_2D.x -1) / block_2D.x;
-        grid_2D.y = (capas[c-1] + block_2D.y -1) / block_2D.y;
-
-        multiplicarMatricesGPU_fully<<<grid_2D, block_2D, smem_2D>>>(capas[c-1], capas[c], mini_batch, d_z + i_capasGEMM[c-1], d_aT + i_capasGEMM[c], d_grad_w + i_w_ptr[c-1]);
-    }
-
-    int c = 0;
-
-    // Tamaño de grid
-    grid_1D.x = (capas[c]  + block_size -1) / block_size;
-
-    matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
-
-    cudaMemcpy(grad_x, d_aT + i_capasGEMM[c], capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-
-
-
-    /*
-    cout << " ---------------------------- Gradiente de bias GEMM ---------------------------- " << endl;
-    //float *capa = capasGEMM[0];
-    for(int c=0; c<n_capas; c++)
-    {
-        capa = capasGEMM[c];
-        cudaMemcpy(capa, d_grad_b + i_capasGEMM[c], capas[c] * sizeof(float), cudaMemcpyDeviceToHost);
-        cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess)
-            printf("Error: %s\n", cudaGetErrorString(err));
-
-        for(int i=0; i<this->capas[c]; i++)
-            cout << capa[i] << " ";
-        cout << endl;
-    }
-
-    cout << " ---------------------------- A ---------------------------- " << endl;
-    //float *capa = capasGEMM[0];
-    for(int c=0; c<n_capas; c++)
-    {
-        capa = capasGEMM[c];
-        cudaMemcpy(capa, d_a + i_capasGEMM[c], capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-        cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess)
-            printf("Error: %s\n", cudaGetErrorString(err));
-
-        cout << "CAPA " << c << " A" << endl;
-        for(int i=0; i<this->capas[c]; i++)
-        {
-            for(int j=0; j<this->mini_batch; j++)
-                cout << capa[i*mini_batch + j] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-
-
-    // Mostrar gradiente de pesos
-    float * h_grad_w = (float *)malloc(n_pesos * n_neuronas * sizeof(float));
-    cudaMemcpy(h_grad_w, d_grad_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
-    cout << "Gradiente de Pesos GEMM" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        cout << "Capa " << i << endl;
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-            {
-                cout << "W(" << j << "," << k << "): ";
-                cout << h_grad_w[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-    */
-    /*
-    float * h_grad_w = (float *)malloc(n_pesos * sizeof(float));
-    cudaMemcpy(h_grad_w, d_grad_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
-    cout << "Gradiente de Pesos GEMM" << endl;
-    for(int j=0; j<10; j++)   // Por cada neurona de la capa actual
-    {
-        for(int k=0; k<10; k++)     // Por cada neurona de la siguiente capa
-            cout << h_grad_w[i_w_ptr[1] + j*capas[1+1] + k] << " ";
-        cout << endl;
-    }
-    cout << endl;
-    */
-}
-
 void FullyConnected::train_vectores_externos(float *grad_x)
 {
     int n_clases = capas[n_capas-1];
@@ -1212,7 +1070,9 @@ void FullyConnected::train_vectores_externos(float *grad_x)
 
     // Capas intermedias
     // Transpuesta para tener 1 columna por dato de minibatch
-    matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_z + i_capasGEMM[n_capas-1], d_a + i_capasGEMM[n_capas-1], mini_batch, capas[n_capas-1]);
+    this->grid_2D.x = (capas[n_capas-1] + block_2D.x -1) / block_2D.x;
+    this->grid_2D.y = (mini_batch + block_2D.y -1) / block_2D.y;
+    matrizTranspuesta_GPU<<<grid_2D, block_2D>>>(d_z + i_capasGEMM[n_capas-1], d_a + i_capasGEMM[n_capas-1], mini_batch, capas[n_capas-1]);
 
     // Capas intermedias
     for(int c=n_capas-1; c>0; c--)
@@ -1229,9 +1089,10 @@ void FullyConnected::train_vectores_externos(float *grad_x)
         kernel_grad_bias<<<grid_1D, block_1D>>>(capas[c], mini_batch, d_a + i_capasGEMM[c], d_grad_b + i_capasGEMM[c]);
 
         // Tamaño de grid
-        grid_1D.x = (capas[c]  + block_1D.x -1) / block_1D.x;
+        this->grid_2D.x = (mini_batch + block_2D.x -1) / block_2D.x;
+        this->grid_2D.y = (capas[c] + block_2D.y -1) / block_2D.y;
+        matrizTranspuesta_GPU<<<grid_2D, block_2D>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
 
-        matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
 
         // Tamaño de grid
         grid_2D.x = (capas[c]  + block_2D.x -1) / block_2D.x;
@@ -1243,9 +1104,9 @@ void FullyConnected::train_vectores_externos(float *grad_x)
     int c = 0;
 
     // Tamaño de grid
-    grid_1D.x = (capas[c]  + block_size -1) / block_size;
-
-    matrizTranspuesta_GPU<<<grid_1D, block_1D>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
+    this->grid_2D.x = (mini_batch + block_2D.x -1) / block_2D.x;
+    this->grid_2D.y = (capas[c] + block_2D.y -1) / block_2D.y;
+    matrizTranspuesta_GPU<<<grid_2D, block_2D>>>(d_a + i_capasGEMM[c], d_aT + i_capasGEMM[c], capas[c], mini_batch);
 
     cudaMemcpy(grad_x, d_aT + i_capasGEMM[c], capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToDevice);
 }

@@ -207,12 +207,11 @@ __global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, co
 
 __global__ void matrizTranspuesta_conv(float* X, float *Y, int rows, int cols)
 {
-		int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
+    int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
 
     // Cada hebra se encarga de una fila
-    if(i < rows)
-        for (int j = 0; j < cols; j++)
-            Y[j * rows + i] = X[i * cols + j];
+    if(iy < rows && ix < cols)
+        Y[iy * rows + ix] = X[ix * cols + iy];
 }
 
 __global__ void reduceMax_conv(float * X, float * Y, const int N)
@@ -845,54 +844,56 @@ void Convolutional::aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, i
 */
 void Convolutional::backPropagation_vectores_externos(float *input, float *output, float *a, float *grad_w, float *grad_bias)
 {
-		grid.x = (H_out  + BLOCK_SIZE -1) / BLOCK_SIZE;
-		grid.y = (W_out  + BLOCK_SIZE -1) / BLOCK_SIZE;
-		deriv_activ_func_output<<<grid, block>>>(n_kernels, H_out, W_out, output, a);
+    grid.x = (H_out  + BLOCK_SIZE -1) / BLOCK_SIZE;
+    grid.y = (W_out  + BLOCK_SIZE -1) / BLOCK_SIZE;
+    deriv_activ_func_output<<<grid, block>>>(n_kernels, H_out, W_out, output, a);
 
-		grid.x = (H_out_pad  + BLOCK_SIZE -1) / BLOCK_SIZE;
-		grid.y = (W_out_pad  + BLOCK_SIZE -1) / BLOCK_SIZE;
-		centrar<<<grid, block>>>(n_kernels, H_out, W_out, H_out_pad, W_out_pad, output, d_output_centrado);
-		aplicar_padding_gpu<<<grid, block>>>(this->n_kernels, H_out_pad, W_out_pad, d_output_centrado, d_output_pad, pad);
-		unroll_3dim_gpu<<<grid, block>>>(n_kernels, H_out_pad, W_out_pad, kernel_fils, d_output_pad, d_output_unroll);		// "Desenrrollar" volumen de salida
+    grid.x = (H_out_pad  + BLOCK_SIZE -1) / BLOCK_SIZE;
+    grid.y = (W_out_pad  + BLOCK_SIZE -1) / BLOCK_SIZE;
+    centrar<<<grid, block>>>(n_kernels, H_out, W_out, H_out_pad, W_out_pad, output, d_output_centrado);
+    aplicar_padding_gpu<<<grid, block>>>(this->n_kernels, H_out_pad, W_out_pad, d_output_centrado, d_output_pad, pad);
+    unroll_3dim_gpu<<<grid, block>>>(n_kernels, H_out_pad, W_out_pad, kernel_fils, d_output_pad, d_output_unroll);		// "Desenrrollar" volumen de salida
 
-		// Transpuesta del volumen de salida desenrrollado
-		grid.x = (cols_output_unroll + BLOCK_SIZE -1) / BLOCK_SIZE;
-		grid.y = (fils_output_unroll + BLOCK_SIZE -1) / BLOCK_SIZE;
-		matrizTranspuesta_conv<<<grid, block>>>(d_output_unroll, d_output_unroll_T, cols_output_unroll, fils_output_unroll);
+    // Transpuesta del volumen de salida desenrrollado
+    grid.x = (cols_output_unroll + BLOCK_SIZE -1) / BLOCK_SIZE;
+    grid.y = (fils_output_unroll + BLOCK_SIZE -1) / BLOCK_SIZE;
+    matrizTranspuesta_conv<<<grid, block>>>(d_output_unroll, d_output_unroll_T, cols_output_unroll, fils_output_unroll);
 
-		// "Desenrrollar" volumen de entrada
-		grid.x = (H + BLOCK_SIZE -1) / BLOCK_SIZE;
-		grid.y = (W + BLOCK_SIZE -1) / BLOCK_SIZE;
-		unroll_1dim_gpu<<<grid, block>>>(C, H, W, H_out, input, d_input_back_unroll);
+    // "Desenrrollar" volumen de entrada
+    grid.x = (H + BLOCK_SIZE -1) / BLOCK_SIZE;
+    grid.y = (W + BLOCK_SIZE -1) / BLOCK_SIZE;
+    unroll_1dim_gpu<<<grid, block>>>(C, H, W, H_out, input, d_input_back_unroll);
 
-		// Transpuesta del volumen de entrada desenrrollado
-		grid.x = (kernel_fils*kernel_cols*C + BLOCK_SIZE -1) / BLOCK_SIZE;
-		grid.y = (H_out*W_out + BLOCK_SIZE -1) / BLOCK_SIZE;
-		matrizTranspuesta_conv<<<grid, block>>>(d_input_back_unroll, d_input_back_unroll_T, kernel_fils*kernel_cols*C, H_out*W_out);
+    // Transpuesta del volumen de entrada desenrrollado
+    grid.x = (kernel_fils*kernel_cols*C + BLOCK_SIZE -1) / BLOCK_SIZE;
+    grid.y = (H_out*W_out + BLOCK_SIZE -1) / BLOCK_SIZE;
+    matrizTranspuesta_conv<<<grid, block>>>(d_input_back_unroll, d_input_back_unroll_T, kernel_fils*kernel_cols*C, H_out*W_out);
 
-		// Desenrrollar la matriz de pesos
-		grid.x = (this->n_kernels + BLOCK_SIZE -1) / BLOCK_SIZE;
-		grid.y = (C + BLOCK_SIZE -1) / BLOCK_SIZE;
-		unroll_matriz_pesos<<<grid, block>>>(C, this->n_kernels, kernel_fils, d_w, d_matriz_pesos);
+    // Desenrrollar la matriz de pesos
+    grid.x = (this->n_kernels + BLOCK_SIZE -1) / BLOCK_SIZE;
+    grid.y = (C + BLOCK_SIZE -1) / BLOCK_SIZE;
+    unroll_matriz_pesos<<<grid, block>>>(C, this->n_kernels, kernel_fils, d_w, d_matriz_pesos);
 
     // Multiplicación de matrices
-		this->grid.x = (cols_input_back_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
-		this->grid.y = (this->n_kernels + BLOCK_SIZE -1) / BLOCK_SIZE;
+    this->grid.x = (cols_input_back_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
+    this->grid.y = (this->n_kernels + BLOCK_SIZE -1) / BLOCK_SIZE;
     multiplicarMatricesGPU_calcular_grad_w<<<grid, block, smem>>>(this->n_kernels, cols_input_back_unroll, H_out * W_out, output, d_input_back_unroll_T, grad_w);    // Gradiente respecto a pesos
 
-		this->grid.x = (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
+    this->grid.x = (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
     this->grid.y = (C + BLOCK_SIZE -1) / BLOCK_SIZE;
-		multiplicarMatricesGPU<<<grid, block, smem>>>(fils_matriz_pesos, cols_output_unroll, cols_matriz_pesos, d_matriz_pesos, d_output_unroll_T, input);  // Gradiente respecto a entrada
+    multiplicarMatricesGPU<<<grid, block, smem>>>(fils_matriz_pesos, cols_output_unroll, cols_matriz_pesos, d_matriz_pesos, d_output_unroll_T, input);  // Gradiente respecto a entrada
 
-		// Gradiente respecto a cada sesgo
-		grid.x = (H_out*W_out + BLOCK_SIZE -1) / BLOCK_SIZE;
-		grid.y = 1;
+    // Gradiente respecto a cada sesgo
+    grid.x = (H_out*W_out + BLOCK_SIZE -1) / BLOCK_SIZE;
+    grid.y = 1;
 
-		for(int i=0; i<this->n_kernels; i++)
-		{
-				reduce_suma<<<grid, block_1D, smem_1D>>>(output + i*H_out*W_out, d_sum_local, H_out*W_out);
-				acumular_grad_bias<<<grid, block_1D>>>(d_sum_local, grad_bias, i);
-		}
+    for(int i=0; i<this->n_kernels; i++)
+    {
+        reduce_suma<<<grid, block_1D, smem_1D>>>(output + i*H_out*W_out, d_sum_local, H_out*W_out);
+        acumular_grad_bias<<<grid, block_1D>>>(d_sum_local, grad_bias, i);
+    }
+		
+
 };
 
 

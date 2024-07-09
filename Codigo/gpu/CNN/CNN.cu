@@ -341,14 +341,18 @@ void shuffle(int *vec, int tam_vec, mt19937& rng) {
 
 void CNN::train(int epocas, int mini_batch)
 {
+    // ------------------------------
+    auto ini_prueba = high_resolution_clock::now();
+    auto fin_prueba = high_resolution_clock::now();
+    auto duration_prueba = duration_cast<milliseconds>(fin_prueba - ini_prueba);
+    // ------------------------------
+
     auto ini = high_resolution_clock::now();
     auto fin = high_resolution_clock::now();
     auto duration = duration_cast<seconds>(fin - ini);
 
     int n=this->n_imagenes;
-    int C, H_out, W_out;
 
-    float *d_img_train = nullptr;
     float *d_img_conv_out = nullptr;
     float *d_img_conv_a = nullptr;
     float *d_img_plms_out = nullptr;
@@ -371,15 +375,13 @@ void CNN::train(int epocas, int mini_batch)
     for(int i=0; i<n; ++i)
         indices[i] = i;
 
-    int k1;
     for(int ep=0; ep<epocas; ++ep)
     {
-
-        ini = high_resolution_clock::now();
-
         // Desordenar vector de índices
         shuffle(indices, n, g);
         cudaMemcpy(d_indices, indices, n * sizeof(int), cudaMemcpyHostToDevice);
+
+        ini = high_resolution_clock::now();
 
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
         for(int i=0; i<n_batches; ++i)
@@ -396,6 +398,7 @@ void CNN::train(int epocas, int mini_batch)
             actualizar_batch<<<grid_1D, block_1D>>>(d_batch, d_indices + mini_batch*i, tam_batches[i]);
             actualizar_etiquetas_batch<<<grid_2D, block_2D>>>(d_y_batch, d_batch, d_train_labels, tam_batches[i], n_clases);
 
+
             for(int img=0; img<tam_batches[i]; ++img)
             {
 
@@ -407,6 +410,7 @@ void CNN::train(int epocas, int mini_batch)
                 d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[0];
                 d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[0];
                 this->plms[0].forwardPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
+
 
                 // Resto de capas convolucionales y maxpool ----------------------------
                 for(int j=1; j<this->n_capas_conv; ++j)
@@ -438,6 +442,8 @@ void CNN::train(int epocas, int mini_batch)
             this->fully->actualizar_parametros_gpu();
             this->fully->escalar_pesos_GEMM(2);
 
+
+
             // ---------------------------------------------------------------------------------------------------------------------------
             // Capas convolucionales, de agrupación y aplanado
             // ---------------------------------------------------------------------------------------------------------------------------
@@ -447,6 +453,7 @@ void CNN::train(int epocas, int mini_batch)
             // BackPropagation ------------------------------
             // ----------------------------------------------
             // ----------------------------------------------
+            ini_prueba = high_resolution_clock::now();
 
             //cout << " ----------- BACKPROP ----------- " << endl;
             // Inicializar gradientes a 0
@@ -514,6 +521,9 @@ void CNN::train(int epocas, int mini_batch)
                     this->convs[0].backPropagation_vectores_externos(d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
                 }
             }
+            //fin_prueba = high_resolution_clock::now();
+            //duration_prueba = duration_cast<milliseconds>(fin_prueba - ini_prueba);
+            //cout << "Tiempo_prueba: " << "                                           " << duration_prueba.count() << " (s)" << endl;
 
             // Actualizar parámetros --------------------------------------------------------------------
             // Actualizar parámetros de capas convolucionales
@@ -530,17 +540,15 @@ void CNN::train(int epocas, int mini_batch)
                 this->convs[j].escalar_pesos_vectores_externos(2);
         }
 
+        evaluar_modelo();
+        cudaDeviceSynchronize();
+
         fin = high_resolution_clock::now();
         duration = duration_cast<seconds>(fin - ini);
 
-        evaluar_modelo();
-        cudaDeviceSynchronize();
         cout << "Época: " << ep << ",                                           " << duration.count() << " (s)" << endl;
 
-
         checkCudaErrors(cudaGetLastError());
-
-
     }
     //evaluar_modelo_en_test();
 
