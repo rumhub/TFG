@@ -4,9 +4,6 @@ void checkCudaErrors(cudaError_t err) {
     if (err != cudaSuccess) {
         std::cerr << "CUDA error: " << cudaGetErrorString(err) << std::endl;
         exit(err);
-    }else
-    {
-        cout << "Todo correcto!" << endl;
     }
 }
 
@@ -175,7 +172,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
             max_W = W;
     }
 
-
+    
     // Inicializar capa fullyconnected -----------------------------------------
     int *capas_fully_ptr = (int *)malloc((n_capas_fully+1) * sizeof(int));
 
@@ -184,7 +181,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     for(int i=1; i<n_capas_fully+1; i++)
         capas_fully_ptr[i] = capas_fully[i-1];
 
-
+    
     this->fully = new FullyConnected(capas_fully_ptr, n_capas_fully+1, lr, n_datos*n_clases);
 
     // Reserva de espacio para posteriores operaciones
@@ -192,11 +189,10 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     //int tam_img_max = max_C*max_H*max_W;
 
     // Reserva de memoria en device
-    cudaMalloc((void **) &d_img_in, tam_img_max * sizeof(float));
-    cudaMalloc((void **) &d_img_in_copy, tam_img_max * sizeof(float));
-    cudaMalloc((void **) &d_img_out, tam_img_max * sizeof(float));
-    cudaMalloc((void **) &d_conv_a_eval, tam_img_max * sizeof(float));
-
+    checkCudaErrors(cudaMalloc((void **) &d_img_in, tam_img_max * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_img_in_copy, tam_img_max * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_img_out, tam_img_max * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_conv_a_eval, tam_img_max * sizeof(float)));
 
 
     int i_out_c = 0, i_in_c = 0, i_out_p = 0, i_in_p = 0, i_w_ = 0, i_b_ = 0;
@@ -207,11 +203,10 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
         i_in_c += this->convs[i].get_C() * this->convs[i].get_H() * this->convs[i].get_W();
 
         this->i_conv_out[i] = i_out_c;
-        i_out_c += this->convs[i].get_n_kernels() * this->convs[i].get_H_out() * this->convs[i].get_W_out();
+        i_out_c += this->convs[i].get_n_kernels() * this->convs[i].get_cols_input_unroll();
 
         // Agrupación máxima
-        this->i_plm_in[i] = i_in_p;
-        i_in_p += this->plms[i].get_C() * this->plms[i].get_H() * this->plms[i].get_W();
+        this->i_plm_in[i] = this->i_conv_out[i];
 
         this->i_plm_out[i] = i_out_p;
         i_out_p += this->plms[i].get_C() * this->plms[i].get_H_out() * this->plms[i].get_W_out();
@@ -225,7 +220,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
 
 
 
-    tam_in_convs = 0; tam_out_convs = 0; tam_in_pools = 0; tam_out_pools = 0; tam_kernels_conv = 0;
+    tam_in_convs = 0; tam_out_convs = 0; tam_out_pools = 0; tam_kernels_conv = 0;
     tam_flat_out = this->plms[this->n_capas_conv-1].get_C() * this->plms[this->n_capas_conv-1].get_H_out() * this->plms[this->n_capas_conv-1].get_W_out();
     n_bias_conv = 0;
 
@@ -233,26 +228,29 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     {
         tam_kernels_conv += this->convs[i].get_n_kernels() * this->convs[i].get_C() * this->convs[i].get_kernel_fils() * this->convs[i].get_kernel_cols();
         tam_in_convs += this->convs[i].get_C() * this->convs[i].get_H() * this->convs[i].get_W();
-        tam_out_convs += this->convs[i].get_n_kernels() * this->convs[i].get_H_out() * this->convs[i].get_W_out();
+        tam_out_convs += this->convs[i].get_n_kernels() * this->convs[i].get_cols_input_unroll();
         tam_out_pools += this->plms[i].get_C() * this->plms[i].get_H_out() * this->plms[i].get_W_out();
-        tam_in_pools += this->plms[i].get_C() * this->plms[i].get_H() * this->plms[i].get_W();
         n_bias_conv += this->convs[i].get_n_kernels();
     }
+    tam_in_pools = tam_out_convs;
 
     // Reserva de memoria en device
-    cudaMalloc((void **) &d_grad_x_fully, mini_batch* this->fully->get_capas()[0] * sizeof(float));
-    cudaMalloc((void **) &d_y_batch, mini_batch*n_clases * sizeof(float));
-    cudaMalloc((void **) &d_flat_outs_batch, mini_batch* tam_flat_out * sizeof(float));
-    cudaMalloc((void **) &d_plms_outs, mini_batch * tam_out_pools * sizeof(float));
-    cudaMalloc((void **) &d_plms_in_copys, mini_batch * tam_in_pools * sizeof(float));
-    cudaMalloc((void **) &d_conv_grads_w, tam_kernels_conv * sizeof(float));
-    cudaMalloc((void **) &d_conv_grads_bias, n_bias_conv * sizeof(float));
-    cudaMalloc((void **) &d_convs_outs, mini_batch * tam_out_convs * sizeof(float));
-    cudaMalloc((void **) &d_conv_a, mini_batch * tam_out_convs * sizeof(float));
-    cudaMalloc((void **) &d_batch, mini_batch * sizeof(int));
+    checkCudaErrors(cudaMalloc((void **) &d_grad_x_fully, mini_batch* this->fully->get_capas()[0] * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_y_batch, mini_batch*n_clases * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_flat_outs_batch, mini_batch* tam_flat_out * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_plms_outs, mini_batch * tam_out_pools * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_conv_grads_w, tam_kernels_conv * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_conv_grads_bias, n_bias_conv * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_convs_outs, mini_batch * tam_out_convs * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_plms_in_copys, mini_batch * tam_out_convs * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_conv_a, mini_batch * tam_out_convs * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_batch, mini_batch * sizeof(int)));
 
     // Liberar memoria
     free(capas_fully_ptr);
+    
+
+    //checkCudaErrors(cudaGetLastError());
 }
 
 /*
@@ -306,11 +304,11 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
     indices = (int *)malloc(this->n_imagenes * sizeof(int));
     batch = (int *)malloc(this->mini_batch * sizeof(int));
     tam_batches = (int *)malloc(n_batches * sizeof(int));
-    cudaMalloc((void **) &d_indices, this->n_imagenes * sizeof(int));
-    cudaMalloc((void **) &this->d_flat_outs, this->n_imagenes* tam_flat_out * sizeof(float));
-    cudaMalloc((void **) &this->d_flat_outs_T, this->n_imagenes* tam_flat_out * sizeof(float));
-    cudaMalloc((void **) &this->d_train_labels, this->n_imagenes* n_clases * sizeof(float));
-    cudaMalloc((void **) &this->d_train_imgs, n_imagenes*C*H*W * sizeof(float));
+    checkCudaErrors(cudaMalloc((void **) &d_indices, this->n_imagenes * sizeof(int)));
+    checkCudaErrors(cudaMalloc((void **) &this->d_flat_outs, this->n_imagenes* tam_flat_out * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &this->d_flat_outs_T, this->n_imagenes* tam_flat_out * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &this->d_train_labels, this->n_imagenes* n_clases * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &this->d_train_imgs, n_imagenes*C*H*W * sizeof(float)));
 
     if(this->n_clases != n_clases)
         cout << "\n\nError. Número de clases distinto al establecido previamente en la arquitectura de la red. " << this->n_clases << " != " << n_clases << endl << endl;
@@ -325,8 +323,7 @@ void CNN::set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, 
 
     // Último batch puede tener distinto tamaño al resto
     if(this->n_imagenes % mini_batch != 0)
-        tam_batches[n_batches-1] = this->n_imagenes % mini_batch;
-
+        tam_batches[n_batches-1] = this->n_imagenes % mini_batch;    
 }
 
 
@@ -375,17 +372,20 @@ void CNN::train(int epocas, int mini_batch)
     for(int i=0; i<n; ++i)
         indices[i] = i;
 
+    
     for(int ep=0; ep<epocas; ++ep)
     {
+        
         // Desordenar vector de índices
         shuffle(indices, n, g);
         cudaMemcpy(d_indices, indices, n * sizeof(int), cudaMemcpyHostToDevice);
 
         ini = high_resolution_clock::now();
-
+        
         // ForwardPropagation de cada batch -----------------------------------------------------------------------
         for(int i=0; i<n_batches; ++i)
         {
+            
             // Establecer tamaño de grids 1D y 2D
             grid_1D.x = (tam_batches[i]  + block_1D.x -1) / block_1D.x;
             grid_2D.x = (n_clases  + block_2D.x -1) / block_2D.x;
@@ -397,8 +397,8 @@ void CNN::train(int epocas, int mini_batch)
 
             actualizar_batch<<<grid_1D, block_1D>>>(d_batch, d_indices + mini_batch*i, tam_batches[i]);
             actualizar_etiquetas_batch<<<grid_2D, block_2D>>>(d_y_batch, d_batch, d_train_labels, tam_batches[i], n_clases);
-
-
+            
+            
             for(int img=0; img<tam_batches[i]; ++img)
             {
 
@@ -408,9 +408,8 @@ void CNN::train(int epocas, int mini_batch)
                 this->convs[0].forwardPropagation_vectores_externos(this->d_img_in, d_img_conv_out, d_img_conv_a);
 
                 d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[0];
-                d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[0];
+                d_img_plms_in_copy = d_plms_in_copys + img*tam_out_convs + i_conv_out[0];
                 this->plms[0].forwardPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
-
 
                 // Resto de capas convolucionales y maxpool ----------------------------
                 for(int j=1; j<this->n_capas_conv; ++j)
@@ -426,12 +425,14 @@ void CNN::train(int epocas, int mini_batch)
                     d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[j];
                     this->plms[j].forwardPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
                 }
-
+                
                 // Capa flatten
                 d_img_flat_out = d_flat_outs_batch + img*tam_flat_out;
                 cudaMemcpy(d_img_flat_out, d_img_plms_out, tam_flat_out * sizeof(float), cudaMemcpyDeviceToDevice);
+                
             }
-
+            
+            
             // ---------------------------------------------------------------------------------------------------------------------------
             // Capa totalmente conectada
             // ---------------------------------------------------------------------------------------------------------------------------
@@ -463,7 +464,7 @@ void CNN::train(int epocas, int mini_batch)
             grid_1D.x = (n_bias_conv + block_1D.x -1) / block_1D.x;
             inicializar_a_0<<<grid_1D, block_1D>>>(d_conv_grads_bias, n_bias_conv);
 
-
+            
             // Cálculo de gradientes respecto a cada parámetro
             for(int img=0; img<tam_batches[i]; ++img)
             {
@@ -521,9 +522,6 @@ void CNN::train(int epocas, int mini_batch)
                     this->convs[0].backPropagation_vectores_externos(d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
                 }
             }
-            //fin_prueba = high_resolution_clock::now();
-            //duration_prueba = duration_cast<milliseconds>(fin_prueba - ini_prueba);
-            //cout << "Tiempo_prueba: " << "                                           " << duration_prueba.count() << " (s)" << endl;
 
             // Actualizar parámetros --------------------------------------------------------------------
             // Actualizar parámetros de capas convolucionales
@@ -538,8 +536,10 @@ void CNN::train(int epocas, int mini_batch)
             // Actualizar parámetros de capas convolucionales
             for(int j=0; j<this->n_capas_conv; ++j)
                 this->convs[j].escalar_pesos_vectores_externos(2);
+            
         }
-
+        
+        
         evaluar_modelo();
         cudaDeviceSynchronize();
 
@@ -547,9 +547,10 @@ void CNN::train(int epocas, int mini_batch)
         duration = duration_cast<seconds>(fin - ini);
 
         cout << "Época: " << ep << ",                                           " << duration.count() << " (s)" << endl;
-
+        
         checkCudaErrors(cudaGetLastError());
     }
+    
     //evaluar_modelo_en_test();
 
 }
@@ -591,7 +592,7 @@ void CNN::evaluar_modelo()
     this->fully->evaluar_modelo_GEMM();
 
     // Realizar media y obtener valores finales
-    //checkCudaErrors(cudaGetLastError());
+    checkCudaErrors(cudaGetLastError());
 }
 
 /*

@@ -86,8 +86,8 @@ class Convolutional
 
         size_t smem;            // Memoria compartida requerida por el kernel
         size_t smem_1D;
-        //float *d_max = nullptr;
-        //float *d_min = nullptr;
+        float *d_max = nullptr;
+        float *d_min = nullptr;
 
     public:
 
@@ -134,6 +134,7 @@ class Convolutional
         int get_C(){return this->C;};
         int get_H_out(){return this->H_out;};
         int get_W_out(){return this->W_out;};
+        int get_cols_input_unroll(){return this->cols_input_unroll;};
 
         // https://calvinfeng.gitbook.io/machine-learning-notebook/supervised-learning/convolutional-neural-network/convolution_operation
 

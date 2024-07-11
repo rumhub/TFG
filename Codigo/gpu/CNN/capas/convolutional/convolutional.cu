@@ -191,18 +191,18 @@ __global__ void forward_propagation_GEMM(int M, int N, int K, const float *A, co
         __syncthreads();
     }
 
-		if(iy < M && ix < N)
-		{
-				result = sum + bias[iy];
-				C[iy*N + ix] = result;
+    if(iy < M && ix < N)
+    {
+        result = sum + bias[iy];
+        C[iy*N + ix] = result;
 
-				// ReLU
-				if(result > 0)
-					output[iy*N + ix] = result;
-				else
-					output[iy*N + ix] = 0;
-		}
-
+        // ReLU
+        if(result > 0)
+            output[iy*N + ix] = result;
+        else
+            output[iy*N + ix] = 0;
+    }
+    
 }
 
 __global__ void matrizTranspuesta_conv(float* X, float *Y, int rows, int cols)
@@ -343,12 +343,11 @@ __global__ void deriv_activ_func_output(int C, int H, int W, float *output, cons
 __global__ void centrar(int C, int H, int W, int H_pad, int W_pad, const float *output, float *output_pad)
 {
 		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
-		int pos;
 
 		// Realizar derivada Y_out/Y_in
 		if(iy < H_pad && ix < W_pad)
-				for(int i=0; i<C; i++)
-						output_pad[i*H_pad*W_pad + iy*W_pad + ix] = output[i*H*W + iy*W + ix];
+            for(int i=0; i<C; i++)
+                output_pad[i*H_pad*W_pad + iy*W_pad + ix] = output[i*H*W + iy*W + ix];
 }
 
 __global__ void aplicar_padding_gpu(int C, int H, int W, const float *X, float *Y, int pad)
@@ -560,9 +559,9 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
 
 
     // Punteros device
-    cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
-		cudaMalloc((void **) &d_w, bytes_w);
-		cudaMalloc((void **) &d_bias, bytes_bias);
+    checkCudaErrors(cudaMalloc((void **) &d_input_unroll, bytes_input_unroll));
+    checkCudaErrors(cudaMalloc((void **) &d_w, bytes_w));
+    checkCudaErrors(cudaMalloc((void **) &d_bias, bytes_bias));
 
     this->pad = kernel_fils-1;
     this->H_out_pad = H_out +2*pad;
@@ -579,19 +578,24 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     this->bytes_input_back_unroll = fils_input_unroll * cols_input_unroll * sizeof(float);
 
     // Reserva de memoria en device
-		cudaMalloc((void **) &d_sum_local, (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE * sizeof(float));
-		cudaMalloc((void **) &d_output_unroll_T, bytes_output_unroll);
-		cudaMalloc((void **) &d_input_back_unroll_T, bytes_input_back_unroll);
-		cudaMalloc((void **) &d_output_centrado, this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
-		cudaMalloc((void **) &d_output_pad, this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
-    cudaMalloc((void **) &d_output_unroll, bytes_output_unroll);
-    cudaMalloc((void **) &d_matriz_pesos, bytes_matriz_pesos);
-    cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll);
-		cudaMemcpy(d_w, w_ptr, bytes_w, cudaMemcpyHostToDevice);
-		cudaMemcpy(d_bias, bias_ptr, this->n_kernels * sizeof(float), cudaMemcpyHostToDevice);
+    checkCudaErrors(cudaMalloc((void **) &d_sum_local, (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_output_unroll_T, bytes_output_unroll));
+    checkCudaErrors(cudaMalloc((void **) &d_input_back_unroll_T, bytes_input_back_unroll));
+    checkCudaErrors(cudaMalloc((void **) &d_output_centrado, this->n_kernels * H_out_pad * W_out_pad * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_output_pad, this->n_kernels * H_out_pad * W_out_pad * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_output_unroll, bytes_output_unroll));
+    checkCudaErrors(cudaMalloc((void **) &d_matriz_pesos, bytes_matriz_pesos));
+    checkCudaErrors(cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll));
 
-		free(bias_ptr);
-		free(w_ptr);
+    int n_pesos = n_kernels * C * kernel_fils * kernel_cols;
+    checkCudaErrors(cudaMalloc((void **) &d_max, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_min, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float)));
+
+    cudaMemcpy(d_w, w_ptr, bytes_w, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_bias, bias_ptr, this->n_kernels * sizeof(float), cudaMemcpyHostToDevice);
+
+    free(bias_ptr);
+    free(w_ptr);
 };
 
 
@@ -647,12 +651,12 @@ void Convolutional::copiar(const Convolutional & conv)
     this->block.x = BLOCK_SIZE;
     this->block.y = BLOCK_SIZE;
 
-		block_1D.x = BLOCK_SIZE;
-		block_1D.y = 1;
+    block_1D.x = BLOCK_SIZE;
+    block_1D.y = 1;
 
     // Memoria compartida a nivel de bloque
     this->smem = (2*block.x * block.y) *sizeof(float);
-		this->smem_1D = (2*block_1D.x) *sizeof(float);
+    this->smem_1D = (2*block_1D.x) *sizeof(float);
 
 
 
@@ -671,23 +675,26 @@ void Convolutional::copiar(const Convolutional & conv)
     this->bytes_input_back_unroll = conv.bytes_input_back_unroll;
 
     // Reserva de memoria en device
-		cudaMalloc((void **) &d_sum_local, (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE * sizeof(float));
-		cudaMalloc((void **) &d_output_unroll_T, bytes_output_unroll);
-		cudaMalloc((void **) &d_input_back_unroll_T, bytes_input_back_unroll);
-		cudaMalloc((void **) &d_output_centrado, this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
-		cudaMalloc((void **) &d_output_pad, this->n_kernels * H_out_pad * W_out_pad * sizeof(float));
-    cudaMalloc((void **) &d_w, bytes_w);
-		cudaMalloc((void **) &d_bias, bytes_bias);
-		cudaMalloc((void **) &d_input_unroll, bytes_input_unroll);
-    cudaMalloc((void **) &d_output_unroll, bytes_output_unroll);
-    cudaMalloc((void **) &d_matriz_pesos, bytes_matriz_pesos);
-    cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll);
-		cudaMemcpy(d_w, w_ptr, bytes_w, cudaMemcpyHostToDevice);
-		cudaMemcpy(d_bias, bias_ptr, bytes_bias, cudaMemcpyHostToDevice);
+    checkCudaErrors(cudaMalloc((void **) &d_sum_local, (cols_output_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_output_unroll_T, bytes_output_unroll));
+    checkCudaErrors(cudaMalloc((void **) &d_input_back_unroll_T, bytes_input_back_unroll));
+    checkCudaErrors(cudaMalloc((void **) &d_output_centrado, this->n_kernels * H_out_pad * W_out_pad * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_output_pad, this->n_kernels * H_out_pad * W_out_pad * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_w, bytes_w));
+    checkCudaErrors(cudaMalloc((void **) &d_bias, bytes_bias));
+    checkCudaErrors(cudaMalloc((void **) &d_input_unroll, bytes_input_unroll));
+    checkCudaErrors(cudaMalloc((void **) &d_output_unroll, bytes_output_unroll));
+    checkCudaErrors(cudaMalloc((void **) &d_matriz_pesos, bytes_matriz_pesos));
+    checkCudaErrors(cudaMalloc((void **) &d_input_back_unroll, bytes_input_back_unroll));
+    checkCudaErrors(cudaMemcpy(d_w, w_ptr, bytes_w, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_bias, bias_ptr, bytes_bias, cudaMemcpyHostToDevice));
 
+    int n_pesos = n_kernels * C * kernel_fils * kernel_cols;
+    checkCudaErrors(cudaMalloc((void **) &d_max, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_min, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float)));
 
-		free(bias_ptr);
-		free(w_ptr);
+    free(bias_ptr);
+    free(w_ptr);
 }
 
 
@@ -697,8 +704,8 @@ Convolutional::~Convolutional()
     cudaFree(d_matriz_pesos); cudaFree(d_input_back_unroll);
 		cudaFree(d_bias); cudaFree(d_output_centrado); cudaFree(d_output_pad); cudaFree(d_input_back_unroll_T);
 		cudaFree(d_output_unroll_T); cudaFree(d_sum_local);
+		cudaFree(d_max); cudaFree(d_min);
 
-    cout << "Destructor: ";
     checkCudaErrors(cudaGetLastError());
 
 };
@@ -754,9 +761,6 @@ void Convolutional::checkCudaErrors(cudaError_t err) {
     if (err != cudaSuccess) {
         std::cerr << "CUDA error: " << cudaGetErrorString(err) << std::endl;
         exit(err);
-    }else
-    {
-        cout << "Todo correcto!" << endl;
     }
 }
 
@@ -769,25 +773,16 @@ void Convolutional::checkCudaErrors(cudaError_t err) {
 */
 void Convolutional::forwardPropagation_vectores_externos(float *input, float *output, float *a)
 {
-		dim3 block_1D(BLOCK_SIZE, 1);
-		dim3 grid_1D((C*H*W + block_1D.x -1) / block_1D.x, 1);
-		unrollGPU<<<grid_1D, block_1D>>>(C, H, W, this->kernel_fils, input, d_input_unroll);
+    dim3 block_1D(BLOCK_SIZE, 1);
+    dim3 grid_1D((C*H*W + block_1D.x -1) / block_1D.x, 1);
+    unrollGPU<<<grid_1D, block_1D>>>(C, H, W, this->kernel_fils, input, d_input_unroll);
 
-		// Multiplicación de matrices
-		this->grid.x = (cols_input_unroll  + BLOCK_SIZE -1) / BLOCK_SIZE;
-		this->grid.y = (fils_w + BLOCK_SIZE -1) / BLOCK_SIZE;
-		forward_propagation_GEMM<<<grid, block, smem>>>(this->n_kernels, cols_input_unroll, cols_w, d_w, d_input_unroll, a, d_bias, output);
+    // Multiplicación de matrices
+    this->grid.x = (cols_input_unroll  + block.x -1) / block.x;
+    this->grid.y = (fils_w + block.y -1) / block.y;
+
+    forward_propagation_GEMM<<<grid, block, smem>>>(this->n_kernels, cols_input_unroll, cols_w, d_w, d_input_unroll, a, d_bias, output);
 };
-
-
-
-
-
-
-
-
-
-
 
 
 void Convolutional::aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad)
@@ -910,22 +905,14 @@ void Convolutional::backPropagation_vectores_externos(float *input, float *outpu
 */
 void Convolutional::escalar_pesos_vectores_externos(float clip_value)
 {
-		int n_pesos = n_kernels * C * kernel_fils * kernel_cols;
-		grid.x = (n_pesos + block_1D.x -1) / block_1D.x;
-		grid.y = 1;
+    int n_pesos = n_kernels * C * kernel_fils * kernel_cols;
+    grid.x = (n_pesos + block_1D.x -1) / block_1D.x;
+    grid.y = 1;
 
-		float *d_max, *d_min;
-		cudaMalloc((void **) &d_max, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float));
-		cudaMalloc((void **) &d_min, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float));
-
-
-		reduceMax_conv<<<grid, block_1D, smem_1D>>>(d_w, d_max, n_pesos);
-		reduceMin_conv<<<grid, block_1D, smem_1D>>>(d_w, d_min, n_pesos);
-		min_max_conv<<<grid, block_1D>>>(d_max, d_min, grid.x);
-		kernel_escalar_pesos_conv<<<grid, block_1D>>>(d_w, n_pesos, d_max, d_min, clip_value);
-
-
-		cudaFree(d_max); cudaFree(d_min);
+    reduceMax_conv<<<grid, block_1D, smem_1D>>>(d_w, d_max, n_pesos);
+    reduceMin_conv<<<grid, block_1D, smem_1D>>>(d_w, d_min, n_pesos);
+    min_max_conv<<<grid, block_1D>>>(d_max, d_min, grid.x);
+    kernel_escalar_pesos_conv<<<grid, block_1D>>>(d_w, n_pesos, d_max, d_min, clip_value);
 }
 
 /*

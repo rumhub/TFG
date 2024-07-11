@@ -3,13 +3,15 @@
 
 using namespace std;
 
+void checkCudaErrors_pool(cudaError_t err) {
+    if (err != cudaSuccess) {
+        std::cerr << "CUDA error: " << cudaGetErrorString(err) << std::endl;
+        exit(err);
+    }
+}
+
 __global__ void maxpool_forward(int C, int H, int W, int K, float *X, float *X_copy, float *Y, int pad)
 {
-    // Memoria compartida dinámica
-	//extern __shared__ float sdata[];
-
-    int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
-
     // Convertir de índices de hebra a índices de matriz
   	int H_out = H / K + 2*pad, W_out = W /K + 2*pad,
         iy_Y = threadIdx.y + blockIdx.y * blockDim.y, ix_Y = threadIdx.x + blockIdx.x * blockDim.x,     // Coordenadas respecto a la mtriz de salida Y
@@ -19,52 +21,52 @@ __global__ void maxpool_forward(int C, int H, int W, int K, float *X, float *X_c
         tam_capaX = H * W;
 
     float max = FLT_MIN;
-    int pos_max;
+    int pos_max = idX;
 
     // Inicializar output
     if(iy_Y < H_out && ix_Y < W_out)
       Y[idY] = 0.0;
 
     if(iy_Y < H_out-2*pad && ix_Y < W_out-2*pad)    // -2*pad para quitar el padding. Como solo hay padding en la salida, usamos las mismas hebras que si no hubiera ningún padding
-    for(int c=0; c<C; c++)
     {
+        for(int c=0; c<C; c++)
+        {
 
-        max = FLT_MIN;
-        for(int i=0; i<K; i++)
-            for(int j=0; j<K; j++)
-            {
-                // Inicializar input_copy a 0
-                if(iy_X + i < H && ix_X + j < W)
-                  X_copy[idX +i*W +j] = 0.0;
-
-                if(max < X[idX + i*W + j] && iy_X + i < H && ix_X + j < W)
+            max = FLT_MIN;
+            for(int i=0; i<K; i++)
+                for(int j=0; j<K; j++)
                 {
-                    max = X[idX +i*W +j];
-                    pos_max = idX +i*W +j;
+                    // Inicializar input_copy a 0
+                    if(iy_X + i < H && ix_X + j < W)
+                        X_copy[idX +i*W +j] = 0.0;
+
+                    if(max < X[idX + i*W + j] && iy_X + i < H && ix_X + j < W)
+                    {
+                        max = X[idX +i*W +j];
+                        pos_max = idX +i*W +j;
+                    }
                 }
-            }
 
-        __syncthreads();
-        // Establecer valor del píxel "IdY" de salida
-        Y[idY] = max;
-
-        // Establecer posición del máximo
-        if(pos_max < C*H*W)
-            X_copy[pos_max] = 1.0;
-
-        // Actualizar índice para siguiente capa
-        idY += tam_capaY;
-        idX += tam_capaX;
+            __syncthreads();
+            
+            // Establecer valor del píxel "IdY" de salida
+            Y[idY] = max;
+            
+            // Establecer posición del máximo
+            if(pos_max < C*H*W)
+                X_copy[pos_max] = 1.0;
+            
+            // Actualizar índice para siguiente capa
+            idY += tam_capaY;
+            idX += tam_capaX;
+        }
     }
-
 }
+
 
 __global__ void maxpool_back(int C, int H, int W, int K, float *X, float *X_copy, float *Y, int pad)
 {
-    // Memoria compartida dinámica
-	//extern __shared__ float sdata[];
-
-    int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
+    //int tid = (blockIdx.y * gridDim.x + blockIdx.x) * blockDim.x * blockDim.y + (threadIdx.y * blockDim.x + threadIdx.x);
 
     // Convertir de índices de hebra a índices de matriz
   	int H_out = H / K + 2*pad, W_out = W /K + 2*pad,
@@ -261,6 +263,7 @@ void PoolingMax::forwardPropagation_vectores_externos(float *input, float *outpu
     maxpool_forward<<<grid, block>>>(C, H, W, kernel_fils, input, input_copy, d_output, pad);
 
     cudaMemcpy(output, d_output, bytes_output, cudaMemcpyDeviceToDevice);
+    checkCudaErrors_pool(cudaGetLastError());
 };
 
 void PoolingMax::backPropagationGPU(float *input, float *output, float *input_copy)
@@ -289,7 +292,6 @@ void PoolingMax::backPropagation_vectores_externos(float *input, float *output, 
 void PoolingMax::backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output)
 {
     int n_canales = this->C, n_veces_fils = this->H / kernel_fils, n_veces_cols = this->W / kernel_cols;
-    int fila, columna;
     float max = 0.0;
     int output_fil = 0, output_col = 0;
 

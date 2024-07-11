@@ -46,7 +46,7 @@ int main()
 
     //cnn.leer_imagenes();
     //cnn.leer_imagenes_mnist(3000, 10);
-    cnn.leer_imagenes_cifar10(100, 100, 10);
+    cnn.leer_imagenes_cifar10(1000, 100, 10);
     cnn.mostrar_arquitectura();
     cnn.train(1, 32);
     //cnn.train(20, 32);

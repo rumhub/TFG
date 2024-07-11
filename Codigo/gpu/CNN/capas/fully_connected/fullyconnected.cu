@@ -479,6 +479,13 @@ __global__ void kernel_transpuesta_pesos(int *capas_wT, int *capas, float *w, fl
 		}
 }
 
+void checkCudaErrors_fully(cudaError_t err) {
+    if (err != cudaSuccess) {
+        std::cerr << "CUDA error: " << cudaGetErrorString(err) << std::endl;
+        exit(err);
+    }
+}
+
 /*
     CONSTRUCTOR de la clase FullyConnected
     --------------------------------------
@@ -488,7 +495,6 @@ __global__ void kernel_transpuesta_pesos(int *capas_wT, int *capas, float *w, fl
 */
 FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch)
 {
-
     liberar_memoria = true;
     int n_neuronas = 0, n_pesos = 0, n_neuronas_GEMM = 0;
     this->mini_batch = mini_batch;
@@ -519,7 +525,6 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
         this->i_capasGEMM[i] = i_capasGEMM[i-1] + (capas[i-1] + 1) * mini_batch;
         n_neuronas_GEMM += i_capasGEMM[i];
     }
-
 
     this->bias_ptr = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
     this->i_wT = (int *)malloc(n_capas * n_neuronas * sizeof(int));
@@ -570,20 +575,6 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
         }
     }
 
-    /*
-    for(int i = 0; i < n_capas - 1; i++) {
-    for(int k = 0; k < capas[i + 1]; k++) { // Por cada neurona de la siguiente capa
-        for(int j = 0; j < capas[i]; j++) { // Por cada neurona de la capa actual
-            // Calculate the index directly
-            this->wT_ptr[(i * (capas[i + 1] * (capas[i] + 1))) + (k * (capas[i] + 1)) + j] = this->w_ptr[i_w_ptr[i] + j * capas[i + 1] + k];
-        }
-        // Añadir bias
-        this->wT_ptr[(i * (capas[i + 1] * (capas[i] + 1))) + (k * (capas[i] + 1)) + capas[i]] = this->bias_ptr[i_capa[i + 1] + k];
-    }
-
-    //mostrar_pesos_Traspuestos_ptr();
-    */
-
     // Tamaño de bloques ----------------
     block_size = 8;
 
@@ -613,49 +604,49 @@ FullyConnected::FullyConnected(int *capas, int n_capas, float lr, int mini_batch
 
     // Reserva de memoria en device ----------------
     // Capa SoftMax
-    cudaMalloc((void **) &d_softmax, capas[n_capas-1] * mini_batch * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_softmax, capas[n_capas-1] * mini_batch * sizeof(float)));
 
     // Sumas para Accuracy y Entropía Cruzada
-    cudaMalloc((void **) &d_sum_acc_entr, 2*mini_batch * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_sum_acc_entr, 2*mini_batch * sizeof(float)));
 
     // Capas Transpuestas
-    cudaMalloc((void **) &d_capas_wT, n_capas * sizeof(int));
-
+    checkCudaErrors_fully(cudaMalloc((void **) &d_capas_wT, n_capas * sizeof(int)));
+    
     // Capas
-    cudaMalloc((void **) &d_capas, n_capas * sizeof(int));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_capas, n_capas * sizeof(int)));
 
     // Valor máximo
-    cudaMalloc((void **) &d_max, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_max, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float)));
 
     // Valor mínimo
-    cudaMalloc((void **) &d_min, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_min, ((n_pesos + block_1D.x -1) / block_1D.x) * sizeof(float)));
 
     // Matriz de  pesos transpuesta
-    cudaMalloc((void **) &d_wT, n_pesos * n_neuronas * sizeof(float));
-
+    checkCudaErrors_fully(cudaMalloc((void **) &d_wT, n_pesos * n_neuronas * sizeof(float)));
+    
     // Matriz de pesos
-    cudaMalloc((void **) &d_w, n_pesos * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_w, n_pesos * sizeof(float)));
 
     // Gradiente de pesos
-    cudaMalloc((void **) &d_grad_w, n_pesos * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_grad_w, n_pesos * sizeof(float)));
 
     // Valor de cada neurona tras aplicar su función de activación asociada
-    cudaMalloc((void **) &d_z, n_neuronas_GEMM * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_z, n_neuronas_GEMM * sizeof(float)));
 
     // Valor de cada neurona antes de aplicar su función de activación asociada
-    cudaMalloc((void **) &d_a, n_neuronas_GEMM * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_a, n_neuronas_GEMM * sizeof(float)));
 
     // Matriz transpuesta de valores de cada neurona antes aplicar su función de activación asociada
-    cudaMalloc((void **) &d_aT, n_neuronas_GEMM * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_aT, n_neuronas_GEMM * sizeof(float)));
 
     // Gradiente de cada bias o sesgo
-    cudaMalloc((void **) &d_grad_b, n_neuronas_GEMM * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_grad_b, n_neuronas_GEMM * sizeof(float)));
 
     // Bias o sesgos
-    cudaMalloc((void **) &d_b, n_neuronas * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_b, n_neuronas * sizeof(float)));
 
     // Etiquetas
-    cudaMalloc((void **) &d_y, capas[n_capas-1] * mini_batch * sizeof(float));
+    checkCudaErrors_fully(cudaMalloc((void **) &d_y, capas[n_capas-1] * mini_batch * sizeof(float)));
 
     // Copiar información de host a device ----------------
     cudaMemcpy(d_capas_wT, capas_wT, n_capas * sizeof(int), cudaMemcpyHostToDevice);
