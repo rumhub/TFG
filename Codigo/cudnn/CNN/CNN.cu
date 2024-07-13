@@ -55,6 +55,15 @@ __global__ void actualizar_etiquetas_batch(float *y_batch, int *batch, float *tr
         y_batch[iy*n_clases + ix] = train_labels[batch[iy]*n_clases + ix];
 }
 
+
+// Error checking macro
+#define checkCUDNN(status) { \
+    if (status != CUDNN_STATUS_SUCCESS) { \
+        std::cerr << "CUDNN error: " << cudnnGetErrorString(status) << std::endl; \
+        std::exit(EXIT_FAILURE); \
+    } \
+}
+
 /*
     CONSTRUCTOR de la clase CNN
     --------------------------------------
@@ -250,7 +259,128 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     free(capas_fully_ptr);
     
 
-    //checkCudaErrors(cudaGetLastError());
+    // ------------------- CUDNN ---------------------------------
+    // Tensor
+    this->convBiasTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
+    this->poolOutTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
+    this->convOutTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
+    
+    // Desc
+    this->convDesc = new cudnnConvolutionDescriptor_t[this->n_capas_conv];
+    this->poolDesc = new cudnnPoolingDescriptor_t[this->n_capas_conv];
+    this->convFilterDesc = new cudnnFilterDescriptor_t[this->n_capas_conv];
+
+    crear_handles(mini_batch);
+
+    // ------------------- CUDNN ---------------------------------
+
+
+    checkCudaErrors(cudaGetLastError());
+}
+
+void CNN::crear_handles(int mini_batch)
+{
+    // Datos de entrenamiento
+    checkCUDNN(cudnnCreateTensorDescriptor(&dataTensor));
+    checkCUDNN(cudnnSetTensor4dDescriptor(dataTensor,
+                                    CUDNN_TENSOR_NHWC,
+                                    CUDNN_DATA_FLOAT,
+                                    mini_batch,  // batch size
+                                    this->convs[0].get_C(),  // channels
+                                    this->convs[0].get_H(), // height (reduced for simplicity)
+                                    this->convs[0].get_W()  // width (reduced for simplicity)
+    ));
+
+    checkCUDNN(cudnnCreate(&cudnnHandle));
+    for(int i=0; i<this->n_capas_conv; i++)
+    {
+        // Tensor
+        checkCUDNN(cudnnCreateTensorDescriptor(&convBiasTensor[i]));
+        checkCUDNN(cudnnCreateTensorDescriptor(&poolOutTensor[i]));
+        checkCUDNN(cudnnCreateTensorDescriptor(&convOutTensor[i]));
+
+        // Desc
+        checkCUDNN(cudnnCreateConvolutionDescriptor(&convDesc[i]));
+        checkCUDNN(cudnnCreatePoolingDescriptor(&poolDesc[i]));
+        checkCUDNN(cudnnCreateFilterDescriptor(&convFilterDesc[i]));
+    }
+
+    // Establecer dimensiones de los tensores
+    for(int i=0; i<this->n_capas_conv; i++)
+    {
+        // Tensor
+        checkCUDNN(cudnnSetTensor4dDescriptor(convBiasTensor[i],   // cudnnTensorDescriptor_t
+                                    CUDNN_TENSOR_NCHW,      // cudnnTensorFormat_t
+                                    CUDNN_DATA_FLOAT,       // cudnnDataType_t
+                                    1,                  // n 
+                                    this->convs[i].get_n_kernels(), // c
+                                    1,                      // h
+                                    1));                     // w
+
+        checkCUDNN(cudnnSetTensor4dDescriptor(poolOutTensor[i],       // cudnnTensorDescriptor_t
+                                    CUDNN_TENSOR_NCHW,      // cudnnTensorFormat_t
+                                    CUDNN_DATA_FLOAT,   // cudnnDataType_t
+                                    mini_batch,         // n 
+                                    this->plms[i].get_C(),  // c
+                                    this->plms[i].get_H(),  // h
+                                    this->plms[i].get_W())); // w
+
+        checkCUDNN(cudnnSetTensor4dDescriptor(convOutTensor[i],
+                                    CUDNN_TENSOR_NHWC,
+                                    CUDNN_DATA_FLOAT,
+                                    mini_batch,  // batch size
+                                    this->convs[i].get_C(), // channels
+                                    this->convs[i].get_H(), // height (calculated manually)
+                                    this->convs[i].get_W()  // width (calculated manually)
+        ));
+
+
+        // Desc
+        checkCUDNN(cudnnSetPooling2dDescriptor(poolDesc[i],         // cudnnPoolingDescriptor_t
+                                    CUDNN_POOLING_MAX,       // cudnnPoolingMode_t
+                                    CUDNN_PROPAGATE_NAN,         // cudnnNanPropagation_t
+                                    this->plms[i].get_kernel_fils(), this->plms[i].get_kernel_cols(),  // windowHeight, windowWidth
+                                    this->plms[i].get_pad(), this->plms[i].get_pad(),    // verticalPadding, horizontalPadding
+                                    1, 1));      // verticalStride, horizontalStride
+
+        checkCUDNN(cudnnSetFilter4dDescriptor(convFilterDesc[i],
+                                    CUDNN_DATA_FLOAT,
+                                    CUDNN_TENSOR_NCHW,
+                                    this->convs[i].get_n_kernels(), // out_channels
+                                    this->convs[i].get_C(),  // in_channels
+                                    this->convs[i].get_H(),  // kernel height
+                                    this->convs[i].get_W()   // kernel width
+        ));
+
+        checkCUDNN(cudnnSetConvolution2dDescriptor(convDesc[i],
+                                    this->convs[i].get_pad(), this->convs[i].get_pad(),  // padding
+                                    1, 1,  // strides
+                                    1, 1,  // dilation
+                                    CUDNN_CROSS_CORRELATION,
+                                    CUDNN_DATA_FLOAT
+        ));
+
+    }
+
+}
+
+void CNN::destruir_handles()
+{
+    cudnnDestroyTensorDescriptor(dataTensor);
+
+    for(int i=0; i<this->n_capas_conv; i++)
+    {
+        // Tensor
+        cudnnDestroyTensorDescriptor(convBiasTensor[i]);
+        cudnnDestroyTensorDescriptor(poolOutTensor[i]);
+        cudnnDestroyTensorDescriptor(convOutTensor[i]);
+    
+        // Desc
+        cudnnDestroyConvolutionDescriptor(convDesc[i]);
+        cudnnDestroyPoolingDescriptor(poolDesc[i]);
+        cudnnDestroyFilterDescriptor(convFilterDesc[i]);
+    }
+    
 }
 
 /*

@@ -1,0 +1,1 @@
+ nvcc -m64 -gencode arch=compute_50,code=sm_50  CNN.cu capas/convolutional/convolutional.cu capas/pooling_max/poolingMax.cu capas/fully_connected/fullyconnected.cu -o e -O3
