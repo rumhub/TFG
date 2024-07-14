@@ -264,11 +264,13 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     this->convBiasTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
     this->poolOutTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
     this->convOutTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
+    this->convATensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
     
     // Desc
     this->convDesc = new cudnnConvolutionDescriptor_t[this->n_capas_conv];
     this->poolDesc = new cudnnPoolingDescriptor_t[this->n_capas_conv];
     this->convFilterDesc = new cudnnFilterDescriptor_t[this->n_capas_conv];
+    this->activation = new cudnnActivationDescriptor_t[this->n_capas_conv];
 
     crear_handles(mini_batch);
 
@@ -280,6 +282,9 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
 
 void CNN::crear_handles(int mini_batch)
 {
+    mini_batch = 1;
+    
+        
     // Datos de entrenamiento
     checkCUDNN(cudnnCreateTensorDescriptor(&dataTensor));
     checkCUDNN(cudnnSetTensor4dDescriptor(dataTensor,
@@ -291,6 +296,7 @@ void CNN::crear_handles(int mini_batch)
                                     this->convs[0].get_W()  // width (reduced for simplicity)
     ));
 
+    
     checkCUDNN(cudnnCreate(&cudnnHandle));
     for(int i=0; i<this->n_capas_conv; i++)
     {
@@ -298,13 +304,16 @@ void CNN::crear_handles(int mini_batch)
         checkCUDNN(cudnnCreateTensorDescriptor(&convBiasTensor[i]));
         checkCUDNN(cudnnCreateTensorDescriptor(&poolOutTensor[i]));
         checkCUDNN(cudnnCreateTensorDescriptor(&convOutTensor[i]));
+        checkCUDNN(cudnnCreateTensorDescriptor(&convATensor[i]));
 
         // Desc
         checkCUDNN(cudnnCreateConvolutionDescriptor(&convDesc[i]));
         checkCUDNN(cudnnCreatePoolingDescriptor(&poolDesc[i]));
         checkCUDNN(cudnnCreateFilterDescriptor(&convFilterDesc[i]));
+        checkCUDNN(cudnnCreateActivationDescriptor(&activation[i]));
     }
 
+    
     // Establecer dimensiones de los tensores
     for(int i=0; i<this->n_capas_conv; i++)
     {
@@ -322,16 +331,25 @@ void CNN::crear_handles(int mini_batch)
                                     CUDNN_DATA_FLOAT,   // cudnnDataType_t
                                     mini_batch,         // n 
                                     this->plms[i].get_C(),  // c
-                                    this->plms[i].get_H(),  // h
-                                    this->plms[i].get_W())); // w
+                                    this->plms[i].get_H_out(),  // h
+                                    this->plms[i].get_W_out())); // w
 
         checkCUDNN(cudnnSetTensor4dDescriptor(convOutTensor[i],
                                     CUDNN_TENSOR_NHWC,
                                     CUDNN_DATA_FLOAT,
                                     mini_batch,  // batch size
-                                    this->convs[i].get_C(), // channels
-                                    this->convs[i].get_H(), // height (calculated manually)
-                                    this->convs[i].get_W()  // width (calculated manually)
+                                    this->convs[i].get_n_kernels(), // channels
+                                    this->convs[i].get_H_out(), // height (calculated manually)
+                                    this->convs[i].get_W_out()  // width (calculated manually)
+        ));
+
+        checkCUDNN(cudnnSetTensor4dDescriptor(convATensor[i],
+                                    CUDNN_TENSOR_NHWC,
+                                    CUDNN_DATA_FLOAT,
+                                    mini_batch,  // batch size
+                                    this->convs[i].get_n_kernels(), // channels
+                                    this->convs[i].get_H_out(), // height (calculated manually)
+                                    this->convs[i].get_W_out()  // width (calculated manually)
         ));
 
 
@@ -348,20 +366,24 @@ void CNN::crear_handles(int mini_batch)
                                     CUDNN_TENSOR_NCHW,
                                     this->convs[i].get_n_kernels(), // out_channels
                                     this->convs[i].get_C(),  // in_channels
-                                    this->convs[i].get_H(),  // kernel height
-                                    this->convs[i].get_W()   // kernel width
+                                    this->convs[i].get_kernel_fils(),  // kernel height
+                                    this->convs[i].get_kernel_cols()   // kernel width
         ));
 
         checkCUDNN(cudnnSetConvolution2dDescriptor(convDesc[i],
-                                    this->convs[i].get_pad(), this->convs[i].get_pad(),  // padding
+                                    this->padding[i], this->padding[i],  // padding
                                     1, 1,  // strides
                                     1, 1,  // dilation
                                     CUDNN_CROSS_CORRELATION,
                                     CUDNN_DATA_FLOAT
         ));
 
-    }
+        checkCUDNN(cudnnSetActivationDescriptor(activation[i], 
+                                            CUDNN_ACTIVATION_RELU,
+                                            CUDNN_PROPAGATE_NAN, 
+                                            0.0));
 
+    }    
 }
 
 void CNN::destruir_handles()
@@ -374,6 +396,7 @@ void CNN::destruir_handles()
         cudnnDestroyTensorDescriptor(convBiasTensor[i]);
         cudnnDestroyTensorDescriptor(poolOutTensor[i]);
         cudnnDestroyTensorDescriptor(convOutTensor[i]);
+        cudnnDestroyTensorDescriptor(convATensor[i]);
     
         // Desc
         cudnnDestroyConvolutionDescriptor(convDesc[i]);
@@ -465,6 +488,163 @@ void shuffle(int *vec, int tam_vec, mt19937& rng) {
     }
 }
 
+void CNN::prueba_cudnn()
+{
+    // Set up tensor descriptors for input
+    cudnnTensorDescriptor_t input_descriptor;
+    checkCUDNN(cudnnCreateTensorDescriptor(&input_descriptor));
+    checkCUDNN(cudnnSetTensor4dDescriptor(
+        input_descriptor,
+        CUDNN_TENSOR_NHWC,
+        CUDNN_DATA_FLOAT,
+        1,  // batch size
+        3,  // channels
+        4, // height (reduced for simplicity)
+        4  // width (reduced for simplicity)
+    ));
+
+    // Set up tensor descriptors for convolution output
+    cudnnTensorDescriptor_t conv_output_descriptor;
+    checkCUDNN(cudnnCreateTensorDescriptor(&conv_output_descriptor));
+    checkCUDNN(cudnnSetTensor4dDescriptor(
+        conv_output_descriptor,
+        CUDNN_TENSOR_NHWC,
+        CUDNN_DATA_FLOAT,
+        1,  // batch size
+        2, // channels
+        2, // height (calculated manually)
+        2  // width (calculated manually)
+    ));
+
+    // Set up convolution descriptor
+    cudnnFilterDescriptor_t kernel_descriptor;
+    checkCUDNN(cudnnCreateFilterDescriptor(&kernel_descriptor));
+    checkCUDNN(cudnnSetFilter4dDescriptor(
+        kernel_descriptor,
+        CUDNN_DATA_FLOAT,
+        CUDNN_TENSOR_NCHW,
+        2, // out_channels
+        3,  // in_channels
+        3,  // kernel height
+        3   // kernel width
+    ));
+
+    cudnnConvolutionDescriptor_t convolution_descriptor;
+    checkCUDNN(cudnnCreateConvolutionDescriptor(&convolution_descriptor));
+    checkCUDNN(cudnnSetConvolution2dDescriptor(
+        convolution_descriptor,
+        0, 0,  // padding
+        1, 1,  // strides
+        1, 1,  // dilation
+        CUDNN_CROSS_CORRELATION,
+        CUDNN_DATA_FLOAT
+    ));
+
+    // Allocate memory for tensors
+    float h_input[1 * 3 * 4 * 4] = {
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    };
+    float h_kernel[2 * 3 * 3 * 3] = {
+        1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1,
+
+        1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1,
+    };
+
+    float* d_input;
+    float* d_conv_output;
+    float* d_kernel;
+    cudaMalloc(&d_input, sizeof(h_input));
+    cudaMalloc(&d_conv_output, 1 * 2 * 2 * 2 * sizeof(float));
+    cudaMalloc(&d_kernel, sizeof(h_kernel));
+
+    cudaMemcpy(d_input, h_input, sizeof(h_input), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_kernel, h_kernel, sizeof(h_kernel), cudaMemcpyHostToDevice);
+
+    // Perform the convolution forward pass
+    const float alpha = 1.0f, beta = 0.0f;
+    checkCUDNN(cudnnConvolutionForward(
+        cudnnHandle,
+        &alpha,
+        dataTensor,
+        this->d_img_in,
+        convFilterDesc[0],
+        this->convs[0].get_dw(),        
+        convDesc[0],
+
+        CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM,
+        nullptr, 0,
+        &beta,
+        convOutTensor[0],
+        //d_conv_output
+        //d_img_conv_out
+        d_convs_outs
+    ));
+
+                /*
+        const float alpha = 1.0f, beta = 0.0f;
+                checkCUDNN(cudnnConvolutionForward(
+                    cudnnHandle,
+                    &alpha,
+                    dataTensor,
+                    this->d_img_in,
+                    convFilterDesc[0],
+                    this->convs[0].get_dw(),
+                    convDesc[0],
+                    CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM,
+                    nullptr, 0,
+                    &beta,
+                    convOutTensor[0],
+                    d_img_conv_out
+                ));
+                */
+
+    /*
+    // Perform the convolution forward pass
+    const float alpha = 1.0f, beta = 0.0f;
+    checkCUDNN(cudnnConvolutionForward(
+        cudnnHandle,
+        &alpha,
+        input_descriptor,
+        d_input,
+        kernel_descriptor,
+        d_kernel,
+        convolution_descriptor,
+        CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM,
+        nullptr, 0,
+        &beta,
+        conv_output_descriptor,
+        d_conv_output
+    ));
+    */
+
+    // Copy the result back to the host
+    float h_conv_output[1 * 2 * 2 * 2];
+    cudaMemcpy(h_conv_output, d_conv_output, sizeof(h_conv_output), cudaMemcpyDeviceToHost);
+
+    // Print the convolution output
+    std::cout << "Convolution output tensor:" << std::endl;
+
+    // Print the maxpool output
+    std::cout << "Maxpool output tensor:" << std::endl;
+
+    // Print the fully connected layer output
+    std::cout << "Fully connected layer output:" << std::endl;
+
+    // Clean up
+    cudnnDestroyTensorDescriptor(input_descriptor);
+    cudnnDestroyTensorDescriptor(conv_output_descriptor);
+    cudnnDestroyFilterDescriptor(kernel_descriptor);
+    cudnnDestroyConvolutionDescriptor(convolution_descriptor);
+    cudaFree(d_input);
+    cudaFree(d_conv_output);
+    cudaFree(d_kernel);
+}
 
 void CNN::train(int epocas, int mini_batch)
 {
@@ -509,7 +689,7 @@ void CNN::train(int epocas, int mini_batch)
     {
         
         // Desordenar vector de índices
-        shuffle(indices, n, g);
+        //shuffle(indices, n, g);
         cudaMemcpy(d_indices, indices, n * sizeof(int), cudaMemcpyHostToDevice);
 
         // cudaMemcpy(indices2, d_indices, n * sizeof(int), cudaMemcpyDeviceToHost);
@@ -546,6 +726,106 @@ void CNN::train(int epocas, int mini_batch)
                 d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[0];
                 d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[0];
                 this->convs[0].forwardPropagation_vectores_externos(this->d_img_in, d_img_conv_out, d_img_conv_a);
+
+                // ----------------------------------------------------
+                int C = this->convs[0].get_C(), H = this->convs[0].get_H(), W = this->convs[0].get_W();
+                int n_k = this->convs[0].get_n_kernels(), H_out = this->convs[0].get_H_out(), W_out = this->convs[0].get_W_out();
+                float *conv_in = (float*)malloc(C*H*W * sizeof(float));
+                float *conv_out = (float*)malloc(n_k*H_out*W_out * sizeof(float));
+                float *conv_out_cudnn = (float*)malloc(n_k*H_out*W_out * sizeof(float)); 
+                float *conv_a = (float*)malloc(n_k*H_out*W_out * sizeof(float));
+
+                // -----------
+                cout << "conv_in" << endl;
+                for(int i=0; i<C; i++)
+                    for(int j=0; j<H; j++)
+                        for(int k=0; k<W; k++)
+                            conv_in[i*H*W + j*W + k] = 1;
+                cudaMemcpy(this->d_img_in, conv_in, tam_ini * sizeof(float), cudaMemcpyHostToDevice);
+                // -----------
+
+                // Perform the convolution forward pass
+                const float alpha = 1.0f, beta = 0.0f;
+                checkCUDNN(cudnnConvolutionForward(
+                    cudnnHandle,    // handle
+                    &alpha,         // alpha
+                    dataTensor,         // xDesc
+                    this->d_img_in,         // x
+                    convFilterDesc[0],          // wDesc
+                    this->convs[0].get_dw(),        // w
+                    convDesc[0],                // convDesc
+                    CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM,   // algo
+                    nullptr,                            // workSpace 
+                    0,                              // workSpaceSizeInBytes
+                    &beta,                              // beta
+                    convATensor[0],                     // yDesc
+                    d_img_conv_a                        // y
+                ));
+                
+                checkCUDNN(cudnnActivationForward(cudnnHandle,  // handle 
+                                                activation[i],  // activationDesc
+                                                &alpha,         // alpha
+                                                convATensor[0],      // xDesc
+                                                d_img_conv_a,            // x
+                                                &beta,          // beta
+                                                convOutTensor[0],      // yDesc
+                                                d_img_conv_out));      // y
+
+                //prueba_cudnn();
+
+
+                cudaMemcpy(conv_in, this->d_img_in, tam_ini * sizeof(float), cudaMemcpyDeviceToHost);
+                cudaMemcpy(conv_out, d_img_conv_out, n_k*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+                cudaMemcpy(conv_a, d_img_conv_a, n_k*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+                cudaDeviceSynchronize();
+                checkCudaErrors(cudaGetLastError());
+
+                cout << "conv_in" << endl;
+                for(int i=0; i<C; i++)
+                {
+                    for(int j=0; j<H; j++)
+                    {
+                        for(int k=0; k<W; k++)
+                            cout << conv_in[i*H*W + j*W + k] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+
+                cout << "conv_a" << endl;
+                for(int i=0; i<n_k; i++)
+                {
+                    for(int j=0; j<H_out; j++)
+                    {
+                        for(int k=0; k<W_out; k++)
+                            cout << conv_a[i*H_out*W_out + j*W_out + k] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+
+                cout << "conv_out" << endl;
+                for(int i=0; i<n_k; i++)
+                {
+                    for(int j=0; j<H_out; j++)
+                    {
+                        for(int k=0; k<W_out; k++)
+                            cout << conv_out[i*H_out*W_out + j*W_out + k] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+
+
+                int k1;
+                cin >> k1;
+
+                // ----------------------------------------------------
+
+
+
 
                 d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[0];
                 d_img_plms_in_copy = d_plms_in_copys + img*tam_out_convs + i_conv_out[0];

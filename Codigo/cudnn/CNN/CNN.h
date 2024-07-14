@@ -26,10 +26,12 @@ class CNN
         cudnnTensorDescriptor_t dataTensor;
         cudnnTensorDescriptor_t *convBiasTensor = nullptr;
         cudnnTensorDescriptor_t *convOutTensor = nullptr;
+        cudnnTensorDescriptor_t *convATensor = nullptr;
         cudnnTensorDescriptor_t *poolOutTensor = nullptr;
         cudnnConvolutionDescriptor_t *convDesc = nullptr;
         cudnnPoolingDescriptor_t *poolDesc = nullptr;
         cudnnFilterDescriptor_t *convFilterDesc = nullptr;
+        cudnnActivationDescriptor_t *activation = nullptr;
 
         // ------------------- CUDNN ---------------------------------
 
@@ -117,6 +119,8 @@ class CNN
 
         void crear_handles(int mini_batch);
         void destruir_handles();
+
+        void prueba_cudnn();
 };
 
 #endif

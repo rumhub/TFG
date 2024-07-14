@@ -725,7 +725,8 @@ void Convolutional::generar_pesos_ptr(float *w)
         for(int j=0; j<C; ++j)
             for(int k=0; k<kernel_fils; ++k)
                 for(int p=0; p<kernel_cols; ++p)
-                    w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
+                    w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = 1;
+                    //w[i*C*kernel_fils*kernel_cols + j*kernel_fils*kernel_cols + k*kernel_cols + p ] = distribution(gen);
 }
 
 
