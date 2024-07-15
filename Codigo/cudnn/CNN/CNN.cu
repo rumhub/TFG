@@ -673,6 +673,7 @@ void CNN::train(int epocas, int mini_batch)
 
     std::random_device rd;
     std::mt19937 g(rd());
+    const float alpha = 1.0f, beta = 0.0f;
 
 
     //-------------------------------------------------
@@ -729,22 +730,11 @@ void CNN::train(int epocas, int mini_batch)
                 // ----------------------------------------------------
                 int C = this->convs[0].get_C(), H = this->convs[0].get_H(), W = this->convs[0].get_W();
                 int n_k = this->convs[0].get_n_kernels(), H_out = this->convs[0].get_H_out(), W_out = this->convs[0].get_W_out();
-                float *conv_in = (float*)malloc(C*H*W * sizeof(float));
-                float *conv_out = (float*)malloc(n_k*H_out*W_out * sizeof(float));
-                float *conv_out_cudnn = (float*)malloc(n_k*H_out*W_out * sizeof(float)); 
-                float *conv_a = (float*)malloc(n_k*H_out*W_out * sizeof(float));
-
-                // -----------
-                // cout << "conv_in" << endl;
-                // for(int i=0; i<C; i++)
-                //     for(int j=0; j<H; j++)
-                //         for(int k=0; k<W; k++)
-                //             conv_in[i*H*W + j*W + k] = 1;
-                // cudaMemcpy(this->d_img_in, conv_in, tam_ini * sizeof(float), cudaMemcpyHostToDevice);
-                // -----------
+                float *conv_in = (float*)malloc(64*H*W * sizeof(float));
+                float *conv_out = (float*)malloc(64*H_out*W_out * sizeof(float));
+                float *conv_a = (float*)malloc(64*H_out*W_out * sizeof(float));
 
                 // Perform the convolution forward pass
-                const float alpha = 1.0f, beta = 0.0f;
                 checkCUDNN(cudnnConvolutionForward(
                     cudnnHandle,    // handle
                     &alpha,         // alpha
@@ -762,7 +752,7 @@ void CNN::train(int epocas, int mini_batch)
                 ));
 
                 checkCUDNN(cudnnActivationForward(cudnnHandle,  // handle 
-                                                activation[i],  // activationDesc
+                                                activation[0],  // activationDesc
                                                 &alpha,         // alpha
                                                 convATensor[0],      // xDesc
                                                 d_img_conv_a,            // x
@@ -831,7 +821,7 @@ void CNN::train(int epocas, int mini_batch)
                 H_out = this->plms[0].get_H_out();
                 W_out = this->plms[0].get_W_out();
                 
-                float *pool_out = (float*)malloc(n_k*H_out*W_out * sizeof(float));
+                float *pool_out = (float*)malloc(64*H_out*W_out * sizeof(float));
                 // Capa MaxPool con cudnn
                 checkCUDNN(cudnnPoolingForward(
                     cudnnHandle,                          // handle
@@ -858,8 +848,6 @@ void CNN::train(int epocas, int mini_batch)
                     cout << endl;
                 }
 
-                int k1;
-                cin >> k1;
                 // ----------------------------------------
 
                 // Resto de capas convolucionales y maxpool ----------------------------
@@ -869,12 +857,122 @@ void CNN::train(int epocas, int mini_batch)
                     d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[j-1];
                     d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[j];
                     d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[j];
-                    this->convs[j].forwardPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a);
+                    //this->convs[j].forwardPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a);
+
+                    // Perform the convolution forward pass
+                    checkCUDNN(cudnnConvolutionForward(
+                        cudnnHandle,    // handle
+                        &alpha,         // alpha
+                        poolOutTensor[j-1],         // xDesc
+                        d_img_plms_out,         // x
+                        convFilterDesc[j],          // wDesc
+                        this->convs[j].get_dw(),        // w
+                        convDesc[j],                // convDesc
+                        CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM,   // algo
+                        nullptr,                            // workSpace 
+                        0,                              // workSpaceSizeInBytes
+                        &beta,                              // beta
+                        convATensor[j],                     // yDesc
+                        d_img_conv_a                        // y
+                    ));
+
+                    checkCUDNN(cudnnActivationForward(cudnnHandle,  // handle 
+                                                    activation[j],  // activationDesc
+                                                    &alpha,         // alpha
+                                                    convATensor[j],      // xDesc
+                                                    d_img_conv_a,            // x
+                                                    &beta,          // beta
+                                                    convOutTensor[j],      // yDesc
+                                                    d_img_conv_out));      // y
+                    // --------------------------------------
+                    cudaMemcpy(conv_in, d_img_plms_out, tam_out_pools * sizeof(float), cudaMemcpyDeviceToHost);
+                    cudaMemcpy(conv_out, d_img_conv_out, tam_out_convs * sizeof(float), cudaMemcpyDeviceToHost);
+                    cudaMemcpy(conv_a, d_img_conv_a, tam_out_convs * sizeof(float), cudaMemcpyDeviceToHost);
+                    cudaDeviceSynchronize();
+                    checkCudaErrors(cudaGetLastError());
+
+                    C = this->convs[j].get_C(), H = this->convs[j].get_H(), W = this->convs[j].get_W();
+                    n_k = this->convs[j].get_n_kernels(), H_out = this->convs[j].get_H_out(), W_out = this->convs[j].get_W_out();
+                    
+                    cout << "conv_in" << endl;
+                    for(int i=0; i<C; i++)
+                    {
+                        for(int j=0; j<H; j++)
+                        {
+                            for(int k=0; k<W; k++)
+                                cout << conv_in[i*H*W + j*W + k] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "conv_a" << endl;
+                    for(int i=0; i<n_k; i++)
+                    {
+                        for(int j=0; j<H_out; j++)
+                        {
+                            for(int k=0; k<W_out; k++)
+                                cout << conv_a[i*H_out*W_out + j*W_out + k] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    cout << endl;
+
+                    cout << "conv_out" << endl;
+                    for(int i=0; i<n_k; i++)
+                    {
+                        for(int j=0; j<H_out; j++)
+                        {
+                            for(int k=0; k<W_out; k++)
+                                cout << conv_out[i*H_out*W_out + j*W_out + k] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+
+                    // --------------------------------------
 
                     // Capa MaxPool
                     d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[j];
                     d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[j];
-                    this->plms[j].forwardPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
+                    //this->plms[j].forwardPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
+
+                    // ----------------------------
+                    C = this->plms[j].get_C();
+                    H = this->plms[j].get_H();
+                    W = this->plms[j].get_W();
+                    H_out = this->plms[j].get_H_out();
+                    W_out = this->plms[j].get_W_out();
+
+                    checkCUDNN(cudnnPoolingForward(
+                        cudnnHandle,                          // handle
+                        poolDesc[j],                 // poolingDesc
+                        &alpha,                         // alpha
+                        convOutTensor[j],             // xDesc
+                        d_img_conv_out,                  // x
+                        &beta,                              // beta
+                        poolOutTensor[j],         // yDesc
+                        d_img_plms_out               // y
+                    ));
+                    cudaMemcpy(pool_out, d_img_plms_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+
+
+                    cout << "pool_out" << endl;
+                    for(int i=0; i<C; i++)
+                    {
+                        for(int j=0; j<H_out; j++)
+                        {
+                            for(int k=0; k<W_out; k++)
+                                cout << pool_out[i*H_out*W_out + j*W_out + k] << " ";
+                            cout << endl;
+                        }
+                        cout << endl;
+                    }
+                    int k1;
+                    cin >> k1;
+                    // ----------------------------
                 }
                 
                 // Capa flatten

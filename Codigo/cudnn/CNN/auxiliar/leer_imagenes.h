@@ -7,7 +7,7 @@ using namespace std;
 using namespace cv;
 
 //#define TAM_IMAGE 5
-#define TAM_IMAGE 4
+#define TAM_IMAGE 8
 //#define TAM_IMAGE 32
 //#define TAM_IMAGE 40
 
