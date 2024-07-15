@@ -357,7 +357,7 @@ void CNN::crear_handles(int mini_batch)
                                     CUDNN_POOLING_MAX,       // cudnnPoolingMode_t
                                     CUDNN_PROPAGATE_NAN,         // cudnnNanPropagation_t
                                     this->plms[i].get_kernel_fils(), this->plms[i].get_kernel_cols(),  // windowHeight, windowWidth
-                                    this->plms[i].get_pad(), this->plms[i].get_pad(),    // verticalPadding, horizontalPadding
+                                    0, 0,    // verticalPadding, horizontalPadding
                                     1, 1));      // verticalStride, horizontalStride
 
         checkCUDNN(cudnnSetFilter4dDescriptor(convFilterDesc[i],
@@ -817,14 +817,11 @@ void CNN::train(int epocas, int mini_batch)
                     cout << endl;
                 }
 
-                int k1;
-                cin >> k1;
-
                 // ----------------------------------------------------
 
                 d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[0];
                 d_img_plms_in_copy = d_plms_in_copys + img*tam_out_convs + i_conv_out[0];
-                this->plms[0].forwardPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
+                //this->plms[0].forwardPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
 
 
                 // ----------------------------------------
@@ -846,7 +843,7 @@ void CNN::train(int epocas, int mini_batch)
                     poolOutTensor[0],         // yDesc
                     d_img_plms_out               // y
                 ));
-                cudaMemcpy(pool_out, d_img_conv_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+                cudaMemcpy(pool_out, d_img_plms_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
 
 
                 cout << "pool_out" << endl;
@@ -861,6 +858,7 @@ void CNN::train(int epocas, int mini_batch)
                     cout << endl;
                 }
 
+                int k1;
                 cin >> k1;
                 // ----------------------------------------
 
