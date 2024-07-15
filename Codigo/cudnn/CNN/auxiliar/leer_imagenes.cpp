@@ -666,7 +666,8 @@ void leer_imagenes_cifar10_ptr(float *train_imgs, float *train_labels, float *te
 
             // Normalizar imagen
             for(int i=0; i<tam_img; ++i)
-                img[i] /= 255.0;
+                img[i] = 1.0;
+                //img[i] /= 255.0;
 
             // Aplicamos padding a la imagen de entrada
             aplicar_padding_ptr(img, 3, img_size, img_size, pad);

@@ -18,8 +18,8 @@ int main()
     float *train_imgs_ptr, *train_labels_ptr, *test_imgs_ptr, *test_labels_ptr;
 
     // Padding
-    padding[0] = 0;
-    padding[1] = 0;
+    padding[0] = 1;
+    padding[1] = 1;
 
     // padding[0] = 1;
     // padding[1] = 1;
