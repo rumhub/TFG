@@ -48,8 +48,8 @@ int main()
     //cnn.leer_imagenes_mnist(3000, 10);
     cnn.leer_imagenes_cifar10(1000, 100, 10);
     cnn.mostrar_arquitectura();
-    cnn.train(1, 32);
-    //cnn.train(20, 32);
+    //cnn.train(1, 32);
+    cnn.train(20, 32);
     //cnn.evaluar_modelo();
 
     return 0;
