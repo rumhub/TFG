@@ -43,7 +43,7 @@ int main() {
 
     // Establecer dimensiones de trabajo ------------------------------------------------------------
     int pad = 1;
-    int H_conv=4, W_conv=4, C_conv=1, mini_batch=1,    // Dimensiones imagen de entrada
+    int H_conv=5, W_conv=5, C_conv=1, mini_batch=1,    // Dimensiones imagen de entrada
         K_conv=2, n_kernels=2,
         H_out_conv=H_conv-K_conv+1 + 2*pad, W_out_conv=W_conv-K_conv+1 + 2*pad,
         H_pool=H_out_conv, W_pool=W_out_conv, C_pool=n_kernels,
@@ -52,22 +52,37 @@ int main() {
 
     // Reserva de memoria ------------------------------------------------------------------------------
     int datos_conv = mini_batch * C_conv * H_conv * W_conv, 
+        datos_conv_out = mini_batch * n_kernels * H_out_conv * W_out_conv, 
         datos_conv_kernel = n_kernels * C_conv * K_conv * K_conv,
-        datos_pool = mini_batch * C_pool * H_pool * W_pool;
+        datos_pool = mini_batch * C_pool * H_pool * W_pool,
+        datos_pool_out = mini_batch * C_pool * H_out_pool * W_out_pool;
     float h_input[datos_conv], h_kernel[datos_conv_kernel],
-          h_conv_output[mini_batch * n_kernels * H_out_conv * W_out_conv], 
-          h_pool_output[mini_batch * C_pool * H_out_pool * W_out_pool];
+          h_conv_output[datos_conv_out], 
+          h_pool_output[datos_pool_out];
 
     float *d_input, *d_conv_output, *d_pool_output, *d_kernel;
     cudaMalloc(&d_input, sizeof(h_input));
-    cudaMalloc(&d_conv_output, mini_batch * n_kernels * H_out_conv * W_out_conv * sizeof(float));
-    cudaMalloc(&d_pool_output, mini_batch * C_pool * H_out_pool * W_out_pool * sizeof(float));
+    cudaMalloc(&d_conv_output, datos_conv_out * sizeof(float));
+    cudaMalloc(&d_pool_output, datos_pool_out * sizeof(float));
     cudaMalloc(&d_kernel, sizeof(h_kernel));
 
+    // Reserva de memoria para los gradientes ---------------------------------------------------
+    float h_dconv[datos_conv_out], h_dinput[datos_conv],
+          h_dkernel[datos_conv_kernel], h_dpool[datos_pool_out]; // gradient of the loss with respect to maxpool output
+    
+    for(int i=0; i<datos_pool_out; ++i) 
+        h_dpool[i] = 1.0; // Initialize dpool to ones for simplicity
+    
+    float *d_dpool, *d_dconv, *d_dinput, *d_dkernel;
+    cudaMalloc(&d_dpool, sizeof(h_dpool));
+    cudaMalloc(&d_dconv, sizeof(h_conv_output));
+    cudaMalloc(&d_dinput, sizeof(h_input));
+    cudaMalloc(&d_dkernel, sizeof(h_kernel));
+    cudaMemcpy(d_dpool, h_dpool, sizeof(h_dpool), cudaMemcpyHostToDevice);
 
     // Inicializar input y kernels -----------------------------------
     for(int i=0; i<datos_conv; i++)
-        h_input[i] = i;
+        h_input[i] = 1.0;
 
     for(int i=0; i<datos_conv_kernel; i++)
         h_kernel[i] = 1.0;
@@ -78,8 +93,8 @@ int main() {
 
 
     // Creación de descriptores -------------------------------------------------------------------------
-    cudnnHandle_t cudnn;
-    checkCUDNN(cudnnCreate(&cudnn));
+    cudnnHandle_t cudnn_handle;
+    checkCUDNN(cudnnCreate(&cudnn_handle));
 
     // Set up tensor descriptors for input
     cudnnTensorDescriptor_t input_descriptor;
@@ -165,7 +180,7 @@ int main() {
     // Perform the convolution forward pass
     const float alpha = 1.0f, beta = 0.0f;
     checkCUDNN(cudnnConvolutionForward(
-        cudnn,
+        cudnn_handle,
         &alpha,
         input_descriptor,
         d_input,
@@ -181,7 +196,7 @@ int main() {
 
     // Perform the maxpool forward pass
     checkCUDNN(cudnnPoolingForward(
-        cudnn,
+        cudnn_handle,
         pooling_descriptor,
         &alpha,
         conv_output_descriptor,
@@ -204,6 +219,72 @@ int main() {
     printTensor(h_pool_output, mini_batch, C_pool, H_out_pool, W_out_pool);
 
 
+    printf("BACKPROP\n");
+    // Backpropagation -----------------------------------------------------------------------------
+
+    // Perform the maxpool backward pass
+    checkCUDNN(cudnnPoolingBackward(
+        cudnn_handle,                       // handle
+        pooling_descriptor,                 // poolingDesc
+        &alpha,                             // *alpha
+        pool_output_descriptor,             // yDesc
+        d_pool_output,                      // *y
+        pool_output_descriptor,             // dyDesc
+        d_dpool,                            // *dy
+        conv_output_descriptor,             // xDesc
+        d_conv_output,                      // *xData
+        &beta,                              // *beta
+        conv_output_descriptor,             // dxDesc
+        d_dconv                             // *dx
+    ));
+
+
+    // Perform the convolution backward pass
+    checkCUDNN(cudnnConvolutionBackwardData(
+        cudnn_handle,
+        &alpha,
+        kernel_descriptor,
+        d_kernel,
+        conv_output_descriptor,
+        d_dconv,
+        convolution_descriptor,
+        CUDNN_CONVOLUTION_BWD_DATA_ALGO_0,
+        nullptr, 0,
+        &beta,
+        input_descriptor,
+        d_dinput
+    ));
+
+    checkCUDNN(cudnnConvolutionBackwardFilter(
+        cudnn_handle,
+        &alpha,
+        input_descriptor,
+        d_input,
+        conv_output_descriptor,
+        d_dconv,
+        convolution_descriptor,
+        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0,
+        nullptr, 0,
+        &beta,
+        kernel_descriptor,
+        d_dkernel
+    ));
+
+    // Copy the gradients back to the host
+    cudaMemcpy(h_dconv, d_dconv, sizeof(h_dconv), cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_dinput, d_dinput, sizeof(h_dinput), cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_dkernel, d_dkernel, sizeof(h_dkernel), cudaMemcpyDeviceToHost);
+
+    // Print the gradients
+    std::cout << "Gradient with respect to convolution output (dConv):" << std::endl;
+    printTensor(h_dconv, mini_batch, n_kernels, H_out_conv, W_out_conv);
+
+    std::cout << "Gradient with respect to input (dInput):" << std::endl;
+    printTensor(h_dinput, mini_batch, C_conv, H_conv, W_conv);
+
+    std::cout << "Gradient with respect to kernel (dKernel):" << std::endl;
+    printTensor(h_dkernel, n_kernels, C_conv, K_conv, K_conv);
+
     // Clean up
     cudnnDestroyTensorDescriptor(input_descriptor);
     cudnnDestroyTensorDescriptor(conv_output_descriptor);
@@ -215,7 +296,11 @@ int main() {
     cudaFree(d_conv_output);
     cudaFree(d_pool_output);
     cudaFree(d_kernel);
-    cudnnDestroy(cudnn);
+    cudaFree(d_dpool);
+    cudaFree(d_dconv);
+    cudaFree(d_dinput);
+    cudaFree(d_dkernel);
+    cudnnDestroy(cudnn_handle);
 
     return 0;
 }
