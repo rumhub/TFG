@@ -268,6 +268,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     // Gradientes
     checkCudaErrors(cudaMalloc((void **) &d_dpool, tam_img_max * sizeof(float)));
     checkCudaErrors(cudaMalloc((void **) &d_dconv, tam_img_max * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_dconv_a, tam_img_max * sizeof(float)));
     checkCudaErrors(cudaMalloc((void **) &d_dkernel, tam_img_max * sizeof(float)));
 
     crear_handles(mini_batch);
@@ -860,6 +861,16 @@ void CNN::train(int epocas, int mini_batch)
                     d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[j];
                     //this->convs[j].forwardPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a);
 
+                    // --------------
+                    // --------------
+                    int cont=-40;
+                    for(int i=0; i<tam_out_pools; i++)
+                        pool_out[i] = cont++;
+
+                    cudaMemcpy(d_img_plms_out, pool_out, tam_out_pools, cudaMemcpyHostToDevice);
+                    // --------------
+                    // --------------
+
                     // Perform the convolution forward pass
                     checkCUDNN(cudnnConvolutionForward(
                         cudnnHandle,    // handle
@@ -933,6 +944,8 @@ void CNN::train(int epocas, int mini_batch)
                     //     cout << endl;
                     // }
 
+                    // int k1;
+                    // cin >> k1;
                     // --------------------------------------
 
                     // Capa MaxPool
@@ -1040,6 +1053,12 @@ void CNN::train(int epocas, int mini_batch)
                 W_out = this->plms[i_c].get_W_out();
 
 
+                int cont=-10;
+                for(int i=0; i<C*H*W; i++)
+                    pool_out[i] = cont++;
+
+                cudaMemcpy(d_img_conv_out, pool_out, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
+
                 cudaMemcpy(pool_out, d_img_conv_out, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
                 cout << "pool_in" << endl;
                 for(int i=0; i<C; i++)
@@ -1110,10 +1129,47 @@ void CNN::train(int epocas, int mini_batch)
                     }
                     cout << endl;
                 }
-                int k1;
-                cin >> k1;
+
 
                 // ------------------------------------------------------------------------
+
+                // --------------------------------------
+                // --------------------------------------
+
+                d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[i_c];
+                // Perform the ReLU backward pass
+                checkCUDNN(cudnnActivationBackward(
+                    cudnnHandle,
+                    activation[i_c],
+                    &alpha,
+                    convOutTensor[i_c],
+                    d_img_conv_out,
+                    convOutTensor[i_c],
+                    d_dconv,
+                    convATensor[i_c],
+                    d_img_conv_a,
+                    &beta,
+                    convATensor[i_c],
+                    d_dconv_a
+                ));
+
+                cudaMemcpy(pool_out, d_dconv_a, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
+                cout << "d_relu_conv_out" << endl;
+                for(int i=0; i<C; i++)
+                {
+                    for(int j=0; j<H; j++)
+                    {
+                        for(int k=0; k<W; k++)
+                            cout << pool_out[i*H*W + j*W + k] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+
+                int k1;
+                cin >> k1;
+                // --------------------------------------
+                // --------------------------------------
 
 
 
