@@ -56,7 +56,7 @@ class PoolingMax
 
     public:
         PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
-        PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad);
+        PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W);
         PoolingMax(){liberar_memoria = false;};
         void copiar(const PoolingMax & plm);
 

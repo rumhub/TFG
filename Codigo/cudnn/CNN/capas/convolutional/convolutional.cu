@@ -497,7 +497,7 @@ __global__ void kernel_actualizar_parametros(int n_kernels, int C, int K, float 
     @C              Número de canales de profundiad de la entrada
     @lr             Learning Rate o Tasa de Aprendizaje
 */
-Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr)
+Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr, int pad)
 {
     // Kernels de pesos
     this->n_kernels = n_kernels;
@@ -510,8 +510,8 @@ Convolutional::Convolutional(int n_kernels, int kernel_fils, int kernel_cols, in
     this->W = W;
 
     // Imagen de salida
-    this->H_out = H - kernel_fils + 1;
-    this->W_out = W - kernel_cols + 1;
+    this->H_out = H - kernel_fils + 1 + 2*pad;
+    this->W_out = W - kernel_cols + 1 + 2*pad;
 
     // Dimensiones de los volúmenes "desenrrollados" ------------------
     // Dimensiones de la entrada 'desenrrollada'

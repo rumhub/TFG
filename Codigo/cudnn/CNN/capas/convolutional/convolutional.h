@@ -92,7 +92,7 @@ class Convolutional
     public:
 
         // GPU ------------------------------------------
-        Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr);
+        Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr, int pad);
         void forwardPropagation_vectores_externos(float *input, float *output, float *a);
         void backPropagation_vectores_externos(float *input, float *output, float *a, float *grad_w, float *grad_bias);
         void generar_pesos_ptr(float *w);

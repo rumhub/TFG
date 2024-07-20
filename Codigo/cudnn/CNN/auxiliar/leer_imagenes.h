@@ -23,6 +23,7 @@ void leer_imagenes_gatos_perros(vector<vector<vector<vector<float>>>> &train_img
 void leer_imagenes_mnist(vector<vector<vector<vector<float>>>> &train_imgs, vector<vector<float>> &train_labels, const int &pad, const int n_imagenes, const int n_clases);
 void leer_imagenes_cifar10(vector<vector<vector<vector<float>>>> &train_imgs, vector<vector<float>> &train_labels, vector<vector<vector<vector<float>>>> &test_imgs, vector<vector<float>> &test_labels, const int &pad, const int &n_imagenes_train, const int &n_imagenes_test, const int n_clases);
 void leer_imagenes_cifar10_ptr(float *train_imgs, float *train_labels, float *test_imgs, float *test_labels, const int &pad, const int &n_imagenes_train, const int &n_imagenes_test, const int n_clases);
+void leer_imagenes_cifar10_sin_pad(float *train_imgs, float *train_labels, float *test_imgs, float *test_labels, const int &pad, const int &n_imagenes_train, const int &n_imagenes_test, const int n_clases);
 void leer_imagenes_10_big_cats(float *train_imgs, float *train_labels, float *test_imgs, float *test_labels, const int &pad, const int &n_imagenes_train, const int &n_imagenes_test, const int n_clases);
 void prueba();
 void eee();

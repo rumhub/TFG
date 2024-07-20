@@ -121,10 +121,6 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     for(int i=0; i<n_capas_conv; i++)
         this->padding[i] = padding[i];
 
-    // Padding de la primera capa
-    H += 2*padding[0];
-    W += 2*padding[0];
-
     if(max_C < C)
         max_C = C;
 
@@ -142,13 +138,13 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
 
         // Capas convolucionales ------------------------------------------------
         //                  nºkernels          filas_kernel      cols_kernel
-        Convolutional conv(i_capas_conv[0], i_capas_conv[1], i_capas_conv[2], C, H, W, lr);
+        Convolutional conv(i_capas_conv[0], i_capas_conv[1], i_capas_conv[2], C, H, W, lr, padding[i]);
         this->convs[i].copiar(conv);
 
         // H_out = H - K + 1
-        C = i_capas_conv[0];
-        H = H - i_capas_conv[1] + 1;
-        W = W - i_capas_conv[2] + 1;
+        C = this->convs[i].get_n_kernels();
+        H = this->convs[i].get_H_out();
+        W = this->convs[i].get_W_out();
 
         if(max_C < C)
             max_C = C;
@@ -160,16 +156,13 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
             max_W = W;
 
         // Capas MaxPool -----------------------------------------------------------
-        int pad_sig = 0;    // Padding de la siguiente capa convolucional
-        if(this->n_capas_conv > i+1)
-            pad_sig = this->padding[i+1];
         //           filas_kernel_pool  cols_kernel_pool
-        PoolingMax plm(i_capas_pool[0], i_capas_pool[1], C, H, W, pad_sig);
+        PoolingMax plm(i_capas_pool[0], i_capas_pool[1], C, H, W);
         this->plms[i].copiar(plm);
 
         // H_out = H / K + 2*pad
-        H = H / i_capas_pool[0] + 2*pad_sig;
-        W = W / i_capas_pool[0] + 2*pad_sig;
+        H = this->plms[i].get_H_out();
+        W = this->plms[i].get_W_out();
 
         if(max_C < C)
             max_C = C;
@@ -370,7 +363,7 @@ void CNN::crear_handles(int mini_batch)
         ));
 
         checkCUDNN(cudnnSetConvolution2dDescriptor(convDesc[i],
-                                    0, 0,  // padding
+                                    this->padding[i], this->padding[i],  // padding
                                     1, 1,  // strides
                                     1, 1,  // dilation
                                     CUDNN_CROSS_CORRELATION,

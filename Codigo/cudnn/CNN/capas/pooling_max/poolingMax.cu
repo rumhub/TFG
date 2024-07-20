@@ -106,7 +106,7 @@ PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<fl
         cout << "Warning. Las dimensiones del volumen de entrada(" << H << ") no son múltiplos del kernel max_pool(" << kernel_fils << "). \n";
 };
 
-PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad)
+PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W)
 {
 
     // Kernel
@@ -122,11 +122,11 @@ PoolingMax::PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, in
     this->W = W;
 
     // Dimensiones de la imagen de salida
-    this->H_out = H/this->kernel_fils +2*pad;
-    this->W_out = W/this->kernel_cols +2*pad;
+    this->H_out = H/this->kernel_fils;
+    this->W_out = W/this->kernel_cols;
 
     // Padding
-    this->pad = pad;
+    this->pad = 0;
 
     // Bytes necesarios
     this->bytes_input = C*H*W * sizeof(float);
