@@ -33,6 +33,10 @@ class CNN
         cudnnFilterDescriptor_t *convFilterDesc = nullptr;
         cudnnActivationDescriptor_t *activation = nullptr;
 
+        // Gradientes
+        float *d_dpool = nullptr;
+        float *d_dconv = nullptr;
+        float *d_dkernel = nullptr;
         // ------------------- CUDNN ---------------------------------
 
 
@@ -102,7 +106,8 @@ class CNN
                cudaFree(d_train_labels); cudaFree(d_train_imgs); cudaFree(d_grad_x_fully); cudaFree(d_y_batch); cudaFree(d_flat_outs_batch);
                cudaFree(d_plms_outs); cudaFree(d_plms_in_copys); cudaFree(d_conv_grads_w); cudaFree(d_conv_grads_bias); cudaFree(d_convs_outs);
                cudaFree(d_conv_a); cudaFree(d_indices); cudaFree(d_batch);
-               destruir_handles(); free(convDesc); free(poolDesc); };
+               destruir_handles(); free(convDesc); free(poolDesc); 
+               cudaFree(d_dpool); cudaFree(d_dconv); cudaFree(d_dkernel);};
 
         // Mostrar arquitectura
         void mostrar_arquitectura();
