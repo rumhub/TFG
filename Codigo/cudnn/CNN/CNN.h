@@ -37,6 +37,7 @@ class CNN
         float *d_dpool = nullptr;
         float *d_dconv = nullptr;
         float *d_dconv_a = nullptr;
+        float *d_dconv_a_copy = nullptr;
         float *d_dkernel = nullptr;
         // ------------------- CUDNN ---------------------------------
 
@@ -108,7 +109,8 @@ class CNN
                cudaFree(d_plms_outs); cudaFree(d_plms_in_copys); cudaFree(d_conv_grads_w); cudaFree(d_conv_grads_bias); cudaFree(d_convs_outs);
                cudaFree(d_conv_a); cudaFree(d_indices); cudaFree(d_batch);
                destruir_handles(); free(convDesc); free(poolDesc); 
-               cudaFree(d_dpool); cudaFree(d_dconv); cudaFree(d_dconv_a); cudaFree(d_dkernel);};
+               cudaFree(d_dpool); cudaFree(d_dconv); cudaFree(d_dconv_a); 
+               cudaFree(d_dconv_a_copy); cudaFree(d_dkernel);};
 
         // Mostrar arquitectura
         void mostrar_arquitectura();
