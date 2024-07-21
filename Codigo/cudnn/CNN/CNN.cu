@@ -907,43 +907,43 @@ void CNN::train(int epocas, int mini_batch)
                     C = this->convs[j].get_C(), H = this->convs[j].get_H(), W = this->convs[j].get_W();
                     n_k = this->convs[j].get_n_kernels(), H_out = this->convs[j].get_H_out(), W_out = this->convs[j].get_W_out();
                     
-                    cout << "conv_in" << endl;
-                    for(int i=0; i<C; i++)
-                    {
-                        for(int j=0; j<H; j++)
-                        {
-                            for(int k=0; k<W; k++)
-                                cout << conv_in[i*H*W + j*W + k] << " ";
-                            cout << endl;
-                        }
-                        cout << endl;
-                    }
-                    cout << endl;
+                    // cout << "conv_in" << endl;
+                    // for(int i=0; i<C; i++)
+                    // {
+                    //     for(int j=0; j<H; j++)
+                    //     {
+                    //         for(int k=0; k<W; k++)
+                    //             cout << conv_in[i*H*W + j*W + k] << " ";
+                    //         cout << endl;
+                    //     }
+                    //     cout << endl;
+                    // }
+                    // cout << endl;
 
-                    cout << "conv_a" << endl;
-                    for(int i=0; i<n_k; i++)
-                    {
-                        for(int j=0; j<H_out; j++)
-                        {
-                            for(int k=0; k<W_out; k++)
-                                cout << conv_a[i*H_out*W_out + j*W_out + k] << " ";
-                            cout << endl;
-                        }
-                        cout << endl;
-                    }
-                    cout << endl;
+                    // cout << "conv_a" << endl;
+                    // for(int i=0; i<n_k; i++)
+                    // {
+                    //     for(int j=0; j<H_out; j++)
+                    //     {
+                    //         for(int k=0; k<W_out; k++)
+                    //             cout << conv_a[i*H_out*W_out + j*W_out + k] << " ";
+                    //         cout << endl;
+                    //     }
+                    //     cout << endl;
+                    // }
+                    // cout << endl;
 
-                    cout << "conv_out" << endl;
-                    for(int i=0; i<n_k; i++)
-                    {
-                        for(int j=0; j<H_out; j++)
-                        {
-                            for(int k=0; k<W_out; k++)
-                                cout << conv_out[i*H_out*W_out + j*W_out + k] << " ";
-                            cout << endl;
-                        }
-                        cout << endl;
-                    }
+                    // cout << "conv_out" << endl;
+                    // for(int i=0; i<n_k; i++)
+                    // {
+                    //     for(int j=0; j<H_out; j++)
+                    //     {
+                    //         for(int k=0; k<W_out; k++)
+                    //             cout << conv_out[i*H_out*W_out + j*W_out + k] << " ";
+                    //         cout << endl;
+                    //     }
+                    //     cout << endl;
+                    // }
 
                     // int k1;
                     // cin >> k1;
@@ -1060,33 +1060,33 @@ void CNN::train(int epocas, int mini_batch)
 
                 cudaMemcpy(d_img_conv_out, pool_out, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
 
-                cudaMemcpy(pool_out, d_img_conv_out, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "pool_in" << endl;
-                for(int i=0; i<C; i++)
-                {
-                    for(int j=0; j<H; j++)
-                    {
-                        for(int k=0; k<W; k++)
-                            cout << pool_out[i*H*W + j*W + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
+                // cudaMemcpy(pool_out, d_img_conv_out, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "pool_in" << endl;
+                // for(int i=0; i<C; i++)
+                // {
+                //     for(int j=0; j<H; j++)
+                //     {
+                //         for(int k=0; k<W; k++)
+                //             cout << pool_out[i*H*W + j*W + k] << " ";
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
 
 
                 d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[i_c];
-                cudaMemcpy(pool_out, d_img_plms_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "pool_out" << endl;
-                for(int i=0; i<C; i++)
-                {
-                    for(int j=0; j<H_out; j++)
-                    {
-                        for(int k=0; k<W_out; k++)
-                            cout << pool_out[i*H_out*W_out + j*W_out + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
+                // cudaMemcpy(pool_out, d_img_plms_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "pool_out" << endl;
+                // for(int i=0; i<C; i++)
+                // {
+                //     for(int j=0; j<H_out; j++)
+                //     {
+                //         for(int k=0; k<W_out; k++)
+                //             cout << pool_out[i*H_out*W_out + j*W_out + k] << " ";
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
 
                 cudaMemcpy(d_dpool, d_img_grad_x_fully, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToDevice);
                 // Perform the maxpool backward pass
@@ -1105,31 +1105,31 @@ void CNN::train(int epocas, int mini_batch)
                     d_dconv                             // *dx
                 ));
 
-                cudaMemcpy(pool_out, d_img_grad_x_fully, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "pool_out" << endl;
-                for(int i=0; i<C; i++)
-                {
-                    for(int j=0; j<H_out; j++)
-                    {
-                        for(int k=0; k<W_out; k++)
-                            cout << pool_out[i*H_out*W_out + j*W_out + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
+                // cudaMemcpy(pool_out, d_img_grad_x_fully, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "pool_out" << endl;
+                // for(int i=0; i<C; i++)
+                // {
+                //     for(int j=0; j<H_out; j++)
+                //     {
+                //         for(int k=0; k<W_out; k++)
+                //             cout << pool_out[i*H_out*W_out + j*W_out + k] << " ";
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
 
-                cudaMemcpy(pool_out, d_dconv, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "d_pool_in" << endl;
-                for(int i=0; i<C; i++)
-                {
-                    for(int j=0; j<H; j++)
-                    {
-                        for(int k=0; k<W; k++)
-                            cout << pool_out[i*H*W + j*W + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
+                // cudaMemcpy(pool_out, d_dconv, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "d_pool_in" << endl;
+                // for(int i=0; i<C; i++)
+                // {
+                //     for(int j=0; j<H; j++)
+                //     {
+                //         for(int k=0; k<W; k++)
+                //             cout << pool_out[i*H*W + j*W + k] << " ";
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
 
 
                 // ------------------------------------------------------------------------
@@ -1160,7 +1160,7 @@ void CNN::train(int epocas, int mini_batch)
                 ));
 
                 cudaMemcpy(d_dconv_a_copy, d_dconv_a, C*H*W * sizeof(float), cudaMemcpyDeviceToDevice);
-                
+
                 cudaMemcpy(pool_out, d_dconv_a, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
                 cout << "d_relu_conv_out" << endl;
                 for(int i=0; i<C; i++)
@@ -1173,12 +1173,43 @@ void CNN::train(int epocas, int mini_batch)
                     }
                     cout << endl;
                 }
-
+                float sum=0.0;
+                for(int i=0; i<C; i++)
+                {
+                    for(int j=0; j<H; j++)
+                        for(int k=0; k<W; k++)
+                            sum += pool_out[i*H*W + j*W + k];
+                    cout << "sum: " << sum << endl;
+                    sum = 0.0;
+                }
 
                 // --------------------------------------
 
                 // ------------------------
                 // ------------------------
+                C = this->convs[i_c].get_C();
+                H = this->convs[i_c].get_H();
+                W = this->convs[i_c].get_W();
+
+                for(int i=0; i<C; i++)
+                    for(int j=0; j<H; j++)
+                        for(int k=0; k<W; k++)
+                            pool_out[i*H*W + j*W + k] = 1;
+                cudaMemcpy(d_img_plms_out, pool_out, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
+
+                cudaMemcpy(pool_out, d_img_plms_out, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
+                cout << "input" << endl;
+                for(int i=0; i<C; i++)
+                {
+                    for(int j=0; j<H; j++)
+                    {
+                        for(int k=0; k<W; k++)
+                            cout << pool_out[i*H*W + j*W + k] << " ";
+                        cout << endl;
+                    }
+                    cout << endl;
+                }
+
 
 
                 // Perform the convolution backward pass
@@ -1197,35 +1228,65 @@ void CNN::train(int epocas, int mini_batch)
                     d_dconv_a_copy                      // *dx
                 ));
 
+
+
+
+                checkCUDNN(cudnnConvolutionBackwardFilter(
+                    cudnnHandle,
+                    &alpha,
+                    poolOutTensor[i_c-1],
+                    d_img_plms_out,
+                    convATensor[i_c],
+                    d_dconv_a,
+                    convDesc[i_c],
+                    CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0,
+                    nullptr, 0,
+                    &beta,
+                    convFilterDesc[i_c],
+                    d_img_grad_w_conv
+                ));
+
+
+
+
+
+
+
+
+                // cudaMemcpy(pool_out, d_dconv_a_copy, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "grad_input" << endl;
+                // for(int i=0; i<C; i++)
+                // {
+                //     for(int j=0; j<H; j++)
+                //     {
+                //         for(int k=0; k<W; k++)
+                //             cout << pool_out[i*H*W + j*W + k] << " ";
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
+
+                n_k = this->convs[i_c].get_n_kernels();
                 C = this->convs[i_c].get_C();
-                H = this->convs[i_c].get_H();
-                W = this->convs[i_c].get_W();
-
-                cudaMemcpy(pool_out, d_img_plms_out, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "input" << endl;
-                for(int i=0; i<C; i++)
+                int K = this->convs[i_c].get_kernel_fils();
+                
+                cudaMemcpy(pool_out, d_img_grad_w_conv, n_k*C*K*K * sizeof(float), cudaMemcpyDeviceToHost);
+                cout << "d_grad_w_conv" << endl;
+                for(int p=0; p<n_k; p++)
                 {
-                    for(int j=0; j<H; j++)
+                    for(int i=0; i<C; i++)
                     {
-                        for(int k=0; k<W; k++)
-                            cout << pool_out[i*H*W + j*W + k] << " ";
+                        for(int j=0; j<K; j++)
+                        {
+                            for(int k=0; k<K; k++)
+                                cout << pool_out[p*C*K*K + i*K*K + j*K + k] << " ";
+                            cout << endl;
+                        }
                         cout << endl;
                     }
                     cout << endl;
                 }
 
-                cudaMemcpy(pool_out, d_dconv_a_copy, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "grad_input" << endl;
-                for(int i=0; i<C; i++)
-                {
-                    for(int j=0; j<H; j++)
-                    {
-                        for(int k=0; k<W; k++)
-                            cout << pool_out[i*H*W + j*W + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
 
                 int k1;
                 cin >> k1;
