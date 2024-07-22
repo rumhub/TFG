@@ -820,8 +820,8 @@ void leer_imagenes_cifar10_sin_pad(float *train_imgs, float *train_labels, float
 
             // Normalizar imagen
             for(int i=0; i<tam_img; ++i)
-                img[i] = 1.0;
-                // img[i] /= 255.0;
+                img[i] /= 255.0;
+                // img[i] = 1.0;
 
             // Establecemos la etiqueta de la imagen
             for(int i=0; i<n_clases; ++i)
