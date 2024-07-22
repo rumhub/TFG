@@ -7,9 +7,9 @@ using namespace std;
 
 int main()
 {
-    //int C=3, H=40, W=40, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
-    int C=3, H=8, W=8, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
-    //int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
+    // int C=3, H=40, W=40, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
+    // int C=3, H=8, W=8, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
+    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
     int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
         *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
         *capas_pool = (int *)malloc(n_capas_conv*2 * sizeof(int)),
@@ -36,12 +36,12 @@ int main()
 
     // Primera capa convolucional
     //capas_conv[i*3 +0] = 16;      // 4 kernels
-    capas_conv[i*3 +0] = 2;      // 4 kernels
+    capas_conv[i*3 +0] = 16;      // 4 kernels
     capas_conv[i*3 +1] = 3;      // kernels de 3 filas
     capas_conv[i*3 +2] = 3;      // kernels de 2 columnas
 
     i=1;
-    capas_conv[i*3 +0] = 2;      // 4 kernels
+    capas_conv[i*3 +0] = 32;      // 4 kernels
     capas_conv[i*3 +1] = 3;      // kernels de 3 filas
     capas_conv[i*3 +2] = 3;      // kernels de 2 columnas
 

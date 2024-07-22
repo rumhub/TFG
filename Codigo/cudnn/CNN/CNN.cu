@@ -55,6 +55,21 @@ __global__ void actualizar_etiquetas_batch(float *y_batch, int *batch, float *tr
         y_batch[iy*n_clases + ix] = train_labels[batch[iy]*n_clases + ix];
 }
 
+__global__ void sumar_matrices(int C, int H, int W, float *X, float *Y)
+{
+  	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x, ic=0;
+
+    // Cada hebra se encarga de un dato
+    if(iy < H && ix < W)
+    {
+        for(int i=0; i<C; i++)
+        {
+            Y[iy*W + ix + ic] += X[iy*W + ix + ic];
+
+            ic += H*W;
+        }
+    }
+}
 
 // Error checking macro
 #define checkCUDNN(status) { \
@@ -242,6 +257,7 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     checkCudaErrors(cudaMalloc((void **) &d_flat_outs_batch, mini_batch* tam_flat_out * sizeof(float)));
     checkCudaErrors(cudaMalloc((void **) &d_plms_outs, mini_batch * tam_out_pools * sizeof(float)));
     checkCudaErrors(cudaMalloc((void **) &d_conv_grads_w, tam_kernels_conv * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &d_conv_grads_w_total, tam_kernels_conv * sizeof(float)));
     checkCudaErrors(cudaMalloc((void **) &d_conv_grads_bias, n_bias_conv * sizeof(float)));
     checkCudaErrors(cudaMalloc((void **) &d_convs_outs, mini_batch * tam_out_convs * sizeof(float)));
     checkCudaErrors(cudaMalloc((void **) &d_plms_in_copys, mini_batch * tam_out_convs * sizeof(float)));
@@ -258,7 +274,8 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
     this->poolOutTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
     this->convOutTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
     this->convATensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
-    
+    this->convGradWTensor = new cudnnTensorDescriptor_t[this->n_capas_conv];
+
     // Desc
     this->convDesc = new cudnnConvolutionDescriptor_t[this->n_capas_conv];
     this->poolDesc = new cudnnPoolingDescriptor_t[this->n_capas_conv];
@@ -305,6 +322,8 @@ void CNN::crear_handles(int mini_batch)
         checkCUDNN(cudnnCreateTensorDescriptor(&poolOutTensor[i]));
         checkCUDNN(cudnnCreateTensorDescriptor(&convOutTensor[i]));
         checkCUDNN(cudnnCreateTensorDescriptor(&convATensor[i]));
+        checkCUDNN(cudnnCreateTensorDescriptor(&convGradWTensor[i]));
+
 
         // Desc
         checkCUDNN(cudnnCreateConvolutionDescriptor(&convDesc[i]));
@@ -350,6 +369,15 @@ void CNN::crear_handles(int mini_batch)
                                     this->convs[i].get_H_out(), // height (calculated manually)
                                     this->convs[i].get_W_out()  // width (calculated manually)
         ));
+
+        checkCUDNN(cudnnSetTensor4dDescriptor(convGradWTensor[i],   // cudnnTensorDescriptor_t
+                                    CUDNN_TENSOR_NCHW,      // cudnnTensorFormat_t
+                                    CUDNN_DATA_FLOAT,       // cudnnDataType_t
+                                    this->convs[i].get_n_kernels(),                  // n 
+                                    this->convs[i].get_C(), // c
+                                    this->convs[i].get_kernel_fils(),                      // h
+                                    this->convs[i].get_kernel_cols()));                     // w
+
 
 
         // Desc
@@ -666,6 +694,7 @@ void CNN::train(int epocas, int mini_batch)
     float *d_img_flat_out = nullptr;
     float *d_img_grad_x_fully = nullptr;
     float *d_img_grad_w_conv = nullptr;
+    float *d_img_grad_w_conv_total = nullptr;
     float *d_img_grad_b_conv = nullptr;
 
 
@@ -675,6 +704,8 @@ void CNN::train(int epocas, int mini_batch)
     std::mt19937 g(rd());
     const float alpha = 1.0f, beta = 0.0f;
 
+    dim3 grid(2,2);
+    dim3 block(32, 32);
 
     //-------------------------------------------------
     // Inicializar índices
@@ -698,7 +729,7 @@ void CNN::train(int epocas, int mini_batch)
     {
         
         // Desordenar vector de índices
-        //shuffle(indices, n, g);
+        shuffle(indices, n, g);
         cudaMemcpy(d_indices, indices, n * sizeof(int), cudaMemcpyHostToDevice);
 
         // cudaMemcpy(indices2, d_indices, n * sizeof(int), cudaMemcpyDeviceToHost);
@@ -767,11 +798,11 @@ void CNN::train(int epocas, int mini_batch)
                 //prueba_cudnn();
 
 
-                cudaMemcpy(conv_in, this->d_img_in, tam_ini * sizeof(float), cudaMemcpyDeviceToHost);
-                cudaMemcpy(conv_out, d_img_conv_out, n_k*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
-                cudaMemcpy(conv_a, d_img_conv_a, n_k*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
-                cudaDeviceSynchronize();
-                checkCudaErrors(cudaGetLastError());
+                // cudaMemcpy(conv_in, this->d_img_in, tam_ini * sizeof(float), cudaMemcpyDeviceToHost);
+                // cudaMemcpy(conv_out, d_img_conv_out, n_k*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+                // cudaMemcpy(conv_a, d_img_conv_a, n_k*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+                // cudaDeviceSynchronize();
+                // checkCudaErrors(cudaGetLastError());
 
                 // cout << "conv_in" << endl;
                 // for(int i=0; i<C; i++)
@@ -836,7 +867,7 @@ void CNN::train(int epocas, int mini_batch)
                     poolOutTensor[0],         // yDesc
                     d_img_plms_out               // y
                 ));
-                cudaMemcpy(pool_out, d_img_plms_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
+                // cudaMemcpy(pool_out, d_img_plms_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToHost);
 
 
                 // cout << "pool_out" << endl;
@@ -864,11 +895,11 @@ void CNN::train(int epocas, int mini_batch)
 
                     // --------------
                     // --------------
-                    int cont=-40;
-                    for(int i=0; i<tam_out_pools; i++)
-                        pool_out[i] = cont++;
+                    // int cont=-40;
+                    // for(int i=0; i<tam_out_pools; i++)
+                    //     pool_out[i] = cont++;
 
-                    cudaMemcpy(d_img_plms_out, pool_out, tam_out_pools, cudaMemcpyHostToDevice);
+                    // cudaMemcpy(d_img_plms_out, pool_out, tam_out_pools, cudaMemcpyHostToDevice);
                     // --------------
                     // --------------
 
@@ -901,11 +932,11 @@ void CNN::train(int epocas, int mini_batch)
                     // cudaMemcpy(conv_in, d_img_plms_out, tam_out_pools * sizeof(float), cudaMemcpyDeviceToHost);
                     // cudaMemcpy(conv_out, d_img_conv_out, tam_out_convs * sizeof(float), cudaMemcpyDeviceToHost);
                     // cudaMemcpy(conv_a, d_img_conv_a, tam_out_convs * sizeof(float), cudaMemcpyDeviceToHost);
-                    cudaDeviceSynchronize();
-                    checkCudaErrors(cudaGetLastError());
+                    // cudaDeviceSynchronize();
+                    // checkCudaErrors(cudaGetLastError());
 
-                    C = this->convs[j].get_C(), H = this->convs[j].get_H(), W = this->convs[j].get_W();
-                    n_k = this->convs[j].get_n_kernels(), H_out = this->convs[j].get_H_out(), W_out = this->convs[j].get_W_out();
+                    // C = this->convs[j].get_C(), H = this->convs[j].get_H(), W = this->convs[j].get_W();
+                    // n_k = this->convs[j].get_n_kernels(), H_out = this->convs[j].get_H_out(), W_out = this->convs[j].get_W_out();
                     
                     // cout << "conv_in" << endl;
                     // for(int i=0; i<C; i++)
@@ -955,11 +986,11 @@ void CNN::train(int epocas, int mini_batch)
                     //this->plms[j].forwardPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
 
                     // ----------------------------
-                    C = this->plms[j].get_C();
-                    H = this->plms[j].get_H();
-                    W = this->plms[j].get_W();
-                    H_out = this->plms[j].get_H_out();
-                    W_out = this->plms[j].get_W_out();
+                    // C = this->plms[j].get_C();
+                    // H = this->plms[j].get_H();
+                    // W = this->plms[j].get_W();
+                    // H_out = this->plms[j].get_H_out();
+                    // W_out = this->plms[j].get_W_out();
 
                     checkCUDNN(cudnnPoolingForward(
                         cudnnHandle,                          // handle
@@ -1023,7 +1054,7 @@ void CNN::train(int epocas, int mini_batch)
             //cout << " ----------- BACKPROP ----------- " << endl;
             // Inicializar gradientes a 0
             grid_1D.x = (tam_kernels_conv + block_1D.x -1) / block_1D.x;
-            inicializar_a_0<<<grid_1D, block_1D>>>(d_conv_grads_w, tam_kernels_conv);
+            inicializar_a_0<<<grid_1D, block_1D>>>(d_conv_grads_w_total, tam_kernels_conv);
 
             grid_1D.x = (n_bias_conv + block_1D.x -1) / block_1D.x;
             inicializar_a_0<<<grid_1D, block_1D>>>(d_conv_grads_bias, n_bias_conv);
@@ -1054,11 +1085,11 @@ void CNN::train(int epocas, int mini_batch)
                 W_out = this->plms[i_c].get_W_out();
 
 
-                int cont=-10;
-                for(int i=0; i<C*H*W; i++)
-                    pool_out[i] = cont++;
+                // int cont=-10;
+                // for(int i=0; i<C*H*W; i++)
+                //     pool_out[i] = cont++;
 
-                cudaMemcpy(d_img_conv_out, pool_out, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
+                // cudaMemcpy(d_img_conv_out, pool_out, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
 
                 // cudaMemcpy(pool_out, d_img_conv_out, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
                 // cout << "pool_in" << endl;
@@ -1139,6 +1170,7 @@ void CNN::train(int epocas, int mini_batch)
                 d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[i_c-1];
                 d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[i_c];
                 d_img_grad_w_conv = d_conv_grads_w + i_w[i_c];
+                d_img_grad_w_conv_total = d_conv_grads_w_total + i_w[i_c];
                 d_img_grad_b_conv = d_conv_grads_bias + i_b[i_c];
 
                 // --------------------------------------
@@ -1161,27 +1193,27 @@ void CNN::train(int epocas, int mini_batch)
 
                 cudaMemcpy(d_dconv_a_copy, d_dconv_a, C*H*W * sizeof(float), cudaMemcpyDeviceToDevice);
 
-                cudaMemcpy(pool_out, d_dconv_a, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "d_relu_conv_out" << endl;
-                for(int i=0; i<C; i++)
-                {
-                    for(int j=0; j<H; j++)
-                    {
-                        for(int k=0; k<W; k++)
-                            cout << pool_out[i*H*W + j*W + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
-                float sum=0.0;
-                for(int i=0; i<C; i++)
-                {
-                    for(int j=0; j<H; j++)
-                        for(int k=0; k<W; k++)
-                            sum += pool_out[i*H*W + j*W + k];
-                    cout << "sum: " << sum << endl;
-                    sum = 0.0;
-                }
+                // cudaMemcpy(pool_out, d_dconv_a, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "d_relu_conv_out" << endl;
+                // for(int i=0; i<C; i++)
+                // {
+                //     for(int j=0; j<H; j++)
+                //     {
+                //         for(int k=0; k<W; k++)
+                //             cout << pool_out[i*H*W + j*W + k] << " ";
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
+                // float sum=0.0;
+                // for(int i=0; i<C; i++)
+                // {
+                //     for(int j=0; j<H; j++)
+                //         for(int k=0; k<W; k++)
+                //             sum += pool_out[i*H*W + j*W + k];
+                //     cout << "sum: " << sum << endl;
+                //     sum = 0.0;
+                // }
 
                 // --------------------------------------
 
@@ -1191,24 +1223,24 @@ void CNN::train(int epocas, int mini_batch)
                 H = this->convs[i_c].get_H();
                 W = this->convs[i_c].get_W();
 
-                for(int i=0; i<C; i++)
-                    for(int j=0; j<H; j++)
-                        for(int k=0; k<W; k++)
-                            pool_out[i*H*W + j*W + k] = 1;
-                cudaMemcpy(d_img_plms_out, pool_out, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
+                // for(int i=0; i<C; i++)
+                //     for(int j=0; j<H; j++)
+                //         for(int k=0; k<W; k++)
+                //             pool_out[i*H*W + j*W + k] = 1;
+                // cudaMemcpy(d_img_plms_out, pool_out, C*H*W * sizeof(float), cudaMemcpyHostToDevice);
 
-                cudaMemcpy(pool_out, d_img_plms_out, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "input" << endl;
-                for(int i=0; i<C; i++)
-                {
-                    for(int j=0; j<H; j++)
-                    {
-                        for(int k=0; k<W; k++)
-                            cout << pool_out[i*H*W + j*W + k] << " ";
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
+                // cudaMemcpy(pool_out, d_img_plms_out, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "input" << endl;
+                // for(int i=0; i<C; i++)
+                // {
+                //     for(int j=0; j<H; j++)
+                //     {
+                //         for(int k=0; k<W; k++)
+                //             cout << pool_out[i*H*W + j*W + k] << " ";
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
 
 
 
@@ -1229,29 +1261,52 @@ void CNN::train(int epocas, int mini_batch)
                 ));
 
 
+                // if(this->n_capas_conv > 1)
+                //     this->convs[i_c].backPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
+                // else
+                //     this->convs[i_c].backPropagation_vectores_externos(this->d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
 
 
-                checkCUDNN(cudnnConvolutionBackwardFilter(
-                    cudnnHandle,
-                    &alpha,
-                    poolOutTensor[i_c-1],
-                    d_img_plms_out,
-                    convATensor[i_c],
-                    d_dconv_a,
-                    convDesc[i_c],
-                    CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0,
-                    nullptr, 0,
-                    &beta,
-                    convFilterDesc[i_c],
-                    d_img_grad_w_conv
-                ));
-
-
-
-
-
-
-
+                if(this->n_capas_conv > 1)
+                {
+                    checkCUDNN(cudnnConvolutionBackwardFilter(
+                        cudnnHandle,
+                        &alpha,
+                        poolOutTensor[i_c-1],
+                        d_img_plms_out,
+                        convATensor[i_c],
+                        d_dconv_a,
+                        convDesc[i_c],
+                        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0,
+                        nullptr, 0,
+                        &beta,
+                        convFilterDesc[i_c],
+                        d_img_grad_w_conv
+                    ));
+                }else
+                {
+                    checkCUDNN(cudnnConvolutionBackwardFilter(
+                        cudnnHandle,
+                        &alpha,
+                        poolOutTensor[i_c-1],
+                        this->d_img_in,
+                        convATensor[i_c],
+                        d_dconv_a,
+                        convDesc[i_c],
+                        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0,
+                        nullptr, 0,
+                        &beta,
+                        convFilterDesc[i_c],
+                        d_img_grad_w_conv
+                    ));  
+                }
+ 
+                // Sumar gradientes de pesos al total acumulado
+                grid.x = (this->convs[i_c].get_W() + block.x -1) / block.x;
+                grid.y = (this->convs[i_c].get_H() + block.x -1) / block.x;
+                sumar_matrices<<<grid, block>>>(this->convs[i_c].get_C(), this->convs[i_c].get_H(), this->convs[i_c].get_W(), d_img_grad_w_conv, d_img_grad_w_conv_total);
+                
+                // checkCUDNN(cudnnAddTensor(cudnnHandle, &alpha, convGradWTensor[i_c], d_img_grad_w_conv, &beta, convGradWTensor[i_c], d_img_grad_w_conv_total));
 
                 // cudaMemcpy(pool_out, d_dconv_a_copy, C*H*W * sizeof(float), cudaMemcpyDeviceToHost);
                 // cout << "grad_input" << endl;
@@ -1266,67 +1321,219 @@ void CNN::train(int epocas, int mini_batch)
                 //     cout << endl;
                 // }
 
-                n_k = this->convs[i_c].get_n_kernels();
-                C = this->convs[i_c].get_C();
-                int K = this->convs[i_c].get_kernel_fils();
-                
-                cudaMemcpy(pool_out, d_img_grad_w_conv, n_k*C*K*K * sizeof(float), cudaMemcpyDeviceToHost);
-                cout << "d_grad_w_conv" << endl;
-                for(int p=0; p<n_k; p++)
-                {
-                    for(int i=0; i<C; i++)
-                    {
-                        for(int j=0; j<K; j++)
-                        {
-                            for(int k=0; k<K; k++)
-                                cout << pool_out[p*C*K*K + i*K*K + j*K + k] << " ";
-                            cout << endl;
-                        }
-                        cout << endl;
-                    }
-                    cout << endl;
-                }
+                // n_k = this->convs[i_c].get_n_kernels();
+                // C = this->convs[i_c].get_C();
+                // int K = this->convs[i_c].get_kernel_fils();
+                // cudaMemcpy(pool_out, d_img_grad_w_conv, n_k*C*K*K * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "d_grad_w_conv" << endl;
+                // for(int p=0; p<n_k; p++)
+                // {
+                //     for(int i=0; i<C; i++)
+                //     {
+                //         for(int j=0; j<K; j++)
+                //         {
+                //             for(int k=0; k<K; k++)
+                //                 cout << pool_out[p*C*K*K + i*K*K + j*K + k] << " ";
+                //             cout << endl;
+                //         }
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
 
+                // cudaMemcpy(pool_out, d_img_grad_w_conv_total, n_k*C*K*K * sizeof(float), cudaMemcpyDeviceToHost);
+                // cout << "d_grad_w_conv" << endl;
+                // for(int p=0; p<n_k; p++)
+                // {
+                //     for(int i=0; i<C; i++)
+                //     {
+                //         for(int j=0; j<K; j++)
+                //         {
+                //             for(int k=0; k<K; k++)
+                //                 cout << pool_out[p*C*K*K + i*K*K + j*K + k] << " ";
+                //             cout << endl;
+                //         }
+                //         cout << endl;
+                //     }
+                //     cout << endl;
+                // }
 
-                int k1;
-                cin >> k1;
+                // int k1;
+                // cin >> k1;
                 // ------------------------
                 // ------------------------
-
-
-                if(this->n_capas_conv > 1)
-                    this->convs[i_c].backPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
-                else
-                    this->convs[i_c].backPropagation_vectores_externos(this->d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
 
                 for(int j=this->n_capas_conv-2; j>=1; j--)
                 {
+                    C = this->plms[j].get_C();
+                    H = this->plms[j].get_H();
+                    W = this->plms[j].get_W();
+                    H_out = this->plms[j].get_H_out();
+                    W_out = this->plms[j].get_W_out();
+
                     // Capa MaxPool
                     d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[j];
                     d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[j];
                     d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[j];
-                    this->plms[j].backPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
+                    // this->plms[j].backPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
+
+                    cudaMemcpy(d_dpool, d_img_plms_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToDevice);
+                    cudaMemcpy(d_img_plms_out, d_dconv_a_copy, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToDevice);
+
+                    // Perform the maxpool backward pass
+                    checkCUDNN(cudnnPoolingBackward(
+                        cudnnHandle,                       // handle
+                        poolDesc[j],                 // poolingDesc
+                        &alpha,                             // *alpha
+                        poolOutTensor[j],             // yDesc
+                        d_img_plms_out,                      // *y
+                        poolOutTensor[j],             // dyDesc
+                        d_dpool,                            // *dy
+                        convOutTensor[j],             // xDesc
+                        d_img_conv_out,                      // *xData
+                        &beta,                              // *beta
+                        convOutTensor[j],             // dxDesc
+                        d_dconv                             // *dx
+                    ));
 
                     // Capa convolucional
                     d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[j-1];
                     d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[j];
                     d_img_grad_w_conv = d_conv_grads_w + i_w[j];
+                    d_img_grad_w_conv_total = d_conv_grads_w_total + i_w[j];
                     d_img_grad_b_conv = d_conv_grads_bias + i_b[j];
-                    this->convs[j].backPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
+                    // this->convs[j].backPropagation_vectores_externos(d_img_plms_out, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
+
+                    checkCUDNN(cudnnActivationBackward(
+                        cudnnHandle,
+                        activation[j],
+                        &alpha,
+                        convOutTensor[j],
+                        d_img_conv_out,
+                        convOutTensor[j],
+                        d_dconv,
+                        convATensor[j],
+                        d_img_conv_a,
+                        &beta,
+                        convATensor[j],
+                        d_dconv_a
+                    ));
+
+                    cudaMemcpy(d_dconv_a_copy, d_dconv_a, C*H*W * sizeof(float), cudaMemcpyDeviceToDevice);
+
+                    checkCUDNN(cudnnConvolutionBackwardData(
+                        cudnnHandle,                // handle
+                        &alpha,                     // *alpha
+                        convFilterDesc[j],          // wDesc
+                        this->convs[j].get_dw(),    // *w
+                        convATensor[j],             // dyDesc
+                        d_dconv_a,                  // *dy
+                        convDesc[j],                // convDesc
+                        CUDNN_CONVOLUTION_BWD_DATA_ALGO_0,  // algo
+                        nullptr, 0,                         // *workSpace, workSpaceSizeInBytes
+                        &beta,                              // *beta
+                        poolOutTensor[j-1],                 // dxDesc        
+                        d_dconv_a_copy                      // *dx
+                    ));
+
+                    checkCUDNN(cudnnConvolutionBackwardFilter(
+                        cudnnHandle,
+                        &alpha,
+                        poolOutTensor[j-1],
+                        d_img_plms_out,
+                        convATensor[j],
+                        d_dconv_a,
+                        convDesc[j],
+                        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0,
+                        nullptr, 0,
+                        &beta,
+                        convFilterDesc[j],
+                        d_img_grad_w_conv
+                    ));
+
+                    // Sumar gradientes de pesos al total acumulado
+                    grid.x = (this->convs[j].get_W() + block.x -1) / block.x;
+                    grid.y = (this->convs[j].get_H() + block.x -1) / block.x;
+                    sumar_matrices<<<grid, block>>>(this->convs[j].get_C(), this->convs[j].get_H(), this->convs[j].get_W(), d_img_grad_w_conv, d_img_grad_w_conv_total);
                 }
 
 
                 if(this->n_capas_conv >1)
                 {
+                    C = this->plms[0].get_C();
+                    H = this->plms[0].get_H();
+                    W = this->plms[0].get_W();
+                    H_out = this->plms[0].get_H_out();
+                    W_out = this->plms[0].get_W_out();
+
                     d_img_conv_out = d_convs_outs + img*tam_out_convs + i_conv_out[0];
                     d_img_plms_out = d_plms_outs + img*tam_out_pools + i_plm_out[0];
                     d_img_plms_in_copy = d_plms_in_copys + img*tam_in_pools + i_plm_in[0];
-                    this->plms[0].backPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
+                    // this->plms[0].backPropagation_vectores_externos(d_img_conv_out, d_img_plms_out, d_img_plms_in_copy);
+
+                    cudaMemcpy(d_dpool, d_img_plms_out, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToDevice);
+                    cudaMemcpy(d_img_plms_out, d_dconv_a_copy, C*H_out*W_out * sizeof(float), cudaMemcpyDeviceToDevice);
+
+                    // Perform the maxpool backward pass
+                    checkCUDNN(cudnnPoolingBackward(
+                        cudnnHandle,                       // handle
+                        poolDesc[0],                 // poolingDesc
+                        &alpha,                             // *alpha
+                        poolOutTensor[0],             // yDesc
+                        d_img_plms_out,                      // *y
+                        poolOutTensor[0],             // dyDesc
+                        d_dpool,                            // *dy
+                        convOutTensor[0],             // xDesc
+                        d_img_conv_out,                      // *xData
+                        &beta,                              // *beta
+                        convOutTensor[0],             // dxDesc
+                        d_dconv                             // *dx
+                    ));
+
 
                     d_img_conv_a = d_conv_a + img*tam_out_convs + i_conv_out[0];
                     d_img_grad_w_conv = d_conv_grads_w + i_w[0];
+                    d_img_grad_w_conv_total = d_conv_grads_w_total + i_w[0];
                     d_img_grad_b_conv = d_conv_grads_bias + i_b[0];
-                    this->convs[0].backPropagation_vectores_externos(d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
+                    // this->convs[0].backPropagation_vectores_externos(d_img_in, d_img_conv_out, d_img_conv_a, d_img_grad_w_conv, d_img_grad_b_conv);
+                
+                    checkCUDNN(cudnnActivationBackward(
+                        cudnnHandle,
+                        activation[0],
+                        &alpha,
+                        convOutTensor[0],
+                        d_img_conv_out,
+                        convOutTensor[0],
+                        d_dconv,
+                        convATensor[0],
+                        d_img_conv_a,
+                        &beta,
+                        convATensor[0],
+                        d_dconv_a
+                    ));
+
+                    cudaMemcpy(d_dconv_a_copy, d_dconv_a, C*H*W * sizeof(float), cudaMemcpyDeviceToDevice);
+
+                    checkCUDNN(cudnnConvolutionBackwardFilter(
+                        cudnnHandle,
+                        &alpha,
+                        dataTensor,
+                        d_img_in,
+                        convATensor[0],
+                        d_dconv_a,
+                        convDesc[0],
+                        CUDNN_CONVOLUTION_BWD_FILTER_ALGO_0,
+                        nullptr, 0,
+                        &beta,
+                        convFilterDesc[0],
+                        d_img_grad_w_conv
+                    ));
+                
+                    // Sumar gradientes de pesos al total acumulado
+                    grid.x = (this->convs[0].get_W() + block.x -1) / block.x;
+                    grid.y = (this->convs[0].get_H() + block.x -1) / block.x;
+                    sumar_matrices<<<grid, block>>>(this->convs[0].get_C(), this->convs[0].get_H(), this->convs[0].get_W(), d_img_grad_w_conv, d_img_grad_w_conv_total);
+
                 }
             }
 
@@ -1334,9 +1541,9 @@ void CNN::train(int epocas, int mini_batch)
             // Actualizar parámetros de capas convolucionales
             for(int j=0; j<this->n_capas_conv; ++j)
             {
-                d_img_grad_w_conv = d_conv_grads_w + i_w[j];
+                d_img_grad_w_conv_total = d_conv_grads_w_total + i_w[j];
                 d_img_grad_b_conv = d_conv_grads_bias + i_b[j];
-                this->convs[j].actualizar_grads_vectores_externos(d_img_grad_w_conv, d_img_grad_b_conv, tam_batches[i]);
+                this->convs[j].actualizar_grads_vectores_externos(d_img_grad_w_conv_total, d_img_grad_b_conv, tam_batches[i]);
             }
 
 

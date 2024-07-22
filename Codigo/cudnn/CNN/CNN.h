@@ -25,6 +25,7 @@ class CNN
         cudnnHandle_t cudnnHandle;
         cudnnTensorDescriptor_t dataTensor;
         cudnnTensorDescriptor_t *convBiasTensor = nullptr;
+        cudnnTensorDescriptor_t *convGradWTensor = nullptr;
         cudnnTensorDescriptor_t *convOutTensor = nullptr;
         cudnnTensorDescriptor_t *convATensor = nullptr;
         cudnnTensorDescriptor_t *poolOutTensor = nullptr;
@@ -84,6 +85,7 @@ class CNN
         float *d_plms_outs = nullptr;
         float *d_plms_in_copys = nullptr;
         float *d_conv_grads_w = nullptr;
+        float *d_conv_grads_w_total = nullptr;
         float *d_conv_grads_bias = nullptr;
         float *d_convs_outs = nullptr;
         float *d_conv_a = nullptr;
@@ -106,8 +108,8 @@ class CNN
                free(i_b); free(indices); free(batch); free(tam_batches);
                cudaFree(d_img_in); cudaFree(d_img_in_copy); cudaFree(d_img_out); cudaFree(d_conv_a_eval); cudaFree(d_flat_outs);
                cudaFree(d_train_labels); cudaFree(d_train_imgs); cudaFree(d_grad_x_fully); cudaFree(d_y_batch); cudaFree(d_flat_outs_batch);
-               cudaFree(d_plms_outs); cudaFree(d_plms_in_copys); cudaFree(d_conv_grads_w); cudaFree(d_conv_grads_bias); cudaFree(d_convs_outs);
-               cudaFree(d_conv_a); cudaFree(d_indices); cudaFree(d_batch);
+               cudaFree(d_plms_outs); cudaFree(d_plms_in_copys); cudaFree(d_conv_grads_w); cudaFree(d_conv_grads_w_total); cudaFree(d_conv_grads_bias); 
+               cudaFree(d_convs_outs); cudaFree(d_conv_a); cudaFree(d_indices); cudaFree(d_batch);
                destruir_handles(); free(convDesc); free(poolDesc); 
                cudaFree(d_dpool); cudaFree(d_dconv); cudaFree(d_dconv_a); 
                cudaFree(d_dconv_a_copy); cudaFree(d_dkernel);};
