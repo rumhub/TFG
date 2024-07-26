@@ -1,0 +1,2 @@
+nvcc -m64 -gencode arch=compute_50,code=sm_50  convolutional.cu -o e -lcublas
+

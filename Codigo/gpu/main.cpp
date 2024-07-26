@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
     //int C=3, H=40, W=40, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
-    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 100, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
+    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs_train = 300, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
     int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
         *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
         *capas_pool = (int *)malloc(n_capas_conv*2 * sizeof(int)),
@@ -54,8 +54,8 @@ int main()
     CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H, W, lr, n_imgs_train, mini_batch);
     //CNN cnn(capas_conv, n_capas_conv, capas_pool, padding, capas_fully, n_capas_fully, C, H-2*padding[0], W-2*padding[0], lr);
     cnn.mostrar_arquitectura();
-    //leer_imagenes_cifar10_ptr(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, padding[0], n_imgs_train, n_imgs_test, n_clases);
-    leer_imagenes_10_big_cats(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, padding[0], n_imgs_train, n_imgs_test, n_clases);
+    leer_imagenes_cifar10_ptr(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, padding[0], n_imgs_train, n_imgs_test, n_clases);
+    // leer_imagenes_10_big_cats(train_imgs_ptr, train_labels_ptr, test_imgs_ptr, test_labels_ptr, padding[0], n_imgs_train, n_imgs_test, n_clases);
     cnn.set_train(train_imgs_ptr, train_labels_ptr, n_imgs_train, n_clases, C, H, W);
     //cnn.prueba();
     cnn.train(50, mini_batch);
