@@ -1,0 +1,11 @@
+imgs 100x100
+700 train_imgs
+conv: 16x3x3,3x(32x3x3)
+pool: 4x(2x2)
+
+54 (s)
+sin suma grad bias: 44 (s)
+sin unroll_1dim_gpu: 23 (s)
+sin suma grad bias ni unroll_1dim_gpu: 12 (s)
+
+con mejoras se pasa de 54(s) a 18(s).

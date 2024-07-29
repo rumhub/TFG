@@ -211,7 +211,7 @@ __global__ void matrizTranspuesta_conv(float* X, float *Y, int rows, int cols)
 
     // Cada hebra se encarga de una fila
     if(iy < rows && ix < cols)
-        Y[iy * rows + ix] = X[ix * cols + iy];
+        Y[ix * rows + iy] = X[iy * cols + ix];
 }
 
 __global__ void reduceMax_conv(float * X, float * Y, const int N)
@@ -391,17 +391,38 @@ __global__ void unroll_3dim_gpu(int C, int H, int W, int K, float *X, float *X_u
 
 __global__ void unroll_1dim_gpu(int C, int H, int W, int K, float *X, float *X_unroll)
 {
-		int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
+    int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
 
-		// Calcular el tamaño de salida
-		int H_out = H - K+1, W_out = W -K +1;
+    // Calcular el tamaño de salida
+    int H_out = H - K+1, W_out = W -K +1;
 
-		if(iy < H_out && ix < W_out)
-				for(int c=0; c<C; c++)
+    if(iy < H_out && ix < W_out)
+        for(int c=0; c<C; c++)
             for(int ky=0; ky < K; ky++)		// Guardar K*K elementos de "convolución"
                 for(int kx=0; kx<K; kx++)
                     X_unroll[(((c * H_out + iy) * W_out + ix) * K + ky) * K + kx] = X[c*H*W + (iy+ky)*W + (ix+kx)];
 }
+
+__global__ void unroll_1dim_gpu3(int C, int H, int W, int K, float *X, float *X_unroll) {
+    int ix = blockIdx.x * blockDim.x + threadIdx.x;
+    int iy = blockIdx.y * blockDim.y + threadIdx.y;
+    int iz = blockIdx.z * blockDim.z + threadIdx.z;
+
+    int H_out = H - K + 1;
+    int W_out = W - K + 1;
+
+    if (ix < W_out && iy < H_out && iz < C) {
+        int unroll_index = iz * H_out * W_out * K * K + iy * W_out * K * K + ix * K * K;
+        int input_index = iz * H * W + iy * W + ix;
+
+        for (int ky = 0; ky < K; ++ky) {
+            for (int kx = 0; kx < K; ++kx) {
+                X_unroll[unroll_index + ky * K + kx] = X[input_index + ky * W + kx];
+            }
+        }
+    }
+}
+
 
 __global__ void unroll_matriz_pesos(int C, int n_kernels, int K, float *X, float *Y)
 {
@@ -457,8 +478,86 @@ __global__ void acumular_grad_bias(float *X, float *grad_bias, int i_kernel)
 
     // Obtener la suma total en todos los bloques
     if(i == 0)
+    {
+        // -------------
+        // Borrar
+        grad_bias[i_kernel] = 0.0;
+        // ----------------
+
         for(int j=0; j<gridDim.x; j++)
             grad_bias[i_kernel] += X[j];
+    }
+
+
+}
+
+__global__ void reduce_and_accumulate(float *input, float *output, float *grad_bias, int H_out, int W_out, int n_kernels) {
+    extern __shared__ float sdata[];
+
+    int tid = threadIdx.x;
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int gridSize = blockDim.x * gridDim.x;
+
+    for (int k = 0; k < n_kernels; k++) {
+        // Initialize shared memory
+        sdata[tid] = 0.0f;
+
+        // Load data into shared memory in a coalesced manner
+        for (int j = i; j < H_out * W_out; j += gridSize) {
+            sdata[tid] += input[k * H_out * W_out + j];
+        }
+        __syncthreads();
+
+        // Reduce sum in shared memory
+        for (int s = blockDim.x / 2; s > 0; s >>= 1) {
+            if (tid < s) {
+                sdata[tid] += sdata[tid + s];
+            }
+            __syncthreads();
+        }
+
+        // Write the result for this block to the output array
+        if (tid == 0) {
+            output[blockIdx.x] = sdata[0];
+        }
+        __syncthreads();
+
+        // Sum the block results in the first thread
+        if (blockIdx.x == 0 && tid == 0) {
+            float sum = 0.0f;
+            for (int j = 0; j < gridDim.x; j++) {
+                sum += output[j];
+            }
+            grad_bias[k] = sum;
+        }
+        __syncthreads();
+    }
+}
+__global__ void acumular_grad_bias2(float *X, float *grad_bias, int i_kernel)
+{
+	// int tid = threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int tid = threadIdx.x;
+	extern __shared__ float sdata[];
+
+    // Cargar los datos en memoria compartida
+	sdata[tid] = ((i < gridDim.x) ? X[i] : 0.0f);
+	__syncthreads();
+
+
+    // Obtener la suma total en todos los bloques
+    if(i == 0)
+    {
+        // -------------
+        // Borrar
+        grad_bias[i_kernel] = 0.0;
+        // ----------------
+
+        for(int j=0; j<gridDim.x; j++)
+            grad_bias[i_kernel] += sdata[j];
+            // grad_bias[i_kernel] += X[j];
+    }
+
 
 }
 
@@ -857,7 +956,14 @@ void Convolutional::backPropagation_vectores_externos(float *input, float *outpu
     // "Desenrrollar" volumen de entrada
     grid.x = (H + BLOCK_SIZE -1) / BLOCK_SIZE;
     grid.y = (W + BLOCK_SIZE -1) / BLOCK_SIZE;
-    unroll_1dim_gpu<<<grid, block>>>(C, H, W, H_out, input, d_input_back_unroll);
+
+    dim3 block3(16, 16, 4); // Example block size: 16x16x4 threads per block
+    dim3 grid3((W - H_out + 1 + block3.x - 1) / block3.x, (H - H_out + 1 + block3.y - 1) / block3.y, (C + block3.z - 1) / block3.z);
+    unroll_1dim_gpu3<<<grid3, block3>>>(C, H, W, H_out, input, d_input_back_unroll);
+
+    
+    // ---------------------------------------
+
 
     // Transpuesta del volumen de entrada desenrrollado
     grid.x = (kernel_fils*kernel_cols*C + BLOCK_SIZE -1) / BLOCK_SIZE;
@@ -882,13 +988,7 @@ void Convolutional::backPropagation_vectores_externos(float *input, float *outpu
     grid.x = (H_out*W_out + BLOCK_SIZE -1) / BLOCK_SIZE;
     grid.y = 1;
 
-    for(int i=0; i<this->n_kernels; i++)
-    {
-        reduce_suma<<<grid, block_1D, smem_1D>>>(output + i*H_out*W_out, d_sum_local, H_out*W_out);
-        acumular_grad_bias<<<grid, block_1D>>>(d_sum_local, grad_bias, i);
-    }
-		
-
+    reduce_and_accumulate<<<grid, block_1D, smem_1D>>>(output, d_sum_local, grad_bias, H_out, W_out, n_kernels);
 };
 
 

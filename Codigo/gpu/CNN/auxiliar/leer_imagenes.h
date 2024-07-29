@@ -8,8 +8,8 @@ using namespace cv;
 
 //#define TAM_IMAGE 5
 //#define TAM_IMAGE 4
-#define TAM_IMAGE 32
-//#define TAM_IMAGE 40
+//#define TAM_IMAGE 32
+#define TAM_IMAGE 100
 
 void modificar_imagen(Mat imagen, const int &p_ini_x, const int &p_ini_y, const int &p_fin_x, const int &p_fin_y, const int &color_r, const int &color_g, const int &color_b);
 void cargar_imagen_en_vector(const Mat &imagen, vector<vector<vector<float>>> &v);
