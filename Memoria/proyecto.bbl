@@ -218,6 +218,25 @@ Piotr Skalski.
   \url{https://towardsdatascience.com/lets-code-convolutional-neural-network-in-plain-numpy-ce48e732f5d5}
   [Accessed:24/03/2024].
 
+\bibitem{cuDNN}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock \url{https://developer.nvidia.com/cudnn} [Accessed:02/08/2024].
+
+\bibitem{cuDNN_librerias}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/cudnn/latest/developer/overview.html#dev-overview}
+  [Accessed:02/08/2024].
+
+\bibitem{cuDNN_core_concepts}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/cudnn/latest/developer/core-concepts.html}
+  [Accessed:02/08/2024].
+
 \bibitem{CNN_parallel_Stanford}
 Vishakh Hegde and Sheema Usmani.
 \newblock Parallel and distributed deep learning.

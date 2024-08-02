@@ -107,8 +107,6 @@ Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a sat
 Para n entradas, produce n salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, cada salida i se puede interpretar como la probabilidad de pertenencia a la clase i, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
 De esta forma, en la Figura \ref{fig:SoftMax} se muestra un ejemplo de clasificación multiclase con 3 clases distintas. Para una entrada dada, el modelo estima que esta pertenece a la clase 0, pues este según este, dicha entrada presenta un 0.72\% de probabilidades de pertenecer a la clase 0, un 0.01\% a la clase 1, y un 0.26\% a la clase 2.
 
-\subsection{One-hot encoding}
-
 \subsection{Función de error o pérdida}
 
 \subsubsection{Entropía Cruzada}
@@ -209,7 +207,9 @@ Se calcula el error de entropía cruzada: \\
 
 \section{Redes Neuronales Convolucionales}
 
-Las redes neuronales convolucionales (CNNs) se caracterizan por trabajar con volúmenes 3D de datos. En este proyecto, en ocasiones estos también podrán denominarse como imágenes, pues una imagen RGB se trata de 3 matrices 2D, una por color. Además, la entrada de cada capa se define como X o X(C*H*W) y en ambos casos cuenta con unas dimensiones de C*H*W, siendo C el número de canales de profundidad, H el número de filas y W el número de columnas. De la misma forma, se define el volumen de salida como Y($M*H_{out}*W_{out}$). En cuanto a los pesos de la capa, cada filtro o kernel se denominará mediante un símbolo/s diferente/s (K,K1, G, etc), pues cada uno puede presentar unas dimensiones diferentes. Aun así, se podrá definir a un filtro de pesos como K1(K*K), indicando que posee K filas y columnas. Además, también se trata de una estructura con 3 dimensiones. Sin embargo, no se requiere especificar el número de canales de profundidad de un kernel de pesos pues siempre será C (depende de X). De la misma forma, el número de filtros a aplicar sobre X recibe el nombre de M, y el tamaño de Y depende de este, pues tal y como se verá posteriormente, cada filtro genera una canal de profundidad distinto de la salida Y. 
+\subsection{Introducción a CNNs}
+
+Las redes neuronales convolucionales (CNN, Convolutional Neural Network) se caracterizan por trabajar con volúmenes de datos 3D. En este proyecto, se emplearán imágenes RGB como entrada para cada CNN. Por tanto, por simplificar la nomenclatura, cada capa 2D de un volumen 3D se denominará como imagen, pues una imagen RGB se trata de 3 imágenes 2D, una por color. Además, la entrada de cada capa se define como X o X(C*H*W) y en ambos casos cuenta con unas dimensiones de C*H*W, siendo C el número de canales de profundidad, H el número de filas y W el número de columnas de dicho volumen 3D. De la misma forma, se define el volumen de salida como Y($M*H_{out}*W_{out}$). En cuanto a los pesos de la capa convolucional, cada filtro o kernel se denominará mediante un símbolo/s diferente/s (K,K1, G, etc), pues cada uno puede presentar unas dimensiones diferentes. Aun así, se podrá definir a un filtro de pesos como K1(K*K), indicando que posee K filas y columnas. Además, también se trata de una estructura con 3 dimensiones. Sin embargo, no se requiere especificar el número de canales de profundidad de un kernel de pesos pues siempre será C (depende de X). De la misma forma, el número de filtros a aplicar sobre X recibe el nombre de M, y el tamaño de Y depende de este, pues tal y como se verá posteriormente, cada filtro genera una canal de profundidad distinto de la salida Y. 
 
 \subsection{Capa convolucional}
 
@@ -576,3 +576,44 @@ Como solo se modifica la forma en la que se agrupan los datos, no requiere la pr
 
 En la propagación hacia detrás, se parte de un array 1D y se convierte en un volumen 3D que pueda ser usado como entrada para una capa convolucional o de agrupación
 \cite{flatten_forward}.
+
+\section{cuDNN (Deep Neural Network)}
+
+Es una librería de primitivas acelerada por GPU para redes neuronales profundas. Proporciona implementaciones altamente optimizadas para rutinas estándar como la propagación hacia delante y hacia detrás en capas convolucionales, de agrupación máxima, e incluso con funciones de activación como ReLU o sigmoide, entre otras \cite{cuDNN}. \\
+Su meta es obtener el mejor rendimiento posible en GPUs de NVIDIA para casos importantes de aprendizaje profundo. Dados sus buenos resultados, se emplea en gran cantidad de frameworks de aprendizaje profundo, siendo algunos de ellos Caffe2, Keras, MATLAB, Pytorch, o TensorFlow \cite{cuDNN_librerias}.
+
+\subsection{Manejador}
+
+cuDNN asume que los datos necesarios se encuentran ya en GPU y accesibles desde device. Se hablará de esto con más detalle en la sección sobre cuda y GPU. \\
+Una aplicación que use cuDNN requiere de la inicialización de un manejador o handle. Dicho manejador será requerido por cuDNN en cada operación que se quiera realizar con dicha librería, permitiendo al usuario un control explícito sobre el funcionamiento de la misma aunque este emplee múltiples hebras o GPUs. \\
+Por ejemplo, en el caso de múltiples GPUs, se pueden asociar diferentes dispositivos con diferentes hebras del host, de forma que cada una tenga un manejador de cuDNN distinto. Así, las llamadas a cuDNN con distinto manejador se ejecutarán en distinta GPU \cite{cuDNN_core_concepts}.
+
+\subsection{Tensores}
+
+Las operaciones en cuDNN reciben tensores como entrada y producen tensores como salida.
+
+\subsubsection{Tensor 3D}
+Un tensor 3D se suele emplear para representar un volumen 3D como podría ser una imagen RGB. Sus dimensiones se describen mediante 3 letras: B, M y N.
+
+\begin{enumerate}
+	\item \textbf{B}: Tamaño del batch
+	\item \textbf{M}: Filas por imagen 2D
+	\item \textbf{N}: Columnas por imagen 2D
+\end{enumerate}
+
+\subsubsection{Tensor 4D}
+Suele representar conjuntos de imágenes 2D. Sus dimensiones son N, C, H, W
+
+\begin{enumerate}
+	\item \textbf{N}: Tamaño del batch
+	\item \textbf{C}: Número de imágenes 2D
+	\item \textbf{H}: Filas por imagen 2D
+	\item \textbf{W}: Columnas por imagen 2D
+\end{enumerate}
+
+cuDNN permite varios formatos pero usaremos NCHW por compatibilidad con el resto de implementaciones desarrolladas en este proyecto.
+
+
+
+
+
