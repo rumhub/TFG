@@ -237,6 +237,34 @@ NVIDIA.
   \url{https://docs.nvidia.com/deeplearning/cudnn/latest/developer/core-concepts.html}
   [Accessed:02/08/2024].
 
+\bibitem{cuDNN_conv_fwd}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/cudnn/latest/api/cudnn-cnn-library.html#cudnnconvolutionforward}
+  [Accessed:03/08/2024].
+
+\bibitem{cuDNN_pool_fwd}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/cudnn/archives/cudnn-897/api/index.html#cudnnPoolingForward}
+  [Accessed:03/08/2024].
+
+\bibitem{cuDNN_conv_back_w}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/cudnn/latest/api/cudnn-cnn-library.html#cudnnconvolutionbackwardfilter}
+  [Accessed:03/08/2024].
+
+\bibitem{cuDNN_conv_back_x}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/cudnn/latest/api/cudnn-cnn-library.html#cudnnconvolutionbackwarddata}
+  [Accessed:03/08/2024].
+
 \bibitem{CNN_parallel_Stanford}
 Vishakh Hegde and Sheema Usmani.
 \newblock Parallel and distributed deep learning.
