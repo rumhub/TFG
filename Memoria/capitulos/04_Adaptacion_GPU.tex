@@ -120,4 +120,3 @@ Sin embargo, esta última implementación carece de los beneficios de la memoria
 	\label{fig:mult_matrix_cuda_v4}
 \end{figure}
 Para realizar el cálculo de cada valor de C es necesario multiplicar una fila de A por una columna de B. Es decir, multiplicar dos vectores de K elementos. Una idea inicial consiste en cargar 2K elementos en memoria compartida para posteriormente usarlos. Sin embargo, si cada hebra de cada bloque requiere 2K elementos, esto no es viable pues la memoria compartida es limitada y escasa. En su lugar, un mejor enfoque consiste en, dado un bloque 2D de dimensiones TILExTILE, almacenar 2*TILE*TILE. Su objetivo es dividir el cálculo de cada valor de C en iteraciones, y en cada una de ellas, cada hebra multiplica TILE elementos de A por TILE de B, además de acumular y sumar los resultados obtenidos en cada iteración \cite{nvidia_mult_matrix_v4}. \\
-

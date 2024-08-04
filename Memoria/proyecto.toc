@@ -125,5 +125,4 @@
 \contentsline {subsubsection}{Gradiente respecto a los pesos}{79}{section*.152}%
 \contentsline {section}{\numberline {4.4}CUDA}{80}{section.4.4}%
 \contentsline {subsection}{\numberline {4.4.1}Multiplicación de matrices en CUDA}{80}{subsection.4.4.1}%
-\contentsline {chapter}{\numberline {5}Comparación con distintas plataformas}{83}{chapter.5}%
-\contentsline {section}{\numberline {5.1}cuDNN}{83}{section.5.1}%
+\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{83}{chapter.5}%

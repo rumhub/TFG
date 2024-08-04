@@ -78,3 +78,8 @@
 \contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{81}{figure.caption.155}%
 \contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{82}{figure.caption.156}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Secuencial vs OpenMP}}{83}{figure.caption.157}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{84}{figure.caption.158}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{84}{figure.caption.159}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces CUDA vs CUDNN}}{85}{figure.caption.160}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces CUDA vs CUDNN con modelos más grandes}}{85}{figure.caption.161}%
