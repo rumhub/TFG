@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  4 AUG 2024 20:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  8 AUG 2024 19:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2458,26 +2458,19 @@ File: imagenes/openmp_cuda_cudnn.png Graphic file (type png)
 Package pdftex.def Info: imagenes/openmp_cuda_cudnn.png  used on input line 19.
 
 (pdftex.def)             Requested size: 303.8946pt x 190.79233pt.
-<imagenes/cuda_cudnn_1.png, id=1605, 611.4042pt x 381.5856pt>
+<imagenes/cuda_cudnn_1.png, id=1605, 609.9588pt x 381.5856pt>
 File: imagenes/cuda_cudnn_1.png Graphic file (type png)
 <use imagenes/cuda_cudnn_1.png>
 Package pdftex.def Info: imagenes/cuda_cudnn_1.png  used on input line 26.
-(pdftex.def)             Requested size: 305.70134pt x 190.79233pt.
+(pdftex.def)             Requested size: 304.97865pt x 190.79233pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [84 <./imagenes/ganancia_sec_openmp.png> <./imagenes/openmp_cuda_cudnn.png>]
-<imagenes/cuda_cudnn_2.png, id=1612, 607.7907pt x 381.5856pt>
-File: imagenes/cuda_cudnn_2.png Graphic file (type png)
-<use imagenes/cuda_cudnn_2.png>
-Package pdftex.def Info: imagenes/cuda_cudnn_2.png  used on input line 33.
-(pdftex.def)             Requested size: 303.8946pt x 190.79233pt.
-)
+ [84 <./imagenes/ganancia_sec_openmp.png> <./imagenes/openmp_cuda_cudnn.png>])
 (proyecto.bbl
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
- [85 <./imagenes/cuda_cudnn_1.png> <./imagenes/cuda_cudnn_2.png>]
-[86
+ [85 <./imagenes/cuda_cudnn_1.png>] [86
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 4--9
@@ -2990,10 +2983,10 @@ Package rerunfilecheck Info: File `proyecto.out' has not changed.
 (rerunfilecheck)             Checksum: 2E30998220934D4E59AF95AF2D5A9AC0;10469.
  ) 
 Here is how much of TeX's memory you used:
- 17617 strings out of 474485
- 302855 string characters out of 5743734
+ 17616 strings out of 474485
+ 302769 string characters out of 5743734
  1954542 words of memory out of 5000000
- 38986 multiletter control sequences out of 15000+600000
+ 38985 multiletter control sequences out of 15000+600000
  567397 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,14n,84p,1480b,810s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -3021,9 +3014,9 @@ xyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 .pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
 cm/cmti10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (117 pages, 8171240 bytes).
+Output written on proyecto.pdf (117 pages, 8133202 bytes).
 PDF statistics:
- 1974 PDF objects out of 2073 (max. 8388607)
+ 1972 PDF objects out of 2073 (max. 8388607)
  659 named destinations out of 1000 (max. 500000)
- 1067 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1062 words of extra memory for PDF output out of 10000 (max. 10000000)
 

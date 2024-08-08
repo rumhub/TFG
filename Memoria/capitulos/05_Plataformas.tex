@@ -28,9 +28,19 @@
 	\label{fig:cuda_cudnn_1}
 \end{figure}
 
-\begin{figure}[H]
+\begin{table}[H]
 	\centering
-	\includegraphics[scale=0.5]{imagenes/cuda_cudnn_2.png}  
-	\caption{CUDA vs CUDNN con modelos más grandes}
-	\label{fig:cuda_cudnn_2}
-\end{figure}
+	\begin{tabular}{llll}
+		Operación 	 &\vline  & CuDNN (ms) & CUDA (ms)  \\
+		\hline
+		
+		Conv\_fwd    & \vline & 0.02	 &	0.022 \\			
+		Conv\_back   & \vline & 0.065	 &	0.16 \\
+		\hline
+		Pool\_fwd 	 & \vline & 0.0029	 &	0.0039 \\
+		Pool\_back 	 & \vline & 0.014    &	0.025 \\
+
+		
+	\end{tabular}
+	\caption{Comparación rendimiento CuDNN vs CUDA}
+\end{table}

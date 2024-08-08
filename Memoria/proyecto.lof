@@ -82,4 +82,3 @@
 \contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{84}{figure.caption.158}%
 \contentsline {figure}{\numberline {5.3}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{84}{figure.caption.159}%
 \contentsline {figure}{\numberline {5.4}{\ignorespaces CUDA vs CUDNN}}{85}{figure.caption.160}%
-\contentsline {figure}{\numberline {5.5}{\ignorespaces CUDA vs CUDNN con modelos más grandes}}{85}{figure.caption.161}%
