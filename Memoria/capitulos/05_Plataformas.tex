@@ -34,13 +34,27 @@
 		Operación 	 &\vline  & CuDNN (ms) & CUDA (ms)  \\
 		\hline
 		
-		Conv\_fwd    & \vline & 0.02	 &	0.022 \\			
-		Conv\_back   & \vline & 0.065	 &	0.16 \\
+		Conv\_fwd\_0    & \vline & 0.005	 &	0.009 \\			
+		Conv\_back\_0   & \vline & 	0.032 &	0.044 \\
 		\hline
-		Pool\_fwd 	 & \vline & 0.0029	 &	0.0039 \\
-		Pool\_back 	 & \vline & 0.014    &	0.025 \\
-
-		
+		Pool\_fwd\_0 	 & \vline & 0.003	 &	0.005 \\
+		Pool\_back\_0 	 & \vline & 0.01    &	0.023 \\
+		\hline
+		\hline
+		\hline
+		Conv\_fwd\_1    & \vline & 0.02	 &	0.022	\\			
+		Conv\_back\_1   & \vline & 0.065	 &	0.16	\\
+		\hline
+		Pool\_fwd\_1 	 & \vline & 0.0029	 &	0.0039	 \\
+		Pool\_back\_1 	 & \vline  & 0.014    &	0.025	 \\
+		\hline
+		\hline
+		\hline
+		Conv\_fwd\_2    & \vline & 0.023	 &	0.018 \\			
+		Conv\_back\_2   & \vline & 0.047	 &	0.018 \\
+		\hline
+		Pool\_fwd\_2 	 & \vline & 0.032	 &	0.023 \\
+		Pool\_back\_2 	 & \vline & 0.0057    &	0.023 \\	
 	\end{tabular}
 	\caption{Comparación rendimiento CuDNN vs CUDA}
 \end{table}
