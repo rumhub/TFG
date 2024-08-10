@@ -69,7 +69,8 @@ Una función de activación en el contexto de las redes neuronales es una funci�
 \end{figure}
 
 A cambio de un bajo coste computacional, la función de activación ReLU (Figura \ref{fig:ReLU}) aporta no linealidad a la neurona, permitiendo a esta aprender funciones de mayor complejidad. \\
-Como su gradiente es 0 o 1 (0 para valores negativos, 1 para valores positivos), evita una reducción excesiva del mismo para valores positivos, mitigando así el problema del desvanecimiento del gradiente, caracterizado por la presencia de gradientes muy pequeños en retropropagación (se analizará con detalle en secciones posteriores) y provocar un aprendizaje lento. \cite{ReLU}
+Como su gradiente es 0 o 1 (0 para valores negativos, 1 para valores positivos), evita una reducción excesiva del mismo para valores positivos, mitigando así el problema del desvanecimiento del gradiente, caracterizado por la presencia de gradientes muy pequeños en retropropagación (se analizará con detalle en secciones posteriores) y provocar un aprendizaje lento \cite{ReLU}. \\
+Además, tal y como sugieren los expertos, se empleará ReLU como función de activación en las capas intermedias de los modelos a implementar \cite{importancia_ReLU} \cite{importancia_ReLU_2}. 
 
 \subsubsection{Sigmoide}
 
@@ -99,6 +100,7 @@ Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a sat
 La función SoftMax se suele emplear en la capa de salida de la red. Se caracteriza por, para n entradas, producir n salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, cada salida i se puede interpretar como la probabilidad de pertenencia a la clase i, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
 De esta forma, en la Figura \ref{fig:SoftMax} se muestra un ejemplo de clasificación multiclase con 3 clases distintas. \\
 Para una entrada dada, el modelo estima que esta pertenece a la clase 0, pues este según este, dicha entrada presenta un 0.72\% de probabilidades de pertenecer a la clase 0, un 0.01\% a la clase 1, y un 0.26\% a la clase 2.
+
 
 \subsection{Tipos de codificaciones de etiquetas}
 
@@ -151,13 +153,21 @@ De esta forma, se visualiza como a lo largo del entrenamiento de un modelo este 
 	\label{fig:SGD}
 \end{figure}
 
-Es un método de optimización iterativo que busca el mínimo local en una función diferenciable. En la figura \ref{fig:SGD} se muestra un ejemplo del mismo, donde cada punto representa una iteración del algoritmo. \\
+Tal y como se comentaba anteriormente, se trata de un método de optimización iterativo que busca el mínimo en una función diferenciable. En la figura \ref{fig:SGD} se muestra un ejemplo del mismo, donde la función objetivo hace referencia a la función de pérdida, y cada punto sobre ella representa una iteración del algoritmo, indicando como el error del modelo sobre la muestra se va reduciendo con cada iteración. \\
 Su nombre viene del término 'gradiente', siendo este una generalización multivariable de la derivada y denominado por el símbolo $\nabla$. Para una función f y un punto p, este indica la dirección del máximo incremento en la misma. El descenso del gradiente usa esta información para, una vez obtenido el gradiente, desplazarse en dirección contraria, es decir, en dirección del mínimo. Además, la distancia que se recorre en cada iteración viene dada por un hiperparámetro denominado ``learning rate'' o $\alpha$ \cite{SGD_1} \cite{Gradiente} \cite{SGD_2}. \\
 A diferencia de los parámetros de un modelo (pesos y sesgos), sus hiperparámetros son establecidos por el usuario y no se ``aprenden'' durante el entrenamiento del modelo.
 
 
-\subsubsection{Entrenamiento}
-De esta forma, el procedimiento para entrenar una red neuronal consiste en, para una entrada $x_i$ y una etiqueta asociada $y_i$, emplear $x_i$ para producir una predicción $\hat{y}_i$ (\textbf{ForwardPropagation} o Propagación hacia delante) que posteriormente se podrá comparar con $y_i$ mediante una función de error H(x) y obtener una medida de lo buena o mala que fue la misma. Una vez obtenido dicho ``error'', se aplica el algoritmo del descenso del gradiente para cada parámetro de la red (\textbf{BackPropagation} o retropropagacion) \cite{Cross_entropy}. \\
+\subsection{Inicialización de pesos}
+Tal y como sugieren los expertos, se inicializarán los pesos mediante la ``inicialización He'' o ``inicialización Kaiming He''. Esta consiste en, para un peso $w$, inicializarlo según una distribución gaussiana con una media de 0.0 y una desviación típica de $\sqrt{\frac{2}{N\_in}}$, siendo $N\_in$ el número de neuronas en la capa de entrada
+\cite{ini_He} \cite{ini_He_2} \cite{ini_He_code} \cite{importancia_ReLU} \cite{importancia_ReLU_2}.
+
+\subsection{Inicialización de sesgos}
+
+De la misma forma, se vuelve a seguir la bibliografía, indicando esta vez una inicialización de sesgos a 0.0 \cite{ini_bias} \cite{ini_bias_2}.
+
+\subsubsection{Actualización de parámetros}
+El procedimiento para entrenar una red neuronal consiste en, para una entrada $x_i$ y una etiqueta asociada $y_i$, emplear $x_i$ para realizar una predicción $\hat{y}_i$ (Propagación hacia delante de $x_i$ por la red) que posteriormente se podrá comparar con $y_i$ mediante una función de error H(x) y obtener una medida de lo buena o mala que fue la misma. Una vez obtenido dicho ``error'', se aplica el algoritmo del descenso del gradiente para obtener el gradiente de la pérdida respecto a cada parámetro de la red (Retropropagación) \cite{Cross_entropy}. \\
 
 \begin{gather}
 	W_{t+1} = W_{t} - \alpha * \frac{\partial H(x)}{\partial W_{t}} 
@@ -170,7 +180,8 @@ De esta forma, el procedimiento para entrenar una red neuronal consiste en, para
 \end{gather}
 
 
-Así, se actualizarán los parámetros de la red neuronal según las fórmulas \ref{act_pesos} y \ref{act_bias}. En ellas, $W_t$ y $b_t$ indican los valores del peso W y bias b en el instante o iteración t, de la misma forma que $W_{t+1}$ y $b_{t+1}$ representan los valores de los mismos en el instante t+1 \cite{SGD_act_params}.
+Así, se actualizarán los parámetros de la red neuronal (pesos y sesgos) según las fórmulas \ref{act_pesos} y \ref{act_bias}. En ellas, $W_t$ y $b_t$ indican los valores del peso W y bias b en el instante o iteración t, de la misma forma que $W_{t+1}$ y $b_{t+1}$ representan los valores de los mismos en el instante t+1 \cite{SGD_act_params}. \\
+Es decir, dada una iteración t y unos datos de entrada X, primero se realiza la propagación hacia delante de los mismos a lo largo del modelo para obtener  $\hat{Y}$ o la predicción de los mismos. Una vez obtenida $\hat{Y}$, se emplea la función de error para obtener el error del modelo sobre los datos de entrada y, con ello, se realiza la retroprogacación del gradiente de la pérdida o error a lo largo del modelo, de forma que cada parámetro del mismo obtenga el gradiente de la pérdida respecto a él. Una vez cada parámetro tiene su gradiente respecto a la pérdida, lo emplea junto con $\alpha$ para actualizar su valor, dirigiéndose en dirección contraria al gradiente en una magnitud igual a $\alpha$ y poder reducir el posterior error en la iteración t+1. 
 
 \subsubsection{Descenso del gradiente estocástico}
 
@@ -195,16 +206,6 @@ Así, se actualizarán los parámetros de la red neuronal según las fórmulas \
 
 Es una variante que sustituye el gradiente real por una estimación del mismo, logrando reducir la carga computacional y tiempo de entrenamiento a cambio de una menor tasa de convergencia \cite{sgd_stocastico} \cite{sgd_stocastico_1}. \\
 Se caracterizada por, en cada época, dividir el conjunto de entrenamiento en varios subconjuntos aleatorios y disjuntos entre ellos (mini-batch), de tal forma que se calcule el gradiente y actualicen los parámetros del modelo en cada uno de ellos \cite{sgd_stocastico}. \\
-
-\subsection{Inicialización de pesos y sesgos}
-
-\subsubsection{Inicialización de pesos}
-Siguiendo la bibliografía \cite{importancia_ReLU} \cite{importancia_ReLU_2}, se empleará ReLU como función de activación en las capas intermedias del modelo. Por tanto, tal y como se indica en la bibliografía, se inicializan los pesos mediante la ``inicialización He'' o ``inicialización Kaiming He''. Esta consiste en, para un peso $w$, inicializarlo según una distribución gaussiana con una media de 0.0 y una desviación típica de $\sqrt{\frac{2}{N\_in}}$, siendo $N\_in$ el número de neuronas en la capa de entrada
- \cite{ini_He} \cite{ini_He_2} \cite{ini_He_code}.
-
-\subsubsection{Inicialización de sesgos}
-
-De la misma forma, se vuelve a seguir la bibliografía, indicando esta vez una inicialización de sesgos a 0.0 \cite{ini_bias} \cite{ini_bias_2}.
 
 \subsection{Propagación hacia delante con softmax}
 
