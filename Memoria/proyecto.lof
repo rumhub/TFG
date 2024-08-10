@@ -67,18 +67,18 @@
 \contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{70}{figure.caption.143}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{72}{figure.caption.144}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{75}{figure.caption.145}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{76}{figure.caption.146}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{77}{figure.caption.147}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{74}{figure.caption.145}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{75}{figure.caption.146}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{76}{figure.caption.147}%
 \contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{77}{figure.caption.148}%
 \contentsline {figure}{\numberline {4.6}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{78}{figure.caption.150}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{78}{figure.caption.151}%
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{79}{figure.caption.153}%
-\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{79}{figure.caption.154}%
-\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{81}{figure.caption.155}%
-\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{82}{figure.caption.156}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{79}{figure.caption.151}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{80}{figure.caption.153}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{81}{figure.caption.154}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{82}{figure.caption.155}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{83}{figure.caption.156}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Secuencial vs OpenMP}}{85}{figure.caption.158}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{86}{figure.caption.159}%
-\contentsline {figure}{\numberline {5.3}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{86}{figure.caption.161}%
-\contentsline {figure}{\numberline {5.4}{\ignorespaces CUDA vs CUDNN}}{87}{figure.caption.162}%
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Secuencial vs OpenMP}}{87}{figure.caption.158}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{88}{figure.caption.159}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{88}{figure.caption.161}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces CUDA vs CUDNN}}{89}{figure.caption.162}%

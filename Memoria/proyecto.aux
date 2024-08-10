@@ -370,69 +370,73 @@
 \newlabel{fig:conv_backprop_como_convolucion_Y_K_pad}{{3.41}{69}{Cálculo del gradiente de la pérdida respecto de la entrada como convolución}{figure.caption.142}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{70}{figure.caption.143}\protected@file@percent }
 \newlabel{fig:conv_full_vs_normal}{{3.42}{70}{Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}{figure.caption.143}{}}
+\citation{conv_GEMM_FFT_comparacion}
+\citation{Programming_Massively}
 \@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{71}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{Intro_GEMMM}{{4.1}{72}{Convolución como GEMM}{section.4.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Convolución como GEMM }{72}{section.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}GEMM}{71}{section.4.1}\protected@file@percent }
+\newlabel{Intro_GEMMM}{{4.2}{71}{Convolución como GEMM}{section.4.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Convolución como GEMM }{71}{section.4.2}\protected@file@percent }
+\citation{Programming_Massively}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{72}{figure.caption.144}\protected@file@percent }
 \newlabel{fig:conv_std_vs_gemm}{{4.1}{72}{Imagen de una convolución estándar frente a una convolución empleando GEMM}{figure.caption.144}{}}
-\citation{conv_GEMM_FFT_comparacion}
-\citation{Programming_Massively}
-\citation{Programming_Massively}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}Memoria requerida al emplear GEMM}{73}{subsection.4.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Retropropagación GEMM en capa convolucional}{74}{section.4.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{75}{figure.caption.145}\protected@file@percent }
-\newlabel{fig:conv_std_vs_gemm_backprop}{{4.2}{75}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}{figure.caption.145}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Memoria requerida al emplear GEMM}{73}{subsection.4.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Retropropagación GEMM en capa convolucional}{74}{section.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{74}{figure.caption.145}\protected@file@percent }
+\newlabel{fig:conv_std_vs_gemm_backprop}{{4.2}{74}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}{figure.caption.145}{}}
 \citation{nvidia_back_fully_GEMM}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{76}{figure.caption.146}\protected@file@percent }
-\newlabel{fig:conv_std_vs_gemm_backprop_pesos}{{4.3}{76}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}{figure.caption.146}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Capa totalmente conectada como GEMM \cite  {nvidia_back_fully_GEMM}}{77}{section.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Propagación hacia delante}{77}{subsection.4.3.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{77}{figure.caption.147}\protected@file@percent }
-\newlabel{fig:gemm_fully_forward}{{4.4}{77}{Propagación GEMM hacia delante en una capa totalmente conectada}{figure.caption.147}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{75}{figure.caption.146}\protected@file@percent }
+\newlabel{fig:conv_std_vs_gemm_backprop_pesos}{{4.3}{75}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}{figure.caption.146}{}}
+\citation{nvidia_back_fully_GEMM}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite  {nvidia_back_fully_GEMM}}{76}{section.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{76}{subsection.4.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{76}{figure.caption.147}\protected@file@percent }
+\newlabel{fig:gemm_fully_forward}{{4.4}{76}{Propagación GEMM hacia delante en una capa totalmente conectada}{figure.caption.147}{}}
+\citation{nvidia_back_fully_GEMM}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{77}{figure.caption.148}\protected@file@percent }
 \newlabel{fig:gemm_fully_forward_minibatch}{{4.5}{77}{Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}{figure.caption.148}{}}
 \citation{nvidia_back_fully_GEMM}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Retropropagación}{78}{subsection.4.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{78}{subsection.4.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a la entrada}{78}{section*.149}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{78}{figure.caption.150}\protected@file@percent }
 \newlabel{fig:gemm_fully_back_input}{{4.6}{78}{Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}{figure.caption.150}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{78}{figure.caption.151}\protected@file@percent }
-\newlabel{fig:gemm_fully_back_input_minibatch}{{4.7}{78}{Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}{figure.caption.151}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{79}{figure.caption.151}\protected@file@percent }
+\newlabel{fig:gemm_fully_back_input_minibatch}{{4.7}{79}{Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}{figure.caption.151}{}}
+\citation{nvidia_back_fully_GEMM}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{80}{section*.152}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{80}{figure.caption.153}\protected@file@percent }
+\newlabel{fig:gemm_fully_back_w}{{4.8}{80}{Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}{figure.caption.153}{}}
 \citation{Professional_CUDA_C}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{79}{section*.152}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{79}{figure.caption.153}\protected@file@percent }
-\newlabel{fig:gemm_fully_back_w}{{4.8}{79}{Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}{figure.caption.153}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{79}{figure.caption.154}\protected@file@percent }
-\newlabel{fig:gemm_fully_back_w_minibatch}{{4.9}{79}{Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}{figure.caption.154}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}CUDA}{80}{section.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Multiplicación de matrices en CUDA}{80}{subsection.4.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{81}{figure.caption.154}\protected@file@percent }
+\newlabel{fig:gemm_fully_back_w_minibatch}{{4.9}{81}{Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}{figure.caption.154}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}CUDA}{81}{section.4.5}\protected@file@percent }
 \citation{cuda_mult_matrix_v3}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{81}{figure.caption.155}\protected@file@percent }
-\newlabel{fig:mult_matrix_cuda_v3}{{4.10}{81}{Tercera implementación de multiplicación matricial con CUDA}{figure.caption.155}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Multiplicación de matrices en CUDA}{82}{subsection.4.5.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{82}{figure.caption.155}\protected@file@percent }
+\newlabel{fig:mult_matrix_cuda_v3}{{4.10}{82}{Tercera implementación de multiplicación matricial con CUDA}{figure.caption.155}{}}
 \citation{nvidia_mult_matrix_v4}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{82}{figure.caption.156}\protected@file@percent }
-\newlabel{fig:mult_matrix_cuda_v4}{{4.11}{82}{Cuarta implementación de multiplicación matricial con CUDA}{figure.caption.156}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{83}{chapter.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{83}{figure.caption.156}\protected@file@percent }
+\newlabel{fig:mult_matrix_cuda_v4}{{4.11}{83}{Cuarta implementación de multiplicación matricial con CUDA}{figure.caption.156}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{85}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{83}{subsection.5.0.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{85}{subsection.5.0.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Implementaciones CPU}{85}{section*.157}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Secuencial vs OpenMP}}{85}{figure.caption.158}\protected@file@percent }
-\newlabel{fig:sec_openmp}{{5.1}{85}{Secuencial vs OpenMP}{figure.caption.158}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{86}{figure.caption.159}\protected@file@percent }
-\newlabel{fig:ganancia_sec_openmp}{{5.2}{86}{Ganancia de OpenMP respecto a secuencial}{figure.caption.159}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Implementaciones GPU}{86}{section*.160}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{86}{figure.caption.161}\protected@file@percent }
-\newlabel{fig:openmp_cuda_cudnn}{{5.3}{86}{OpenMP vs CUDA vs CUDNN}{figure.caption.161}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces CUDA vs CUDNN}}{87}{figure.caption.162}\protected@file@percent }
-\newlabel{fig:cuda_cudnn_1}{{5.4}{87}{CUDA vs CUDNN}{figure.caption.162}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{85}{subsection.5.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{87}{subsection.5.0.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Implementaciones CPU}{87}{section*.157}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Secuencial vs OpenMP}}{87}{figure.caption.158}\protected@file@percent }
+\newlabel{fig:sec_openmp}{{5.1}{87}{Secuencial vs OpenMP}{figure.caption.158}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{88}{figure.caption.159}\protected@file@percent }
+\newlabel{fig:ganancia_sec_openmp}{{5.2}{88}{Ganancia de OpenMP respecto a secuencial}{figure.caption.159}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Implementaciones GPU}{88}{section*.160}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{88}{figure.caption.161}\protected@file@percent }
+\newlabel{fig:openmp_cuda_cudnn}{{5.3}{88}{OpenMP vs CUDA vs CUDNN}{figure.caption.161}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces CUDA vs CUDNN}}{89}{figure.caption.162}\protected@file@percent }
+\newlabel{fig:cuda_cudnn_1}{{5.4}{89}{CUDA vs CUDNN}{figure.caption.162}{}}
 \bibstyle{unsrt}
 \bibdata{bibliografia/bibliografia}
-\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Comparación rendimiento CuDNN vs CUDA}}{88}{table.caption.163}\protected@file@percent }
-\newlabel{tabla_resultados}{{5.1}{88}{Comparación rendimiento CuDNN vs CUDA}{table.caption.163}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Comparación rendimiento CuDNN vs CUDA}}{90}{table.caption.163}\protected@file@percent }
+\newlabel{tabla_resultados}{{5.1}{90}{Comparación rendimiento CuDNN vs CUDA}{table.caption.163}{}}
 \bibcite{Cross_entropy_backprop}{1}
 \bibcite{Cross_entropy_backprop_grad_input}{2}
 \bibcite{NN_backpropagation}{3}
@@ -480,4 +484,4 @@
 \bibcite{conv_GEMM_FFT_comparacion}{45}
 \bibcite{cuda_mult_matrix_v3}{46}
 \bibcite{nvidia_mult_matrix_v4}{47}
-\gdef \@abspage@last{119}
+\gdef \@abspage@last{121}

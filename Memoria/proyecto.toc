@@ -115,18 +115,19 @@
 \contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{68}{section*.139}%
 \contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{69}{section*.141}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{71}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Convolución como GEMM }{72}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Memoria requerida al emplear GEMM}{73}{subsection.4.1.1}%
-\contentsline {section}{\numberline {4.2}Retropropagación GEMM en capa convolucional}{74}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{77}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Propagación hacia delante}{77}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Retropropagación}{78}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.1}GEMM}{71}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Convolución como GEMM }{71}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Memoria requerida al emplear GEMM}{73}{subsection.4.2.1}%
+\contentsline {section}{\numberline {4.3}Retropropagación GEMM en capa convolucional}{74}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{76}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{76}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{78}{subsection.4.4.2}%
 \contentsline {subsubsection}{Gradiente respecto a la entrada}{78}{section*.149}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{79}{section*.152}%
-\contentsline {section}{\numberline {4.4}CUDA}{80}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Multiplicación de matrices en CUDA}{80}{subsection.4.4.1}%
-\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{83}{chapter.5}%
-\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{83}{subsection.5.0.1}%
-\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{85}{subsection.5.0.2}%
-\contentsline {subsubsection}{Implementaciones CPU}{85}{section*.157}%
-\contentsline {subsubsection}{Implementaciones GPU}{86}{section*.160}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{80}{section*.152}%
+\contentsline {section}{\numberline {4.5}CUDA}{81}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Multiplicación de matrices en CUDA}{82}{subsection.4.5.1}%
+\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{85}{chapter.5}%
+\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{85}{subsection.5.0.1}%
+\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{87}{subsection.5.0.2}%
+\contentsline {subsubsection}{Implementaciones CPU}{87}{section*.157}%
+\contentsline {subsubsection}{Implementaciones GPU}{88}{section*.160}%

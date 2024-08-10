@@ -1,7 +1,18 @@
 \chapter{Adaptación GPU}
 
+Una vez comprendidos los cálculos empleados por una CNN, en esta sección se tratará de introducir como se realizarán los mismos desde una perspectiva heterogénea. Esto es, mediante el uso de GPU para multiplicación matricial.
+
+\section{GEMM}
+
+Se trata de un enfoque ampliamente conocido en el mundo de deep learning, empleándolo gran cantidad de librerías del sector como Caffe, Torch-cunn, Theano-CorrMM, o incluso CuDNN \cite{conv_GEMM_FFT_comparacion}. \\
+El enfoque GEMM (General Matrix Multiply o Multiplicación General de Matrices) en redes neuronales convolucionales permite reducir el tiempo de cómputo requerido en distintas capas a cambio de aumentar el espacio necesario para la misma. 
 
 \section{Convolución como GEMM \label{Intro_GEMMM}}
+
+En el caso de capas convolucionales, seguir un enfoque GEMM consiste en ``desenrrollar'' tanto el volumen de entrada X como la matriz de filtros K, además de realizar una serie de duplicaciones en X, de tal forma que cada columna de esta nueva matriz 2D X\_unroll contenga todos los elementos de X implicados en el cálculo de una posición distinta del volumen de salida Y. Como los resultados de cada convolución se suman a lo largo de cada canal de profundidad, estos se pueden concatenar en una matriz de gran tamaño. De esta forma, cada kernel de pesos se transforma en una fila de una gran matriz de pesos, tal y como se muestra en la figura \ref{fig:conv_std_vs_gemm} con los kernels K y G (colores verde y marrón). \\
+Mientras que el método estándar requiere de varias iteraciones para calcular cada valor del volumen de salida Y (figura \ref{fig:forward_prop_convolucional}), en la parte inferior de la figura \ref{fig:conv_std_vs_gemm} se observa como la alternativa GEMM permite que cada valor de Y sea el resultado de multiplicar una fila de pesos (K o G en la figura \ref{fig:conv_std_vs_gemm}) por una columna de X\_unroll (azul) \cite{Programming_Massively}. \\
+De esta forma, con N kernels de tamaño KxK, un volumen de entrada con C canales de profundidad, y un volumen de salida de dimensiones $NxH_{out}xW_{out}$, una multiplicación matricial entre la matriz de pesos $M_1$ con N filas y $K^2*C$ columnas, y X\_unroll con $K^2*C$ filas y $H_{out}*W_{out}$ columnas, produce el mismo volumen de salida Y que una convolución ordinaria con N kernels distintos. \\
+Por último, aunque se haya omitido para simplificar la comprensión del método planteado, tras realizar dicha multiplicación matricial se debe sumar el sesgo y aplicar la función de activación correspondiente a cada elemento del volumen de salida Y.
 
 \begin{figure}[H]
 	\centering
@@ -9,11 +20,6 @@
 	\caption{Imagen de una convolución estándar frente a una convolución empleando GEMM}
 	\label{fig:conv_std_vs_gemm}
 \end{figure}
-Se trata de un enfoque ampliamente conocido en el mundo de deep learning, empleándolo gran cantidad de librerías del sector como Caffe, Torch-cunn, Theano-CorrMM, o incluso CuDNN \cite{conv_GEMM_FFT_comparacion}. \\
-El enfoque GEMM (General Matrix Multiply o Multiplicación General de Matrices) en redes neuronales convolucionales permite reducir el tiempo de cómputo requerido en una convolución a cambio de aumentar el espacio necesario para la misma. Este método consiste en ``desenrrollar'' tanto el volumen de entrada X como la matriz de filtros K, además de realizar una serie de duplicaciones en X, de tal forma que cada columna de esta nueva matriz 2D X\_unroll contenga todos los elementos de X implicados en el cálculo de una posición distinta del volumen de salida Y. Como los resultados de cada convolución se suman a lo largo de cada canal de profundidad, estos se pueden concatenar en una matriz de gran tamaño. De esta forma, cada kernel de pesos se transforma en una fila de una gran matriz de pesos, tal y como se muestra en la figura \ref{fig:conv_std_vs_gemm} con los kernels K y G (colores verde y marrón). \\
-Mientras que el método estándar requiere de varias iteraciones para calcular cada valor del volumen de salida Y (figura \ref{fig:forward_prop_convolucional}), en la parte inferior de la figura \ref{fig:conv_std_vs_gemm} se observa como la alternativa GEMM permite que cada valor de Y sea el resultado de multiplicar una fila de pesos (K o G en la figura \ref{fig:conv_std_vs_gemm}) por una columna de X\_unroll (azul) \cite{Programming_Massively}. \\
-De esta forma, con N kernels de tamaño KxK, un volumen de entrada con C canales de profundidad, y un volumen de salida de dimensiones $NxH_{out}xW_{out}$, una multiplicación matricial entre la matriz de pesos $M_1$ con N filas y $K^2*C$ columnas, y X\_unroll con $K^2*C$ filas y $H_{out}*W_{out}$ columnas, produce el mismo volumen de salida Y que una convolución ordinaria con N kernels distintos. \\
-Por último, aunque se haya omitido para simplificar la comprensión del método planteado, tras realizar dicha multiplicación matricial se debe sumar el sesgo y aplicar la función de activación correspondiente a cada elemento del volumen de salida Y.
 
 \subsection{Memoria requerida al emplear GEMM}
 
@@ -23,35 +29,53 @@ Al realizar una convolución, un mismo filtro de pesos puede iterar más de una 
  Dado que cada kernel de pesos presenta unas dimensiones de K*K y se representa como una fila en la matriz total de pesos, esta tendrá K*K filas y M columnas, siendo M el número de filtros de pesos a aplicar sobre X. \\
  Realizar varias convoluciones sobre una misma entrada X(una con cada filtro de pesos distinto) implica compartir una única matriz X\_unrolled. Sin embargo, para valores comunes de filtros de pesos (5 o superior), una matriz de entrada con dimensiones expandidas con un ratio de K*K puede ser excesivamente grande. Como el consumo de memoria por almacenar todas las matrices de entrada expandidas en un minibatch puede suponer un problema, simplemente se reservará un espacio de $C*K*K*H_{out}*W_{out}$ (una instancia de X\_unrolled), de forma que se reutilice para cada dato del minibatch \cite{Programming_Massively}.
 
+\newpage
+
 \section{Retropropagación GEMM en capa convolucional}
 
 En la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad} se vio como la retropropagación respecto a la entrada en una capa convolucional consistía en una convolución entre los kernels de pesos y el volumen de salida. Del mismo modo, en la figura \ref{fig:conv_backprop_como_convolucion_Xpad_Y} también se mostró como el gradiente respecto a los pesos consistía en una convolución entre el volumen de entrada y el de salida. \\
-Como ambos gradientes se pueden implementar como convoluciones, y en la sección \ref{Intro_GEMMM} se mostró como implementar convoluciones con el enfoque GEMM, la retropropagación en una capa convolucional se puede implementar mediante el enfoque GEMM.
+Como ambos gradientes se pueden implementar como convoluciones, y en la sección \ref{Intro_GEMMM} se mostró como implementar convoluciones con el enfoque GEMM, tiene sentido asumir que la retropropagación en una capa convolucional se puede implementar mediante el enfoque GEMM.
 
 \begin{figure}[H]
-	\hspace{-25mm}
+	\hspace{-38mm}
 	\includegraphics[scale=0.3]{imagenes/conv_std_vs_gemm_backprop.jpg}  
 	\caption{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}
 	\label{fig:conv_std_vs_gemm_backprop}
 \end{figure}
 
+En la Figura \ref{fig:conv_std_vs_gemm_backprop} cabe destacar que, como cada canal de profundidad c$\in$C de cada kernel solo influye sobre dicho canal c sobre el volumen de entrada X, en la retropropagación sólo recibirá el gradiente proveniente de dicho canal. De esta forma, como cada kernel se empleó para producir un canal m$\in$M distinto sobre el volumen de salida Y, se pueden concatenar los M distintos kernels para un mismo canal de profundidad c, de forma que cada canal c de cada kernel m se multiplique por su subconjunto correspondiente en el canal m de Y e influya sobre el canal c de X (Figura \ref{fig:conv_std_vs_gemm_backprop}). 
+
 \begin{figure}[H]
-	\hspace{-25mm}
-	\includegraphics[scale=0.3]{imagenes/conv_std_vs_gemm_backprop_pesos.jpg}  
+	\includegraphics[scale=0.33]{imagenes/conv_std_vs_gemm_backprop_pesos.jpg}  
 	\caption{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}
 	\label{fig:conv_std_vs_gemm_backprop_pesos}
 \end{figure}
 
+En el caso del cálculo del gradiente de la pérdida respecto a los pesos de una capa convolucional, se recuerda que se podía implementar como una convolción entre el volumen de salida y el de entrada. Mediante el enfoque GEMM, se puede observar en la Figura \ref{fig:conv_std_vs_gemm_backprop_pesos} como para ello es necesario `desenrrollar' tanto el volumen de entrada X como el de salida Y. De esta forma, multiplicando cada fila de Y (desenrrollada) por cada columna de X (desenrrollada), se estarán multiplicando todos los elementos del volumen de salida Y y del volumen de entrada X que fueron multiplicados anteriormente (en la propagación hacia delante) por un peso distinto, calculando así el gradiente de dicho peso.
+
+
+
+
 \section{Capa totalmente conectada como GEMM \cite{nvidia_back_fully_GEMM}}
+
+Al igual que las capas convolucionales, las capas totalmente conectadas también se pueden implementar mediante un enfoque GEMM. Para ello, analizaremos por separado cada uno de los 3 casos que nos encontraremos:
+\begin{enumerate}[label=\textbullet, nosep]
+	\item Propagación hacia delante
+	\item Cálculo del gradiente respecto a la entrada
+	\item Cálculo del gradiente respecto a los pesos
+\end{enumerate}
+
 \subsection{Propagación hacia delante}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.25]{imagenes/gemm_fully_forward.jpg}  
+	\includegraphics[scale=0.3]{imagenes/gemm_fully_forward.jpg}  
 	\caption{Propagación GEMM hacia delante en una capa totalmente conectada}
 	\label{fig:gemm_fully_forward}
 \end{figure}
 
+En la Figura \ref{fig:gemm_fully_forward} se muestran 2 formas distintas de implementar la propagación hacia delante en una capa totalmente conectada. El método \textbf{ESTÁNDAR} hace referencia al método empleado en secciones anteriores. Sin embargo, el método \textbf{GEMM} aporta un nuevo ángulo desde el cual afrontarlo. Este último consiste en, para una capa i, agrupar por un lado pesos y sesgos de dicha capa en una matriz, y por otra parte tener otra matriz de una sola columna con todas las neuronas de dicha capa i más un elemento con valor igual a 1 (para sumar el sesgo). \\
+Siguiendo la estructura planteada en la Figura \ref{fig:gemm_fully_forward}, cada multiplicación de fila matriz\_pesos\_sesgos por columna de matriz\_neuronas produce como resultado una neurona de la capa i+1 (para completar la propagación hacia delante de dicha capa habría que aplicar la función de activación sobre los resultados obtenidos).
 
 \begin{figure}[H]
 	\centering
@@ -60,16 +84,25 @@ Como ambos gradientes se pueden implementar como convoluciones, y en la sección
 	\label{fig:gemm_fully_forward_minibatch}
 \end{figure}
 
+Si tenemos en cuenta que los pesos y sesgos durante el entrenamiento permanecen constantes durante todo un minibatch, para un minibatch de tamaño N, podemos expandir la matriz matriz\_neuronas definida anteriormente para que tenga N columnas, una por cada elemento del minibatch. De esta forma, mediante una simple multiplicación matricial (enfoque GEMM) se puede realizar la propagación hacia delante de un minibatch entero para una capa totalmente conectada, tal y como se muestra en la Figura \ref{fig:gemm_fully_forward_minibatch} \cite{nvidia_back_fully_GEMM}.
+
+\newpage
+
 \subsection{Retropropagación}
+
+Al igual que la propagación hacia delante, la retropropagación en una capa totalmente conectada también puede se calcular mediante un enfoque de multiplicación matricial como es GEMM.
 
 \subsubsection{Gradiente respecto a la entrada}
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.25]{imagenes/gemm_fully_back_input.jpg}  
+	\includegraphics[scale=0.35]{imagenes/gemm_fully_back_input.jpg}  
 	\caption{Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}
 	\label{fig:gemm_fully_back_input}
 \end{figure}
 
+Suponiendo que que nos encontramos en la capa i y ya tenemos el gradiente de la pérdida respecto a la entrada de la capa i+1, podemos calcular dicho gradiente respecto a la entrada de la capa i tal y como se muestra en la Figura \ref{fig:gemm_fully_back_input}. \\
+Esto es, teniendo por un lado una matriz matriz\_pesos donde cada fila j tiene los pesos que conectan a la neurona j de dicha capa i y a cualquier otra neurona de la capa i+1. En este caso, la matriz matriz\_neuronas vuelve a tener una sola columna y contiene las neuronas de la capa i+1. Sin embargo, esta vez dichas neuronas contendrán el gradiente de la pérdida hasta dicha capa. Así, cada multiplicación de una fila de matriz\_pesos por una columna de matriz\_neuronas producirá el cálculo del gradiente de la pérdida respecto a una neurona de entrada distinta. \\
+En la Figura \ref{fig:gemm_fully_back_input} se muestra tanto una representación visual de ambas matrices como la fórmula que se emplea en el método estándar, facilitando así una mejor comprensión de que estos dos métodos son simplemente caminos que llevan al mismo destino y por tanto producen los mismos resultados.
 
 \begin{figure}[H]
 	\centering
@@ -78,14 +111,17 @@ Como ambos gradientes se pueden implementar como convoluciones, y en la sección
 	\label{fig:gemm_fully_back_input_minibatch}
 \end{figure}
 
+De forma similar al apartado anterior, para un minibatch de N elementos, se puede expandir la matriz matriz\_neuronas para que contenga N columnas, permitiendo así el cálculo del gradiente de la pérdida respecto a la entrada para una capa i para todo un minibatch mediante una simple multiplicación matricial, tal y como se muestra en la Figura \ref{fig:gemm_fully_back_input_minibatch}.
+
 \subsubsection{Gradiente respecto a los pesos}
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.25]{imagenes/gemm_fully_back_w.jpg}  
+	\includegraphics[scale=0.3]{imagenes/gemm_fully_back_w.jpg}  
 	\caption{Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}
 	\label{fig:gemm_fully_back_w}
 \end{figure}
 
+En este caso, para una capa i, tendremos 2 matrices a las que denominaremos matriz\_entrada y matriz\_salida. La primera de ellas se caracterizará por tener una sola columna con las neuronas de entrada de la capa i, y la segunda contendrá una sola fila con el gradiente de la pérdida respecto a cada neurona de salida de la capa i. De esta forma, cada multiplicación de fila matriz\_entrada por columna de matriz\_salida producirá el cálculo del gradiente de la pérdida respecto a un peso que une una neurona de la capa i con otra de la capa i+1. Es decir, se calcula el gradiente de la pérdida respecto a los pesos de la capa i, tal y como se muestra en la Figura \ref{fig:gemm_fully_back_w}.
 
 \begin{figure}[H]
 	\centering
@@ -93,6 +129,8 @@ Como ambos gradientes se pueden implementar como convoluciones, y en la sección
 	\caption{Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}
 	\label{fig:gemm_fully_back_w_minibatch}
 \end{figure}
+
+Para un minibatch de tamaño N, se pueden expandir ambas matrices de forma que estas tengan N filas o columnas (según se indica en la Figura \ref{fig:gemm_fully_back_w_minibatch}) y calcular el gradiente de la pérdida respecto a los pesos para una capa i en un minibatch entero mediante una multiplicación matricial.
 
 \section{CUDA}
 CUDA es una plataforma de cómputo paralelo de propósito general y modelo de programación que aprovecha la capacidad computacional de las GPUs de NVIDIA para resolver gran cantidad de problemas computacionalmente costosos de manera eficiente. CUDA permite acceder a la GPU de forma similar al común acceso a CPU que experimenta un desarrollador promedio. \\
