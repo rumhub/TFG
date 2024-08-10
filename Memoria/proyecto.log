@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  9 AUG 2024 14:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  10 AUG 2024 12:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2450,45 +2450,38 @@ Package hyperref Warning: Difference (2) between bookmark levels is greater
 
 [83
 
-]
-<imagenes/sec_openmp.png, id=1627, 614.295pt x 381.5856pt>
+] [84]
+<imagenes/sec_openmp.png, id=1664, 614.295pt x 381.5856pt>
 File: imagenes/sec_openmp.png Graphic file (type png)
 <use imagenes/sec_openmp.png>
-Package pdftex.def Info: imagenes/sec_openmp.png  used on input line 91.
+Package pdftex.def Info: imagenes/sec_openmp.png  used on input line 97.
 (pdftex.def)             Requested size: 307.14674pt x 190.79233pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [84]
 <imagenes/ganancia_sec_openmp.png, id=1666, 617.9085pt x 381.5856pt>
 File: imagenes/ganancia_sec_openmp.png Graphic file (type png)
 <use imagenes/ganancia_sec_openmp.png>
 Package pdftex.def Info: imagenes/ganancia_sec_openmp.png  used on input line 1
-00.
+06.
 (pdftex.def)             Requested size: 308.95349pt x 190.79233pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 104.
-LaTeX Info: Redefining \% on input line 104.
+LaTeX Info: Redefining \. on input line 110.
+LaTeX Info: Redefining \% on input line 110.
  [85 <./imagenes/sec_openmp.png>]
 <imagenes/openmp_cuda_cudnn.png, id=1675, 607.7907pt x 381.5856pt>
 File: imagenes/openmp_cuda_cudnn.png Graphic file (type png)
 <use imagenes/openmp_cuda_cudnn.png>
-Package pdftex.def Info: imagenes/openmp_cuda_cudnn.png  used on input line 111
+Package pdftex.def Info: imagenes/openmp_cuda_cudnn.png  used on input line 119
 .
-(pdftex.def)             Requested size: 303.8946pt x 190.79233pt.
+(pdftex.def)             Requested size: 316.05298pt x 198.42564pt.
  [86 <./imagenes/ganancia_sec_openmp.png> <./imagenes/openmp_cuda_cudnn.png>]
-<imagenes/cuda_cudnn_1.png, id=1684, 609.9588pt x 381.5856pt>
+<imagenes/cuda_cudnn_1.png, id=1687, 609.9588pt x 381.5856pt>
 File: imagenes/cuda_cudnn_1.png Graphic file (type png)
 <use imagenes/cuda_cudnn_1.png>
-Package pdftex.def Info: imagenes/cuda_cudnn_1.png  used on input line 120.
-(pdftex.def)             Requested size: 304.97865pt x 190.79233pt.
+Package pdftex.def Info: imagenes/cuda_cudnn_1.png  used on input line 131.
+(pdftex.def)             Requested size: 317.1804pt x 198.42564pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 158.
-LaTeX Info: Redefining \% on input line 158.
+LaTeX Info: Redefining \. on input line 170.
+LaTeX Info: Redefining \% on input line 170.
  [87 <./imagenes/cuda_cudnn_1.png>]) (proyecto.bbl [88]
 Underfull \hbox (badness 10000) in paragraph at lines 4--9
 []\OT1/cmr/m/n/10.95 mehran@mldawn.com.  Back-propagation th-rough cross-
@@ -3033,9 +3026,9 @@ xyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 .pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
 cm/cmti10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (119 pages, 8133114 bytes).
+Output written on proyecto.pdf (119 pages, 8134678 bytes).
 PDF statistics:
- 2057 PDF objects out of 2073 (max. 8388607)
+ 2060 PDF objects out of 2073 (max. 8388607)
  713 named destinations out of 1000 (max. 500000)
  1078 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -82,7 +82,13 @@ A continuación se muestra la arquitectura general de algunos de los modelos que
 	\end{enumerate}	
 \end{enumerate}
 
+\newpage
+
 \subsection{Comparación de rendimiento}
+
+En esta sección se compararán las prestaciones de cada implementación. Como todas y cada una de ellas producen los mismos resultados (cuando se eliminan factores aleatorios como inicialización de pesos, entre otros), dicha comparación se centrará en el tiempo de cómputo requerido por cada una. \\
+Se comienza analizando aquellas implementaciones que requieren más tiempo de cómputo. Es decir, las que emplean exclusivamente CPU, (Secuencial y OpenMP). Tras ello, el análisis se posiciona sobre el comportamiento en aquellos sistemas heterogéneos que emplean tanto CPU como GPU (CUDA y cuDNN). \\
+Además, se proporcionan figuras que ayudan a comprender mejor dichos análisis de rendimiento, así como una tabla con los resultados de tiempo exactos empleados por cada capa de una misma arquitectura desarrollada en distintas implementaciones.
 
 \subsubsection{Implementaciones CPU}
 
@@ -104,25 +110,31 @@ En la Figura \ref{fig:sec_openmp} se muestra una comparación de rendimiento ent
 
 La implementación con OpenMP se caracteriza por un paralelismo a nivel de CPU mediante 8 hebras. Por tanto, lo esperado es una ganancia cercana a 8 respecto a la implementación secuencial, tal y como se muestra en la Figura \ref{fig:ganancia_sec_openmp}.
 
+\vspace{10mm}
+
 \subsubsection{Implementaciones GPU}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.5]{imagenes/openmp_cuda_cudnn.png}  
+	\includegraphics[scale=0.52]{imagenes/openmp_cuda_cudnn.png}  
 	\caption{OpenMP vs CUDA vs CUDNN}
 	\label{fig:openmp_cuda_cudnn}
 \end{figure}
 
-Al igual que la implementación en OpenMP muestra una diferencia notable respecto a la implementación secuencial, esto también es esperable entre las implementaciones que emplean GPU y la implementación en OpenMP. Dicho caso se observa en la Figura \ref{fig:openmp_cuda_cudnn}, donde en este caso las diferencias de rendimiento son incluso mayores que las observadas en el apartado anterior.
+\newpage
+
+En la Figura \ref{fig:openmp_cuda_cudnn} se emplean los mismos modelos que en las Figuras \ref{fig:sec_openmp} y \ref{fig:ganancia_sec_openmp}.
+Al igual que la implementación en OpenMP muestra una diferencia notable respecto a la implementación secuencial, esto también es esperable entre implementaciones heterogéneas con CPU-GPU e implementaciones caracterizadas por un uso exclusivo de CPU como es OpenMP en este caso. Esto se observa en la Figura \ref{fig:openmp_cuda_cudnn}, donde en este caso las diferencias de rendimiento son incluso mayores que las observadas en el apartado anterior.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.5]{imagenes/cuda_cudnn_1.png}  
+	\includegraphics[scale=0.52]{imagenes/cuda_cudnn_1.png}  
 	\caption{CUDA vs CUDNN}
 	\label{fig:cuda_cudnn_1}
 \end{figure}
 
-Para comparar las implementaciones en GPU se añaden 2 modelos, uno menos y otro más complejo que los anteriores. Al igual que en el experimento anterior, dichos modelos están ordenados en las figuras de izquierda a derecha, de menor a mayor complejidad. El objetivo de ello es facilitar la comprensión entre el rendimiento de la implementación CUDA y la implementación cuDNN. Tal y como se muestra en la Figura \ref{fig:cuda_cudnn_1}, la implementación CUDA obtiene mejores resultados en modelos menos complejos, pero a medida que incrementa la complejidad de los mismos, el modelo cuDNN va tomando la ventaja dada la naturaleza de una librería altamente optimizada como es cuDNN.
+Para comparar las implementaciones en GPU se añaden 2 modelos, uno menos y otro más complejo que los anteriores. Al igual que en el experimento anterior, dichos modelos están ordenados en las figuras de izquierda a derecha, de menor a mayor complejidad. El objetivo de ello es facilitar la comprensión entre el rendimiento de la implementación CUDA y la implementación cuDNN. \\
+Tal y como se muestra en la Figura \ref{fig:cuda_cudnn_1}, la implementación CUDA obtiene mejores resultados en modelos menos complejos, pero a medida que incrementa la complejidad de los mismos, el modelo cuDNN va tomando la ventaja dada la naturaleza de una librería altamente optimizada como se trata de cuDNN. Gracias a esta importante característica se ha empleado en una gran cantidad de librerías de alto nivel y gran prestigio como Caffe2, MATLAB, PyTorch, o TensorFlow, entre otras. 
 
 \begin{table}[H]
 	\centering
