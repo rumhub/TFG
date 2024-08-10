@@ -53,6 +53,20 @@ Hsuan-Tien~Lin Yaser S. Abu-Mostafa, Malik Magdon-Ismail.
 \newblock California Institute of Technology Pasadena, CA 91125, USA, 1
   edition, 2012.
 
+\bibitem{NN_intro}
+IBM.
+\newblock ¿qué son las redes neuronales?, 2024.
+\newblock
+  \url{https://www.ibm.com/es-es/topics/neural-networks#:~:text=%C2%BFQu%C3%A9%20son%20las%20redes%20neuronales,opciones%20y%20llegar%20a%20conclusiones.}
+  [Accessed:10/08/2024].
+
+\bibitem{funcion_activacion_definicion}
+Sakshi Tiwari.
+\newblock Funciones de activación en redes neuronales, 2024.
+\newblock
+  \url{https://www.geeksforgeeks.org/activation-functions-neural-networks/}
+  [Accessed:10/08/2024].
+
 \bibitem{ReLU}
 Douglas Karr.
 \newblock Unidad lineal rectificada, 2024.

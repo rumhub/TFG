@@ -7,36 +7,25 @@ Se entiende como el campo de las ciencias de computación que en vez de enfocars
 En vez de averiguar las distintas reglas a seguir para llegar a una solución, esta alternativa permite simplemente suministrar ejemplos de lo que debería pasar en distintas situaciones, y dejar que la máquina aprenda y extraiga ella misma sus propias conclusiones. De esta forma, el procedimiento en aprendizaje supervisado consiste en 'entrenar' con una muestra de N ejemplos, extraer información de ellos, y posteriormente poder evaluar de forma 'correcta' (bajo un margen de error controlado) otra muestra de M ejemplos, siendo M \textgreater N. \cite{Learning_From_Data} \\
 Este enfoque ha contribuido en el avance de áreas como reconocimiento de voz, visión por ordenador, procesamiento de lenguaje natural, etc.
 
-\section{Componentes necesarios para el aprendizaje supervisado}
+\section{Aprendizaje supervisado}
 
-Datos de entrada X y de salida Y que el modelo empleará para aprender y tomar decisiones. Ambos se unen para formar un dataset de entradas-salidas D=\{($x_1, y_1$), ($x_2, y_2$), ..., ($x_N, y_N$)\}. Para que el aprendizaje sea posible, debe existir una función F: X $\rightarrow$ Y tal que $y_i$ = F($x_i$) para i$\in$\{1...N\}. De esta forma, en función del dataset D, el modelo tratará de encontrar una función G que aproxime F para dicho conjunto. Además, se suelen aplicar técnicas que permitan una mejor generalización del modelo, expandiendo las capacidades del mismo y permitiendo que su conocimiento pueda ser útil incluso fuera de la muestra de datos inicial. \cite{Learning_From_Data}
+El aprendizaje supervisado se caracteriza por, a partir de una serie de datos de entrada X y sus etiquetas, entrenar un modelo con estos para que mediante un proceso iterativo este vaya aprendiendo de forma que al finalizar dicho entrenamiento el mismo modelo sea capaz de tomar mejores decisiones que antes de comenzarlo. \\
+Suponiendo que nuestra muestra tiene N datos, tanto X como Y se unen para formar lo que se conoce como dataset D=\{($x_1, y_1$), ($x_2, y_2$), ..., ($x_N, y_N$)\}. Para que el aprendizaje sea posible, debe existir una función F: X $\rightarrow$ Y tal que $y_i$ = F($x_i$) para i$\in$\{1...N\}. De esta forma, en función del dataset D, el modelo tratará de encontrar una función G que aproxime F para dicho conjunto. Además, se suelen aplicar técnicas que permitan una mejor generalización del modelo, expandiendo las capacidades del mismo y permitiendo que su conocimiento pueda ser útil incluso fuera de la muestra de datos inicial. \cite{Learning_From_Data}
 
 \section{División de datos en entrenamiento y test}
 
+Suponiendo que a partir de unos datos de entrada y un modelo, logremos que este los emplee para aprender, normalmente el objetivo final es emplear dicho modelo fuera de esa muestra inicial. \\
+Por ejemplo, en el caso de aprender a montar en bici lo que se suele querer es aprender a montar en cualquier bici, no aprender a usar una bici y cada vez que se quiera cambiar de vehículo tener que volver a empezar dicho aprendizaje. \\
+En el caso de los modelos de aprendizaje automático, un ejemplo simple puede ser distinguir gatos de perros. Si se entrena un modelo con 200 imágenes, suele ser común que su desarrollador quiera emplear dicho modelo entrenado para distinguir gatos de perros con imágenes que este no vio nunca antes. \\
+Es decir, aunque se entrene un modelo con una muestra de N imágenes, es importante saber que en la mayoría de los casos lo que se busca no es un buen rendimiento exclusivamente en la muestra con que se entrenó, sino también en aquellas muestras en las que no se entrenó. \\
 Para visualizar la generalización del modelo, el conjunto de datos D se suele dividir en 2 subconjuntos, (entrenamiento y test) de forma que se pueda estimar si realmente 'aprende' o solo memoriza.\\
 Una vez realizada la división, se entrena el modelo con los datos del conjunto de entrenamiento. Cuando se termina el entrenamiento, se accede al conjunto test y se visualiza el rendimiento del modelo sobre el mismo. Como los datos de test no se emplearon en ningún momento, aportan una estimación sobre la generalización del modelo fuera de la muestra con la que se entrenó. 
 
-\section{Tipos de aprendizaje}
-
-\subsection{Aprendizaje Supervisado}
-
-% \cite{Learning_From_Data} página 24
-
-Es el que se empleará en este proyecto. 
-Se caracteriza por la presencia de una etiqueta 'correcta' $y_i$ asociada a cada dato de entrada $x_i$. Posteriormente, la red empleará ambos valores para, a partir de $x_i$, tratar de deducir $y_i$. \cite{Learning_From_Data} \\
-Aunque se trate de impedir, la existencia de ruido en los datos es inevitable, implicando que algunas etiquetas de Y=$\{y_1, y_2, ..., y_N\}$ puedan ser erróneas. \\
-Este tipo de aprendizaje se divide a su vez en problemas de clasificación y regresión, centrándose en predecir etiquetas o valores numéricos, respectivamente.
-
-\subsection{Aprendizaje No Supervisado}
-
-En este tipo de aprendizaje los datos no contienen ninguna información respecto a Y. De esta forma, el conjunto de datos D se compone exclusivamente de valores X=$\{x_1, x_2, ..., x_N\}$. \cite{Learning_From_Data}
-
-\subsection{Aprendizaje Por Refuerzo}
-
-En este caso tampoco existe un $y_i$ 'correcto' asociado a cada $x_i$. En su lugar, se asocia a cada $x_i$ una etiqueta con un valor posible de $y_i$, además de una medida que indica como de bueno es el mismo. \cite{Learning_From_Data}
-
-
 \section{Redes Neuronales Totalmente Conectadas}
+
+Antes de analizar las redes neuronales convolucionales (CNNs), tiene sentido empezar por las redes neuronales `clásicas' o totalmente conectadas. \\
+Una red neuronal se trata de un programa o modelo de machine learning que toma decisiones de forma similar al cerebro humano, empleando para ello procesos que imitan a los de las neuronas biológicas \cite{NN_intro}. \\
+Estas cuentan con una serie de neuronas artificiales organizadas por capas, y se caracterizan por tener una capa de entrada, una o varias capas ocultas y una capa de salida.
 
 \subsection{Neurona}
 
@@ -48,7 +37,7 @@ En este caso tampoco existe un $y_i$ 'correcto' asociado a cada $x_i$. En su lug
 \end{figure}
 
 Una neurona parte de una serie de datos de entrada X=\{$x_1$, $x_2$, ..., $x_N$\} tal que cada $x_i$$\in${X} se encuentra asociado a un peso $w_i\in{W}$. \\
-Esta los emplea para realizar una suma ponderada y posteriormente añadir un sesgo b, además de aplicar una función de activación f sobre el resultado obtenido. 
+En la Figura \ref{fig:neurona} se muestra como esta los emplea para realizar una suma ponderada y posteriormente añadir un sesgo b, además de aplicar una función de activación f sobre el resultado obtenido. 
 
 \subsection{Estructura por capas}
 
@@ -59,9 +48,12 @@ Esta los emplea para realizar una suma ponderada y posteriormente añadir un ses
 	\label{fig:capa_neuronas}
 \end{figure}
 
-Las neuronas se suelen agrupas por capas, de tal forma que la salida de una compone la entrada de la siguiente, formando así modelos más sofisticados.
+Las neuronas se suelen agrupas por capas, de tal forma que la salida de una compone la entrada de la siguiente, formando así modelos más sofisticados (Figura \ref{fig:capa_neuronas}). \\
+En este proyecto se desarrollarán redes neuronales para tareas de clasificación multiclase. Para clasificar N clases distintas, la capa de salida tendrá N neuronas. De esta forma, nuestra red totalmente conectada tendrá una capa de entrada (para recibir los datos de entrenamiento), una capa de salida, y las capas intermedias entre ellas recibirán el nombre de capas ocultas. 
 
 \subsection{Funciones de activación}
+
+Una función de activación en el contexto de las redes neuronales es una función matemática aplicada a la salida de una neurona. Su objetivo consiste en introducir no linealidad en el modelo, permitiendo que la red aprenda e identifique patrones complejos en los datos. Sin no linealidad, una red neuronal se comportaría esencialmente como un modelo de regresión lineal, independientemente del número de capas que tenga \cite{funcion_activacion_definicion}.
 
 \subsubsection{ReLU}
 
@@ -76,8 +68,8 @@ Las neuronas se suelen agrupas por capas, de tal forma que la salida de una comp
 	\label{fig:ReLU}
 \end{figure}
 
-A cambio de un bajo coste computacional, aporta no linealidad a la neurona, permitiendo a esta aprender funciones de mayor complejidad. \\
-Como su gradiente es 0 o 1, evita una reducción excesiva del mismo para valores positivos, mitigando así el problema del desvanecimiento del gradiente, caracterizado por la presencia de gradientes muy pequeños en backpropagation y provocar un aprendizaje lento. \cite{ReLU}
+A cambio de un bajo coste computacional, la función de activación ReLU (Figura \ref{fig:ReLU}) aporta no linealidad a la neurona, permitiendo a esta aprender funciones de mayor complejidad. \\
+Como su gradiente es 0 o 1 (0 para valores negativos, 1 para valores positivos), evita una reducción excesiva del mismo para valores positivos, mitigando así el problema del desvanecimiento del gradiente, caracterizado por la presencia de gradientes muy pequeños en retropropagación (se analizará con detalle en secciones posteriores) y provocar un aprendizaje lento. \cite{ReLU}
 
 \subsubsection{Sigmoide}
 
@@ -92,7 +84,7 @@ Como su gradiente es 0 o 1, evita una reducción excesiva del mismo para valores
 	\label{fig:Sigmoide}
 \end{figure}
 
-Se trata de una función interesante en el ámbito de la clasificación binaria, pues se caracteriza por transformar un valor de entrada en una salida comprendida en el rango [0-1]. \\
+La función de activación Sigmoide se trata de una función interesante en el ámbito de la clasificación binaria, pues se caracteriza por transformar un valor de entrada en una salida comprendida en el rango [0-1] , tal y como se muestra en la Figura \ref{fig:Sigmoide}. \\
 Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a saturarse con valores extremos (positivos o negativos). Por tanto, su aplicación dependerá del caso concreto a tratar. \cite{Sigmoide}
 
 \subsection{Capa SoftMax}
@@ -104,10 +96,17 @@ Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a sat
 	\label{fig:SoftMax}
 \end{figure}
 
-Para n entradas, produce n salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, cada salida i se puede interpretar como la probabilidad de pertenencia a la clase i, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
-De esta forma, en la Figura \ref{fig:SoftMax} se muestra un ejemplo de clasificación multiclase con 3 clases distintas. Para una entrada dada, el modelo estima que esta pertenece a la clase 0, pues este según este, dicha entrada presenta un 0.72\% de probabilidades de pertenecer a la clase 0, un 0.01\% a la clase 1, y un 0.26\% a la clase 2.
+La función SoftMax se suele emplear en la capa de salida de la red. Se caracteriza por, para n entradas, producir n salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, cada salida i se puede interpretar como la probabilidad de pertenencia a la clase i, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
+De esta forma, en la Figura \ref{fig:SoftMax} se muestra un ejemplo de clasificación multiclase con 3 clases distintas. \\
+Para una entrada dada, el modelo estima que esta pertenece a la clase 0, pues este según este, dicha entrada presenta un 0.72\% de probabilidades de pertenecer a la clase 0, un 0.01\% a la clase 1, y un 0.26\% a la clase 2.
+
+\subsection{Tipos de codificaciones de etiquetas}
+
+En el campo de machine learning existen varios tipos de codificaciones. Así, para codificar 3 clases distintas se podrían codificar o bien mediante \{1, 2, 3\}, o mediante \{100, 010, 001\} (codificación one-hot), por ejemplo. En este proyecto se empleará la codificación one-hot por simplicidad y coincidir con la gran mayoría de bibliografía online.
 
 \subsection{Función de error o pérdida}
+
+En modelos de aprendizaje automático se suele emplear una función de optimización iterativa como descenso del gradiente (se muestra en el siguiente apartado) para, a partir de una función de error y unos datos de entrada, estimar el error del modelo sobre los mismos, y poder emplear dicha información para ir reduciendo el error iteración a iteración y así ir aprendiendo. 
 
 \subsubsection{Entropía Cruzada}
 
@@ -116,9 +115,30 @@ De esta forma, en la Figura \ref{fig:SoftMax} se muestra un ejemplo de clasifica
 	\label{fig:loss_func_softmax}
 \end{gather}
 
-Es una métrica empleada en aprendizaje automático para medir qué tan bien se desempeña un modelo de clasificación. La pérdida o error se mide como un valor en el rango [0-1], siendo 0 un modelo perfecto y 1 otro totalmente erróneo. \cite{Cross_entropy}
+En los modelos a desarrollar en este proyecto se empleará Entropía Cruzada como función de error por ser una métrica empleada en aprendizaje automático para medir qué tan bien se desempeña un modelo de clasificación. La pérdida o error se mide como un valor en el rango [0-1], siendo 0 un modelo perfecto y 1 otro totalmente erróneo. \cite{Cross_entropy}
 
-En la fórmula \ref{fig:loss_func_softmax} se muestra el cálculo de la misma, donde H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$, $y_i$ representa la etiqueta real de la entrada $x_i$ empleada, y $\hat{y}_i$ representa la etiqueta que el modelo predijo para la entrada $x_i$. 
+En la fórmula \ref{fig:loss_func_softmax} se muestra el cálculo de la misma, donde H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$, $y_i$ representa la etiqueta real de la entrada $x_i$ empleada, y $\hat{y}_i$ representa la etiqueta que el modelo predijo dicha entrada $x_i$.  \\
+
+\subsubsection{Importancia de la función de error en el aprendizaje}
+
+Para visualizar el papel de la función de error en el aprendizaje de un modelo, supondremos que los datos actuales cuentan con H=3 clases tal que para un $x_i \in X$ dado y empleando la codificación One-Hot para las etiquetas se tiene que $y_i = [0, 0, 1]$. 
+
+\begin{gather}
+	E(y, \hat{y}) = - \sum_{i=1}^{H}  [y_i * log( \hat{y}_i)] = 0 + 0 + log(0.1) = -log(0.1) = 2.3
+	\label{ejemplo_1}
+\end{gather}
+
+Como la configuración inicial del modelo es desconocida, se supone que sus predicciones iniciales para $x_i$ son $\hat{y_i} = [ 0.6, 0.3, 0.1]$. En este caso, $x_i$ pertenece a la clase 3 pero el modelo predice que pertenece a la clase 1, pues 0.6 se interpreta como la probabilidad de pertenecer a la clase 1 y es la probabilidad más grande de todo $\hat{y_i}$.\\
+Por tanto, su función de error indicaría que el error obtenido viene dado por la fórmula \ref{ejemplo_1}.
+
+\begin{gather}
+	E(y, \hat{y}) = - \sum_{i=1}^{H}  [y_i * log( \hat{y}_i)] = 0 + 0 + log(0.6) = -log(0.6) = 0.5
+	\label{ejemplo_2}
+\end{gather}
+
+Tras entrenar el modelo durante varias iteraciones, $y_i$ permanece constante, pero $\hat{y_i}$ se modifica a $\hat{y_i} = [0.1, 0.3, 0.6]$, de forma que el nuevo error obtenido vendría dado por la fórmula \ref{ejemplo_2}, y ahora el modelo realizaría una predicción correcta sobre la clase de $x_i$, aunque todavía le quedaría margen de mejora pues el error es de 0.5 y este se puede minimizar. \\
+De esta forma, se visualiza como a lo largo del entrenamiento de un modelo este se centra en reducir el error obtenido, y como consecuencia de ello va modificando sus predicciones de tal forma que se vayan ajustando a lo especificado por sus datos de entrada y etiquetas asociadas.
+
 
 % https://medium.com/mlearning-ai/understanding-loss-functions-for-classification-81c19ee72c2a
 
@@ -185,10 +205,6 @@ Siguiendo la bibliografía \cite{importancia_ReLU} \cite{importancia_ReLU_2}, se
 \subsubsection{Inicialización de sesgos}
 
 De la misma forma, se vuelve a seguir la bibliografía, indicando esta vez una inicialización de sesgos a 0.0 \cite{ini_bias} \cite{ini_bias_2}.
-
-\subsection{Tipos de codificaciones}
-
-En el campo de machine learning existen varios tipos de codificaciones. De esta forma, para codificar 3 clases distintas se podrían codificar o bien mediante \{1, 2, 3\} (codificación de etiquetas), o mediante \{100, 010, 001\} (codificación one-hot), por ejemplo. En este proyecto se empleará la codificación one-hot, pues aporta unas ventajas que se contemplarán con detalle en secciones posteriores.
 
 \subsection{Propagación hacia delante con softmax}
 
