@@ -181,23 +181,22 @@ El procedimiento para entrenar una red neuronal consiste en, para una entrada $x
 
 
 Así, se actualizarán los parámetros de la red neuronal (pesos y sesgos) según las fórmulas \ref{act_pesos} y \ref{act_bias}. En ellas, $W_t$ y $b_t$ indican los valores del peso W y bias b en el instante o iteración t, de la misma forma que $W_{t+1}$ y $b_{t+1}$ representan los valores de los mismos en el instante t+1 \cite{SGD_act_params}. \\
-Es decir, dada una iteración t y unos datos de entrada X, primero se realiza la propagación hacia delante de los mismos a lo largo del modelo para obtener  $\hat{Y}$ o la predicción de los mismos. Una vez obtenida $\hat{Y}$, se emplea la función de error para obtener el error del modelo sobre los datos de entrada y, con ello, se realiza la retroprogacación del gradiente de la pérdida o error a lo largo del modelo, de forma que cada parámetro del mismo obtenga el gradiente de la pérdida respecto a él. Una vez cada parámetro tiene su gradiente respecto a la pérdida, lo emplea junto con $\alpha$ para actualizar su valor, dirigiéndose en dirección contraria al gradiente en una magnitud igual a $\alpha$ y poder reducir el posterior error en la iteración t+1. 
+Es decir, dada una iteración t y unos datos de entrada X, primero se realiza la propagación hacia delante de los mismos a lo largo del modelo para obtener  $\hat{Y}$ o la predicción de los mismos. Una vez obtenida $\hat{Y}$, se emplea la función de error para obtener el error del modelo sobre los datos de entrada y, con ello, se realiza la retroprogacación del gradiente de la pérdida o error a lo largo del modelo, de forma que cada parámetro del mismo obtenga el gradiente de la pérdida respecto a él. Una vez cada parámetro tiene su gradiente respecto a la pérdida, lo emplea junto con $\alpha$ para actualizar su valor, dirigiéndose en dirección contraria al gradiente en una magnitud igual a $\alpha$ y poder reducir el posterior error en la iteración t+1. Los parámetros se actualizan una vez por iteración, tras realizar la retropropagación.
 
 \subsubsection{Descenso del gradiente estocástico}
 
 \begin{algorithm}[H]
 	\caption{Descenso del gradiente estocástico \cite{SGD_3}} 
 	\begin{algorithmic}
-		\State Datos de entrenamiento $D=\{(x_1, y_1), (x_2, y_2), ..., (x_N, y_N)\}$.
 		\For{época $p\in\{0, ..., P-1\}$}
-			\State Desordenar vector de datos D.
+			\State Desordenar datos de entrenamiento.
 			
-			\For{$i \in [m_{inicio}, ..., m_{fin}]$}
-				\State Obtener pareja de datos $(x_i, y_i) \in D$
-				\State Realizar propagación hacia delante de $x_i$ y obtener predicción $\hat{y}_i$.
-				\State Evaluar $\hat{y}_i$ con la función de pérdida y calcular el error $e_i$.
-				\State Realizar propagación hacia detrás y obtener gradientes 
-				\State      de cada parámetro del modelo.
+			\For{$minibatch \in [m_{inicio}, ..., m_{fin}]$}
+				\State Obtener datos del minibatch.
+				\State Realizar propagación hacia delante.
+				\State Obtener error mediante función de error.
+				\State Realizar retropropagación y obtener gradiente de la pérdida   
+				\State       respecto a cada parámetro del modelo.
 				\State Actualizar parámetros.
 			\EndFor
 		\EndFor
@@ -205,7 +204,8 @@ Es decir, dada una iteración t y unos datos de entrada X, primero se realiza la
 \end{algorithm}
 
 Es una variante que sustituye el gradiente real por una estimación del mismo, logrando reducir la carga computacional y tiempo de entrenamiento a cambio de una menor tasa de convergencia \cite{sgd_stocastico} \cite{sgd_stocastico_1}. \\
-Se caracterizada por, en cada época, dividir el conjunto de entrenamiento en varios subconjuntos aleatorios y disjuntos entre ellos (mini-batch), de tal forma que se calcule el gradiente y actualicen los parámetros del modelo en cada uno de ellos \cite{sgd_stocastico}. \\
+Se caracteriza por, en cada época, dividir el conjunto de entrenamiento en varios subconjuntos aleatorios y disjuntos entre ellos (minibatch). \\
+Para cada minibatch, se realiza la propagación hacia delante, cálculo de error, retropropagación y actualización de parámetros en ese orden. Se define como época la iteración del modelo por todos los minibatches \cite{sgd_stocastico}. \\
 
 \subsection{Propagación hacia delante con softmax}
 
