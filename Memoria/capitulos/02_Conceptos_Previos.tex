@@ -207,21 +207,6 @@ Es una variante que sustituye el gradiente real por una estimación del mismo, l
 Se caracteriza por, en cada época, dividir el conjunto de entrenamiento en varios subconjuntos aleatorios y disjuntos entre ellos (minibatch). \\
 Para cada minibatch, se realiza la propagación hacia delante, cálculo de error, retropropagación y actualización de parámetros en ese orden. Se define como época la iteración del modelo por todos los minibatches \cite{sgd_stocastico}. \\
 
-\subsection{Propagación hacia delante con softmax}
-
-Suponemos que para un $x_i$ dado, se obtiene S($\hat{y}$) = [ S($\hat{y}_1)$, S($\hat{y}_2)$, S($\hat{y}_3)$ ] = [0.04, 0.7, 0.26 ] \\
-Para dicho $x_i$, $y_i$ = [0, 0, 1] \\
-En este caso, el modelo cree que $x_i$ pertenece a la clase 2 (0.7 es el mayor número del vector S($\hat{y})$). Sin embargo, $y_i$ indica que $x_i$ pertenece a la clase 3. \\
-
-Se calcula el error de entropía cruzada: \\
-
-\begin{gather}
-	 E(y, S(\hat{y})) = - (0*log(0.04) + 0*log(0.7) + 1*log(0.26)) \\
-	 E(y, S(\hat{y})) = -log(0.26) = 0.585
-\end{gather}
-
-\cite{Cross_entropy_backprop}
-
 \section{Redes Neuronales Convolucionales}
 
 \subsection{Introducción a CNNs}

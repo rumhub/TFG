@@ -24,11 +24,10 @@
 \contentsline {subsection}{\numberline {2.4.9}Inicialización de sesgos}{12}{subsection.2.4.9}%
 \contentsline {subsubsection}{Actualización de parámetros}{12}{section*.18}%
 \contentsline {subsubsection}{Descenso del gradiente estocástico}{13}{section*.19}%
-\contentsline {subsection}{\numberline {2.4.10}Propagación hacia delante con softmax}{14}{subsection.2.4.10}%
 \contentsline {section}{\numberline {2.5}Redes Neuronales Convolucionales}{14}{section.2.5}%
 \contentsline {subsection}{\numberline {2.5.1}Introducción a CNNs}{14}{subsection.2.5.1}%
-\contentsline {subsection}{\numberline {2.5.2}Capa convolucional}{15}{subsection.2.5.2}%
-\contentsline {subsubsection}{Componentes}{15}{section*.20}%
+\contentsline {subsection}{\numberline {2.5.2}Capa convolucional}{14}{subsection.2.5.2}%
+\contentsline {subsubsection}{Componentes}{14}{section*.20}%
 \contentsline {subsubsection}{Propagación hacia delante}{15}{section*.22}%
 \contentsline {subsubsection}{Propagación hacia delante, canales de profundidad}{16}{section*.24}%
 \contentsline {subsubsection}{Propagación hacia delante, número de filtros}{17}{section*.26}%

@@ -7,7 +7,7 @@
 \contentsline {figure}{\numberline {2.4}{\ignorespaces Imagen de la función de activación Sigmoide}}{9}{figure.caption.13}%
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{9}{figure.caption.14}%
 \contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{11}{figure.caption.17}%
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Componentes en una capa convolucional}}{15}{figure.caption.21}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Componentes en una capa convolucional}}{14}{figure.caption.21}%
 \contentsline {figure}{\numberline {2.8}{\ignorespaces Propagación hacia delante en una capa convolucional}}{15}{figure.caption.23}%
 \contentsline {figure}{\numberline {2.9}{\ignorespaces Propagación hacia delante en una capa convolucional con varios canales de profundidad}}{16}{figure.caption.25}%
 \contentsline {figure}{\numberline {2.10}{\ignorespaces Propagación hacia delante en una capa convolucional con varios filtros}}{17}{figure.caption.27}%
