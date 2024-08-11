@@ -463,7 +463,7 @@ Al igual que las capas convolucionales, las capas de agupación máxima también
 A diferencia de las capas convolucionales, las capas de agrupación máxima no comparten regiones del volumen de entrada entre distintas iteraciones. Esto se muestra en las figuras \ref{fig:forward_prop_maxpool} y \ref{fig:forward_prop_convolucional}.
 
 
-\subsubsection{Propagación hacia delante, canales de profundidad}
+\subsubsection{Propagación hacia delante de X con varios canales de profundidad}
 
 \begin{figure}[H]
 	\centering
@@ -482,9 +482,9 @@ A diferencia de las capas convolucionales, las capas de agrupación máxima no c
 	\label{fig:forward_prop_maxpool_canales_profundidad}
 \end{figure}
 
-Tal y como se muestra en la figura \ref{fig:forward_prop_maxpool_canales_profundidad}, cada ``ventana'' se desliza sobre el volumen de entrada en un canal de profundidad distinto.
+Tal y como se muestra en la figura \ref{fig:forward_prop_maxpool_canales_profundidad}, cada ``ventana'' se desliza sobre el volumen de entrada en un canal de profundidad distinto. Por tanto, al igual que en capas convolucionales, si el volumen de entrada X cuenta con C canales de profundidad, la ventana asociada a la capa de agrupación máxima también contará con C canales de profundidad y cada ventana solo afectará a X en su respectivo canal. Es decir, para la subventana del canal de profundidad $c \in C$, esta solo trabajará sobre la imagen 2D de X del canal c.
 
-\subsubsection{Propagación hacia detrás}
+\subsubsection{Retropropagación en capa de agrupación máxima}
 
 \begin{figure}[H]
 	\centering
@@ -509,11 +509,11 @@ Tal y como se muestra en la figura \ref{fig:forward_prop_maxpool_canales_profund
 		\includegraphics[width=1.2\linewidth]{imagenes/back_maxpool_4.jpg}  
 		\caption{Cálculo $Y_{12}$}
 	\end{subfigure}%
-	\caption{Propagación hacia delante en una capa de agrupación máxima}
+	\caption{Retropropagación en capa de agrupación máxima}
 	\label{fig:back_prop_maxpool}
 \end{figure}
 
-Para la primera iteración de la figura \ref{fig:back_prop_maxpool}, en la propagación hacia detrás se calcula el gradiente respecto al volumen de entrada de la siguiente forma:
+En la Figura \ref{fig:back_prop_maxpool} se muestra un ejemplo de retropropagación en una capa de agrupación máxima. Esta se caracteriza por calcular el gradiente respecto al volumen de entrada de la siguiente forma:
 
 \begin{gather}
 	\frac{\partial E}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{11}} \\
@@ -522,8 +522,8 @@ Para la primera iteración de la figura \ref{fig:back_prop_maxpool}, en la propa
 	\frac{\partial E}{\partial X^1_{22}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{22}}
 \end{gather}
 
- 
-Tomando el ejemplo de la figura \ref{fig:back_prop_maxpool} (a), se obtiene que $Y^1_{11} = X^1_{11}$. Por tanto, las fórmulas anteriores se convierten en:
+Para calcular el gradiente respecto a la entrada en una capa i de agrupación máxima, suponemos que ya se conoce el gradiente de la pérdida respecto a la salida de dicha capa i. Por tanto, el volumen Y en este caso contendrá dicho gradiente. \\ 
+Tomando el ejemplo de la Figura \ref{fig:back_prop_maxpool} (a), se entiende que cuando se realizó la propagación hacia delante de dicha capa i, en el primer paso de dicho proceso se observó que $X^1_{11}$ fue el máximo de entre todos los valores de la ventana. Por tanto, en esa misma región afectada por la ventana en el primer paso tiene sentido que $X^1_{11}$ sea 1, pero respecto al resto de valores sea 0, pues al obtener $Y^1_{11} = X^1_{11}$ en la propagación hacia delante, se observa como $X^1_{11}$ fue el único valor que influye sobre $Y^1_{11}$. Así, las fórmulas anteriores se convierten en:
 
 \begin{gather}
 	\frac{\partial E}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} * \frac{\partial X^1_{11}}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} * 1 = \frac{\partial E}{\partial Y} \\
@@ -536,6 +536,8 @@ Tomando el ejemplo de la figura \ref{fig:back_prop_maxpool} (a), se obtiene que 
  
 Como el resultado obtenido en cada iteración solo depende del valor máximo de la ventana, tiene sentido que la derivada de la salida Y respecto a la entrada X sea igual a 1 solo en dicho caso y 0 en el resto \cite{max_pool_backprop} \cite{max_pool_backprop_2}.
 \subsection{Capa de aplanado}
+
+La capa de aplanado tiene como objetivo la creación de un ``enlace'' entre las capas de convolución y agrupación máxima, con las capas totalmente conectadas. Esto se debe a que, como se mencionó anteriormente, las capas convolucionales y de agrupación máxima trabajan con volúmenes de datos 3D. Sin embargo, las capas totalmente conectadas trabajan con arrays 1D como entrada. Por tanto, la capa de aplanado se encarga de realizar esta conversión de volumen 3D a array 1D y viceversa. 
 
 \subsubsection{Propagación hacia delante}
 \begin{figure}[H]
@@ -551,33 +553,33 @@ Como el resultado obtenido en cada iteración solo depende del valor máximo de 
 		\caption{Propagación hacia delante de la capa de aplanado con la segunda capa de profundidad}
 	\end{subfigure}
 	
-	\caption{Propagación hacia delante en una capa de agrupación máxima}
+	\caption{Propagación hacia delante en una capa de aplanado}
 	\label{fig:forward_prop_flatten_canales_profundidad}
 \end{figure}
 
-La capa de aplanado tiene como objetivo la creación de un ``enlace'' entre las capas de convolución y agrupación con la capas totalmente conectadas. En la propagación hacia delante, parte de un volumen de entrada 3D para, mediante un ``aplanado'', convertirlo en un vector 1D que pueda ser usado como entrada para una red totalmente conectada. \\
+En la propagación hacia delante, se parte de un volumen de entrada 3D para, mediante un ``aplanado'', convertirlo en un vector 1D que pueda ser usado como entrada para una capa totalmente conectada, tal y como se muestra en la Figura \ref{fig:forward_prop_flatten_canales_profundidad}. \\
 Como solo se modifica la forma en la que se agrupan los datos, no requiere la presencia de parámetros \cite{flatten_forward}.
 
-\subsubsection{Propagación hacia detrás}
+\subsubsection{Retropropagación}
 
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}{.5\textwidth}
 		\hspace{-30mm}
 		\includegraphics[width=2\linewidth]{imagenes/back_flatten_1.jpg}  
-		\caption{Propagación hacia detrás de la capa de aplanado con la primera capa de profundidad}
+		\caption{Retropropagación de la primera capa de profundidad en una capa de aplanado}
 	\end{subfigure}
 	\begin{subfigure}{.5\textwidth}
 		\hspace{-30mm}
 		\includegraphics[width=2\linewidth]{imagenes/back_flatten_2.jpg}  
-		\caption{Propagación hacia detrás de la capa de aplanado con la segunda capa de profundidad}
+		\caption{Retropropagación de la segunda capa de profundidad en una capa de aplanado}
 	\end{subfigure}
 	
-	\caption{Propagación hacia delante en una capa de agrupación máxima}
+	\caption{Retropropagación en una capa de aplanado}
 	\label{fig:back_prop_flatten_canales_profundidad}
 \end{figure}
 
-En la propagación hacia detrás, se parte de un array 1D y se convierte en un volumen 3D que pueda ser usado como entrada para una capa convolucional o de agrupación
+En la retropropagación de una capa de aplanado, se parte de un array 1D y se convierte en un volumen 3D que pueda ser usado para seguir la retropropagación en capas anteriores convolucionales o de agrupación máxima
 \cite{flatten_forward}.
 
 \section{cuDNN (Deep Neural Network)}

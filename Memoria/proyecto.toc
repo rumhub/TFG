@@ -36,11 +36,11 @@
 \contentsline {subsection}{\numberline {2.5.3}Capa de agrupación máxima}{20}{subsection.2.5.3}%
 \contentsline {subsubsection}{Componentes}{20}{section*.33}%
 \contentsline {subsubsection}{Propagación hacia delante}{20}{section*.35}%
-\contentsline {subsubsection}{Propagación hacia delante, canales de profundidad}{21}{section*.37}%
-\contentsline {subsubsection}{Propagación hacia detrás}{21}{section*.39}%
-\contentsline {subsection}{\numberline {2.5.4}Capa de aplanado}{23}{subsection.2.5.4}%
+\contentsline {subsubsection}{Propagación hacia delante de X con varios canales de profundidad}{21}{section*.37}%
+\contentsline {subsubsection}{Retropropagación en capa de agrupación máxima}{21}{section*.39}%
+\contentsline {subsection}{\numberline {2.5.4}Capa de aplanado}{22}{subsection.2.5.4}%
 \contentsline {subsubsection}{Propagación hacia delante}{23}{section*.41}%
-\contentsline {subsubsection}{Propagación hacia detrás}{24}{section*.43}%
+\contentsline {subsubsection}{Retropropagación}{24}{section*.43}%
 \contentsline {section}{\numberline {2.6}cuDNN (Deep Neural Network)}{24}{section.2.6}%
 \contentsline {subsection}{\numberline {2.6.1}Manejador}{25}{subsection.2.6.1}%
 \contentsline {subsection}{\numberline {2.6.2}Tensores}{25}{subsection.2.6.2}%

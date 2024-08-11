@@ -17,9 +17,9 @@
 \contentsline {figure}{\numberline {2.13}{\ignorespaces Componentes en una capa de agrupación máxima}}{20}{figure.caption.34}%
 \contentsline {figure}{\numberline {2.14}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{20}{figure.caption.36}%
 \contentsline {figure}{\numberline {2.15}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{21}{figure.caption.38}%
-\contentsline {figure}{\numberline {2.16}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{21}{figure.caption.40}%
-\contentsline {figure}{\numberline {2.17}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{23}{figure.caption.42}%
-\contentsline {figure}{\numberline {2.18}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{24}{figure.caption.44}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Retropropagación en capa de agrupación máxima}}{21}{figure.caption.40}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Propagación hacia delante en una capa de aplanado}}{23}{figure.caption.42}%
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Retropropagación en una capa de aplanado}}{24}{figure.caption.44}%
 \contentsline {figure}{\numberline {2.19}{\ignorespaces Ejemplo de tensor 4D con dimensiones: N=1, C=1, H=5, y W=6}}{26}{figure.caption.48}%
 \contentsline {figure}{\numberline {2.20}{\ignorespaces Ejemplo de tensor 4D NCHW con dimensiones: N=1, C=1, H=5, y W=6}}{27}{figure.caption.49}%
 \addvspace {10\p@ }
