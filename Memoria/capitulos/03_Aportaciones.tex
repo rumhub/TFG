@@ -132,7 +132,9 @@ Por último, en la fórmula \ref{one_hot_simplif_4} se simplifica $O_k*y_k$ y se
 	\label{gradiente_softmax}
 \end{gather}
 
-\subsection{BackPropagation con 1 capa oculta \cite{NN_backpropagation} \cite{NN_backprop_2} \label{backprop_1_capa}}
+\subsection{Retropropagación con 1 capa oculta \cite{NN_backpropagation} \cite{NN_backprop_2} \label{backprop_1_capa}}
+
+En esta sección se tratará de calcular el gradiente de la pérdida respecto a cada parámetro de la red totalmente conectada mostrada en la Figura \ref{fig:nn_1_capa}. Para no repetir cálculos, en esta y secciones posteriores no se volverá a calcular la retropropagación a través de la capa SoftMax, pues los cálculos son siempre los mismos por ser la última capa de la arquitectura.
 
 \begin{figure}[H]
 	\centering
@@ -143,9 +145,7 @@ Por último, en la fórmula \ref{one_hot_simplif_4} se simplifica $O_k*y_k$ y se
 
 La Figura \ref{fig:nn_1_capa} se compone de 'puntos' interconectados mediante líneas, representando neuronas y pesos que las conectan respectivamente. Cada punto corresponde a una neurona, y cada línea a un peso. \\
 La Figura \ref{fig:nn_1_capa} presenta 3 capas (input, h1, softmax) que corresponden a capa de entrada, capa oculta $h_1$, y capa de salida respectivamente. El superíndice indica la capa a la que pertenece una neurona o peso, mientras que el subíndice indica el número del mismo en su respectiva capa. En el caso de los pesos, se requieren 2 subíndices para identificar a cada uno (pues un peso une 2 neuronas). \\
-La capa de entrada se compone de 2 neuronas ($n^{0}_0$ y $n^{0}_1$). \\
-La capa oculta $h_1$ tiene 3 neuronas ($n^1_{0}$, $n^1_{1}$, y $n^1_{2}$) \\
-El peso $W^{i}_{jk}$ referencia al peso que une las neuronas $n^{i}_j$ y $n^{i+1}_k$.\\
+Así, la capa de entrada se compone de 2 neuronas ($n^{0}_0$ y $n^{0}_1$), la capa oculta $h_1$ tiene 3 neuronas ($n^1_{0}$, $n^1_{1}$, y $n^1_{2}$), y el peso $W^{i}_{jk}$ referencia al peso que une las neuronas $n^{i}_j$ y $n^{i+1}_k$.\\
 De forma adicional, se recuerda que $Z_i$ representa la entrada $i$ de la capa SoftMax, y $O_i$ su salida.  
 
 \subsubsection{Capa SoftMax}
@@ -167,12 +167,11 @@ Tal y como se calculó previamente, el gradiente de la función de pérdida resp
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.35]{imagenes/nn_1_capa_pesos_h1_output.jpg}  
-	\caption{Imagen de backpropagation en los pesos entre la capa oculta y la capa SoftMax}
+	\caption{Retropropagación respecto a pesos entre la capa oculta y la capa SoftMax}
 	\label{fig:nn_1_pesos_h1_output}
 \end{figure}
 
-Una vez calculado el gradiente hasta la capa softmax, se puede calcular el gradiente respecto a cada peso $W^1_{pk}$ que se encuentra conectado a esta desde la capa anterior. Es decir, para cada $h^1_p\in h_1$, se calcula $\frac{dE(x)}{dW^1_{pk}}$. Usando la regla de la cadena, equivale a realizar lo siguiente:
-
+Una vez calculado el gradiente hasta la entrada de la capa softmax, se puede calcular el gradiente respecto a cada peso $W^1_{pk}$ que se encuentra conectado a esta desde la capa anterior. Es decir, para cada $h^1_p\in h_1$, se calcula $\frac{dE(x)}{dW^1_{pk}}$. Usando la regla de la cadena, equivale a realizar lo ilustrado en las fórmulas \ref{grad_w1pk_1} y \ref{grad_w1pk_2}.
 
 \begin{gather}
 	\frac{\partial Z_k}{\partial W^1_{pk}} = \frac{\partial (z^1_p * W^1 _{pk}+ b^2_k)}{\partial W^1_{pk }} = z^1_p
@@ -186,10 +185,12 @@ Una vez calculado el gradiente hasta la capa softmax, se puede calcular el gradi
 
 \subsubsection{Sesgos capa softmax}
 
+De la misma forma, se calcula el gradiente de la pérdida respecto a cada sesgo de las neuronas de la capa softmax tal y como se muestra en las fórmulas \ref{grad_b_h1_1}, \ref{grad_b_h1_2} y \ref{grad_b_h1_3}.
+
 \begin{gather}
-	\frac{\partial E}{\partial b^2_k} = \frac{\partial E}{\partial Z_k} * \frac{\partial Z_k}{b^2_k} \\
-	\frac{\partial Z_k }{\partial b^2_k } = \frac{\partial ([\sum_{c=1}^{P} z^1_c * W^1_{pk}] + b^2_k) }{\partial b^2_k } = 1 \\
-	\frac{\partial E}{\partial b^2_k} = gradiente\_Z_k
+	\frac{\partial E}{\partial b^2_k} = \frac{\partial E}{\partial Z_k} * \frac{\partial Z_k}{b^2_k} \label{grad_b_h1_1} \\
+	\frac{\partial Z_k }{\partial b^2_k } = \frac{\partial ([\sum_{c=1}^{P} z^1_c * W^1_{pk}] + b^2_k) }{\partial b^2_k } = 1 \label{grad_b_h1_2} \\
+	\frac{\partial E}{\partial b^2_k} = gradiente\_Z_k \label{grad_b_h1_3}
 \end{gather}
 
 \subsubsection{Capa oculta h1}
@@ -197,11 +198,11 @@ Una vez calculado el gradiente hasta la capa softmax, se puede calcular el gradi
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.35]{imagenes/nn_caminos_posibles.jpg}  
-	\caption{Imagen de los 'caminos' desde la capa softmax hasta $n^1_0$}
+	\caption{Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}
 	\label{nn_caminos_posibles}
 \end{figure}
 
-En la figura \ref{nn_caminos_posibles} se muestra como hay más de un 'camino' desde la capa softmax hasta $n^1_p$. Por tanto, para obtener el gradiente de la pérdida respecto a $n^1_p$, habría que calcular la suma de todos los 'caminos' hacia este. \\
+En la figura \ref{nn_caminos_posibles} se muestra como hay más de un 'camino' desde la capa softmax hasta $n^1_p$. Por tanto, para obtener el gradiente de la pérdida respecto a $n^1_p$, habría que calcular la suma de todos los 'caminos' hacia este, tal y como se muestra en las fórmulas \ref{E_total_a1p} y \ref{deriv_Zk_z1p}. \\
 
 \begin{gather}
 	\frac{\partial E_{total}}{\partial a^1_p} = \sum_{k=1}^K \frac{\partial E_k}{\partial a^1_p} = \sum_{k=1}^K  gradiente\_Z_k * \frac{\partial Z_k}{\partial z^1_p} * \frac{\partial z^1_p}{\partial a^1_p}
@@ -213,62 +214,69 @@ En la figura \ref{nn_caminos_posibles} se muestra como hay más de un 'camino' d
 	\label{deriv_Zk_z1p}
 \end{gather}
 
+Para calcular dichos gradientes, se requiere calcular $\frac{\partial z^1_p}{\partial a^1_p}$. Como se mencionó anteriormente, ``a'' se refiere al valor de una neurona antes de aplicar la función de activación asociada, y ``z'' consiste en dicho valor tras aplicar la función de activación. Por tanto, para calcular $\frac{\partial z^1_p}{\partial a^1_p}$ se requiere saber dicha función de activación.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.35]{imagenes/nn_1_capa_h1.jpg}  
-	\caption{Imagen de backpropagation en la capa oculta h1}
+	\caption{Retropropagación respecto a neuronas de la capa oculta h1}
 	\label{fig:nn_1_capa_h1}
 \end{figure}
 
-En la capa oculta h1 se emplea la función de activación sigmoide. 
+En este ejemplo, en la capa oculta h1 se emplea la función de activación sigmoide, y su derivada viene dada por las fórmulas \ref{grad_sig_1} y \ref{grad_sig_2}. 
 
 \begin{gather}
-	sigmoide(x) = \frac{1}{1+e^{-x}} \\
-	sigmoide'(x) = \frac{sigmoide(x)}{1-sigmoide(x)}
+	sigmoide(x) = \frac{1}{1+e^{-x}} \label{grad_sig_1} \\
+	sigmoide'(x) = \frac{sigmoide(x)}{1-sigmoide(x)} \label{grad_sig_2}
 \end{gather}
 
-De esta forma,
+De esta forma, ahora sí se puede calcular $\frac{\partial z^1_p}{\partial a^1_p}$, y se muestra en la fórmula \ref{deriv_z1p_a1p}.
 
 \begin{gather}
 	\frac{\partial z^1_ p}{\partial a^1_p} = \frac{\partial sigmoide(a^1_p)}{\partial a^1_p} = sigmoide(a^1_p)*(1-sigmoide(a^1_p))
 	\label{deriv_z1p_a1p}
 \end{gather}
 
-Se retoma la fórmula \ref{E_total_a1p} mediante la aplicación de \ref{deriv_Zk_z1p} y \ref{deriv_z1p_a1p}
+Así, se retoma la fórmula \ref{E_total_a1p} mediante la aplicación de \ref{deriv_Zk_z1p} y \ref{deriv_z1p_a1p}, y se obtiene \ref{grad_E_a1p}.
 
 \begin{gather}
-	\frac{\partial E_{total}}{\partial a^1_p} = \sum_{k=1}^K  gradiente\_Z_k * W^1_{pk} * sigmoide(a^1_p)*(1-sigmoide(a^1_p)) \\
+	\frac{\partial E_{total}}{\partial a^1_p} = \sum_{k=1}^K  gradiente\_Z_k * W^1_{pk} * sigmoide(a^1_p)*(1-sigmoide(a^1_p)) \label{grad_E_a1p} \\
 	\frac{\partial E_{total}}{\partial a^1_p} = gradiente\_h1_p
-	\label{grad_E_a1p}
 \end{gather}
 
-\subsubsection{Pesos capas input-h1}
+\subsubsection{Pesos capas entrada-h1}
+
+Una vez realizada la retropropagación hasta las neuronas de entrada de la capa oculta h1, se puede seguir con el proceso hacia la capa anterior (capa de entrada).
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.35]{imagenes/nn_1_capa_pesos_input_h1.jpg}  
-	\caption{Imagen de backpropagation en los pesos entre la capa input y la capa oculta h1}
+	\caption{Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}
 	\label{fig:nn_1_pesos_input_h1}
 \end{figure}
 
 
 \begin{gather}
-	\frac{\partial a^1_p }{\partial W^0_{ip} } = \frac{\partial [\sum_{c=1}^{I} z^0_c * W^0_{cp}] + b^1_p)}{\partial W^0_{ip} } = z^0_i \\
-	\frac{\partial E}{\partial W^0_{ip}} = \frac{\partial E_{total} }{\partial a^1_p } * \frac{\partial a^1_p}{W^0_{ip}} \\
+	\frac{\partial a^1_p }{\partial W^0_{ip} } = \frac{\partial [\sum_{c=1}^{I} z^0_c * W^0_{cp}] + b^1_p)}{\partial W^0_{ip} } = z^0_i \label{grad_w0ip_1} \\
+	\frac{\partial E}{\partial W^0_{ip}} = \frac{\partial E_{total} }{\partial a^1_p } * \frac{\partial a^1_p}{W^0_{ip}} \label{grad_w0ip_2} \\
 	\frac{\partial E(x) }{\partial W^0_{ip} } = gradiente\_h1_p * \frac{\partial a^1_p }{\partial W^0_{ip} } = gradiente\_h1_p * z^0_i 
-	\label{grad_w0ip}
+	\label{grad_w0ip_3}
 \end{gather}
+
+De forma similar a los pesos entre la capa oculta h1 y la capa softmax, se calcula el gradiente de la pérdida respecto a los pesos entre la capa de entrada y la capa oculta h1. El proceso se muestra mediante las fórmulas \ref{grad_w0ip_1}, \ref{grad_w0ip_2}, y \ref{grad_w0ip_3}.
 
 \subsubsection{Sesgos capa h1}
 
 \begin{gather}
-	\frac{\partial E}{\partial b^1_p} = \frac{\partial E_{total} }{\partial a^1_p } * \frac{\partial a^1_p}{b^1_p} \\
-	\frac{\partial a^1_p }{\partial b^1_p } = \frac{\partial ([\sum_{c=1}^{I} z^0_c * W^0_{ip}] + b^1_p) }{\partial b^1_p } = 1 \\
+	\frac{\partial E}{\partial b^1_p} = \frac{\partial E_{total} }{\partial a^1_p } * \frac{\partial a^1_p}{b^1_p} \label{grad_b1p_1} \\
+	\frac{\partial a^1_p }{\partial b^1_p } = \frac{\partial ([\sum_{c=1}^{I} z^0_c * W^0_{ip}] + b^1_p) }{\partial b^1_p } = 1 \label{grad_b1p_2} \\
 	\frac{\partial E}{\partial b^1_p} = gradiente\_h1_p
-	\label{grad_b1p}
+	\label{grad_b1p_3}
 \end{gather}
 
-\subsubsection{Capa input}
+Del mismo modo, las figuras \ref{grad_b1p_1}, \ref{grad_b1p_2}, y \ref{grad_b1p_3} muestran el cálculo del gradiente respecto a los sesgos de la capa oculta h1.
+
+\subsubsection{Capa de entrada}
 
 \begin{figure}[H]
 	\centering
@@ -276,6 +284,8 @@ Se retoma la fórmula \ref{E_total_a1p} mediante la aplicación de \ref{deriv_Zk
 	\caption{Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}
 	\label{nn_caminos_posibles_input}
 \end{figure}
+
+Por último, en esta sección se calcula el gradiente respecto a las neuronas de entrada de la capa de entrada. Normalmente no sería necesario calcular estos gradientes, pero como el objetivo es crear una CNN, esta red totalmente conectada estará enlazada a capas convolucionales y de agrupación máxima, por lo que es necesario calcular dichos gradientes para poder seguir calculando la retropropagación en dichas capas anteriores a esta.
 
 \begin{gather}
 	\frac{\partial E_{total}}{\partial a^0_i} = \sum_{p=1}^P \frac{\partial E_{total}}{\partial a^1_p} * \frac{\partial a^1_p}{\partial z^0_i} * \frac{\partial z^0_i}{\partial a^0_i} \\
