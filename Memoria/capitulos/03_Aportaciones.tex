@@ -1,15 +1,17 @@
 \chapter{Aportaciones}
 
-\section{Redes Neuronales Totalmente Conectadas}
+\section{Retropropagación en redes neuronales rotalmente conectadas}
 
-\subsection{Gradiente de la función de pérdida respecto a SoftMax, \cite{Cross_entropy_backprop} \cite{Cross_entropy_backprop_grad_input}} 
+En esta sección se analizará en profundidad el cálculo del gradiente de la pérdida respecto a cada parámetro entrenable de una red totalmente conectada, así como también respecto a la entrada y salida de cada capa. Primero se mostrarán los cálculos para unos ejemplos concretos, y una vez conocidas las bases sobre ellos, se mostrará cómo aplicarlos para cualquier tipo de red totalmente conectada. 
 
-Siendo $Z_i$ la entrada $i$ de la última capa, se denotará mediante $O_i$ una vez se le aplique SoftMax. \\
+\subsection{Retropropagación en capa SoftMax, \cite{Cross_entropy_backprop} \cite{Cross_entropy_backprop_grad_input}} 
+
+Tal y como se comentó en secciones anteriores, se empleará SoftMax en la última capa totalmente conectada. Así, se definen los valores de entrada a la misma como Z, y los de salida como O, tal y como se muestra en la Figura \ref{cross_entropy_notacion}.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.4]{imagenes/NN_softmax.jpg}  
-	\caption{Estructura de una red con softmax}
+	\caption{Estructura de una red totalmente conectada con softmax en la última capa}
 \end{figure}
 
 \begin{gather}
@@ -17,33 +19,38 @@ Siendo $Z_i$ la entrada $i$ de la última capa, se denotará mediante $O_i$ una 
 	\label{cross_entropy_notacion}
 \end{gather}
 
-Según esta notación, la función de error \ref{loss_func_softmax} se convierte en la fórmula \ref{cross_entropy_notacion}.
+Según esta notación, la función de error \ref{fig:loss_func_softmax} se convierte en la fórmula \ref{cross_entropy_notacion}.
 
-\subsubsection{Gradiente de la función de error}
+\subsubsection{Cálculo del gradiente de la función de error}
 
+Para comenzar la retropropagación, empezaremos por calcular el gradiente de la función de pérdida respecto a cada parámetro de entrada de la capa en la cual se aplicó SoftMax, esto se muestra en la fórmula \ref{grad_H_Z}.
 \begin{gather}
 	\frac{\partial E}{\partial Z_k} = \frac{\partial(- \sum_{i=1}^{H}  [y_i * log(O_i)])}{\partial Z_k} = - \sum_{i=1}^{H}  [\frac{\partial(y_i * log(O_i))}{\partial Z_k}] 
+	\label{grad_H_Z}
 \end{gather}
 
-Como $y_i$ es independiente respecto a $Z_k$, se trata como una constante. \\
+Como $y_i$ (etiqueta real) es independiente respecto a $Z_k$ (neurona artificial de entrada) en la fórmula \ref{grad_H_Z}, esta se trata como una constante. \\
 \begin{gather}
 	\frac{\partial E}{\partial Z_k} = - \sum_{i=1}^{H}  [y_i * \frac{\partial(log(O_i))}{\partial Z_k}] 
+	\label{grad_O_K}
 \end{gather}
 
-Se aplica la regla de la cadena, pues $O_i$ no depende directamente de $Z_k$,. \\
+Por simplificar los cálculos y eliminar el logaritmo de la ecuación, se aplica la regla de la cadena y como resultado se obtienen las fórmulas \ref{gradiente_Oi_Zk_1} y \ref{gradiente_Oi_Zk_2}.
 \begin{gather}	
-	\frac{\partial E}{\partial Z_k} = - \sum_{i=1}^{H}  [y_i * \frac{\partial(log(O_i))}{\partial O_i} * \frac{\partial O_i}{\partial Z_k}] \\
+	\frac{\partial E}{\partial Z_k} = - \sum_{i=1}^{H}  [y_i * \frac{\partial(log(O_i))}{\partial O_i} * \frac{\partial O_i}{\partial Z_k}]
+	\label{gradiente_Oi_Zk_1} \\
 	\frac{\partial E}{\partial Z_k} = - \sum_{i=1}^{H}  [\frac{y_i}{O_i} * \frac{\partial O_i}{\partial Z_k}] 
-	\label{gradiente_Oi_Zk}
+	\label{gradiente_Oi_Zk_2}
 \end{gather}
 
 % ver https://www.mldawn.com/the-derivative-of-softmaxz-function-w-r-t-z/
 
 \subsubsection{Derivada de softmax respecto de su entrada, $\frac{\partial O_i}{\partial Z_k}$}
 
-Hay 2 casos posibles, $\frac{S(Z_i)}{Z_i}$ o $\frac{S(Z_i)}{Z_j}$, donde i $\neq$ j. \\
+Una vez obtenida la fórmula \ref{gradiente_Oi_Zk_2} nos disponemos a calcular la derivada de $O_i$ respecto $Z_i$. \\
+Sin embargo, hay que contemplar 2 casos posibles, siendo estos $\frac{\partial S(Z_i)}{\partial Z_i}$ y $\frac{\partial S(Z_i)}{\partial Z_j}$, donde i $\neq$ j. \\
 
-\subsubsection{Caso $\frac{S(Z_i)}{Z_i}$}
+\subsubsection{Caso $\frac{\partial S(Z_i)}{\partial Z_i}$}
 
 \begin{gather}
 	\frac{\partial f(x)}{\partial g(x)} = \frac{f'(x)*g(x) - g'(x)*f(x)}{g(x)^2} \\
@@ -51,7 +58,7 @@ Hay 2 casos posibles, $\frac{S(Z_i)}{Z_i}$ o $\frac{S(Z_i)}{Z_j}$, donde i $\neq
 	\frac{\partial S(Z_1)}{\partial Z_1} = \frac{[\frac{\partial e^{Z_1}}{\partial Z_1} * (e^{Z_1} + ... + e^{Z_H}) ] - [\frac{\partial (e^{Z_1} + ... + e^{Z_H})}{\partial Z_1} * e^{Z_1} ] }{(e^{Z_1} + ... + e^{Z_H})^2} 
 \end{gather}
 
-Se aplica $\frac{\partial e^{Z_1}}{Z_1} = e^{Z_1}$ \\
+Se aplica $\frac{\partial e^{Z_1}}{\partial Z_1} = e^{Z_1}$ \\
 \begin{gather}
 	\frac{\partial S(Z_1)}{\partial Z_1} = \frac{[e^{Z_1} * \sum_{i=1}^{H}  e^{Z_i}] - [e^{Z_1} * e^{Z_1}]   }{ (\sum_{i=1}^{H}  e^{Z_i})^2} \\
 \end{gather}
@@ -68,7 +75,7 @@ Se recuerda que $\frac{\sum_{i=1}^{H}  e^{Z_i}}{\sum_{i=1}^{H}  e^{Z_i}} = 1$ y 
 	\label{grad_Oi_Zk_drch}
 \end{gather}
 
-\subsubsection{Caso $\frac{S(Z_i)}{Z_j}$, con i $\neq$ j}
+\subsubsection{Caso $\frac{\partial S(Z_i)}{\partial Z_j}$, con i $\neq$ j}
 
 \begin{gather}
 	\frac{\partial S(Z_2)}{\partial Z_1} = \frac{[\frac{\partial e^{Z_2}}{\partial Z_1} * (e^{Z_1} + ... + e^{Z_H}) ] - [\frac{\partial (e^{Z_1} + ... + e^{Z_H})}{\partial Z_1} * e^{Z_2} ] }{(e^{Z_1} + ... + e^{Z_H})^2} \\
@@ -81,42 +88,45 @@ Se recuerda que $\frac{\sum_{i=1}^{H}  e^{Z_i}}{\sum_{i=1}^{H}  e^{Z_i}} = 1$ y 
 
 \subsubsection{Combinación de casos}
 
-De esta forma, tendremos que dividir  el proceso en 2 partes, cuando i sea igual a j, y cuando i $\neq$ j, perteneciendo a la primera todos los casos menos uno. \\
-Parte izquierda cuando i!=k, parte derecha cuando i=k. \\
-Retomamos la fórmula \ref{gradiente_Oi_Zk}, aplicando \ref{grad_Oi_Zk_izq} en la parte izquierda y \ref{grad_Oi_Zk_drch} en la derecha. \\
+De esta forma, tendremos que dividir  el proceso en 2 partes, cuando i sea igual a j, y cuando i $\neq$ j. \\
+Como todos los casos menos uno pertenecen al caso i $\neq$ k, en la fórmula \ref{comb_casos} se aprecia como la ``parte izquierda'' hace referencia al caso i!=k, mientras que la ``parte derecha'' a i=k. \\
+Retomamos la fórmula \ref{gradiente_Oi_Zk_2}, aplicando \ref{grad_Oi_Zk_izq} en la parte izquierda y \ref{grad_Oi_Zk_drch} en la derecha. \\
 \begin{gather}
 	\frac{\partial E}{\partial Z_k} = - [\sum_{i!=k}^{H} [\frac{y_i}{O_i} * -O_i * O_k ] + \frac{y_k}{O_k} * O_k * (1 - O_k)  ]
+	\label{comb_casos}
 \end{gather}
 
-Se simplifica $O_i$ en la parte izquierda y $O_k$ en la derecha. \\
+Una vez obtenida la fórmula \ref{comb_casos}, se simplifica $O_i$ en la parte izquierda y $O_k$ en la derecha. \\
 \begin{gather}
 	\frac{\partial E}{\partial Z_k} = - [\sum_{i!=k}^{H} [- y_i * O_k] + [y_k * (1 - O_k) ] ] 
+	\label{simplificacion_Oi_Ok}
 \end{gather}
 
-Se extrae $O_k$ de la suma, pues es independiente respecto al índice $i$ \\
+Se extrae $O_k$ de la suma en la fórmula \ref{simplificacion_Oi_Ok}, pues es independiente respecto al índice $i$ y se obtiene la fórmula \ref{simplificar}.\\
 \begin{gather}	
-	\frac{\partial E}{\partial Z_k} = - [-O_k \sum_{i!=k}^{H}- y_i + [y_k * (1 - O_k) ] ]
+	\frac{\partial E}{\partial Z_k} = - [-O_k \sum_{i!=k}^{H}[-y_i] + [y_k * (1 - O_k) ] ]
 	\label{simplificar}
 \end{gather}
 
 \subsubsection{Simplificación One-Hot}
 
-Al emplear la codificación one-hot en Y, se sabe que la suma de sus elementos es igual a 1. \\
+Al emplear la codificación one-hot en Y, se sabe que la suma de sus elementos es igual a 1, pues para un ejemplo de entrada $x_i \in X$, su etiqueta asociada $y_i \in Y$ presenta todos sus valores iguales a 0 menos uno de ellos con el valor de 1. \\
+Con estos datos, se calculan las fórmulas \ref{one_hot_simplif_1} y \ref{one_hot_simplif_2}.
 \begin{gather}
-	\sum_{i=1}^{H} y_i = 1 \\
-	\sum_{i!=k}^{H} y_i = \sum_{i=1}^{H} y_i - y_k = 1 - y_k
-	\label{one_hot_simplif}
+	\sum_{i=1}^{H} y_i = 1 \label{one_hot_simplif_1}\\
+	\sum_{i!=k}^{H} y_i = \sum_{i=1}^{H} [y_i] - y_k = 1 - y_k
+	\label{one_hot_simplif_2}
 \end{gather}
 
-Se emplea \ref{one_hot_simplif} para simplificar la suma en \ref{simplificar}. \\
+Una vez obtenidas dichas fórmulas, se emplea \ref{one_hot_simplif_2} para simplificar la suma anterior obtenida en \ref{simplificar}, y como resultado de ello se elaboran las siguientes fórmulas \ref{one_hot_simplif_3} y \ref{one_hot_simplif_4}. \\
 
 
 \begin{gather}
-	\frac{\partial E}{\partial Z_k} = [O_k*(1-y_k)] - [y_k*(1-O_k)] \\
-	\frac{\partial E}{\partial Z_k} = O_k - O_k * y_k - y_k + O_k * y_k 
+	\frac{\partial E}{\partial Z_k} = [O_k*(1-y_k)] - [y_k*(1-O_k)] \label{one_hot_simplif_3} \\
+	\frac{\partial E}{\partial Z_k} = O_k - O_k * y_k - y_k + O_k * y_k  \label{one_hot_simplif_4}
 \end{gather}
 
-Se simplifica $O_k*y_k$. \\
+Por último, en la fórmula \ref{one_hot_simplif_4} se simplifica $O_k*y_k$ y se obtiene la fórmula final \ref{gradiente_softmax}. \\
 \begin{gather}
 	\frac{\partial E}{\partial Z_k} = O_k - y_k = gradiente\_Z_k
 	\label{gradiente_softmax}
