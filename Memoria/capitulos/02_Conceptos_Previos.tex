@@ -209,9 +209,11 @@ Para cada minibatch, se realiza la propagación hacia delante, cálculo de error
 
 \section{Redes Neuronales Convolucionales}
 
+Las redes neuronales convolucionales surgen como una adaptación de las redes neuronales totalmente conectadas ante el caso concreto de tratamiento de imágenes. Ambas comparten la ideología de contar con una serie de neuronas artificiales distribuidas por capas de forma de la salida de la capa i sea la entrada de la capa i+1. Su principal diferencia reside en los datos de entrada y en las operaciones que se realizan en cada capa. Por ello, en secciones posteriores se introducirán en detalle dos nuevas capas (capa convolucional y capa de agrupación máxima), cada una caracterizada por realizar un tipo de operación distinto.
+
 \subsection{Introducción a CNNs}
 
-Las redes neuronales convolucionales (CNN, Convolutional Neural Network) se caracterizan por trabajar con volúmenes de datos 3D. En este proyecto, se emplearán imágenes RGB como entrada para cada CNN. Por tanto, por simplificar la nomenclatura, cada capa 2D de un volumen 3D se denominará como imagen, pues una imagen RGB se trata de 3 imágenes 2D, una por color. Además, la entrada de cada capa se define como X o X(C*H*W) y en ambos casos cuenta con unas dimensiones de C*H*W, siendo C el número de canales de profundidad, H el número de filas y W el número de columnas de dicho volumen 3D. De la misma forma, se define el volumen de salida como Y($M*H_{out}*W_{out}$). En cuanto a los pesos de la capa convolucional, cada filtro o kernel se denominará mediante un símbolo/s diferente/s (K,K1, G, etc), pues cada uno puede presentar unas dimensiones diferentes. Aun así, se podrá definir a un filtro de pesos como K1(K*K), indicando que posee K filas y columnas. Además, también se trata de una estructura con 3 dimensiones. Sin embargo, no se requiere especificar el número de canales de profundidad de un kernel de pesos pues siempre será C (depende de X). De la misma forma, el número de filtros a aplicar sobre X recibe el nombre de M, y el tamaño de Y depende de este, pues tal y como se verá posteriormente, cada filtro genera una canal de profundidad distinto de la salida Y. 
+Las redes neuronales convolucionales (CNN, Convolutional Neural Network) se caracterizan por trabajar con volúmenes de datos 3D. En este proyecto, se emplearán imágenes RGB como entrada para cada CNN. Por tanto, por simplificar la nomenclatura, cada capa 2D de un volumen 3D se denominará como imagen o imagen 2D, pues una imagen RGB se trata de 3 imágenes 2D, una por color. Además, la entrada de cada capa se define como X o X(C*H*W) y en ambos casos cuenta con unas dimensiones de C*H*W, siendo C el número de canales de profundidad, H el número de filas y W el número de columnas de dicho volumen 3D. De la misma forma, se define el volumen de salida como Y($M*H_{out}*W_{out}$). En cuanto a los pesos de la capa convolucional, cada filtro o kernel se denominará mediante un símbolo/s diferente/s (K,K1, G, etc), pues cada uno puede presentar unos valores diferentes. Aun así, se podrá definir a un filtro de pesos como K1(K*K), indicando que posee K filas y columnas. Además, también se trata de una estructura con 3 dimensiones. Sin embargo, no se requiere especificar el número de canales de profundidad de un kernel de pesos pues siempre será C (depende de X). De la misma forma, el número de filtros a aplicar sobre X recibe el nombre de M, y el tamaño de Y depende de este, pues tal y como se verá posteriormente, cada filtro genera una canal de profundidad distinto de la salida Y. 
 
 \subsection{Capa convolucional}
 
@@ -258,11 +260,10 @@ Una capa convolucional parte de un volumen de entrada X, un kernel de filtros K,
 \end{figure}
 
 Una convolución entre 2 volúmenes de datos X y K, consiste en ``deslizar K sobre X'' tal y como se muestra en la Figura \ref{fig:forward_prop_convolucional}. 
-De esta forma, en cada ``paso'' se recorren ambos volúmenes, multiplicando los elementos de X y K 
-que se encuentren en la misma posición. Posteriormente, se suma cada resultado obtenido, además de un sesgo B y finalmente aplicar una función de activación \cite{capa_convolucional}. \\
-En la Figura \ref{fig:forward_prop_convolucional} se emplea un volumen X con un solo canal de profundidad. Sin embargo, este no es el caso común. Por tanto, se denotará como $X^{c}_{ij}$ al elemento de X que se encuentre en la posición (i,j) del canal de profundidad c \cite{capa_convolucional_Stanford}.
+De esta forma, en cada ``paso'' se recorren ambos volúmenes, multiplicando los elementos de X y K que se encuentren superpuestos en la misma posición. Posteriormente, se suma cada resultado obtenido, además de un sesgo B y finalmente aplicar una función de activación \cite{capa_convolucional}. \\
+Por simplicidad inicial, en la Figura \ref{fig:forward_prop_convolucional} se emplea un volumen X con un solo canal de profundidad. Sin embargo, este no es el caso común. Por tanto, se denotará como $X^{c}_{ij}$ al elemento de X que se encuentre en la posición (i,j) del canal de profundidad c. De la misma forma, se definirá $K^{c}_{ij}$ como el peso $k \in K$ que se encuentre en la posición (i, j) del canal de profundidad c del kernel de pesos K \cite{capa_convolucional_Stanford}.
 
-\subsubsection{Propagación hacia delante, canales de profundidad}
+\subsubsection{Propagación hacia delante de X con varios canales de profundidad}
 
 \begin{figure}[H]
 	\centering
@@ -287,10 +288,10 @@ En la Figura \ref{fig:forward_prop_convolucional} se emplea un volumen X con un 
 	\label{fig:forward_prop_convolucional_canales_profundidad}
 \end{figure}
 
-De esta forma, en la Figura \ref{fig:forward_prop_convolucional_canales_profundidad} se muestra como una convolución con C canales de profundidad se descompone en la suma de C convoluciones con un canal de profundidad. \\ Para una entrada X con C canales de profundidad, convolución(X,K) = convolución($X^1,K^1$) + convolución($X^2,K^2$) + ... + convolución($X^C,K^C$). \\
+De esta forma, en la Figura \ref{fig:forward_prop_convolucional_canales_profundidad} se muestra como una convolución con C canales de profundidad se descompone en la suma de C convoluciones con un canal de profundidad. \\ Para una entrada X con C canales de profundidad, convolución\_C\_canales(X,K) = convolución\_1\_canal($X^1,K^1$) + convolución\_1\_canal($X^2,K^2$) + ... + convolución\_1\_canal($X^C,K^C$). \\
 Por último, en cada ``paso'' del ``deslizamiento'' se suma un solo sesgo y se aplica una sola vez la función de activación, independientemente del número de canales de profundidad que presente la entrada X.
 
-\subsubsection{Propagación hacia delante, número de filtros}
+\subsubsection{Propagación hacia delante de X con varios filtros}
 
 \begin{figure}[H]
 	\centering
@@ -308,8 +309,8 @@ Por último, en cada ``paso'' del ``deslizamiento'' se suma un solo sesgo y se a
 	\label{fig:forward_prop_convolucional_varios_kernels}
 \end{figure}
 
-Cada convolución entre dos volúmenes 3D produce un volumen de salida 2D. Por tanto, al aplicar N convoluciones entre un volumen de entrada X y una serie de filtros K=$\{K_1, K_2, ..., K_N\}$, se obtendrá un volumen 3D de salida con tantas capas de profundidad como convoluciones se aplicaron (N). \\
-En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como al aplicar N=2 convoluciones sobre la misma entrada X (una con el filtro K y otra con el filtro G) se obtiene un volumen de salida con 2 capas de profundidad \cite{capa_convolucional_Stanford}.
+Cada convolución entre dos volúmenes 3D produce un volumen de salida 2D. Por tanto, al aplicar M convoluciones entre un volumen de entrada X y una serie de filtros K=$\{K_1, K_2, ..., K_M\}$, se obtendrá un volumen 3D de salida con tantas capas de profundidad como convoluciones se aplicaron (M). \\
+En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como al aplicar M=2 convoluciones sobre la misma entrada X (una con el filtro K y otra con el filtro G) se obtiene un volumen de salida con 2 capas de profundidad \cite{capa_convolucional_Stanford}.
 
 \subsubsection{Relleno o ``Padding''}
 
@@ -336,23 +337,23 @@ De esta forma, un relleno a un nivel sobre un volumen añadirá sobre el mismo d
 
 \subsubsection{Relleno completo}
 
-Se denomina como relleno completo aquel que asegura que cada valor o casilla de X sea visitada el mismo número de veces que el resto \cite{padding_2}.
+Se denomina como relleno completo aquel que asegura que cada valor o casilla de X sea visitada el mismo número de veces que el resto en una operación de convolución \cite{padding_2}.
 
 \begin{figure}[H]
 	\centering
-	\subfloat[1 nivel de relleno]{%
+	\subfloat[visitas$\{x_{11}$:1, $x_{12}$:0, $x_{21}$:0, $x_{22}$: 0$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_1.jpg}%
 		\label{fig:sub1}%
 	}\hfill
-	\subfloat[2 niveles de relleno]{%
+	\subfloat[visitas$\{x_{11}$:2, $x_{12}$:1, $x_{21}$:0, $x_{22}$: 0$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_2.jpg}%
 		\label{fig:sub2}%
 	}\\
-	\subfloat[1 nivel de relleno]{%
+	\subfloat[visitas$\{x_{11}$:3, $x_{12}$:2, $x_{21}$:0, $x_{22}$: 0$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_3.jpg}%
 		\label{fig:sub3}%
 	}\hfill
-	\subfloat[2 niveles de relleno]{%
+	\subfloat[visitas$\{x_{11}$:3, $x_{12}$:3, $x_{21}$:0, $x_{22}$: 0$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_4.jpg}%
 		\label{fig:sub4}%
 	}\hfill
@@ -362,56 +363,56 @@ Se denomina como relleno completo aquel que asegura que cada valor o casilla de 
 
 \begin{figure}[H]\ContinuedFloat
 	\centering
-	\subfloat[1 nivel de relleno]{%
+	\subfloat[visitas$\{x_{11}$:4, $x_{12}$:3, $x_{21}$:1, $x_{22}$: 0$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_5.jpg}%
 		\label{fig:sub5}%
 	}\hfill
-	\subfloat[2 niveles de relleno]{%
+	\subfloat[visitas$\{x_{11}$:5, $x_{12}$:4, $x_{21}$:2, $x_{22}$: 1$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_6.jpg}%
 		\label{fig:sub6}%
 	}\\
-	\subfloat[1 nivel de relleno]{%
+	\subfloat[visitas$\{x_{11}$:6, $x_{12}$:5, $x_{21}$:3, $x_{22}$: 2$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_7.jpg}%
 		\label{fig:sub7}%
 	}\hfill
-	\subfloat[2 niveles de relleno]{%
+	\subfloat[visitas$\{x_{11}$:6, $x_{12}$:6, $x_{21}$:3, $x_{22}$: 3$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_8.jpg}%
 		\label{fig:sub8}%
 	}\hfill
-		\subfloat[1 nivel de relleno]{%
+		\subfloat[visitas$\{x_{11}$:7, $x_{12}$:6, $x_{21}$:4, $x_{22}$: 3$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_9.jpg}%
 		\label{fig:sub9}%
 	}\hfill
-	\subfloat[2 niveles de relleno]{%
+	\subfloat[visitas$\{x_{11}$:8, $x_{12}$:7, $x_{21}$:5, $x_{22}$: 4$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_10.jpg}%
 		\label{fig:sub10}%
 	}\hfill
-		\subfloat[1 nivel de relleno]{%
+		\subfloat[visitas$\{x_{11}$:9, $x_{12}$:8, $x_{21}$:6, $x_{22}$: 5$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_11.jpg}%
 		\label{fig:sub11}%
 	}\hfill
-	\subfloat[2 niveles de relleno]{%
+	\subfloat[visitas$\{x_{11}$:9, $x_{12}$:9, $x_{21}$:6, $x_{22}$: 6$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_12.jpg}%
 		\label{fig:sub12}%
 	}\hfill
-	\subfloat[1 nivel de relleno]{%
+	\subfloat[visitas$\{x_{11}$:9, $x_{12}$:9, $x_{21}$:7, $x_{22}$: 6$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_13.jpg}%
 		\label{fig:sub13}%
 	}\hfill
-	\subfloat[2 niveles de relleno]{%
+	\subfloat[visitas$\{x_{11}$:9, $x_{12}$:9, $x_{21}$:8, $x_{22}$: 7$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_14.jpg}%
 		\label{fig:sub14}%
 	}\hfill
-	\subfloat[1 nivel de relleno]{%
+	\subfloat[visitas$\{x_{11}$:9, $x_{12}$:9, $x_{21}$:9, $x_{22}$: 8$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_15.jpg}%
 		\label{fig:sub15}%
 	}\hfill
-	\subfloat[2 niveles de relleno]{%
+	\subfloat[visitas$\{x_{11}$:9, $x_{12}$:9, $x_{21}$:9, $x_{22}$: 9$\}$]{%
 		\includegraphics[width=0.45\textwidth]{imagenes/conv_padding_16.jpg}%
 		\label{fig:sub16}%
 	}\\
 	
-	\caption{Relleno sobre un volumen de entrada X}
+	\caption{Convolución sobre X con relleno completo}
 	\label{fig:full_padding}
 \end{figure}
 
