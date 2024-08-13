@@ -596,7 +596,7 @@ Las fórmulas \ref{grad_w_l_1}, \ref{grad_w_l_2}, y \ref{grad_w_l_3} muestran el
 
 Las fórmulas \ref{grad_b_l_1}, \ref{grad_b_l_2}, y \ref{grad_b_l_3} muestran el cálculo requerido para obtener el gradiente de la pérdida respecto a los sesgos de la capa oculta genérica l.
 
-\section{Paralelización en entrenamiento}
+\section{Paralelización mediante OpenMP}
 
 \subsubsection{Tipos de paralelismo}
 
@@ -610,14 +610,12 @@ El entrenamiento de una red neuronal convolucional (CNN) se puede paralelizar de
 		
 		\For{cada trabajador $t =0, ..., T-1$ en paralelo}
 		\For{época $p\in\{0, ..., P-1\}$}
-			\State Trabajador 0 desordena vector de datos D.
-			\State Sincronizar trabajadores
+			\State Desordenar vector de datos D.
 				\For{cada mini batch $m =0, ..., M-1$}
 					\State Inicializar $gradientes^t$ a 0.
-					\State $(x_i, y_i)^t\ \gets $ Reparto de datos del batch m al trabajador t
-					\State Realizar propagación hacia delante de ${x_i}^t$ y obtener 
-					\State predicción ${\hat{y}_i}^t$.
-					\State Evaluar ${\hat{y}_i}^t$ con la función de pérdida y calcular el error ${e_i}^t$.
+					\State Reparto de datos del batch m al trabajador t
+					\State Realizar propagación hacia delante
+					\State Obtener error total con la función de pérdida
 					\State Realizar propagación hacia detrás y obtener $gradientes^t$ 
 					\State de cada parámetro del modelo.
 					
@@ -632,6 +630,7 @@ El entrenamiento de una red neuronal convolucional (CNN) se puede paralelizar de
 
 La naturaleza iterativa del algoritmo del descenso del gradiente estocástico puede parecer un obstáculo ante la paralelización del entrenamiento del modelo, pues la iteración i se basa en el resultado obtenido en la iteración i-1. Sin embargo, tal y como se indica en \cite{CNN_parallel_Stanford}, \cite{CNN_parallel_International_Conference}, y \cite{CNN_parallel_Ome_Weird_Trick}, existe una forma de aplicar paralelismo en cada iteración. \\
 En cada época se entrena al modelo con M subconjuntos de $N_m$ datos disjuntos entre ellos de forma que, dados T ``trabajadores'' o procesos paralelos, se puede dividir cada mini-batch a su vez en T subconjuntos de $\frac{N_m}{T}$ datos y asignar cada uno a un trabajador distinto.\\
+Siguiendo el mismo razonamiento, se reparten los datos de entrenamiento entre los distintos trabajadores T tanto para realizar la propagación hacia delante como para la posterior retropropagación. En el caso de la retropropagación, se deberá acumular el gradiente de la pérdida respecto a cada parámetro obtenido por cada trabajor, y una vez en posesión de dicho gradiente `total' se procederá a la actualización de los parámetros del modelo.
 
 \section{Redes Neuronales Convolucionales}
 

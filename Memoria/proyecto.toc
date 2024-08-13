@@ -85,13 +85,13 @@
 \contentsline {subsubsection}{Gradiente respecto a la entrada de la capa}{51}{section*.98}%
 \contentsline {subsubsection}{Gradiente respecto a los pesos}{52}{section*.100}%
 \contentsline {subsubsection}{Gradiente respecto a sesgos}{52}{section*.102}%
-\contentsline {section}{\numberline {3.2}Paralelización en entrenamiento}{53}{section.3.2}%
+\contentsline {section}{\numberline {3.2}Paralelización mediante OpenMP}{53}{section.3.2}%
 \contentsline {subsubsection}{Tipos de paralelismo}{53}{section*.103}%
 \contentsline {subsubsection}{Paralelismo en SGD}{53}{section*.104}%
 \contentsline {section}{\numberline {3.3}Redes Neuronales Convolucionales}{54}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Propagación hacia detrás}{54}{subsection.3.3.1}%
 \contentsline {subsubsection}{Sumatoria de gradientes}{54}{section*.106}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{54}{section*.107}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{55}{section*.107}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{55}{section*.108}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{56}{section*.110}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{57}{section*.112}%
