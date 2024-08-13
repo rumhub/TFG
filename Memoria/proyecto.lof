@@ -46,12 +46,12 @@
 \contentsline {figure}{\numberline {3.21}{\ignorespaces Retropropagación en la capa l}}{51}{figure.caption.99}%
 \contentsline {figure}{\numberline {3.22}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{52}{figure.caption.101}%
 \contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{54}{figure.caption.105}%
-\contentsline {figure}{\numberline {3.24}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{55}{figure.caption.109}%
-\contentsline {figure}{\numberline {3.25}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{56}{figure.caption.111}%
-\contentsline {figure}{\numberline {3.26}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{57}{figure.caption.113}%
+\contentsline {figure}{\numberline {3.24}{\ignorespaces Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}}{56}{figure.caption.109}%
+\contentsline {figure}{\numberline {3.25}{\ignorespaces Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}}{57}{figure.caption.111}%
+\contentsline {figure}{\numberline {3.26}{\ignorespaces Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}}{58}{figure.caption.113}%
 \contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{59}{figure.caption.115}%
 \contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{60}{figure.caption.117}%
-\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{61}{figure.caption.118}%
+\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada valor de entrada como convolución entre K e Y}}{61}{figure.caption.118}%
 \contentsline {figure}{\numberline {3.30}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{62}{figure.caption.119}%
 \contentsline {figure}{\numberline {3.31}{\ignorespaces Retropropagación de $Y^c_{11}$}}{62}{figure.caption.121}%
 \contentsline {figure}{\numberline {3.32}{\ignorespaces Retropropagación de $Y^c_{12}$}}{63}{figure.caption.123}%

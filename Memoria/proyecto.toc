@@ -25,7 +25,7 @@
 \contentsline {subsubsection}{Actualización de parámetros}{12}{section*.18}%
 \contentsline {subsubsection}{Descenso del gradiente estocástico}{13}{section*.19}%
 \contentsline {section}{\numberline {2.5}Redes Neuronales Convolucionales}{14}{section.2.5}%
-\contentsline {subsection}{\numberline {2.5.1}Introducción a CNNs}{14}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.1}Introducción a CNNs }{14}{subsection.2.5.1}%
 \contentsline {subsection}{\numberline {2.5.2}Capa convolucional}{15}{subsection.2.5.2}%
 \contentsline {subsubsection}{Componentes}{15}{section*.20}%
 \contentsline {subsubsection}{Propagación hacia delante}{15}{section*.22}%
@@ -88,16 +88,15 @@
 \contentsline {section}{\numberline {3.2}Paralelización mediante OpenMP}{53}{section.3.2}%
 \contentsline {subsubsection}{Tipos de paralelismo}{53}{section*.103}%
 \contentsline {subsubsection}{Paralelismo en SGD}{53}{section*.104}%
-\contentsline {section}{\numberline {3.3}Redes Neuronales Convolucionales}{54}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Propagación hacia detrás}{54}{subsection.3.3.1}%
+\contentsline {section}{\numberline {3.3}Retropropagación en redes neuronales convolucionales}{54}{section.3.3}%
 \contentsline {subsubsection}{Sumatoria de gradientes}{54}{section*.106}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{55}{section*.107}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{55}{section*.108}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{56}{section*.110}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{57}{section*.112}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{56}{section*.108}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{57}{section*.110}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{58}{section*.112}%
 \contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{58}{section*.114}%
 \contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{59}{section*.116}%
-\contentsline {subsection}{\numberline {3.3.2}Propagación hacia detrás con relleno}{62}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.1}Propagación hacia detrás con relleno}{62}{subsection.3.3.1}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{62}{section*.120}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{63}{section*.122}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{13}$}{64}{section*.124}%
