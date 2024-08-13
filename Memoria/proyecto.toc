@@ -78,15 +78,15 @@
 \contentsline {subsubsection}{Pesos capas h1-h2}{46}{section*.86}%
 \contentsline {subsubsection}{Sesgos capa h2}{47}{section*.88}%
 \contentsline {subsubsection}{Capa oculta h1}{47}{section*.89}%
-\contentsline {subsubsection}{Pesos capa input-h1}{48}{section*.92}%
+\contentsline {subsubsection}{Pesos capa input-h1}{49}{section*.92}%
 \contentsline {subsubsection}{Sesgos capa h1}{49}{section*.94}%
-\contentsline {subsubsection}{Capa input}{49}{section*.95}%
-\contentsline {subsection}{\numberline {3.1.4}Conclusiones}{50}{subsection.3.1.4}%
-\contentsline {subsubsection}{Gradiente respecto a la entrada}{51}{section*.98}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{51}{section*.100}%
+\contentsline {subsubsection}{Capa input}{50}{section*.95}%
+\contentsline {subsection}{\numberline {3.1.4}Conclusiones}{51}{subsection.3.1.4}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada de la capa}{51}{section*.98}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{52}{section*.100}%
 \contentsline {subsubsection}{Gradiente respecto a sesgos}{52}{section*.102}%
-\contentsline {section}{\numberline {3.2}Paralelización en entrenamiento}{52}{section.3.2}%
-\contentsline {subsubsection}{Tipos de paralelismo}{52}{section*.103}%
+\contentsline {section}{\numberline {3.2}Paralelización en entrenamiento}{53}{section.3.2}%
+\contentsline {subsubsection}{Tipos de paralelismo}{53}{section*.103}%
 \contentsline {subsubsection}{Paralelismo en SGD}{53}{section*.104}%
 \contentsline {section}{\numberline {3.3}Redes Neuronales Convolucionales}{54}{section.3.3}%
 \contentsline {subsection}{\numberline {3.3.1}Propagación hacia detrás}{54}{subsection.3.3.1}%
