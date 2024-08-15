@@ -3,7 +3,11 @@
 
 using namespace std;
 
-
+/*
+    @brief: Lectura de imágenes
+    @imagenes_input: Vector 4D donde almacenar las imágenes leídas
+    @pad: Padding o relleno a aplicar
+*/
 void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input, const int &pad)
 {
     vector<vector<vector<float>>> imagen_k1;
@@ -34,22 +38,23 @@ void leer_imagen(vector<vector<vector<vector<float>>>> &imagenes_input, const in
 
 int main()
 {
+    // Definición de número de hebras y vectores a emplear
     omp_set_num_threads(omp_get_num_procs());
     vector<vector<vector<vector<float>>>> input;
     vector<float> output;
     int n_imagenes, pad=1;
     leer_imagen(input, pad);
 
+    // Arquitectura del modelo
     vector<vector<int>> capas_conv = {{16,3,3}, {32,3,3}}, capas_pool={{2,2}, {2,2}};
     vector<int> capas_fully = {100, 10}, padding = {pad, pad};
     CNN cnn(capas_conv, capas_pool, padding, capas_fully, input[0], 0.001);
 
-    //cnn.leer_imagenes();
-    //cnn.leer_imagenes_mnist(3000, 10);
-    cnn.leer_imagenes_cifar10(1000, 100, 10);
+    // Lectura de imágenes y entrenamiento
+    cnn.leer_imagenes_cifar10(100, 100, 10);
     cnn.mostrar_arquitectura();
-    //cnn.train(1, 32);
-    cnn.train(20, 32);
+    cnn.train(1, 32);
+    //cnn.train(20, 32);
     //cnn.evaluar_modelo();
 
     return 0;

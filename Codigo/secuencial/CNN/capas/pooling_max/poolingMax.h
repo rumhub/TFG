@@ -29,10 +29,8 @@ class PoolingMax
         
     public:
 
-        // Constructor
+        // Constructores
         PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
-        
-        // Destructor
         PoolingMax(){};
 
         // Propagación hacia delante

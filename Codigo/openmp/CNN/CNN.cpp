@@ -444,7 +444,11 @@ void CNN::padding_interno(vector<vector<vector<float>>> &input, const int &pad)
     }    
 }
 
-
+/*
+    @brief: Entrenar el modelo
+    @epocas: Número de épocas a entrenar
+    @mini_batch: Tamaño de mini_batch a emplear
+*/
 void CNN::train(int epocas, int mini_batch)
 {
     double t1, t2;

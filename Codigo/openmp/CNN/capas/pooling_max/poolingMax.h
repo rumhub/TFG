@@ -13,16 +13,17 @@ class PoolingMax
         int n_filas_eliminadas;
         
     public:
+        // Constructores
         PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
         PoolingMax(){};
 
-        // Aplica padding a un conjunto de imágenes 2D
+        // Propagación hacia delante
         void forwardPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad);
 
+        // Retropropagación
         void backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
 
-        void mostrar_tam_kernel();
-
+        // Gets
         int get_kernel_fils(){return this->kernel_fils;};
         int get_kernel_cols(){return this->kernel_cols;};
         int get_image_canales(){return this->image_canales;};

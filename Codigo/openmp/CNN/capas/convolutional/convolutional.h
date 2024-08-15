@@ -48,5 +48,4 @@ class Convolutional
         int get_n_kernels(){return this->n_kernels;};
         vector<vector<vector<vector<float>>>> get_pesos(){return this->w;};
         vector<float> get_bias(){return this->bias;};
-        // https://calvinfeng.gitbook.io/machine-learning-notebook/supervised-learning/convolutional-neural-network/convolution_operation
 };
