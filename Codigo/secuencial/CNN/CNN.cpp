@@ -45,7 +45,6 @@ CNN::CNN(const vector<vector<int>> &capas_conv, const vector<vector<int>> &tams_
     this->padding = padding;
 
     vector<float> v_1D;
-    //vector<float> v_1D(W_out);
     vector<vector<float>> v_2D;
 
     Convolutional conv1(capas_conv[0][0], capas_conv[0][1], capas_conv[0][2], img_in, lr);
@@ -217,7 +216,11 @@ void CNN::padding_interno(vector<vector<vector<float>>> &input, const int &pad)
     }    
 }
 
-
+/*
+    @brief: Desordena un vector de datos 1D
+    @vec: Vector a desordenar
+    @rng: random device
+*/
 void shuffle(vector<int> vec, mt19937& rng) {
     for (int i = vec.size() - 1; i > 0; --i) {
         std::uniform_int_distribution<int> dist(0, i);
@@ -226,7 +229,11 @@ void shuffle(vector<int> vec, mt19937& rng) {
     }
 }
 
-
+/*
+    @brief: Entrenar el modelo
+    @epocas: Número de épocas a entrenar
+    @mini_batch: Tamaño de mini_batch a emplear
+*/
 void CNN::train(int epocas, int mini_batch)
 {
     auto ini = high_resolution_clock::now();

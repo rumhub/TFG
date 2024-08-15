@@ -242,7 +242,6 @@ void Convolutional::unroll(int C, int n, int K, float *X, float *X_unroll){
 
         
     } 
-    //cout << " ---------------------232 ------------------ " << endl;
 }
 
 void Convolutional::unroll_1dim(int C, int H, int W, int K, float *X, float *X_unroll){
@@ -259,50 +258,11 @@ void Convolutional::unroll_1dim(int C, int H, int W, int K, float *X, float *X_u
                 // Guardar K*K elementos de "convolución"
                 for(int ky=0; ky < K; ky++)
                     for(int kx=0; kx<K; kx++)
-                    {
-
-                        
                         X_unroll[cont++] = X[i*H*W + (j+ky)*W + (k+kx)];
-                        //X_unroll[cont++] = X[i*H*W + (j+ky)*W + (k+kx)];
-                        //cout << X[i*H*W + (j+ky)*W + (k+kx)] << " ";
-                    }
-                //cout << endl;
             }
         }
     }        
-    //cout << " ---------- " << endl;
 }
-
-/*
-void Convolutional::unroll_3dim(int C, int H, int W, int K, float *X, float *X_unroll){
-
-    int H_out = H - K+1, W_out = W -K +1;
-    int cont = 0;
-
-    cout << " ---------------------232 ------------------ " << endl;
-    for(int j=0; j<H_out; j++)
-    {
-        for(int k=0; k<W_out; k++)
-        {
-            for(int i=0; i<C; i++)
-            {
-                // Guardar K*K elementos de "convolución"
-                for(int ky=0; ky < K; ky++)
-                    for(int kx=0; kx<K; kx++)
-                    {
-                        
-                        X_unroll[cont++] = X[i*H*W + (j+ky)*W + (k+kx)];
-                        //X_unroll[cont++] = X[i*H*W + (j+ky)*W + (k+kx)];
-                        cout << X[i*H*W + (j+ky)*W + (k+kx)] << " ";
-                    }
-                cout << endl;
-            }
-        }
-    }        
-    cout << " ---------------------232 ------------------ " << endl;
-
-}
-*/
 
 
 void Convolutional::unroll_3dim(int C, int H, int W, int K, float *X, float *X_unroll){
@@ -328,89 +288,22 @@ void Convolutional::unroll_3dim(int C, int H, int W, int K, float *X, float *X_u
 
 }
 
-/*
-// Function to perform convolution with loop unrolling
-std::vector<std::vector<int>> convolutionUnrolled(const std::vector<std::vector<std::vector<int>>>& input,
-                                                  const std::vector<std::vector<int>>& kernel) {
-    // Assuming input dimensions are [depth][height][width]
-    int C = input.size();
-    int H = input[0].size();
-    int W = input[0][0].size();
-    int K = kernel.size();
-    int K = kernel[0].size();
-
-    // Calculate the size of output
-    int H_out = H - K + 1;
-    int W_out = W - K + 1;
-
-    std::vector<std::vector<int>> output(H_out * W_out,
-                                          std::vector<int>(K * K * C));
-
-    int outputIndex = 0;
-    for (int i = 0; i < H_out; ++i) {
-        for (int j = 0; j < W_out; ++j) {
-            int inputIndex = 0;
-            for (int d = 0; d < C; ++d) {
-                for (int ki = 0; ki < K; ++ki) {
-                    for (int kj = 0; kj < K; ++kj) {
-                        output[outputIndex][inputIndex++] = input[d][i + ki][j + kj];
-                    }
-                }
-            }
-            ++outputIndex;
-        }
-    }
-
-    return output;
-}
-*/
-
-void Convolutional::printMatrix_3D(float* matrix, int C, int n) {
-    for (int i = 0; i < C; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++) 
-                cout << matrix[i*n*n +j*n +k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
-
-void Convolutional::printMatrix(float* matrix, int h, int w) {
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < w; j++) 
-            cout << matrix[i * w + j] << " ";
-        cout << endl;
-    }
-}
 
 void Convolutional::matrizTranspuesta(float* matrix, int rows, int cols)
 {
-    // Allocate a new matrix to hold the transposed data
-    float* transposedMatrix = (float*)malloc(cols * rows * sizeof(float));
-    
-    if (transposedMatrix == nullptr) {
-        cerr << "Memory allocation for transposed matrix failed" << endl;
-        exit(1);
-    }
+    // Reserva de memoria
+    float* transposedMatrix = (float*)malloc(cols * rows * sizeof(float)); 
 
-    // Transpose the matrix
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            // Copy the element from original matrix at position (i, j) to
-            // transposed matrix at position (j, i)
+    // Cálculo de la matriz transpuesta
+    for (int i = 0; i < rows; i++) 
+        for (int j = 0; j < cols; j++) 
             transposedMatrix[j * rows + i] = matrix[i * cols + j];
-        }
-    }
 
-    // Copy the transposed data back to the original matrix
-    // This requires the original matrix to be able to hold the new dimensions
-    // i.e., it must have space for 'cols * rows' elements
-    for (int i = 0; i < cols * rows; i++) {
+    // Copiar la transpuesta en la matriz original
+    for (int i = 0; i < cols * rows; i++)
         matrix[i] = transposedMatrix[i];
-    }
 
-    // Free the allocated memory for the transposed matrix
+    // Liberar memoria
     free(transposedMatrix);
 }
 
@@ -509,43 +402,6 @@ void Convolutional::backPropagation(vector<vector<vector<float>>> &input, vector
 };
 
 
-void Convolutional::printMatrix_4D(float* matrix, int F, int C, int n) {
-    for (int f = 0; f < F; f++) {
-        for (int i = 0; i < C; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < n; k++) 
-                    cout << matrix[f*C*n*n + i*n*n +j*n +k] << " ";
-                cout << endl;
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
-
-void Convolutional::multiplicarMatrices(float* m1, int rows1, int cols1, float* m2, int cols2, float* result) {
-    for (int i = 0; i < rows1; i++) 
-        for (int j = 0; j < cols2; j++) {
-            result[i * cols2 + j] = 0.0f;
-
-            for (int k = 0; k < cols1; k++) 
-                result[i * cols2 + j] += m1[i * cols1 + k] * m2[k * cols2 + j];
-            
-        }
-}
-
-void Convolutional::printMatrix_vector(const vector<vector<vector<float>>> &X) {
-    for (int i = 0; i < X.size(); i++) {
-        for (int j = 0; j < X[i].size(); j++) {
-            for (int k = 0; k < X[i][j].size(); k++) 
-                cout << X[i][j][k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
-
-
 /*
     @brief          Escalar los pesos para evitar que los gradientes "exploten"
     @clip_value     Valor a emplear para realizar el "clip" o escalado
@@ -600,250 +456,3 @@ void Convolutional::actualizar_grads(vector<vector<vector<vector<float>>>> &grad
 
 
 
-// https://towardsdatascience.com/forward-and-backward-propagation-in-convolutional-neural-networks-64365925fdfa
-// https://colab.research.google.com/drive/13MLFWdi3uRMZB7UpaJi4wGyGAZ9ftpPD?authuser=1#scrollTo=FEFgOKF4gGv2
-
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-void printMatrix_3D(float* matrix, int C, int n) {
-    for (int i = 0; i < C; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++) 
-                cout << matrix[i*n*n +j*n +k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
-
-void printMatrix_vector(const vector<vector<vector<float>>> &X) {
-    for (int i = 0; i < X.size(); i++) {
-        for (int j = 0; j < X[i].size(); j++) {
-            for (int k = 0; k < X[i][j].size(); k++) 
-                cout << X[i][j][k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
-
-/*
-int main()
-{
-    // -----------------------------------------------------------------------------------------------------
-    // Método estándar
-    // -----------------------------------------------------------------------------------------------------
-    auto ini = high_resolution_clock::now();
-    auto fin = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(fin - ini);
-    int n_kernels = 26, K=5, H=50, W=50, H_out = H-K+1, W_out = W-K+1, pad = 0, C=100;   // C=9
-    //int n_kernels = 2, K=2, H=3, W=3, H_out = H-K+1, W_out = W-K+1, pad = 0, C=2;   // C=9
-    vector<vector<vector<float>>> a, input_gpu, a_gpu;
-    vector<vector<vector<vector<float>>>> grad_w, grad_w2;
-    vector<float> grad_bias;
-
-    vector<vector<vector<float>>> input(C, vector<vector<float>>(H, vector<float>(W, 0)));
-    vector<vector<vector<float>>> output(n_kernels, vector<vector<float>>(H_out, vector<float>(W_out, 0))), output_gpu = output;
-
-    for(int i=0; i<C; i++)
-        for(int j=0; j<H; j++)
-            for(int k=0; k<W; k++)
-                input[i][j][k] = (float) (j+k) / (H*W);
-                //h_A[i*K + j] = (rand() % 100) + 1;
-                //input[i][j][k] = 3.0;
-    
-    a = output, input_gpu = input, a_gpu = a;
-
-    // Kernel de pesos
-    vector<vector<vector<vector<float>>>> w(n_kernels, vector<vector<vector<float>>>(C, vector<vector<float>>(K, vector<float>(K, 0.7))));
-    
-    // Vector de sesgos
-    vector<float> bias(n_kernels, 0.0);
-    /*
-    for(int i = 0; i < n_kernels; i++) 
-        for(int j = 0; j < C; j++)
-            for(int kx = 0; kx < K; kx++)
-                for(int ky = 0; ky < K; ky++)
-                    w[i][j][kx][ky] = (float) i+j / (n_kernels*C*2);
-    
-    // Inicializar gradientes a 0.0
-    grad_w = w;
-    grad_bias = bias;
-
-    for(int i = 0; i < n_kernels; i++) 
-        for(int j = 0; j < C; j++)
-            for(int kx = 0; kx < K; kx++)
-                for(int ky = 0; ky < K; ky++)
-                    grad_w[i][j][kx][ky] = 0.0;
-
-    grad_w2 = grad_w;
-
-
-    // Crear capa convolucional
-    Convolutional conv(n_kernels, K, K, input, 0.1);
-    //conv.set_w(w);
-    conv.set_b(bias);
-
-    // Establecer device
-    int dev = 0;
-    cudaDeviceProp deviceProp;
-    cudaGetDeviceProperties(&deviceProp, dev);
-    cout << "Estableciendo dispotisivo para GPU...\n";
-    printf("Usando el dispositivo %d: %s\n", dev, deviceProp.name);
-    cudaSetDevice(dev);
-
-    cout << " -------------------------- Método Estándar -------------------------- " << endl;
-    //cout << "Input" << endl;
-    //printMatrix_vector(input);
-    ini = high_resolution_clock::now();
-    conv.forwardPropagation(input, output, a);
-    fin = high_resolution_clock::now();
-    duration = duration_cast<microseconds>(fin - ini);
-    
-    // Mostrar resultado
-    cout << "Tiempo CPU: " << duration.count() << " (us)" << endl;
-    
-    //cout << "Ouput" << endl;
-    //printMatrix_vector(output);
-    
-    //cout << "-- Backprop --" << endl;
-    //cout << "Input" << endl;
-    conv.backPropagation(input, output, a, grad_w, grad_bias, pad);
-    //printMatrix_vector(input);
-
-    /*
-    cout << "Gradientes de pesos" << endl;
-    // Mostrar gradientes de pesos
-    for(int i = 0; i < n_kernels; i++) 
-    {
-        for(int j = 0; j < C; j++)
-        {
-            for(int kx = 0; kx < K; kx++)
-            {
-                for(int ky = 0; ky < K; ky++)
-                    cout << grad_w[i][j][kx][ky] << " ";
-                cout << endl;
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    
-    
-    cout << " -------------------------- Método GEMM -------------------------- " << endl;
-    //cout << "Input" << endl;
-    //printMatrix_vector(input_gpu);
-    ini = high_resolution_clock::now();
-    conv.forwardPropagationGEMM(input_gpu, output_gpu, a_gpu);
-    cudaDeviceSynchronize();
-    fin = high_resolution_clock::now();
-    duration = duration_cast<microseconds>(fin - ini);
-    
-    // Mostrar resultado
-    cout << "Tiempo GPU: " << duration.count() << " (us)" << endl;
-    //cout << "Ouput" << endl;
-    //printMatrix_vector(output_gpu);
-    
-    //cout << "-- Backprop --" << endl;
-    conv.backPropagationGEMM(input_gpu, output_gpu, a_gpu, grad_w2, grad_bias, pad);
-    /*
-    cout << "Input" << endl;
-    printMatrix_vector(input_gpu);
-
-    */
-    /*
-    cout << "Gradientes de pesos" << endl;
-    // Mostrar gradientes de pesos
-    for(int i = 0; i < n_kernels; i++) 
-    {
-        for(int j = 0; j < C; j++)
-        {
-            for(int kx = 0; kx < K; kx++)
-            {
-                for(int ky = 0; ky < K; ky++)
-                    cout << grad_w2[i][j][kx][ky] << " ";
-                cout << endl;
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    */
-   /*
-    int i_=0;
-    cout << "Input\n";
-    for(int j=0; j<H; j++)
-    {
-        for(int k=0; k<W; k++)
-            cout << input[i_][j][k] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "Input GEMM\n";
-    for(int j=0; j<H; j++)
-    {
-        for(int k=0; k<W; k++)
-            cout << input_gpu[i_][j][k] << " ";
-        cout << endl;
-    }
-    cout << endl;
-    
-
-
-   // Comprobar resultados
-    bool correcto = true;
-    float epsilon = 0000000.1;
-    int n_errores = 0;
-    float err_medio_input = 0.0, err_medio_w = 0.0;
-
-    for(int i=0; i<n_kernels; i++)
-        for(int j=0; j<H_out; j++)
-            for(int k=0; k<W_out; k++)
-                if(abs(output[i][j][k] - output_gpu[i][j][k]) > epsilon)
-                {
-                    correcto = false;
-                    cout << abs(output[i][j][k] - output_gpu[i][j][k]) << "output" << endl;
-                    n_errores++;
-                }
-
-    for(int i=0; i<C; i++)
-        for(int j=0; j<H; j++)
-            for(int k=0; k<W; k++)
-                if(abs(input[i][j][k] - input_gpu[i][j][k]) > epsilon)
-                {
-                    correcto = false;
-                    //cout << abs(input[i][j][k] - input_gpu[i][j][k]) << " input. " << input[i][j][k] << " vs " << input_gpu[i][j][k] << endl;
-                    n_errores++;
-                    err_medio_input += abs(input[i][j][k] - input_gpu[i][j][k]);
-                }
-
-
-    for(int i = 0; i < n_kernels; i++) 
-        for(int j = 0; j < C; j++)
-            for(int kx = 0; kx < K; kx++)
-                for(int ky = 0; ky < K; ky++)
-                if(abs(grad_w[i][j][kx][ky] - grad_w2[i][j][kx][ky]) > epsilon)
-                {
-                    correcto = false;
-                    //cout << abs(grad_w[i][j][kx][ky] - grad_w2[i][j][kx][ky]) << " pesos " << endl;
-                    n_errores++;
-                    err_medio_w += abs(grad_w[i][j][kx][ky] - grad_w2[i][j][kx][ky]);
-                }
-
-
-
-    if(correcto)
-        cout << "Todo correcto" << endl;
-    else
-    {
-        cout << "Incorrecto (" << n_errores << " errores) " << endl;
-        cout << "Error medio input: " << err_medio_input / C*H*W << endl;
-        cout << "Error medio w: " << err_medio_w / n_kernels*C*K*K << endl;
-    }
-
-    return 0;
-}
-*/

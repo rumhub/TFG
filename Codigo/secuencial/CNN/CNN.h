@@ -6,7 +6,6 @@
 #include "capas/flatten/flatten.h"
 #include "capas/fully_connected/fullyconnected.h"
 #include "capas/pooling_max/poolingMax.h"
-//#include "auxiliar/leer_imagenes.h"
 #include "auxiliar/auxiliar.h"
 
 #include <vector>
@@ -49,6 +48,7 @@ class CNN
         // Modificar imagen
         void padding_interno(vector<vector<vector<float>>> &input, const int &pad);
 
+        // Sets
         void set_train(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->train_imgs = x; this->train_labels = y;};
         void set_test(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->test_imgs = x; this->test_labels = y;};
 };

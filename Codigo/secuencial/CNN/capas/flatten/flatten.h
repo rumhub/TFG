@@ -12,19 +12,23 @@ using namespace std;
 class Flatten
 {
     private:
-        int n_imagenes;
-        int canales;
-        int filas;
-        int cols;
-        float max;
+        // Imagen 3D o volumen 3D de entrada
+        int n_imagenes;     // Número de imágenes 2D por volumen 3D de entrada
+        int canales;        // Número de canales
+        int filas;          // Filas por imagen   
+        int cols;           // Columnas por imagen
 
     public:
+        // Constructor
         Flatten(const vector<vector<vector<float>>> &input);
 
+        // Propagación hacia delante
         void forwardPropagation(const vector<vector<vector<float>>> &input, vector<float> &output);
 
+        // Retropropagación
         void backPropagation(vector<vector<vector<float>>> &errores_matriz, const vector<float> &errores_primera_capa);                     
 
+        // Gets
         int get_canales();
 };
 
