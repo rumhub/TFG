@@ -96,16 +96,16 @@
 \contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{58}{section*.112}%
 \contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{58}{section*.114}%
 \contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{59}{section*.116}%
-\contentsline {subsection}{\numberline {3.3.1}Propagación hacia detrás con relleno}{62}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.1}Retropropagación con relleno}{62}{subsection.3.3.1}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{62}{section*.120}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{63}{section*.122}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{13}$}{64}{section*.124}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{64}{section*.126}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{65}{section*.128}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{65}{section*.126}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{66}{section*.128}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{23}$}{66}{section*.130}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{31}$}{67}{section*.132}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{32}$}{67}{section*.134}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{33}$}{68}{section*.136}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{32}$}{68}{section*.134}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{33}$}{69}{section*.136}%
 \contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{69}{section*.138}%
 \contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{70}{section*.140}%
 \contentsline {chapter}{\numberline {4}Adaptación GPU}{73}{chapter.4}%

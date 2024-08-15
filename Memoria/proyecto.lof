@@ -52,19 +52,19 @@
 \contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{59}{figure.caption.115}%
 \contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{60}{figure.caption.117}%
 \contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada valor de entrada como convolución entre K e Y}}{61}{figure.caption.118}%
-\contentsline {figure}{\numberline {3.30}{\ignorespaces Ejemplo de propagación hacia detrás en una capa convolucional con relleno}}{62}{figure.caption.119}%
+\contentsline {figure}{\numberline {3.30}{\ignorespaces Ejemplo de retropropagación en una capa convolucional con relleno}}{62}{figure.caption.119}%
 \contentsline {figure}{\numberline {3.31}{\ignorespaces Retropropagación de $Y^c_{11}$}}{62}{figure.caption.121}%
 \contentsline {figure}{\numberline {3.32}{\ignorespaces Retropropagación de $Y^c_{12}$}}{63}{figure.caption.123}%
 \contentsline {figure}{\numberline {3.33}{\ignorespaces Retropropagación de $Y^c_{13}$}}{64}{figure.caption.125}%
-\contentsline {figure}{\numberline {3.34}{\ignorespaces Retropropagación de $Y^c_{21}$}}{64}{figure.caption.127}%
-\contentsline {figure}{\numberline {3.35}{\ignorespaces Retropropagación de $Y^c_{22}$}}{65}{figure.caption.129}%
+\contentsline {figure}{\numberline {3.34}{\ignorespaces Retropropagación de $Y^c_{21}$}}{65}{figure.caption.127}%
+\contentsline {figure}{\numberline {3.35}{\ignorespaces Retropropagación de $Y^c_{22}$}}{66}{figure.caption.129}%
 \contentsline {figure}{\numberline {3.36}{\ignorespaces Retropropagación de $Y^c_{23}$}}{66}{figure.caption.131}%
 \contentsline {figure}{\numberline {3.37}{\ignorespaces Retropropagación de $Y^c_{31}$}}{67}{figure.caption.133}%
-\contentsline {figure}{\numberline {3.38}{\ignorespaces Retropropagación de $Y^c_{32}$}}{67}{figure.caption.135}%
-\contentsline {figure}{\numberline {3.39}{\ignorespaces Retropropagación de $Y^c_{33}$}}{68}{figure.caption.137}%
-\contentsline {figure}{\numberline {3.40}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{69}{figure.caption.139}%
-\contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida respecto de la entrada como convolución}}{70}{figure.caption.141}%
-\contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{71}{figure.caption.142}%
+\contentsline {figure}{\numberline {3.38}{\ignorespaces Retropropagación de $Y^c_{32}$}}{68}{figure.caption.135}%
+\contentsline {figure}{\numberline {3.39}{\ignorespaces Retropropagación de $Y^c_{33}$}}{69}{figure.caption.137}%
+\contentsline {figure}{\numberline {3.40}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{70}{figure.caption.139}%
+\contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida respecto de la entrada como convolución}}{71}{figure.caption.141}%
+\contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{72}{figure.caption.142}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{74}{figure.caption.143}%
 \contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{76}{figure.caption.144}%
