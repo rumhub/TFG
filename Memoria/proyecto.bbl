@@ -35,17 +35,158 @@ NVIDIA.
   \url{https://docs.nvidia.com/deeplearning/performance/dl-performance-fully-connected/index.html}
   [Accessed:11/05/2024].
 
+\bibitem{CPU_definicion}
+Amazon.
+\newblock ¿qué es una unidad central de procesamiento (cpu)?, 2024.
+\newblock \url{https://aws.amazon.com/es/what-is/cpu/} [Accessed:15/08/2024].
+
+\bibitem{GPU_definicion}
+Amazon.
+\newblock ¿qué es una gpu?, 2024.
+\newblock \url{https://aws.amazon.com/es/what-is/gpu/} [Accessed:15/08/2024].
+
+\bibitem{sitemas_heterogeneo_definicion}
+Patricio Bulić.
+\newblock Heterogeneous systems, 2024.
+\newblock
+  \url{https://doc.sling.si/en/workshops/programming-gpu-cuda/01-intro/02-hetsys/#:~:text=A%20homogeneous%20system%20uses%20one,%2Dsuited%2C%20yielding%20performance%20improvement.}
+  [Accessed:15/08/2024].
+
 \bibitem{Professional_CUDA_C}
 Ty~McKercher John~Cheng, Max~Grossman.
 \newblock {\em Professional Cuda C Programming}.
 \newblock John Wiley and Sons, Inc., 10475 Crosspoint Boulevard, 1 edition,
   2014.
 
+\bibitem{CNN_definicion}
+IBM.
+\newblock What are convolutional neural networks?, 2024.
+\newblock \url{https://www.ibm.com/topics/convolutional-neural-networks}
+  [Accessed:15/08/2024].
+
 \bibitem{Programming_Massively}
 Izzat El~Hajj Wen-emi W.Hwu, David~B.kirk.
 \newblock {\em Programming Massively Parallel Processors}.
 \newblock Morgan Kaufmann, 50 Hampshire Street, 5th Floor, Cambridge, MA 02139,
   United States, 4 edition, 2022.
+
+\bibitem{Aprendizaje_automatico_definicion}
+IBM.
+\newblock ¿qué es el machine learning (ml)?, 2024.
+\newblock \url{https://www.ibm.com/es-es/topics/machine-learning}
+  [Accessed:15/08/2024].
+
+\bibitem{Deep_learning_definicion}
+IBM.
+\newblock ¿qué es el deep learning?, 2024.
+\newblock \url{https://www.ibm.com/es-es/topics/deep-learning}
+  [Accessed:15/08/2024].
+
+\bibitem{image_recognition_CNN}
+Mohdsanadzakirizvi.
+\newblock Image classification using cnn, 2024.
+\newblock
+  \url{https://www.analyticsvidhya.com/blog/2020/02/learn-image-classification-cnn-convolutional-neural-networks-3-datasets/}
+  [Accessed:15/08/2024].
+
+\bibitem{computer_vision_definicion}
+Microsoft.
+\newblock ¿qué es la visión artificial?, 2024.
+\newblock
+  \url{https://azure.microsoft.com/es-es/resources/cloud-computing-dictionary/what-is-computer-vision#clasificaci%C3%B3n-de-objetos}
+  [Accessed:15/08/2024].
+
+\bibitem{object_detection_CNN}
+Yi~Wang Jusong~Ren.
+\newblock Overview of object detection algorithms using convolutional neural
+  networks, 2024.
+\newblock \url{https://www.scirp.org/journal/paperinformation?paperid=115011}
+  [Accessed:15/08/2024].
+
+\bibitem{image_segmentation_CNN}
+Shameerayaseen.
+\newblock U-net: Advancing image segmentation with convolutional neural
+  networks, 2023.
+\newblock
+  \url{https://medium.com/@shameerayaseen21/u-net-advancing-image-segmentation-with-convolutional-neural-networks-1fd810f05d00}
+  [Accessed:15/08/2024].
+
+\bibitem{generative_CNN}
+Ying Nian~Wu Jifeng~Dai, Yang~Lu.
+\newblock Generative modeling of convolutional neural networks, 2023.
+\newblock \url{http://www.stat.ucla.edu/~ywu/generativeCNN/main.html}
+  [Accessed:15/08/2024].
+
+\bibitem{video_analytics_CNN}
+Intel.
+\newblock Convolutional neural networks (cnns), deep learning, and computer
+  vision, 2024.
+\newblock
+  \url{https://www.intel.com/content/www/us/en/internet-of-things/computer-vision/convolutional-neural-networks.html}
+  [Accessed:15/08/2024].
+
+\bibitem{NLP_CNN}
+Taha Binhuraib.
+\newblock Nlp with cnns, 2020.
+\newblock \url{https://towardsdatascience.com/nlp-with-cnns-a6aa743bdc1e}
+  [Accessed:15/08/2024].
+
+\bibitem{sitemas_autonomos_CNN}
+Augmented AI.
+\newblock Convolutional neural networks (cnn) in self-driving cars, 2024.
+\newblock
+  \url{https://www.augmentedstartups.com/blog/convolutional-neural-networks-cnn-in-self-driving-cars#:~:text=They%20have%20the%20potential%20to,decisions%20based%20on%20the%20environment.}
+  [Accessed:15/08/2024].
+
+\bibitem{openmp_forum}
+OpeMP.
+\newblock Openmp, 2024.
+\newblock \url{https://www.openmp.org/} [Accessed:15/08/2024].
+
+\bibitem{cuda_forum}
+NVIDIA.
+\newblock Cuda toolkit, 2024.
+\newblock \url{https://developer.nvidia.com/cuda-toolkit}
+  [Accessed:15/08/2024].
+
+\bibitem{cuDNN}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock \url{https://developer.nvidia.com/cudnn} [Accessed:02/08/2024].
+
+\bibitem{Caffe2}
+Caffe2.
+\newblock What is caffe2?, 2024.
+\newblock \url{https://caffe2.ai/docs/caffe-migration.html}
+  [Accessed:15/08/2024].
+
+\bibitem{Keras}
+Keras.
+\newblock Keras, 2024.
+\newblock \url{https://keras.io/} [Accessed:15/08/2024].
+
+\bibitem{Matlab}
+Mathworks.
+\newblock Matlab, 2024.
+\newblock \url{https://la.mathworks.com/products/matlab.html}
+  [Accessed:15/08/2024].
+
+\bibitem{Pytorch}
+Pytorch.
+\newblock Pytorch, 2024.
+\newblock \url{https://pytorch.org/} [Accessed:15/08/2024].
+
+\bibitem{Tensorflow}
+Tensorflow.
+\newblock Tensorflow, 2024.
+\newblock \url{https://www.tensorflow.org/?hl=es-419} [Accessed:15/08/2024].
+
+\bibitem{cuDNN_librerias}
+NVIDIA.
+\newblock Nvidia cudnn, 2024.
+\newblock
+  \url{https://docs.nvidia.com/deeplearning/cudnn/latest/developer/overview.html#dev-overview}
+  [Accessed:02/08/2024].
 
 \bibitem{Learning_From_Data}
 Hsuan-Tien~Lin Yaser S. Abu-Mostafa, Malik Magdon-Ismail.
@@ -71,6 +212,20 @@ Sakshi Tiwari.
 Douglas Karr.
 \newblock Unidad lineal rectificada, 2024.
 \newblock \url{https://es.martech.zone/acronym/relu/} [Accessed:25/02/2024].
+
+\bibitem{importancia_ReLU}
+Jorge~Calvo Martin.
+\newblock La importancia de las funciones de activación en una red neuronal,
+  2022.
+\newblock
+  \url{https://www.linkedin.com/pulse/la-importancia-de-las-funciones-activaci%C3%B3n-en-una-red-calvo-martin/}
+  [Accessed:10/06/2024].
+
+\bibitem{importancia_ReLU_2}
+Miguel Sotaquirá.
+\newblock La función de activación, 2018.
+\newblock \url{https://www.codificandobits.com/blog/funcion-de-activacion/}
+  [Accessed:10/06/2024].
 
 \bibitem{Sigmoide}
 Javi.
@@ -111,46 +266,6 @@ Robert Kwiatkowski.
   \url{https://towardsdatascience.com/gradient-descent-algorithm-a-deep-dive-cf04e8115f21#:~:text=Gradient%20descent%20(GD)%20is%20an,e.g.%20in%20a%20linear%20regression).}
   [Accessed:26/02/2024].
 
-\bibitem{SGD_act_params}
-ml4a.
-\newblock How neural networks are trained, 2020.
-\newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
-  [Accessed:27/02/2024].
-
-\bibitem{SGD_3}
-Sebastian Raschka.
-\newblock How is stochastic gradient descent implemented in the context of
-  machine learning and deep learning?, 2024.
-\newblock \url{https://sebastianraschka.com/faq/docs/sgd-methods.html}
-  [Accessed:27/03/2024].
-
-\bibitem{sgd_stocastico}
-Wikipedia.
-\newblock Stochastic gradient descent, 2024.
-\newblock \url{https://en.wikipedia.org/wiki/Stochastic_gradient_descent}
-  [Accessed:22/03/2024].
-
-\bibitem{sgd_stocastico_1}
-Aishwarya~V Srinivasan.
-\newblock Stochastic gradient descent — clearly explained !!, 2019.
-\newblock
-  \url{https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31}
-  [Accessed:22/03/2024].
-
-\bibitem{importancia_ReLU}
-Jorge~Calvo Martin.
-\newblock La importancia de las funciones de activación en una red neuronal,
-  2022.
-\newblock
-  \url{https://www.linkedin.com/pulse/la-importancia-de-las-funciones-activaci%C3%B3n-en-una-red-calvo-martin/}
-  [Accessed:10/06/2024].
-
-\bibitem{importancia_ReLU_2}
-Miguel Sotaquirá.
-\newblock La función de activación, 2018.
-\newblock \url{https://www.codificandobits.com/blog/funcion-de-activacion/}
-  [Accessed:10/06/2024].
-
 \bibitem{ini_He}
 Jason Brownlee.
 \newblock Weight initialization for deep learning neural networks, 2021.
@@ -185,6 +300,32 @@ Glen Meyerowitz.
 \newblock
   \url{https://medium.com/@glenmeyerowitz/bias-initialization-in-a-neural-network-2e5d26fed0f0}
   [Accessed:14/03/2024].
+
+\bibitem{SGD_act_params}
+ml4a.
+\newblock How neural networks are trained, 2020.
+\newblock \url{https://ml4a.github.io/ml4a/how_neural_networks_are_trained/}
+  [Accessed:27/02/2024].
+
+\bibitem{SGD_3}
+Sebastian Raschka.
+\newblock How is stochastic gradient descent implemented in the context of
+  machine learning and deep learning?, 2024.
+\newblock \url{https://sebastianraschka.com/faq/docs/sgd-methods.html}
+  [Accessed:27/03/2024].
+
+\bibitem{sgd_stocastico}
+Wikipedia.
+\newblock Stochastic gradient descent, 2024.
+\newblock \url{https://en.wikipedia.org/wiki/Stochastic_gradient_descent}
+  [Accessed:22/03/2024].
+
+\bibitem{sgd_stocastico_1}
+Aishwarya~V Srinivasan.
+\newblock Stochastic gradient descent — clearly explained !!, 2019.
+\newblock
+  \url{https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31}
+  [Accessed:22/03/2024].
 
 \bibitem{capa_convolucional}
 Afshine~Amidi y~Shervine~Amidi.
@@ -231,18 +372,6 @@ Piotr Skalski.
 \newblock
   \url{https://towardsdatascience.com/lets-code-convolutional-neural-network-in-plain-numpy-ce48e732f5d5}
   [Accessed:24/03/2024].
-
-\bibitem{cuDNN}
-NVIDIA.
-\newblock Nvidia cudnn, 2024.
-\newblock \url{https://developer.nvidia.com/cudnn} [Accessed:02/08/2024].
-
-\bibitem{cuDNN_librerias}
-NVIDIA.
-\newblock Nvidia cudnn, 2024.
-\newblock
-  \url{https://docs.nvidia.com/deeplearning/cudnn/latest/developer/overview.html#dev-overview}
-  [Accessed:02/08/2024].
 
 \bibitem{cuDNN_core_concepts}
 NVIDIA.
