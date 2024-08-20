@@ -225,342 +225,343 @@
 \citation{cuDNN_conv_back_w}
 \@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionBackwardData}{31}{section*.54}\protected@file@percent }
 \citation{cuDNN_conv_back_x}
-\citation{Cross_entropy_backprop}
-\citation{Cross_entropy_backprop_grad_input}
 \@writefile{toc}{\contentsline {chapter}{\numberline {3}Aportaciones}{33}{chapter.3}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}Retropropagación en redes neuronales rotalmente conectadas}{33}{section.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Retropropagación en capa SoftMax, \cite  {Cross_entropy_backprop} \cite  {Cross_entropy_backprop_grad_input}}{33}{subsection.3.1.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red totalmente conectada con softmax en la última capa}}{33}{figure.caption.55}\protected@file@percent }
-\newlabel{cross_entropy_notacion}{{3.1}{34}{Retropropagación en capa SoftMax, \cite {Cross_entropy_backprop} \cite {Cross_entropy_backprop_grad_input}}{equation.3.1.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Cálculo del gradiente de la función de error}{34}{section*.56}\protected@file@percent }
-\newlabel{grad_H_Z}{{3.2}{34}{Cálculo del gradiente de la función de error}{equation.3.1.2}{}}
-\newlabel{grad_O_K}{{3.3}{34}{Cálculo del gradiente de la función de error}{equation.3.1.3}{}}
-\newlabel{gradiente_Oi_Zk_1}{{3.4}{34}{Cálculo del gradiente de la función de error}{equation.3.1.4}{}}
-\newlabel{gradiente_Oi_Zk_2}{{3.5}{34}{Cálculo del gradiente de la función de error}{equation.3.1.5}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac  {\partial O_i}{\partial Z_k}$}{34}{section*.57}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Caso $\frac  {\partial S(Z_i)}{\partial Z_i}$}{35}{section*.58}\protected@file@percent }
-\newlabel{grad_Oi_Zk_drch}{{3.13}{35}{Caso $\frac {\partial S(Z_i)}{\partial Z_i}$}{equation.3.1.13}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Caso $\frac  {\partial S(Z_i)}{\partial Z_j}$, con i $\neq  $ j}{35}{section*.59}\protected@file@percent }
-\newlabel{grad_Oi_Zk_izq}{{3.18}{35}{Caso $\frac {\partial S(Z_i)}{\partial Z_j}$, con i $\neq $ j}{equation.3.1.18}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Combinación de casos}{36}{section*.60}\protected@file@percent }
-\newlabel{comb_casos}{{3.19}{36}{Combinación de casos}{equation.3.1.19}{}}
-\newlabel{simplificacion_Oi_Ok}{{3.20}{36}{Combinación de casos}{equation.3.1.20}{}}
-\newlabel{simplificar}{{3.21}{36}{Combinación de casos}{equation.3.1.21}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Simplificación One-Hot}{36}{section*.61}\protected@file@percent }
-\newlabel{one_hot_simplif_1}{{3.22}{36}{Simplificación One-Hot}{equation.3.1.22}{}}
-\newlabel{one_hot_simplif_2}{{3.23}{36}{Simplificación One-Hot}{equation.3.1.23}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Planificación}{33}{section.3.1}\protected@file@percent }
+\citation{Cross_entropy_backprop}
+\citation{Cross_entropy_backprop_grad_input}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Retropropagación en redes neuronales rotalmente conectadas}{37}{section.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Retropropagación en capa SoftMax, \cite  {Cross_entropy_backprop} \cite  {Cross_entropy_backprop_grad_input}}{37}{subsection.3.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red totalmente conectada con softmax en la última capa}}{37}{figure.caption.55}\protected@file@percent }
+\newlabel{cross_entropy_notacion}{{3.1}{37}{Retropropagación en capa SoftMax, \cite {Cross_entropy_backprop} \cite {Cross_entropy_backprop_grad_input}}{equation.3.2.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Cálculo del gradiente de la función de error}{37}{section*.56}\protected@file@percent }
+\newlabel{grad_H_Z}{{3.2}{38}{Cálculo del gradiente de la función de error}{equation.3.2.2}{}}
+\newlabel{grad_O_K}{{3.3}{38}{Cálculo del gradiente de la función de error}{equation.3.2.3}{}}
+\newlabel{gradiente_Oi_Zk_1}{{3.4}{38}{Cálculo del gradiente de la función de error}{equation.3.2.4}{}}
+\newlabel{gradiente_Oi_Zk_2}{{3.5}{38}{Cálculo del gradiente de la función de error}{equation.3.2.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac  {\partial O_i}{\partial Z_k}$}{38}{section*.57}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Caso $\frac  {\partial S(Z_i)}{\partial Z_i}$}{38}{section*.58}\protected@file@percent }
+\newlabel{grad_Oi_Zk_drch}{{3.13}{39}{Caso $\frac {\partial S(Z_i)}{\partial Z_i}$}{equation.3.2.13}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Caso $\frac  {\partial S(Z_i)}{\partial Z_j}$, con i $\neq  $ j}{39}{section*.59}\protected@file@percent }
+\newlabel{grad_Oi_Zk_izq}{{3.18}{39}{Caso $\frac {\partial S(Z_i)}{\partial Z_j}$, con i $\neq $ j}{equation.3.2.18}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Combinación de casos}{39}{section*.60}\protected@file@percent }
+\newlabel{comb_casos}{{3.19}{39}{Combinación de casos}{equation.3.2.19}{}}
 \citation{NN_backpropagation}
 \citation{NN_backprop_2}
-\newlabel{one_hot_simplif_3}{{3.24}{37}{Simplificación One-Hot}{equation.3.1.24}{}}
-\newlabel{one_hot_simplif_4}{{3.25}{37}{Simplificación One-Hot}{equation.3.1.25}{}}
-\newlabel{gradiente_softmax}{{3.26}{37}{Simplificación One-Hot}{equation.3.1.26}{}}
-\newlabel{backprop_1_capa}{{3.1.2}{37}{Retropropagación con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2}}{subsection.3.1.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Retropropagación con 1 capa oculta \cite  {NN_backpropagation} \cite  {NN_backprop_2} }{37}{subsection.3.1.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{37}{figure.caption.62}\protected@file@percent }
-\newlabel{fig:nn_1_capa}{{3.2}{37}{Red Neuronal totalmente conectada con 1 capa oculta}{figure.caption.62}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa SoftMax}{38}{section*.63}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Retropropagación en la capa softmax}}{38}{figure.caption.64}\protected@file@percent }
-\newlabel{fig:nn_1_capa_output}{{3.3}{38}{Retropropagación en la capa softmax}{figure.caption.64}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Pesos capas h1-SoftMax}{38}{section*.65}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Retropropagación respecto a pesos entre la capa oculta y la capa SoftMax}}{38}{figure.caption.66}\protected@file@percent }
-\newlabel{fig:nn_1_pesos_h1_output}{{3.4}{38}{Retropropagación respecto a pesos entre la capa oculta y la capa SoftMax}{figure.caption.66}{}}
-\newlabel{grad_w1pk_1}{{3.27}{38}{Pesos capas h1-SoftMax}{equation.3.1.27}{}}
-\newlabel{grad_w1pk_2}{{3.28}{39}{Pesos capas h1-SoftMax}{equation.3.1.28}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa softmax}{39}{section*.67}\protected@file@percent }
-\newlabel{grad_b_h1_1}{{3.29}{39}{Sesgos capa softmax}{equation.3.1.29}{}}
-\newlabel{grad_b_h1_2}{{3.30}{39}{Sesgos capa softmax}{equation.3.1.30}{}}
-\newlabel{grad_b_h1_3}{{3.31}{39}{Sesgos capa softmax}{equation.3.1.31}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h1}{39}{section*.68}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}}{39}{figure.caption.69}\protected@file@percent }
-\newlabel{nn_caminos_posibles}{{3.5}{39}{Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}{figure.caption.69}{}}
-\newlabel{E_total_a1p}{{3.32}{39}{Capa oculta h1}{equation.3.1.32}{}}
-\newlabel{deriv_Zk_z1p}{{3.33}{39}{Capa oculta h1}{equation.3.1.33}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Retropropagación respecto a neuronas de la capa oculta h1}}{40}{figure.caption.70}\protected@file@percent }
-\newlabel{fig:nn_1_capa_h1}{{3.6}{40}{Retropropagación respecto a neuronas de la capa oculta h1}{figure.caption.70}{}}
-\newlabel{grad_sig_1}{{3.34}{40}{Capa oculta h1}{equation.3.1.34}{}}
-\newlabel{grad_sig_2}{{3.35}{40}{Capa oculta h1}{equation.3.1.35}{}}
-\newlabel{deriv_z1p_a1p}{{3.36}{40}{Capa oculta h1}{equation.3.1.36}{}}
-\newlabel{grad_E_a1p}{{3.37}{40}{Capa oculta h1}{equation.3.1.37}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Pesos capas entrada-h1}{41}{section*.71}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}}{41}{figure.caption.72}\protected@file@percent }
-\newlabel{fig:nn_1_pesos_input_h1}{{3.7}{41}{Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}{figure.caption.72}{}}
-\newlabel{grad_w0ip_1}{{3.39}{41}{Pesos capas entrada-h1}{equation.3.1.39}{}}
-\newlabel{grad_w0ip_2}{{3.40}{41}{Pesos capas entrada-h1}{equation.3.1.40}{}}
-\newlabel{grad_w0ip_3}{{3.41}{41}{Pesos capas entrada-h1}{equation.3.1.41}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h1}{41}{section*.73}\protected@file@percent }
-\newlabel{grad_b1p_1}{{3.42}{41}{Sesgos capa h1}{equation.3.1.42}{}}
-\newlabel{grad_b1p_2}{{3.43}{41}{Sesgos capa h1}{equation.3.1.43}{}}
-\newlabel{grad_b1p_3}{{3.44}{41}{Sesgos capa h1}{equation.3.1.44}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa de entrada}{42}{section*.74}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{42}{figure.caption.75}\protected@file@percent }
-\newlabel{nn_caminos_posibles_input}{{3.8}{42}{Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.caption.75}{}}
-\newlabel{grad_a_1}{{3.45}{42}{Capa de entrada}{equation.3.1.45}{}}
-\newlabel{grad_a_2}{{3.46}{42}{Capa de entrada}{equation.3.1.46}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Retropropagación en la capa input}}{42}{figure.caption.76}\protected@file@percent }
-\newlabel{fig:nn_1_capa_input}{{3.9}{42}{Retropropagación en la capa input}{figure.caption.76}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Retropropagación con 2 capas ocultas}{43}{subsection.3.1.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{43}{figure.caption.77}\protected@file@percent }
-\newlabel{fig:nn_2_capas}{{3.10}{43}{Red Neuronal totalmente conectada con 2 capas ocultas}{figure.caption.77}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa SoftMax}{43}{section*.78}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Retropropagación en la capa softmax}}{43}{figure.caption.79}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Pesos capas h2-SoftMax}{44}{section*.80}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}}{44}{figure.caption.81}\protected@file@percent }
-\newlabel{grad_w2pk_1}{{3.49}{44}{Pesos capas h2-SoftMax}{equation.3.1.49}{}}
-\newlabel{grad_w2pk_2}{{3.50}{44}{Pesos capas h2-SoftMax}{equation.3.1.50}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa softmax}{44}{section*.82}\protected@file@percent }
-\newlabel{grad_b_h2_1}{{3.51}{44}{Sesgos capa softmax}{equation.3.1.51}{}}
-\newlabel{grad_b_h2_2}{{3.52}{44}{Sesgos capa softmax}{equation.3.1.52}{}}
-\newlabel{grad_b_h2_3}{{3.53}{44}{Sesgos capa softmax}{equation.3.1.53}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h2}{45}{section*.83}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{45}{figure.caption.84}\protected@file@percent }
-\newlabel{nn_h2_caminos_posibles}{{3.13}{45}{Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}{figure.caption.84}{}}
-\newlabel{E_total_a2p}{{3.54}{45}{Capa oculta h2}{equation.3.1.54}{}}
-\newlabel{deriv_Zk_z2p}{{3.55}{45}{Capa oculta h2}{equation.3.1.55}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.14}{\ignorespaces Retropropagación en la capa oculta h2}}{45}{figure.caption.85}\protected@file@percent }
-\newlabel{fig:nn_2_capa_h2}{{3.14}{45}{Retropropagación en la capa oculta h2}{figure.caption.85}{}}
-\newlabel{grad_sig_h2_1}{{3.56}{46}{Capa oculta h2}{equation.3.1.56}{}}
-\newlabel{grad_sig_h2_2}{{3.57}{46}{Capa oculta h2}{equation.3.1.57}{}}
-\newlabel{deriv_z2p_a2p}{{3.58}{46}{Capa oculta h2}{equation.3.1.58}{}}
-\newlabel{grad_E_a2p}{{3.59}{46}{Capa oculta h2}{equation.3.1.59}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Pesos capas h1-h2}{46}{section*.86}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.15}{\ignorespaces Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}}{46}{figure.caption.87}\protected@file@percent }
-\newlabel{fig:nn_2_pesos_h1_h2}{{3.15}{46}{Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}{figure.caption.87}{}}
-\newlabel{grad_w1jp}{{3.63}{47}{Pesos capas h1-h2}{equation.3.1.63}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h2}{47}{section*.88}\protected@file@percent }
-\newlabel{grad_b2p}{{3.66}{47}{Sesgos capa h2}{equation.3.1.66}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h1}{47}{section*.89}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces 'Caminos' desde la capa softmax hasta $n^1_0$}}{47}{figure.caption.90}\protected@file@percent }
-\newlabel{nn_h1_caminos_posibles}{{3.16}{47}{'Caminos' desde la capa softmax hasta $n^1_0$}{figure.caption.90}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.17}{\ignorespaces Retropropagación en la capa oculta h1}}{48}{figure.caption.91}\protected@file@percent }
-\newlabel{deriv_relu}{{3.70}{48}{Capa oculta h1}{equation.3.1.70}{}}
-\newlabel{grad_E_a1j_1}{{3.71}{48}{Capa oculta h1}{equation.3.1.71}{}}
-\newlabel{grad_E_a1j_2}{{3.72}{48}{Capa oculta h1}{equation.3.1.72}{}}
-\newlabel{grad_E_a1j_3}{{3.73}{48}{Capa oculta h1}{equation.3.1.73}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Pesos capa input-h1}{49}{section*.92}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.18}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada (input) y la capa oculta h1}}{49}{figure.caption.93}\protected@file@percent }
-\newlabel{fig:nn_2_pesos_input_h1}{{3.18}{49}{Retropropagación respecto a los pesos entre la capa de entrada (input) y la capa oculta h1}{figure.caption.93}{}}
-\newlabel{grad_w0ip_h2_1}{{3.74}{49}{Pesos capa input-h1}{equation.3.1.74}{}}
-\newlabel{grad_w0ip_h2_2}{{3.75}{49}{Pesos capa input-h1}{equation.3.1.75}{}}
-\newlabel{grad_w0ip_h2_3}{{3.76}{49}{Pesos capa input-h1}{equation.3.1.76}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h1}{49}{section*.94}\protected@file@percent }
-\newlabel{grad_b1j_h2_1}{{3.77}{49}{Sesgos capa h1}{equation.3.1.77}{}}
-\newlabel{grad_b1j_h2_2}{{3.78}{49}{Sesgos capa h1}{equation.3.1.78}{}}
-\newlabel{grad_b1j_h2_3}{{3.79}{49}{Sesgos capa h1}{equation.3.1.79}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Capa input}{50}{section*.95}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.19}{\ignorespaces 'Caminos' desde la capa oculta h1 hasta $n^0_0$}}{50}{figure.caption.96}\protected@file@percent }
-\newlabel{nn_2_capas_caminos_posibles_input}{{3.19}{50}{'Caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.caption.96}{}}
-\newlabel{grad_a_h2_1}{{3.80}{50}{Capa input}{equation.3.1.80}{}}
-\newlabel{grad_a_h2_2}{{3.81}{50}{Capa input}{equation.3.1.81}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.20}{\ignorespaces Retropropagación en la capa input}}{50}{figure.caption.97}\protected@file@percent }
-\newlabel{fig:nn_2_capa_input}{{3.20}{50}{Retropropagación en la capa input}{figure.caption.97}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.4}Conclusiones}{51}{subsection.3.1.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a la entrada de la capa}{51}{section*.98}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.21}{\ignorespaces Retropropagación en la capa l}}{51}{figure.caption.99}\protected@file@percent }
-\newlabel{fig:conclusion_capa_l}{{3.21}{51}{Retropropagación en la capa l}{figure.caption.99}{}}
-\newlabel{grad_input_l_1}{{3.84}{51}{Gradiente respecto a la entrada de la capa}{equation.3.1.84}{}}
-\newlabel{grad_input_l_2}{{3.85}{51}{Gradiente respecto a la entrada de la capa}{equation.3.1.85}{}}
-\newlabel{grad_input_l_3}{{3.86}{51}{Gradiente respecto a la entrada de la capa}{equation.3.1.86}{}}
-\newlabel{grad_input_l_4}{{3.87}{51}{Gradiente respecto a la entrada de la capa}{equation.3.1.87}{}}
-\newlabel{grad_input_l_5}{{3.88}{51}{Gradiente respecto a la entrada de la capa}{equation.3.1.88}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{52}{section*.100}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.22}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{52}{figure.caption.101}\protected@file@percent }
-\newlabel{fig:conclusion_pesos}{{3.22}{52}{Retropropagación respecto a los pesos entre la capa l-1 y l}{figure.caption.101}{}}
-\newlabel{grad_w_l_1}{{3.89}{52}{Gradiente respecto a los pesos}{equation.3.1.89}{}}
-\newlabel{grad_w_l_2}{{3.90}{52}{Gradiente respecto a los pesos}{equation.3.1.90}{}}
-\newlabel{grad_w_l_3}{{3.91}{52}{Gradiente respecto a los pesos}{equation.3.1.91}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a sesgos}{52}{section*.102}\protected@file@percent }
-\newlabel{grad_b_l_1}{{3.92}{52}{Gradiente respecto a sesgos}{equation.3.1.92}{}}
-\newlabel{grad_b_l_2}{{3.93}{52}{Gradiente respecto a sesgos}{equation.3.1.93}{}}
-\newlabel{grad_b_l_3}{{3.94}{52}{Gradiente respecto a sesgos}{equation.3.1.94}{}}
+\newlabel{simplificacion_Oi_Ok}{{3.20}{40}{Combinación de casos}{equation.3.2.20}{}}
+\newlabel{simplificar}{{3.21}{40}{Combinación de casos}{equation.3.2.21}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Simplificación One-Hot}{40}{section*.61}\protected@file@percent }
+\newlabel{one_hot_simplif_1}{{3.22}{40}{Simplificación One-Hot}{equation.3.2.22}{}}
+\newlabel{one_hot_simplif_2}{{3.23}{40}{Simplificación One-Hot}{equation.3.2.23}{}}
+\newlabel{one_hot_simplif_3}{{3.24}{40}{Simplificación One-Hot}{equation.3.2.24}{}}
+\newlabel{one_hot_simplif_4}{{3.25}{40}{Simplificación One-Hot}{equation.3.2.25}{}}
+\newlabel{gradiente_softmax}{{3.26}{40}{Simplificación One-Hot}{equation.3.2.26}{}}
+\newlabel{backprop_1_capa}{{3.2.2}{41}{Retropropagación con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2}}{subsection.3.2.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Retropropagación con 1 capa oculta \cite  {NN_backpropagation} \cite  {NN_backprop_2} }{41}{subsection.3.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{41}{figure.caption.62}\protected@file@percent }
+\newlabel{fig:nn_1_capa}{{3.2}{41}{Red Neuronal totalmente conectada con 1 capa oculta}{figure.caption.62}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa SoftMax}{42}{section*.63}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Retropropagación en la capa softmax}}{42}{figure.caption.64}\protected@file@percent }
+\newlabel{fig:nn_1_capa_output}{{3.3}{42}{Retropropagación en la capa softmax}{figure.caption.64}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capas h1-SoftMax}{42}{section*.65}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Retropropagación respecto a pesos entre la capa oculta y la capa SoftMax}}{42}{figure.caption.66}\protected@file@percent }
+\newlabel{fig:nn_1_pesos_h1_output}{{3.4}{42}{Retropropagación respecto a pesos entre la capa oculta y la capa SoftMax}{figure.caption.66}{}}
+\newlabel{grad_w1pk_1}{{3.27}{42}{Pesos capas h1-SoftMax}{equation.3.2.27}{}}
+\newlabel{grad_w1pk_2}{{3.28}{43}{Pesos capas h1-SoftMax}{equation.3.2.28}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa softmax}{43}{section*.67}\protected@file@percent }
+\newlabel{grad_b_h1_1}{{3.29}{43}{Sesgos capa softmax}{equation.3.2.29}{}}
+\newlabel{grad_b_h1_2}{{3.30}{43}{Sesgos capa softmax}{equation.3.2.30}{}}
+\newlabel{grad_b_h1_3}{{3.31}{43}{Sesgos capa softmax}{equation.3.2.31}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h1}{43}{section*.68}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}}{43}{figure.caption.69}\protected@file@percent }
+\newlabel{nn_caminos_posibles}{{3.5}{43}{Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}{figure.caption.69}{}}
+\newlabel{E_total_a1p}{{3.32}{43}{Capa oculta h1}{equation.3.2.32}{}}
+\newlabel{deriv_Zk_z1p}{{3.33}{43}{Capa oculta h1}{equation.3.2.33}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces Retropropagación respecto a neuronas de la capa oculta h1}}{44}{figure.caption.70}\protected@file@percent }
+\newlabel{fig:nn_1_capa_h1}{{3.6}{44}{Retropropagación respecto a neuronas de la capa oculta h1}{figure.caption.70}{}}
+\newlabel{grad_sig_1}{{3.34}{44}{Capa oculta h1}{equation.3.2.34}{}}
+\newlabel{grad_sig_2}{{3.35}{44}{Capa oculta h1}{equation.3.2.35}{}}
+\newlabel{deriv_z1p_a1p}{{3.36}{44}{Capa oculta h1}{equation.3.2.36}{}}
+\newlabel{grad_E_a1p}{{3.37}{44}{Capa oculta h1}{equation.3.2.37}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capas entrada-h1}{45}{section*.71}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.7}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}}{45}{figure.caption.72}\protected@file@percent }
+\newlabel{fig:nn_1_pesos_input_h1}{{3.7}{45}{Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}{figure.caption.72}{}}
+\newlabel{grad_w0ip_1}{{3.39}{45}{Pesos capas entrada-h1}{equation.3.2.39}{}}
+\newlabel{grad_w0ip_2}{{3.40}{45}{Pesos capas entrada-h1}{equation.3.2.40}{}}
+\newlabel{grad_w0ip_3}{{3.41}{45}{Pesos capas entrada-h1}{equation.3.2.41}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h1}{45}{section*.73}\protected@file@percent }
+\newlabel{grad_b1p_1}{{3.42}{45}{Sesgos capa h1}{equation.3.2.42}{}}
+\newlabel{grad_b1p_2}{{3.43}{45}{Sesgos capa h1}{equation.3.2.43}{}}
+\newlabel{grad_b1p_3}{{3.44}{45}{Sesgos capa h1}{equation.3.2.44}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa de entrada}{46}{section*.74}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{46}{figure.caption.75}\protected@file@percent }
+\newlabel{nn_caminos_posibles_input}{{3.8}{46}{Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.caption.75}{}}
+\newlabel{grad_a_1}{{3.45}{46}{Capa de entrada}{equation.3.2.45}{}}
+\newlabel{grad_a_2}{{3.46}{46}{Capa de entrada}{equation.3.2.46}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.9}{\ignorespaces Retropropagación en la capa input}}{46}{figure.caption.76}\protected@file@percent }
+\newlabel{fig:nn_1_capa_input}{{3.9}{46}{Retropropagación en la capa input}{figure.caption.76}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.3}Retropropagación con 2 capas ocultas}{47}{subsection.3.2.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{47}{figure.caption.77}\protected@file@percent }
+\newlabel{fig:nn_2_capas}{{3.10}{47}{Red Neuronal totalmente conectada con 2 capas ocultas}{figure.caption.77}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa SoftMax}{47}{section*.78}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.11}{\ignorespaces Retropropagación en la capa softmax}}{47}{figure.caption.79}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capas h2-SoftMax}{48}{section*.80}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.12}{\ignorespaces Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}}{48}{figure.caption.81}\protected@file@percent }
+\newlabel{grad_w2pk_1}{{3.49}{48}{Pesos capas h2-SoftMax}{equation.3.2.49}{}}
+\newlabel{grad_w2pk_2}{{3.50}{48}{Pesos capas h2-SoftMax}{equation.3.2.50}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa softmax}{48}{section*.82}\protected@file@percent }
+\newlabel{grad_b_h2_1}{{3.51}{48}{Sesgos capa softmax}{equation.3.2.51}{}}
+\newlabel{grad_b_h2_2}{{3.52}{48}{Sesgos capa softmax}{equation.3.2.52}{}}
+\newlabel{grad_b_h2_3}{{3.53}{48}{Sesgos capa softmax}{equation.3.2.53}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h2}{49}{section*.83}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{49}{figure.caption.84}\protected@file@percent }
+\newlabel{nn_h2_caminos_posibles}{{3.13}{49}{Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}{figure.caption.84}{}}
+\newlabel{E_total_a2p}{{3.54}{49}{Capa oculta h2}{equation.3.2.54}{}}
+\newlabel{deriv_Zk_z2p}{{3.55}{49}{Capa oculta h2}{equation.3.2.55}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.14}{\ignorespaces Retropropagación en la capa oculta h2}}{49}{figure.caption.85}\protected@file@percent }
+\newlabel{fig:nn_2_capa_h2}{{3.14}{49}{Retropropagación en la capa oculta h2}{figure.caption.85}{}}
+\newlabel{grad_sig_h2_1}{{3.56}{50}{Capa oculta h2}{equation.3.2.56}{}}
+\newlabel{grad_sig_h2_2}{{3.57}{50}{Capa oculta h2}{equation.3.2.57}{}}
+\newlabel{deriv_z2p_a2p}{{3.58}{50}{Capa oculta h2}{equation.3.2.58}{}}
+\newlabel{grad_E_a2p}{{3.59}{50}{Capa oculta h2}{equation.3.2.59}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capas h1-h2}{50}{section*.86}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.15}{\ignorespaces Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}}{50}{figure.caption.87}\protected@file@percent }
+\newlabel{fig:nn_2_pesos_h1_h2}{{3.15}{50}{Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}{figure.caption.87}{}}
+\newlabel{grad_w1jp}{{3.63}{51}{Pesos capas h1-h2}{equation.3.2.63}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h2}{51}{section*.88}\protected@file@percent }
+\newlabel{grad_b2p}{{3.66}{51}{Sesgos capa h2}{equation.3.2.66}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa oculta h1}{51}{section*.89}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.16}{\ignorespaces 'Caminos' desde la capa softmax hasta $n^1_0$}}{51}{figure.caption.90}\protected@file@percent }
+\newlabel{nn_h1_caminos_posibles}{{3.16}{51}{'Caminos' desde la capa softmax hasta $n^1_0$}{figure.caption.90}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.17}{\ignorespaces Retropropagación en la capa oculta h1}}{52}{figure.caption.91}\protected@file@percent }
+\newlabel{deriv_relu}{{3.70}{52}{Capa oculta h1}{equation.3.2.70}{}}
+\newlabel{grad_E_a1j_1}{{3.71}{52}{Capa oculta h1}{equation.3.2.71}{}}
+\newlabel{grad_E_a1j_2}{{3.72}{52}{Capa oculta h1}{equation.3.2.72}{}}
+\newlabel{grad_E_a1j_3}{{3.73}{52}{Capa oculta h1}{equation.3.2.73}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Pesos capa input-h1}{53}{section*.92}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.18}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada (input) y la capa oculta h1}}{53}{figure.caption.93}\protected@file@percent }
+\newlabel{fig:nn_2_pesos_input_h1}{{3.18}{53}{Retropropagación respecto a los pesos entre la capa de entrada (input) y la capa oculta h1}{figure.caption.93}{}}
+\newlabel{grad_w0ip_h2_1}{{3.74}{53}{Pesos capa input-h1}{equation.3.2.74}{}}
+\newlabel{grad_w0ip_h2_2}{{3.75}{53}{Pesos capa input-h1}{equation.3.2.75}{}}
+\newlabel{grad_w0ip_h2_3}{{3.76}{53}{Pesos capa input-h1}{equation.3.2.76}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sesgos capa h1}{53}{section*.94}\protected@file@percent }
+\newlabel{grad_b1j_h2_1}{{3.77}{53}{Sesgos capa h1}{equation.3.2.77}{}}
+\newlabel{grad_b1j_h2_2}{{3.78}{53}{Sesgos capa h1}{equation.3.2.78}{}}
+\newlabel{grad_b1j_h2_3}{{3.79}{53}{Sesgos capa h1}{equation.3.2.79}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Capa input}{54}{section*.95}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.19}{\ignorespaces 'Caminos' desde la capa oculta h1 hasta $n^0_0$}}{54}{figure.caption.96}\protected@file@percent }
+\newlabel{nn_2_capas_caminos_posibles_input}{{3.19}{54}{'Caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.caption.96}{}}
+\newlabel{grad_a_h2_1}{{3.80}{54}{Capa input}{equation.3.2.80}{}}
+\newlabel{grad_a_h2_2}{{3.81}{54}{Capa input}{equation.3.2.81}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.20}{\ignorespaces Retropropagación en la capa input}}{54}{figure.caption.97}\protected@file@percent }
+\newlabel{fig:nn_2_capa_input}{{3.20}{54}{Retropropagación en la capa input}{figure.caption.97}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.4}Conclusiones}{55}{subsection.3.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a la entrada de la capa}{55}{section*.98}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.21}{\ignorespaces Retropropagación en la capa l}}{55}{figure.caption.99}\protected@file@percent }
+\newlabel{fig:conclusion_capa_l}{{3.21}{55}{Retropropagación en la capa l}{figure.caption.99}{}}
+\newlabel{grad_input_l_1}{{3.84}{55}{Gradiente respecto a la entrada de la capa}{equation.3.2.84}{}}
+\newlabel{grad_input_l_2}{{3.85}{55}{Gradiente respecto a la entrada de la capa}{equation.3.2.85}{}}
+\newlabel{grad_input_l_3}{{3.86}{55}{Gradiente respecto a la entrada de la capa}{equation.3.2.86}{}}
+\newlabel{grad_input_l_4}{{3.87}{55}{Gradiente respecto a la entrada de la capa}{equation.3.2.87}{}}
+\newlabel{grad_input_l_5}{{3.88}{55}{Gradiente respecto a la entrada de la capa}{equation.3.2.88}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{56}{section*.100}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.22}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{56}{figure.caption.101}\protected@file@percent }
+\newlabel{fig:conclusion_pesos}{{3.22}{56}{Retropropagación respecto a los pesos entre la capa l-1 y l}{figure.caption.101}{}}
+\newlabel{grad_w_l_1}{{3.89}{56}{Gradiente respecto a los pesos}{equation.3.2.89}{}}
+\newlabel{grad_w_l_2}{{3.90}{56}{Gradiente respecto a los pesos}{equation.3.2.90}{}}
+\newlabel{grad_w_l_3}{{3.91}{56}{Gradiente respecto a los pesos}{equation.3.2.91}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a sesgos}{56}{section*.102}\protected@file@percent }
+\newlabel{grad_b_l_1}{{3.92}{56}{Gradiente respecto a sesgos}{equation.3.2.92}{}}
+\newlabel{grad_b_l_2}{{3.93}{56}{Gradiente respecto a sesgos}{equation.3.2.93}{}}
+\newlabel{grad_b_l_3}{{3.94}{56}{Gradiente respecto a sesgos}{equation.3.2.94}{}}
 \citation{CNN_parallel_Stanford}
 \citation{CNN_parallel_International_Conference}
 \citation{CNN_parallel_Ome_Weird_Trick}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Paralelización mediante OpenMP}{53}{section.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Tipos de paralelismo}{53}{section*.103}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Paralelismo en SGD}{53}{section*.104}\protected@file@percent }
-\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Descenso del gradiente estocástico}}{53}{algorithm.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Retropropagación en redes neuronales convolucionales}{54}{section.3.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{54}{figure.caption.105}\protected@file@percent }
-\newlabel{fig:ejemplo_forward_prop_convolucional}{{3.23}{54}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.105}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Sumatoria de gradientes}{54}{section*.106}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{55}{section*.107}\protected@file@percent }
-\newlabel{grad_y11_k_11}{{3.97}{55}{Gradiente de $Y^c_{11}$}{equation.3.3.97}{}}
-\newlabel{grad_y11_k_12}{{3.98}{55}{Gradiente de $Y^c_{11}$}{equation.3.3.98}{}}
-\newlabel{grad_y11_k_21}{{3.99}{55}{Gradiente de $Y^c_{11}$}{equation.3.3.99}{}}
-\newlabel{grad_y11_k_22}{{3.100}{55}{Gradiente de $Y^c_{11}$}{equation.3.3.100}{}}
-\newlabel{grad_y11_z_1}{{3.101}{55}{Gradiente de $Y^c_{11}$}{equation.3.3.101}{}}
-\newlabel{grad_y11_z_2}{{3.102}{55}{Gradiente de $Y^c_{11}$}{equation.3.3.102}{}}
-\newlabel{grad_y11_z_3}{{3.103}{55}{Gradiente de $Y^c_{11}$}{equation.3.3.103}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{56}{section*.108}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.24}{\ignorespaces Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}}{56}{figure.caption.109}\protected@file@percent }
-\newlabel{fig:ejemplo_2_forward_prop_convolucional}{{3.24}{56}{Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.109}{}}
-\newlabel{grad_y12_k_1}{{3.106}{56}{Gradiente de $Y^c_{12}$}{equation.3.3.106}{}}
-\newlabel{grad_y12_k_2}{{3.107}{56}{Gradiente de $Y^c_{12}$}{equation.3.3.107}{}}
-\newlabel{grad_y12_z_1}{{3.108}{56}{Gradiente de $Y^c_{12}$}{equation.3.3.108}{}}
-\newlabel{grad_y12_z_2}{{3.109}{56}{Gradiente de $Y^c_{12}$}{equation.3.3.109}{}}
-\newlabel{grad_y12_z_3}{{3.110}{56}{Gradiente de $Y^c_{12}$}{equation.3.3.110}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{57}{section*.110}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.25}{\ignorespaces Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}}{57}{figure.caption.111}\protected@file@percent }
-\newlabel{fig:ejemplo_3_forward_prop_convolucional}{{3.25}{57}{Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.111}{}}
-\newlabel{grad_y21_k_1}{{3.113}{57}{Gradiente de $Y^c_{21}$}{equation.3.3.113}{}}
-\newlabel{grad_y21_k_2}{{3.114}{57}{Gradiente de $Y^c_{21}$}{equation.3.3.114}{}}
-\newlabel{grad_y21_z_1}{{3.115}{57}{Gradiente de $Y^c_{21}$}{equation.3.3.115}{}}
-\newlabel{grad_y21_z_2}{{3.116}{57}{Gradiente de $Y^c_{21}$}{equation.3.3.116}{}}
-\newlabel{grad_y21_z_3}{{3.117}{57}{Gradiente de $Y^c_{21}$}{equation.3.3.117}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{58}{section*.112}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.26}{\ignorespaces Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}}{58}{figure.caption.113}\protected@file@percent }
-\newlabel{fig:ejemplo_4_forward_prop_convolucional}{{3.26}{58}{Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.113}{}}
-\newlabel{grad_y22_k_1}{{3.120}{58}{Gradiente de $Y^c_{22}$}{equation.3.3.120}{}}
-\newlabel{grad_y22_k_2}{{3.121}{58}{Gradiente de $Y^c_{22}$}{equation.3.3.121}{}}
-\newlabel{grad_y22_z_1}{{3.122}{58}{Gradiente de $Y^c_{22}$}{equation.3.3.122}{}}
-\newlabel{grad_y22_z_2}{{3.123}{58}{Gradiente de $Y^c_{22}$}{equation.3.3.123}{}}
-\newlabel{grad_y22_z_3}{{3.124}{58}{Gradiente de $Y^c_{22}$}{equation.3.3.124}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{58}{section*.114}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Paralelización mediante OpenMP}{57}{section.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Tipos de paralelismo}{57}{section*.103}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Paralelismo en SGD}{57}{section*.104}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Descenso del gradiente estocástico}}{57}{algorithm.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Retropropagación en redes neuronales convolucionales}{58}{section.3.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{58}{figure.caption.105}\protected@file@percent }
+\newlabel{fig:ejemplo_forward_prop_convolucional}{{3.23}{58}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.105}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Sumatoria de gradientes}{58}{section*.106}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{59}{section*.107}\protected@file@percent }
+\newlabel{grad_y11_k_11}{{3.97}{59}{Gradiente de $Y^c_{11}$}{equation.3.4.97}{}}
+\newlabel{grad_y11_k_12}{{3.98}{59}{Gradiente de $Y^c_{11}$}{equation.3.4.98}{}}
+\newlabel{grad_y11_k_21}{{3.99}{59}{Gradiente de $Y^c_{11}$}{equation.3.4.99}{}}
+\newlabel{grad_y11_k_22}{{3.100}{59}{Gradiente de $Y^c_{11}$}{equation.3.4.100}{}}
+\newlabel{grad_y11_z_1}{{3.101}{59}{Gradiente de $Y^c_{11}$}{equation.3.4.101}{}}
+\newlabel{grad_y11_z_2}{{3.102}{59}{Gradiente de $Y^c_{11}$}{equation.3.4.102}{}}
+\newlabel{grad_y11_z_3}{{3.103}{59}{Gradiente de $Y^c_{11}$}{equation.3.4.103}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{60}{section*.108}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.24}{\ignorespaces Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}}{60}{figure.caption.109}\protected@file@percent }
+\newlabel{fig:ejemplo_2_forward_prop_convolucional}{{3.24}{60}{Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.109}{}}
+\newlabel{grad_y12_k_1}{{3.106}{60}{Gradiente de $Y^c_{12}$}{equation.3.4.106}{}}
+\newlabel{grad_y12_k_2}{{3.107}{60}{Gradiente de $Y^c_{12}$}{equation.3.4.107}{}}
+\newlabel{grad_y12_z_1}{{3.108}{60}{Gradiente de $Y^c_{12}$}{equation.3.4.108}{}}
+\newlabel{grad_y12_z_2}{{3.109}{60}{Gradiente de $Y^c_{12}$}{equation.3.4.109}{}}
+\newlabel{grad_y12_z_3}{{3.110}{60}{Gradiente de $Y^c_{12}$}{equation.3.4.110}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{61}{section*.110}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.25}{\ignorespaces Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}}{61}{figure.caption.111}\protected@file@percent }
+\newlabel{fig:ejemplo_3_forward_prop_convolucional}{{3.25}{61}{Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.111}{}}
+\newlabel{grad_y21_k_1}{{3.113}{61}{Gradiente de $Y^c_{21}$}{equation.3.4.113}{}}
+\newlabel{grad_y21_k_2}{{3.114}{61}{Gradiente de $Y^c_{21}$}{equation.3.4.114}{}}
+\newlabel{grad_y21_z_1}{{3.115}{61}{Gradiente de $Y^c_{21}$}{equation.3.4.115}{}}
+\newlabel{grad_y21_z_2}{{3.116}{61}{Gradiente de $Y^c_{21}$}{equation.3.4.116}{}}
+\newlabel{grad_y21_z_3}{{3.117}{61}{Gradiente de $Y^c_{21}$}{equation.3.4.117}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{62}{section*.112}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.26}{\ignorespaces Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}}{62}{figure.caption.113}\protected@file@percent }
+\newlabel{fig:ejemplo_4_forward_prop_convolucional}{{3.26}{62}{Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.113}{}}
+\newlabel{grad_y22_k_1}{{3.120}{62}{Gradiente de $Y^c_{22}$}{equation.3.4.120}{}}
+\newlabel{grad_y22_k_2}{{3.121}{62}{Gradiente de $Y^c_{22}$}{equation.3.4.121}{}}
+\newlabel{grad_y22_z_1}{{3.122}{62}{Gradiente de $Y^c_{22}$}{equation.3.4.122}{}}
+\newlabel{grad_y22_z_2}{{3.123}{62}{Gradiente de $Y^c_{22}$}{equation.3.4.123}{}}
+\newlabel{grad_y22_z_3}{{3.124}{62}{Gradiente de $Y^c_{22}$}{equation.3.4.124}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{62}{section*.114}\protected@file@percent }
 \citation{conv_backprop}
-\newlabel{grad_Y_K_1}{{3.125}{59}{Gradiente respecto a pesos como convolución}{equation.3.3.125}{}}
-\newlabel{grad_Y_K_2}{{3.126}{59}{Gradiente respecto a pesos como convolución}{equation.3.3.126}{}}
-\newlabel{grad_Y_K_3}{{3.127}{59}{Gradiente respecto a pesos como convolución}{equation.3.3.127}{}}
-\newlabel{grad_Y_K_4}{{3.128}{59}{Gradiente respecto a pesos como convolución}{equation.3.3.128}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{59}{figure.caption.115}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_X_Y}{{3.27}{59}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.115}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{59}{section*.116}\protected@file@percent }
+\newlabel{grad_Y_K_1}{{3.125}{63}{Gradiente respecto a pesos como convolución}{equation.3.4.125}{}}
+\newlabel{grad_Y_K_2}{{3.126}{63}{Gradiente respecto a pesos como convolución}{equation.3.4.126}{}}
+\newlabel{grad_Y_K_3}{{3.127}{63}{Gradiente respecto a pesos como convolución}{equation.3.4.127}{}}
+\newlabel{grad_Y_K_4}{{3.128}{63}{Gradiente respecto a pesos como convolución}{equation.3.4.128}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{63}{figure.caption.115}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_X_Y}{{3.27}{63}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.115}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{63}{section*.116}\protected@file@percent }
 \citation{conv_backprop}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{60}{figure.caption.117}\protected@file@percent }
-\newlabel{fig:flip_W}{{3.28}{60}{Invertir pesos en K tanto horizontal como verticalmente}{figure.caption.117}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada valor de entrada como convolución entre K e Y}}{61}{figure.caption.118}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Y_W}{{3.29}{61}{Cálculo del gradiente de la pérdida respecto a cada valor de entrada como convolución entre K e Y}{figure.caption.118}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Retropropagación con relleno}{62}{subsection.3.3.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.30}{\ignorespaces Ejemplo de retropropagación en una capa convolucional con relleno}}{62}{figure.caption.119}\protected@file@percent }
-\newlabel{fig:conv_back_padding_intro}{{3.30}{62}{Ejemplo de retropropagación en una capa convolucional con relleno}{figure.caption.119}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{62}{section*.120}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.31}{\ignorespaces Retropropagación de $Y^c_{11}$}}{62}{figure.caption.121}\protected@file@percent }
-\newlabel{gradr_Y11_w_1}{{3.142}{63}{Gradiente de $Y^c_{11}$}{equation.3.3.142}{}}
-\newlabel{gradr_Y11_w_2}{{3.143}{63}{Gradiente de $Y^c_{11}$}{equation.3.3.143}{}}
-\newlabel{gradr_Y11_z_1}{{3.144}{63}{Gradiente de $Y^c_{11}$}{equation.3.3.144}{}}
-\newlabel{gradr_Y11_z_2}{{3.145}{63}{Gradiente de $Y^c_{11}$}{equation.3.3.145}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{63}{section*.122}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.32}{\ignorespaces Retropropagación de $Y^c_{12}$}}{63}{figure.caption.123}\protected@file@percent }
-\newlabel{gradr_Y12_w_1}{{3.148}{63}{Gradiente de $Y^c_{12}$}{equation.3.3.148}{}}
-\newlabel{gradr_Y12_w_2}{{3.149}{63}{Gradiente de $Y^c_{12}$}{equation.3.3.149}{}}
-\newlabel{gradr_Y12_z_1}{{3.150}{64}{Gradiente de $Y^c_{12}$}{equation.3.3.150}{}}
-\newlabel{gradr_Y12_z_2}{{3.151}{64}{Gradiente de $Y^c_{12}$}{equation.3.3.151}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{13}$}{64}{section*.124}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.33}{\ignorespaces Retropropagación de $Y^c_{13}$}}{64}{figure.caption.125}\protected@file@percent }
-\newlabel{gradr_Y13_w_1}{{3.154}{64}{Gradiente de $Y^c_{13}$}{equation.3.3.154}{}}
-\newlabel{gradr_Y13_w_2}{{3.3.1}{64}{Gradiente de $Y^c_{13}$}{equation.3.3.155}{}}
-\newlabel{gradr_Y13_z_1}{{3.156}{64}{Gradiente de $Y^c_{13}$}{equation.3.3.156}{}}
-\newlabel{gradr_Y13_z_2}{{3.157}{64}{Gradiente de $Y^c_{13}$}{equation.3.3.157}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{65}{section*.126}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.34}{\ignorespaces Retropropagación de $Y^c_{21}$}}{65}{figure.caption.127}\protected@file@percent }
-\newlabel{gradr_Y21_w_1}{{3.160}{65}{Gradiente de $Y^c_{21}$}{equation.3.3.160}{}}
-\newlabel{gradr_Y21_w_2}{{3.161}{65}{Gradiente de $Y^c_{21}$}{equation.3.3.161}{}}
-\newlabel{gradr_Y21_z_1}{{3.162}{65}{Gradiente de $Y^c_{21}$}{equation.3.3.162}{}}
-\newlabel{gradr_Y21_z_2}{{3.3.1}{65}{Gradiente de $Y^c_{21}$}{equation.3.3.163}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{66}{section*.128}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.35}{\ignorespaces Retropropagación de $Y^c_{22}$}}{66}{figure.caption.129}\protected@file@percent }
-\newlabel{gradr_Y22_w_1}{{3.166}{66}{Gradiente de $Y^c_{22}$}{equation.3.3.166}{}}
-\newlabel{gradr_Y22_w_2}{{3.167}{66}{Gradiente de $Y^c_{22}$}{equation.3.3.167}{}}
-\newlabel{gradr_Y22_z_1}{{3.168}{66}{Gradiente de $Y^c_{22}$}{equation.3.3.168}{}}
-\newlabel{gradr_Y22_z_2}{{3.169}{66}{Gradiente de $Y^c_{22}$}{equation.3.3.169}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{23}$}{66}{section*.130}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.36}{\ignorespaces Retropropagación de $Y^c_{23}$}}{66}{figure.caption.131}\protected@file@percent }
-\newlabel{gradr_Y23_w_1}{{3.172}{67}{Gradiente de $Y^c_{23}$}{equation.3.3.172}{}}
-\newlabel{gradr_Y23_w_2}{{3.173}{67}{Gradiente de $Y^c_{23}$}{equation.3.3.173}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{31}$}{67}{section*.132}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.37}{\ignorespaces Retropropagación de $Y^c_{31}$}}{67}{figure.caption.133}\protected@file@percent }
-\newlabel{gradr_Y31_w_1}{{3.178}{67}{Gradiente de $Y^c_{31}$}{equation.3.3.178}{}}
-\newlabel{gradr_Y31_w_2}{{3.179}{67}{Gradiente de $Y^c_{31}$}{equation.3.3.179}{}}
-\newlabel{gradr_Y31_z_1}{{3.180}{68}{Gradiente de $Y^c_{31}$}{equation.3.3.180}{}}
-\newlabel{gradr_Y31_z_2}{{3.181}{68}{Gradiente de $Y^c_{31}$}{equation.3.3.181}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{32}$}{68}{section*.134}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.38}{\ignorespaces Retropropagación de $Y^c_{32}$}}{68}{figure.caption.135}\protected@file@percent }
-\newlabel{gradr_Y32_w_1}{{3.184}{68}{Gradiente de $Y^c_{32}$}{equation.3.3.184}{}}
-\newlabel{gradr_Y32_w_2}{{3.185}{68}{Gradiente de $Y^c_{32}$}{equation.3.3.185}{}}
-\newlabel{gradr_Y32_z_1}{{3.186}{68}{Gradiente de $Y^c_{32}$}{equation.3.3.186}{}}
-\newlabel{gradr_Y32_z_2}{{3.187}{68}{Gradiente de $Y^c_{32}$}{equation.3.3.187}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{33}$}{69}{section*.136}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.39}{\ignorespaces Retropropagación de $Y^c_{33}$}}{69}{figure.caption.137}\protected@file@percent }
-\newlabel{gradr_Y33_w_1}{{3.190}{69}{Gradiente de $Y^c_{33}$}{equation.3.3.190}{}}
-\newlabel{gradr_Y33_w_2}{{3.191}{69}{Gradiente de $Y^c_{33}$}{equation.3.3.191}{}}
-\newlabel{gradr_Y33_z_1}{{3.192}{69}{Gradiente de $Y^c_{33}$}{equation.3.3.192}{}}
-\newlabel{gradr_Y33_z_2}{{3.193}{69}{Gradiente de $Y^c_{33}$}{equation.3.3.193}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{69}{section*.138}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.40}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{70}{figure.caption.139}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Xpad_Y}{{3.40}{70}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.139}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{70}{section*.140}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida respecto de la entrada como convolución}}{71}{figure.caption.141}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Y_K_pad}{{3.41}{71}{Cálculo del gradiente de la pérdida respecto de la entrada como convolución}{figure.caption.141}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{72}{figure.caption.142}\protected@file@percent }
-\newlabel{fig:conv_full_vs_normal}{{3.42}{72}{Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}{figure.caption.142}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{64}{figure.caption.117}\protected@file@percent }
+\newlabel{fig:flip_W}{{3.28}{64}{Invertir pesos en K tanto horizontal como verticalmente}{figure.caption.117}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada valor de entrada como convolución entre K e Y}}{65}{figure.caption.118}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Y_W}{{3.29}{65}{Cálculo del gradiente de la pérdida respecto a cada valor de entrada como convolución entre K e Y}{figure.caption.118}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Retropropagación con relleno}{66}{subsection.3.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.30}{\ignorespaces Ejemplo de retropropagación en una capa convolucional con relleno}}{66}{figure.caption.119}\protected@file@percent }
+\newlabel{fig:conv_back_padding_intro}{{3.30}{66}{Ejemplo de retropropagación en una capa convolucional con relleno}{figure.caption.119}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{66}{section*.120}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.31}{\ignorespaces Retropropagación de $Y^c_{11}$}}{66}{figure.caption.121}\protected@file@percent }
+\newlabel{gradr_Y11_w_1}{{3.142}{67}{Gradiente de $Y^c_{11}$}{equation.3.4.142}{}}
+\newlabel{gradr_Y11_w_2}{{3.143}{67}{Gradiente de $Y^c_{11}$}{equation.3.4.143}{}}
+\newlabel{gradr_Y11_z_1}{{3.144}{67}{Gradiente de $Y^c_{11}$}{equation.3.4.144}{}}
+\newlabel{gradr_Y11_z_2}{{3.145}{67}{Gradiente de $Y^c_{11}$}{equation.3.4.145}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{67}{section*.122}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.32}{\ignorespaces Retropropagación de $Y^c_{12}$}}{67}{figure.caption.123}\protected@file@percent }
+\newlabel{gradr_Y12_w_1}{{3.148}{67}{Gradiente de $Y^c_{12}$}{equation.3.4.148}{}}
+\newlabel{gradr_Y12_w_2}{{3.149}{67}{Gradiente de $Y^c_{12}$}{equation.3.4.149}{}}
+\newlabel{gradr_Y12_z_1}{{3.150}{68}{Gradiente de $Y^c_{12}$}{equation.3.4.150}{}}
+\newlabel{gradr_Y12_z_2}{{3.151}{68}{Gradiente de $Y^c_{12}$}{equation.3.4.151}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{13}$}{68}{section*.124}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.33}{\ignorespaces Retropropagación de $Y^c_{13}$}}{68}{figure.caption.125}\protected@file@percent }
+\newlabel{gradr_Y13_w_1}{{3.154}{68}{Gradiente de $Y^c_{13}$}{equation.3.4.154}{}}
+\newlabel{gradr_Y13_w_2}{{3.4.1}{68}{Gradiente de $Y^c_{13}$}{equation.3.4.155}{}}
+\newlabel{gradr_Y13_z_1}{{3.156}{68}{Gradiente de $Y^c_{13}$}{equation.3.4.156}{}}
+\newlabel{gradr_Y13_z_2}{{3.157}{68}{Gradiente de $Y^c_{13}$}{equation.3.4.157}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{69}{section*.126}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.34}{\ignorespaces Retropropagación de $Y^c_{21}$}}{69}{figure.caption.127}\protected@file@percent }
+\newlabel{gradr_Y21_w_1}{{3.160}{69}{Gradiente de $Y^c_{21}$}{equation.3.4.160}{}}
+\newlabel{gradr_Y21_w_2}{{3.161}{69}{Gradiente de $Y^c_{21}$}{equation.3.4.161}{}}
+\newlabel{gradr_Y21_z_1}{{3.162}{69}{Gradiente de $Y^c_{21}$}{equation.3.4.162}{}}
+\newlabel{gradr_Y21_z_2}{{3.4.1}{69}{Gradiente de $Y^c_{21}$}{equation.3.4.163}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{70}{section*.128}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.35}{\ignorespaces Retropropagación de $Y^c_{22}$}}{70}{figure.caption.129}\protected@file@percent }
+\newlabel{gradr_Y22_w_1}{{3.166}{70}{Gradiente de $Y^c_{22}$}{equation.3.4.166}{}}
+\newlabel{gradr_Y22_w_2}{{3.167}{70}{Gradiente de $Y^c_{22}$}{equation.3.4.167}{}}
+\newlabel{gradr_Y22_z_1}{{3.168}{70}{Gradiente de $Y^c_{22}$}{equation.3.4.168}{}}
+\newlabel{gradr_Y22_z_2}{{3.169}{70}{Gradiente de $Y^c_{22}$}{equation.3.4.169}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{23}$}{70}{section*.130}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.36}{\ignorespaces Retropropagación de $Y^c_{23}$}}{70}{figure.caption.131}\protected@file@percent }
+\newlabel{gradr_Y23_w_1}{{3.172}{71}{Gradiente de $Y^c_{23}$}{equation.3.4.172}{}}
+\newlabel{gradr_Y23_w_2}{{3.173}{71}{Gradiente de $Y^c_{23}$}{equation.3.4.173}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{31}$}{71}{section*.132}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.37}{\ignorespaces Retropropagación de $Y^c_{31}$}}{71}{figure.caption.133}\protected@file@percent }
+\newlabel{gradr_Y31_w_1}{{3.178}{71}{Gradiente de $Y^c_{31}$}{equation.3.4.178}{}}
+\newlabel{gradr_Y31_w_2}{{3.179}{71}{Gradiente de $Y^c_{31}$}{equation.3.4.179}{}}
+\newlabel{gradr_Y31_z_1}{{3.180}{72}{Gradiente de $Y^c_{31}$}{equation.3.4.180}{}}
+\newlabel{gradr_Y31_z_2}{{3.181}{72}{Gradiente de $Y^c_{31}$}{equation.3.4.181}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{32}$}{72}{section*.134}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.38}{\ignorespaces Retropropagación de $Y^c_{32}$}}{72}{figure.caption.135}\protected@file@percent }
+\newlabel{gradr_Y32_w_1}{{3.184}{72}{Gradiente de $Y^c_{32}$}{equation.3.4.184}{}}
+\newlabel{gradr_Y32_w_2}{{3.185}{72}{Gradiente de $Y^c_{32}$}{equation.3.4.185}{}}
+\newlabel{gradr_Y32_z_1}{{3.186}{72}{Gradiente de $Y^c_{32}$}{equation.3.4.186}{}}
+\newlabel{gradr_Y32_z_2}{{3.187}{72}{Gradiente de $Y^c_{32}$}{equation.3.4.187}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente de $Y^c_{33}$}{73}{section*.136}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.39}{\ignorespaces Retropropagación de $Y^c_{33}$}}{73}{figure.caption.137}\protected@file@percent }
+\newlabel{gradr_Y33_w_1}{{3.190}{73}{Gradiente de $Y^c_{33}$}{equation.3.4.190}{}}
+\newlabel{gradr_Y33_w_2}{{3.191}{73}{Gradiente de $Y^c_{33}$}{equation.3.4.191}{}}
+\newlabel{gradr_Y33_z_1}{{3.192}{73}{Gradiente de $Y^c_{33}$}{equation.3.4.192}{}}
+\newlabel{gradr_Y33_z_2}{{3.193}{73}{Gradiente de $Y^c_{33}$}{equation.3.4.193}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{73}{section*.138}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.40}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{74}{figure.caption.139}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Xpad_Y}{{3.40}{74}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.139}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{74}{section*.140}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida respecto de la entrada como convolución}}{75}{figure.caption.141}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Y_K_pad}{{3.41}{75}{Cálculo del gradiente de la pérdida respecto de la entrada como convolución}{figure.caption.141}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{76}{figure.caption.142}\protected@file@percent }
+\newlabel{fig:conv_full_vs_normal}{{3.42}{76}{Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}{figure.caption.142}{}}
 \citation{conv_GEMM_FFT_comparacion}
 \citation{Programming_Massively}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{73}{chapter.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{77}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}GEMM}{73}{section.4.1}\protected@file@percent }
-\newlabel{Intro_GEMMM}{{4.2}{73}{Convolución como GEMM}{section.4.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Convolución como GEMM }{73}{section.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}GEMM}{77}{section.4.1}\protected@file@percent }
+\newlabel{Intro_GEMMM}{{4.2}{77}{Convolución como GEMM}{section.4.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Convolución como GEMM }{77}{section.4.2}\protected@file@percent }
 \citation{Programming_Massively}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{74}{figure.caption.143}\protected@file@percent }
-\newlabel{fig:conv_std_vs_gemm}{{4.1}{74}{Imagen de una convolución estándar frente a una convolución empleando GEMM}{figure.caption.143}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Memoria requerida al emplear GEMM}{75}{subsection.4.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Retropropagación GEMM en capa convolucional}{76}{section.4.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{76}{figure.caption.144}\protected@file@percent }
-\newlabel{fig:conv_std_vs_gemm_backprop}{{4.2}{76}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}{figure.caption.144}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{78}{figure.caption.143}\protected@file@percent }
+\newlabel{fig:conv_std_vs_gemm}{{4.1}{78}{Imagen de una convolución estándar frente a una convolución empleando GEMM}{figure.caption.143}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Memoria requerida al emplear GEMM}{79}{subsection.4.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Retropropagación GEMM en capa convolucional}{80}{section.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{80}{figure.caption.144}\protected@file@percent }
+\newlabel{fig:conv_std_vs_gemm_backprop}{{4.2}{80}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}{figure.caption.144}{}}
 \citation{nvidia_back_fully_GEMM}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{77}{figure.caption.145}\protected@file@percent }
-\newlabel{fig:conv_std_vs_gemm_backprop_pesos}{{4.3}{77}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}{figure.caption.145}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{81}{figure.caption.145}\protected@file@percent }
+\newlabel{fig:conv_std_vs_gemm_backprop_pesos}{{4.3}{81}{Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}{figure.caption.145}{}}
 \citation{nvidia_back_fully_GEMM}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite  {nvidia_back_fully_GEMM}}{78}{section.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{78}{subsection.4.4.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{78}{figure.caption.146}\protected@file@percent }
-\newlabel{fig:gemm_fully_forward}{{4.4}{78}{Propagación GEMM hacia delante en una capa totalmente conectada}{figure.caption.146}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite  {nvidia_back_fully_GEMM}}{82}{section.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{82}{subsection.4.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{82}{figure.caption.146}\protected@file@percent }
+\newlabel{fig:gemm_fully_forward}{{4.4}{82}{Propagación GEMM hacia delante en una capa totalmente conectada}{figure.caption.146}{}}
 \citation{nvidia_back_fully_GEMM}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{79}{figure.caption.147}\protected@file@percent }
-\newlabel{fig:gemm_fully_forward_minibatch}{{4.5}{79}{Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}{figure.caption.147}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{83}{figure.caption.147}\protected@file@percent }
+\newlabel{fig:gemm_fully_forward_minibatch}{{4.5}{83}{Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}{figure.caption.147}{}}
 \citation{nvidia_back_fully_GEMM}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{80}{subsection.4.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a la entrada}{80}{section*.148}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{80}{figure.caption.149}\protected@file@percent }
-\newlabel{fig:gemm_fully_back_input}{{4.6}{80}{Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}{figure.caption.149}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{81}{figure.caption.150}\protected@file@percent }
-\newlabel{fig:gemm_fully_back_input_minibatch}{{4.7}{81}{Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}{figure.caption.150}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{84}{subsection.4.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a la entrada}{84}{section*.148}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{84}{figure.caption.149}\protected@file@percent }
+\newlabel{fig:gemm_fully_back_input}{{4.6}{84}{Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}{figure.caption.149}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{85}{figure.caption.150}\protected@file@percent }
+\newlabel{fig:gemm_fully_back_input_minibatch}{{4.7}{85}{Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}{figure.caption.150}{}}
 \citation{nvidia_back_fully_GEMM}
-\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{82}{section*.151}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{82}{figure.caption.152}\protected@file@percent }
-\newlabel{fig:gemm_fully_back_w}{{4.8}{82}{Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}{figure.caption.152}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{86}{section*.151}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{86}{figure.caption.152}\protected@file@percent }
+\newlabel{fig:gemm_fully_back_w}{{4.8}{86}{Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}{figure.caption.152}{}}
 \citation{Professional_CUDA_C}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{83}{figure.caption.153}\protected@file@percent }
-\newlabel{fig:gemm_fully_back_w_minibatch}{{4.9}{83}{Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}{figure.caption.153}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}CUDA}{83}{section.4.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{87}{figure.caption.153}\protected@file@percent }
+\newlabel{fig:gemm_fully_back_w_minibatch}{{4.9}{87}{Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}{figure.caption.153}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}CUDA}{87}{section.4.5}\protected@file@percent }
 \citation{cuda_mult_matrix_v3}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Multiplicación de matrices en CUDA}{84}{subsection.4.5.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{84}{figure.caption.154}\protected@file@percent }
-\newlabel{fig:mult_matrix_cuda_v3}{{4.10}{84}{Tercera implementación de multiplicación matricial con CUDA}{figure.caption.154}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Multiplicación de matrices en CUDA}{88}{subsection.4.5.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{88}{figure.caption.154}\protected@file@percent }
+\newlabel{fig:mult_matrix_cuda_v3}{{4.10}{88}{Tercera implementación de multiplicación matricial con CUDA}{figure.caption.154}{}}
 \citation{nvidia_mult_matrix_v4}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{85}{figure.caption.155}\protected@file@percent }
-\newlabel{fig:mult_matrix_cuda_v4}{{4.11}{85}{Cuarta implementación de multiplicación matricial con CUDA}{figure.caption.155}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{87}{chapter.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{89}{figure.caption.155}\protected@file@percent }
+\newlabel{fig:mult_matrix_cuda_v4}{{4.11}{89}{Cuarta implementación de multiplicación matricial con CUDA}{figure.caption.155}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{91}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{87}{subsection.5.0.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{89}{subsection.5.0.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Implementaciones CPU}{89}{section*.156}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Secuencial vs OpenMP}}{89}{figure.caption.157}\protected@file@percent }
-\newlabel{fig:sec_openmp}{{5.1}{89}{Secuencial vs OpenMP}{figure.caption.157}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{90}{figure.caption.158}\protected@file@percent }
-\newlabel{fig:ganancia_sec_openmp}{{5.2}{90}{Ganancia de OpenMP respecto a secuencial}{figure.caption.158}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Implementaciones GPU}{90}{section*.159}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{90}{figure.caption.160}\protected@file@percent }
-\newlabel{fig:openmp_cuda_cudnn}{{5.3}{90}{OpenMP vs CUDA vs CUDNN}{figure.caption.160}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces CUDA vs CUDNN}}{91}{figure.caption.161}\protected@file@percent }
-\newlabel{fig:cuda_cudnn_1}{{5.4}{91}{CUDA vs CUDNN}{figure.caption.161}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{91}{subsection.5.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{93}{subsection.5.0.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Implementaciones CPU}{93}{section*.156}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Secuencial vs OpenMP}}{93}{figure.caption.157}\protected@file@percent }
+\newlabel{fig:sec_openmp}{{5.1}{93}{Secuencial vs OpenMP}{figure.caption.157}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{94}{figure.caption.158}\protected@file@percent }
+\newlabel{fig:ganancia_sec_openmp}{{5.2}{94}{Ganancia de OpenMP respecto a secuencial}{figure.caption.158}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Implementaciones GPU}{94}{section*.159}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{94}{figure.caption.160}\protected@file@percent }
+\newlabel{fig:openmp_cuda_cudnn}{{5.3}{94}{OpenMP vs CUDA vs CUDNN}{figure.caption.160}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces CUDA vs CUDNN}}{95}{figure.caption.161}\protected@file@percent }
+\newlabel{fig:cuda_cudnn_1}{{5.4}{95}{CUDA vs CUDNN}{figure.caption.161}{}}
 \bibstyle{unsrt}
 \bibdata{bibliografia/bibliografia}
-\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Comparación rendimiento CuDNN vs CUDA}}{92}{table.caption.162}\protected@file@percent }
-\newlabel{tabla_resultados}{{5.1}{92}{Comparación rendimiento CuDNN vs CUDA}{table.caption.162}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Comparación rendimiento CuDNN vs CUDA}}{96}{table.caption.162}\protected@file@percent }
+\newlabel{tabla_resultados}{{5.1}{96}{Comparación rendimiento CuDNN vs CUDA}{table.caption.162}{}}
 \bibcite{Cross_entropy_backprop}{1}
 \bibcite{Cross_entropy_backprop_grad_input}{2}
 \bibcite{NN_backpropagation}{3}
@@ -631,4 +632,4 @@
 \bibcite{conv_GEMM_FFT_comparacion}{68}
 \bibcite{cuda_mult_matrix_v3}{69}
 \bibcite{nvidia_mult_matrix_v4}{70}
-\gdef \@abspage@last{125}
+\gdef \@abspage@last{129}
