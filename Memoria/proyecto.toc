@@ -126,3 +126,4 @@
 \contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{93}{subsection.5.0.2}%
 \contentsline {subsubsection}{Implementaciones CPU}{93}{section*.156}%
 \contentsline {subsubsection}{Implementaciones GPU}{94}{section*.159}%
+\contentsline {chapter}{\numberline {6}Conclusiones y trabajo futuro}{97}{chapter.6}%
