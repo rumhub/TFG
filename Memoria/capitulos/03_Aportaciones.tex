@@ -2,77 +2,109 @@
 
 \section{Planificación}
 
-Para el desarrollo de este proyecto se ha requerido llevar a cabo una serie de tareas con diferentes dificultades e importancias. A continuación se muestra una planificación del mismo junto con las fases que componen el desarrollo, así como una planificación temporal de cada apartado por separado. Cabe destacar que cada apartado se basa en los conocimientos adquiridos en los apartados anteriores a la vez que introduce conceptos nuevos y mejora las prestaciones del modelo, por lo que cada uno supondrá retos nuevos nunca antes vistos y, si un apartado anterior presenta algún fallo desconocido en el momento, se deberá volver a la etapa anterior y arreglarlo y, tras ello, seguir con la etapa posterior. Además, dada la naturaleza de `caja oscura' de las redes neuronales, estas presentan cierta dificultad a la hora de depurar el código. Por tanto, esto supondrá bastante tiempo de depuración en todas y cada una de las implementaciones, tal y como se verá a continuación.
+Para el desarrollo de este proyecto se ha requerido llevar a cabo una serie de tareas con diferentes dificultades e importancias. A continuación se muestra una planificación general del mismo en la tabla \ref{tabla_planificación} junto con las fases que componen el desarrollo, así como una planificación temporal de cada apartado por separado. Cabe destacar que cada apartado se basa en los conocimientos adquiridos en los apartados anteriores a la vez que introduce conceptos nuevos y mejora las prestaciones del modelo, por lo que cada uno supondrá retos nuevos nunca antes vistos y, si un apartado anterior presenta algún fallo desconocido en el momento, se deberá volver a la etapa anterior y arreglarlo y, tras ello, seguir con la etapa posterior. Además, dada la naturaleza de `caja oscura' de las redes neuronales, estas presentan cierta dificultad a la hora de depurar el código. Por tanto, esto supondrá bastante tiempo de depuración en todas y cada una de las implementaciones, tal y como se verá a continuación.
 
 \begin{enumerate}[label=\textbullet]
 	\item \textbf{Estudio previo}: Consiste en el estudio y comprensión de cuestiones generales dentro del campo de aprendizaje automático y visión por computador, comunes a redes neuronales totalmente conectadas y redes neuronales convolucionales.
 	\begin{enumerate}[label=\textbullet]
 		\item Investigación, comprensión y selección de funciones de activación a emplear (4 horas)
-		\item Profundización sobre el algoritmo del descenso del gradiente (3 horas)
-		\item Profundización sobre el entrenamiento una red neuronal (1 horas y 40 minutos)
+		\item Investigación y comprensión sobre el algoritmo del descenso del gradiente (3 horas)
+		\item Investigación y comprensión sobre el entrenamiento una red neuronal (2 horas)
 		\item Investigación y comprensión de sistemas heterogéneos y sistemas homogéneos (3 horas)
 		\item Investigación y comprensión de sistemas heterogéneos aplicados a CNNs (4 horas)
 	\end{enumerate}
 	
 	\item \textbf{Investigación y desarrollo de redes neuronales totalmente conectadas}: En este periodo me centré en la investigación y comprensión total sobre las redes neuronales totalmente conectadas a bajo nivel. De esta forma, sabía que podría generar cualquier tipo de red totalmente conectada de manera dinámica, sin necesidad de realizar ningún tipo de cálculo posterior, independientemente del lenguaje de programación empleado, así como del uso o no de librerías que faciliten el proceso. 
 	\begin{enumerate}[label=\textbullet]
-		\item Investigación y desarrollo teórico de la retropropagación en una red totalmente conectada con 1 capa oculta (40 horas y 20 minutos)
-		\item Investigación y desarrollo teórico de la retropropagación en una red totalmente conectada con 2 capas ocultas (8 horas y 55 minutos)
-		\item Desarrollo teórico de la retropropagación en una red totalmente conectada con N capas ocultas (6 horas)
-		\item Implementación en C++ de una red totalmente conectada (50 horas)
+		\item Investigación y desarrollo teórico de la retropropagación en una red totalmente conectada con 1 capa oculta (40 horas)
+		\item Investigación y desarrollo teórico de la retropropagación en una red totalmente conectada con 2 capas ocultas (9 horas)
+		\item Desarrollo teórico de la retropropagación en una red totalmente conectada con N capas ocultas (5 horas)
 		\item Investigación y desarrollo teórico sobre la retropropagación en una capa SoftMax (7 horas)
-		\item Implementación en C++ sobre la retropropagación en una capa softmax (6 horas y 30min)
+		\item Implementación en C++ sobre la retropropagación en una capa softmax (8 horas)
 		\item Investigación y desarrollo del algoritmo del descenso del gradiente en una red totalmente conectada en C++ (2 horas)
 		\item Investigación sobre distintas inicializaciones de pesos e implementación de la inicialización de pesos HE (2 horas)	
 		\item Realización de pruebas prácticas de funcionamiento con distintas bases de datos y arquitecturas de modelos (10 horas)	
-		\item Implementación en C++ sobre cuestiones generales de una red neuronal totalmente conectada como entrenamiento, lectura de imágenes, creación, gestión y actualización de pesos y sesgos, evaluación del modelo sobre un conjunto de datos, creación de estructura general, etc (30 horas).
+		\item Implementación en C++ sobre cuestiones generales de una red neuronal totalmente conectada como entrenamiento, lectura de imágenes, creación, gestión y actualización de pesos y sesgos, evaluación del modelo sobre un conjunto de datos, creación de estructura general, etc (60 horas).
 	\end{enumerate}
 	\item \textbf{Investigación y desarrollo de redes neuronales convolucionales}:
 	Una vez familiarizado con redes neuronales totalmente conectadas, se trató de comprender de igual forma las redes neuronales convolucionales, pues se encuentran ampliamente relacionadas.
 	\begin{enumerate}[label=\textbullet]
-		\item Investigación y desarrollo teórico de la propagación hacia delante en una capa convolucional de una red neuronal convolucional (10 horas y 50 minutos)
-		\item Investigación y desarrollo teórico de la retropropagación en una capa convolucional de una red neuronal convolucional (20 horas y 50 minutos)
+		\item Investigación y desarrollo teórico de la propagación hacia delante en una capa convolucional de una red neuronal convolucional (5 horas)
+		\item Investigación y desarrollo teórico de la retropropagación en una capa convolucional con y sin relleno en una red neuronal convolucional (21 horas)
 		\item Investigación y desarrollo teórico sobre el relleno en una red neuronal convolucional (12 horas)
 		\item Desarrollo de conclusiones teóricas respecto a retropropagación en capa convolucional con y sin relleno (4 horas)
 		\item Investigación y desarrollo teórico sobre una capa de agrupación máxima en una red neuronal convolucional (8 horas)
-		\item Investigación y desarrollo teórico sobre una capa de aplanado en una red neuronal convolucional (50 minutos)
+		\item Investigación y desarrollo teórico sobre una capa de aplanado en una red neuronal convolucional (1 hora)
 		\item Implementación en C++ sobre la propagación hacia delante en una capa convolucional de una red neuronal convolucional (8 horas).
 		\item Implementación en C++ sobre la retropropagación en una capa convolucional de una red neuronal convolucional (12 horas).
 		\item Implementación en C++ sobre la propagación hacia delante en una capa de agrupación máxima de una red neuronal convolucional (4 horas).
 		\item Implementación en C++ sobre la retropropagación en una capa de agrupación máxima de una red neuronal convolucional (6 horas).
-		\item Implementación en C++ sobre una capa de aplanado de una red neuronal convolucional (2 horas).
-		\item Implementación en C++ sobre cuestiones generales de una CNN como entrenamiento, lectura de imágenes, evaluación del modelo sobre un conjunto de datos, creación de estructura general, etc (50 horas).
+		\item Implementación en C++ sobre una capa de aplanado de una red neuronal convolucional (1 hora).
+		\item Implementación en C++ sobre cuestiones generales de una CNN como entrenamiento, lectura de imágenes, evaluación del modelo sobre un conjunto de datos, creación de estructura general, etc (70 horas).
 	\end{enumerate}
-	\item \textbf{Investigación y desarrollo de sistemas homogéneos paralelos}:
+	\item \textbf{Investigación y desarrollo de sistemas homogéneos con OpenMP}:
 	Una vez comprendido el funcionamiento tanto de las redes neuronales totalmente conectadas como de las redes neuronales convolucionales, me centré en reducir los tiempos de cómputo requeridos en ellas mediante un paralelismo orientado a datos con OpenMP.
 	\begin{enumerate}[label=\textbullet]
-		\item Investigación sobre tipos de paralelismo (6 horas y 30 minutos)
+		\item Investigación sobre tipos de paralelismo con OpenMP orientados tanto a redes neuronales totalmente conectadas como a redes neuronales convolucionales (4 horas)
 		\item Investigación y desarrollo teórico sobre paralelismo a nivel de datos con OpenMP en el algoritmo del descenso del gradiente (3 horas).
 		\item Implementación en C++ y OpenMP sobre el algoritmo del descenso del gradiente en la red neuronal totalmente conectada (10 horas).
 		\item Implementación en C++ y OpenMP sobre el algoritmo del descenso del gradiente en la red neuronal convolucional (30 horas).
-		\item Implementación en C++ y OpenMP sobre aspectos generales de una red neuronal totalmente conectada (40 horas).
-		\item Implementación en C++ y OpenMP sobre cuestiones generales de una red neuronal convolucional (55 horas).
-		\item Realización de pruebas respecto a la secuencial (12h)
+		\item Implementación en C++ y OpenMP sobre aspectos generales de una red neuronal totalmente conectada (20 horas).
+		\item Implementación en C++ y OpenMP sobre cuestiones generales de una red neuronal convolucional (30 horas).
+		\item Realización de pruebas finales para verificar un correcto entrenamiento y aprendizaje (6 horas)
 	\end{enumerate}
-	\item \textbf{Investigación y desarrollo de sistemas heterogéneos}:
+	\item \textbf{Investigación y desarrollo de sistemas heterogéneos con CUDA y cuDNN}:
 	Teniendo ya los conocimiento teóricos y prácticos sobre sistemas homogéneos paralelos respecto a las redes neuronales totalmente conectadas y las redes neuronales convolucionales, se da un salto y nos adentramos en los sistemas heterogéneos aplicados a las redes neuronales totalmente conectadas y a las redes neuronales convolucionales.
 	\begin{enumerate}[label=\textbullet]
-		\item Investigación y desarrollo teórico sobre la propagación hacia delante en capa convolucional como GEMM (6 horas y 30 minutos)
-		\item Investigación y desarrollo teórico sobre la propagación hacia delante en capa de agrupación máxima con CUDA (3 horas y 50 minutos)
-		\item Investigación y comprensión de la librería cuBLAS (3 horas y 34 minutos)
-		\item Implementación en C++ sobre la propagación hacia delante en una capa convolucional como GEMM con cuBLAS (9 horas y 28 minutos)
-		\item Investigación y desarrollo teórico sobre la retropropagación en una capa convolucional como GEMM (9 horas y 4 minutos)
-		\item Implementación en C++ sobre la retropropagación en una capa convolucional como GEMM con cuBLAS (26 horas y 19 minutos)
-		\item Investigación y desarrollo teórico y práctico sobre el algoritmo de multiplicación matricial con CUDA empleado (30 horas y 13 minutos)
-		\item Investigación y desarrollo teórico y práctico sobre la capa de agrupación máxima con CUDA (14 horas y 56 minutos)
-		\item Investigación y desarrollo teórico y práctico sobre la capa totalmente conectada como GEMM (30 horas y 40 minutos)
-		\item Investigación teórica sobre el consumo de memoria con GEMM (2 horas)
-		\item Implementación de aspectos generales de una red neuronal convolucional con CUDA (70 horas y 49 minutos).
-		\item Sustitución de la clase Vector de la STL en todo el proyecto por punteros (30 horas y 28 minutos).
-		\item Investigación y adaptación de la implementación en CUDA a cuDNN (50 horas y 57 minutos).
+		\item Investigación y desarrollo teórico sobre la propagación hacia delante y retropropagación en una capa convolucional como GEMM (8 horas)
+		\item Investigación y desarrollo teórico sobre la propagación hacia delante y retropropagación en una capa de agrupación máxima con CUDA (5 horas)
+		\item Investigación y comprensión de la librería cuBLAS (5 horas)
+		\item Implementación en C++ sobre la propagación hacia delante en una capa convolucional como GEMM con cuBLAS (6 horas)
+		\item Implementación en C++ sobre la retropropagación en una capa convolucional como GEMM con cuBLAS (26 horas)
+		\item Investigación y desarrollo teórico y práctico sobre el algoritmo de multiplicación matricial con CUDA empleado (30 horas)
+		\item Implementación en C++ y CUDA sobre la capa de agrupación máxima con CUDA (14 horas)
+		\item Investigación y desarrollo teórico y práctico sobre la capa totalmente conectada como GEMM (31 horas)
+		\item Investigación y desarrollo teórico sobre el consumo de memoria con GEMM (5 horas)
+		\item Implementación de aspectos generales de una red neuronal convolucional con CUDA (71 horas).
+		\item Sustitución de la clase Vector de la STL en todo el proyecto por punteros necesarios para emplear CUDA (30 horas).
+		\item Investigación teórica y adaptación práctica de la implementación con CUDA a cuDNN (51 horas).
 	\end{enumerate}
 	
 \end{enumerate}
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|lll|}
+		\hline
+		Apartado 	 &\vline  & Tiempo (Horas) \\
+		\hline
+		
+		Estudio previo    & \vline & 16 \\			
+		\hline
+		Investigación y desarrollo  	 & \vline & 	\\
+		de redes neuronales  	 & \vline & 143	\\
+		totalmente conectadas 	 & \vline & 	\\
+		\hline
+		Investigación y desarrollo    & \vline & 	 \\	
+		de redes neuronales    & \vline & 152	 \\			
+		convolucionales    & \vline & 	 \\					
+		\hline
+		Investigación y desarrollo  	 & \vline & 	 \\
+		de sistemas homogéneos  	 & \vline & 103	 \\
+		con OpenMP 	 & \vline & 	 \\
+		\hline
+		Investigación y desarrollo     & \vline &  	\\
+		de sistemas heterogéneos    & \vline &  \\ 
+		con CUDA y cuDNN    & \vline & 282 \\ 	
+		\hline
+		\hline
+		Tiempo total:				& \vline & 696 \\
+		\hline
+	\end{tabular}
+	\caption{Planificación del proyecto}
+	\label{tabla_planificación}
+\end{table}
 
 \section{Retropropagación en redes neuronales rotalmente conectadas}
 

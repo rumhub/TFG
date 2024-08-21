@@ -57,73 +57,73 @@
 \contentsline {section}{\numberline {3.1}Planificación}{33}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Retropropagación en redes neuronales rotalmente conectadas}{37}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}Retropropagación en capa SoftMax, \cite {Cross_entropy_backprop} \cite {Cross_entropy_backprop_grad_input}}{37}{subsection.3.2.1}%
-\contentsline {subsubsection}{Cálculo del gradiente de la función de error}{37}{section*.56}%
-\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac {\partial O_i}{\partial Z_k}$}{38}{section*.57}%
-\contentsline {subsubsection}{Caso $\frac {\partial S(Z_i)}{\partial Z_i}$}{38}{section*.58}%
-\contentsline {subsubsection}{Caso $\frac {\partial S(Z_i)}{\partial Z_j}$, con i $\neq $ j}{39}{section*.59}%
-\contentsline {subsubsection}{Combinación de casos}{39}{section*.60}%
-\contentsline {subsubsection}{Simplificación One-Hot}{40}{section*.61}%
+\contentsline {subsubsection}{Cálculo del gradiente de la función de error}{38}{section*.57}%
+\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac {\partial O_i}{\partial Z_k}$}{39}{section*.58}%
+\contentsline {subsubsection}{Caso $\frac {\partial S(Z_i)}{\partial Z_i}$}{39}{section*.59}%
+\contentsline {subsubsection}{Caso $\frac {\partial S(Z_i)}{\partial Z_j}$, con i $\neq $ j}{40}{section*.60}%
+\contentsline {subsubsection}{Combinación de casos}{40}{section*.61}%
+\contentsline {subsubsection}{Simplificación One-Hot}{41}{section*.62}%
 \contentsline {subsection}{\numberline {3.2.2}Retropropagación con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2} }{41}{subsection.3.2.2}%
-\contentsline {subsubsection}{Capa SoftMax}{42}{section*.63}%
-\contentsline {subsubsection}{Pesos capas h1-SoftMax}{42}{section*.65}%
-\contentsline {subsubsection}{Sesgos capa softmax}{43}{section*.67}%
-\contentsline {subsubsection}{Capa oculta h1}{43}{section*.68}%
-\contentsline {subsubsection}{Pesos capas entrada-h1}{45}{section*.71}%
-\contentsline {subsubsection}{Sesgos capa h1}{45}{section*.73}%
-\contentsline {subsubsection}{Capa de entrada}{46}{section*.74}%
+\contentsline {subsubsection}{Capa SoftMax}{42}{section*.64}%
+\contentsline {subsubsection}{Pesos capas h1-SoftMax}{43}{section*.66}%
+\contentsline {subsubsection}{Sesgos capa softmax}{43}{section*.68}%
+\contentsline {subsubsection}{Capa oculta h1}{44}{section*.69}%
+\contentsline {subsubsection}{Pesos capas entrada-h1}{45}{section*.72}%
+\contentsline {subsubsection}{Sesgos capa h1}{46}{section*.74}%
+\contentsline {subsubsection}{Capa de entrada}{46}{section*.75}%
 \contentsline {subsection}{\numberline {3.2.3}Retropropagación con 2 capas ocultas}{47}{subsection.3.2.3}%
-\contentsline {subsubsection}{Capa SoftMax}{47}{section*.78}%
-\contentsline {subsubsection}{Pesos capas h2-SoftMax}{48}{section*.80}%
-\contentsline {subsubsection}{Sesgos capa softmax}{48}{section*.82}%
-\contentsline {subsubsection}{Capa oculta h2}{49}{section*.83}%
-\contentsline {subsubsection}{Pesos capas h1-h2}{50}{section*.86}%
-\contentsline {subsubsection}{Sesgos capa h2}{51}{section*.88}%
-\contentsline {subsubsection}{Capa oculta h1}{51}{section*.89}%
-\contentsline {subsubsection}{Pesos capa input-h1}{53}{section*.92}%
-\contentsline {subsubsection}{Sesgos capa h1}{53}{section*.94}%
-\contentsline {subsubsection}{Capa input}{54}{section*.95}%
+\contentsline {subsubsection}{Capa SoftMax}{48}{section*.79}%
+\contentsline {subsubsection}{Pesos capas h2-SoftMax}{48}{section*.81}%
+\contentsline {subsubsection}{Sesgos capa softmax}{49}{section*.83}%
+\contentsline {subsubsection}{Capa oculta h2}{49}{section*.84}%
+\contentsline {subsubsection}{Pesos capas h1-h2}{51}{section*.87}%
+\contentsline {subsubsection}{Sesgos capa h2}{51}{section*.89}%
+\contentsline {subsubsection}{Capa oculta h1}{52}{section*.90}%
+\contentsline {subsubsection}{Pesos capa input-h1}{53}{section*.93}%
+\contentsline {subsubsection}{Sesgos capa h1}{54}{section*.95}%
+\contentsline {subsubsection}{Capa input}{54}{section*.96}%
 \contentsline {subsection}{\numberline {3.2.4}Conclusiones}{55}{subsection.3.2.4}%
-\contentsline {subsubsection}{Gradiente respecto a la entrada de la capa}{55}{section*.98}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{56}{section*.100}%
-\contentsline {subsubsection}{Gradiente respecto a sesgos}{56}{section*.102}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada de la capa}{56}{section*.99}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{56}{section*.101}%
+\contentsline {subsubsection}{Gradiente respecto a sesgos}{57}{section*.103}%
 \contentsline {section}{\numberline {3.3}Paralelización mediante OpenMP}{57}{section.3.3}%
-\contentsline {subsubsection}{Tipos de paralelismo}{57}{section*.103}%
-\contentsline {subsubsection}{Paralelismo en SGD}{57}{section*.104}%
-\contentsline {section}{\numberline {3.4}Retropropagación en redes neuronales convolucionales}{58}{section.3.4}%
-\contentsline {subsubsection}{Sumatoria de gradientes}{58}{section*.106}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{59}{section*.107}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{60}{section*.108}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{61}{section*.110}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{62}{section*.112}%
-\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{62}{section*.114}%
-\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{63}{section*.116}%
-\contentsline {subsection}{\numberline {3.4.1}Retropropagación con relleno}{66}{subsection.3.4.1}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{66}{section*.120}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{67}{section*.122}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{13}$}{68}{section*.124}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{69}{section*.126}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{70}{section*.128}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{23}$}{70}{section*.130}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{31}$}{71}{section*.132}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{32}$}{72}{section*.134}%
-\contentsline {subsubsection}{Gradiente de $Y^c_{33}$}{73}{section*.136}%
-\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{73}{section*.138}%
-\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{74}{section*.140}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{77}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GEMM}{77}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Convolución como GEMM }{77}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Memoria requerida al emplear GEMM}{79}{subsection.4.2.1}%
-\contentsline {section}{\numberline {4.3}Retropropagación GEMM en capa convolucional}{80}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{82}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{82}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{84}{subsection.4.4.2}%
-\contentsline {subsubsection}{Gradiente respecto a la entrada}{84}{section*.148}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{86}{section*.151}%
-\contentsline {section}{\numberline {4.5}CUDA}{87}{section.4.5}%
-\contentsline {subsection}{\numberline {4.5.1}Multiplicación de matrices en CUDA}{88}{subsection.4.5.1}%
-\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{91}{chapter.5}%
-\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{91}{subsection.5.0.1}%
-\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{93}{subsection.5.0.2}%
-\contentsline {subsubsection}{Implementaciones CPU}{93}{section*.156}%
-\contentsline {subsubsection}{Implementaciones GPU}{94}{section*.159}%
-\contentsline {chapter}{\numberline {6}Conclusiones y trabajo futuro}{97}{chapter.6}%
+\contentsline {subsubsection}{Tipos de paralelismo}{57}{section*.104}%
+\contentsline {subsubsection}{Paralelismo en SGD}{58}{section*.105}%
+\contentsline {section}{\numberline {3.4}Retropropagación en redes neuronales convolucionales}{59}{section.3.4}%
+\contentsline {subsubsection}{Sumatoria de gradientes}{59}{section*.107}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{60}{section*.108}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{61}{section*.109}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{62}{section*.111}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{63}{section*.113}%
+\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{63}{section*.115}%
+\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{64}{section*.117}%
+\contentsline {subsection}{\numberline {3.4.1}Retropropagación con relleno}{67}{subsection.3.4.1}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{67}{section*.121}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{12}$}{68}{section*.123}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{13}$}{69}{section*.125}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{21}$}{70}{section*.127}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{22}$}{71}{section*.129}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{23}$}{71}{section*.131}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{31}$}{72}{section*.133}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{32}$}{73}{section*.135}%
+\contentsline {subsubsection}{Gradiente de $Y^c_{33}$}{74}{section*.137}%
+\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{74}{section*.139}%
+\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{75}{section*.141}%
+\contentsline {chapter}{\numberline {4}Adaptación GPU}{79}{chapter.4}%
+\contentsline {section}{\numberline {4.1}GEMM}{79}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Convolución como GEMM }{79}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Memoria requerida al emplear GEMM}{81}{subsection.4.2.1}%
+\contentsline {section}{\numberline {4.3}Retropropagación GEMM en capa convolucional}{82}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{84}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{84}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{86}{subsection.4.4.2}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada}{86}{section*.149}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{88}{section*.152}%
+\contentsline {section}{\numberline {4.5}CUDA}{89}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Multiplicación de matrices en CUDA}{90}{subsection.4.5.1}%
+\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{93}{chapter.5}%
+\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{93}{subsection.5.0.1}%
+\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{95}{subsection.5.0.2}%
+\contentsline {subsubsection}{Implementaciones CPU}{95}{section*.157}%
+\contentsline {subsubsection}{Implementaciones GPU}{96}{section*.160}%
+\contentsline {chapter}{\numberline {6}Conclusiones y trabajo futuro}{99}{chapter.6}%
