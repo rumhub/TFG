@@ -3,59 +3,59 @@
 
 \section{Machine Learning}
 
-Se entiende como el campo de las ciencias de computación que en vez de enfocarse en el diseño de algoritmos explícitos, optan por el estudio de técnicas de aprendizaje. Este enfoque tiene un gran éxito en tareas computacionales donde no es factible diseñar un algoritmo de forma explícita. \cite{Programming_Massively} \\
-En vez de averiguar las distintas reglas a seguir para llegar a una solución, esta alternativa permite simplemente suministrar ejemplos de lo que debería pasar en distintas situaciones, y dejar que la máquina aprenda y extraiga ella misma sus propias conclusiones. De esta forma, el procedimiento en aprendizaje supervisado consiste en 'entrenar' con una muestra de N ejemplos, extraer información de ellos, y posteriormente poder evaluar de forma 'correcta' (bajo un margen de error controlado) otra muestra de M ejemplos, siendo M \textgreater N. \cite{Learning_From_Data} \\
-Este enfoque ha contribuido en el avance de áreas como reconocimiento de voz, visión por ordenador, procesamiento de lenguaje natural, etc.
+El término Machine Learning (ML), en castellano aprendizaje automático, designa el campo de las ciencias de computación que en vez de enfocarse en el diseño de algoritmos explícitos, opta por el estudio de técnicas de aprendizaje. Este enfoque tiene un gran éxito en tareas computacionales donde no es factible diseñar un algoritmo de forma explícita. \cite{Programming_Massively} \\
+En vez de averiguar las distintas reglas a seguir para llegar a una solución, esta alternativa permite simplemente suministrar ejemplos de lo que debería pasar en distintas situaciones, y dejar que la máquina aprenda y extraiga ella misma sus propias conclusiones. De esta forma, el procedimiento en aprendizaje supervisado (el tipo de aprendizaje en que nos centramos) consiste en 'entrenar' con una muestra de N ejemplos, extraer información de ellos, y posteriormente poder evaluar de forma 'correcta' (bajo un margen de error controlado) otra muestra de M ejemplos, siendo M \textgreater N. \cite{Learning_From_Data} \\
+Este enfoque ha contribuido al avance de áreas como reconocimiento de voz, visión por ordenador, procesamiento de lenguaje natural, etc.
 
 \section{Aprendizaje supervisado}
 
-El aprendizaje supervisado se caracteriza por, a partir de una serie de datos de entrada X y sus etiquetas, entrenar un modelo con estos para que mediante un proceso iterativo este vaya aprendiendo de forma que al finalizar dicho entrenamiento el mismo modelo sea capaz de tomar mejores decisiones que antes de comenzarlo. \\
-Suponiendo que nuestra muestra tiene N datos, tanto X como Y se unen para formar lo que se conoce como dataset D=\{($x_1, y_1$), ($x_2, y_2$), ..., ($x_N, y_N$)\}. Para que el aprendizaje sea posible, debe existir una función F: X $\rightarrow$ Y tal que $y_i$ = F($x_i$) para i$\in$\{1...N\}. De esta forma, en función del dataset D, el modelo tratará de encontrar una función G que aproxime F para dicho conjunto. Además, se suelen aplicar técnicas que permitan una mejor generalización del modelo, expandiendo las capacidades del mismo y permitiendo que su conocimiento pueda ser útil incluso fuera de la muestra de datos inicial. \cite{Learning_From_Data}
+El aprendizaje supervisado \cite{aprendizaje_supervisado} se caracteriza por, a partir de una serie de datos de entrada X=$\{x_1, x_2, ...\}$ y sus etiquetas asociadas Y=$\{y_1, y_2, ...\}$ (cada etiqueta $y_i \in Y$ representa la clase a la que pertenece su elemento asociado $x_i \in X$ \cite{etiquetas}), entrenar un modelo (un programa informático que aproxima el comportamiento objetivo) con estos. Así, mediante un proceso iterativo, este va aprendiendo de forma que al finalizar dicho entrenamiento el mismo modelo sea capaz de tomar mejores decisiones que antes de comenzarlo. \\
+Suponiendo que nuestra muestra tiene N datos, tanto X como Y se unen para formar lo que se conoce como dataset D=\{($x_1, y_1$), ($x_2, y_2$), ..., ($x_N, y_N$)\}. Para que el aprendizaje sea posible, debe existir una función F: X $\rightarrow$ Y tal que $y_i$ = F($x_i$) para i$\in$\{1...N\}. De esta forma, en función del dataset D, el modelo tratará de encontrar una función G que aproxime a F para dicho conjunto. Además, se suelen aplicar técnicas que permitan una mejor generalización del modelo, expandiendo las capacidades del mismo y permitiendo que su conocimiento pueda ser útil incluso fuera de la muestra de datos inicial. \cite{Learning_From_Data}
 
 \section{División de datos en entrenamiento y test}
 
-Suponiendo que a partir de unos datos de entrada y un modelo, logremos que este los emplee para aprender, normalmente el objetivo final es emplear dicho modelo fuera de esa muestra inicial. \\
+Suponiendo que, a partir de unos datos de entrada y un modelo, logremos que este los emplee para aprender, normalmente el objetivo final es emplear dicho modelo fuera de esa muestra inicial. \\
 Por ejemplo, en el caso de aprender a montar en bici lo que se suele querer es aprender a montar en cualquier bici, no aprender a usar una bici y cada vez que se quiera cambiar de vehículo tener que volver a empezar dicho aprendizaje. \\
-En el caso de los modelos de aprendizaje automático, un ejemplo simple puede ser distinguir gatos de perros. Si se entrena un modelo con 200 imágenes, suele ser común que su desarrollador quiera emplear dicho modelo entrenado para distinguir gatos de perros con imágenes que este no vio nunca antes. \\
-Es decir, aunque se entrene un modelo con una muestra de N imágenes, es importante saber que en la mayoría de los casos lo que se busca no es un buen rendimiento exclusivamente en la muestra con que se entrenó, sino también en aquellas muestras en las que no se entrenó. \\
+En el caso de los modelos de aprendizaje automático, un ejemplo simple puede ser, dada una imagen de un animal (que puede ser solo de un perro o de un gato), determinar si es una imagen de un perro o de un gato. Si se entrena un modelo con 200 imágenes, suele ser común que su desarrollador quiera emplear dicho modelo entrenado para distinguir gatos de perros con imágenes que este no vio nunca antes. \\
+Es decir, aunque se entrene un modelo con una muestra de N imágenes, es importante saber que, en la mayoría de los casos, lo que se busca no es un buen rendimiento exclusivamente en la muestra con que se entrenó, sino también en muestras en las que no se entrenó. \\
 Para visualizar la generalización del modelo, el conjunto de datos D se suele dividir en 2 subconjuntos, (entrenamiento y test) de forma que se pueda estimar si realmente 'aprende' o solo memoriza.\\
 Una vez realizada la división, se entrena el modelo con los datos del conjunto de entrenamiento. Cuando se termina el entrenamiento, se accede al conjunto test y se visualiza el rendimiento del modelo sobre el mismo. Como los datos de test no se emplearon en ningún momento, aportan una estimación sobre la generalización del modelo fuera de la muestra con la que se entrenó. 
 
 \section{Redes Neuronales Totalmente Conectadas}
 
 Antes de analizar las redes neuronales convolucionales (CNNs), tiene sentido empezar por las redes neuronales `clásicas' o totalmente conectadas. \\
-Una red neuronal se trata de un programa o modelo de machine learning que toma decisiones de forma similar al cerebro humano, empleando para ello procesos que imitan a los de las neuronas biológicas \cite{NN_intro}. \\
-Estas cuentan con una serie de neuronas artificiales organizadas por capas, y se caracterizan por tener una capa de entrada, una o varias capas ocultas y una capa de salida.
+Se define una red neuronal como un programa o modelo de machine learning que toma decisiones de forma similar al cerebro humano, empleando para ello procesos que imitan a los de las neuronas biológicas \cite{NN_intro}. \\
+Una red neuronal cuenta con una serie de neuronas artificiales organizadas por capas, y se caracteriza por tener una capa de entrada, una o varias capas ocultas y una capa de salida.
 
 \subsection{Neurona}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.35]{imagenes/neurona.jpg}  
-	\caption{Imagen de una neurona}
+	\caption{Esquema de una neurona}
 	\label{fig:neurona}
 \end{figure}
 
-Una neurona parte de una serie de datos de entrada X=\{$x_1$, $x_2$, ..., $x_N$\} tal que cada $x_i$$\in${X} se encuentra asociado a un peso $w_i\in{W}$. \\
-En la Figura \ref{fig:neurona} se muestra como esta los emplea para realizar una suma ponderada y posteriormente añadir un sesgo b, además de aplicar una función de activación f sobre el resultado obtenido. 
+Una neurona parte de una serie de datos de entrada X=\{$x_1$, $x_2$, ..., $x_N$\} tal que cada $x_i$$\in${X} se encuentra asociado a un peso $w_i\in{W}$ y obtiene un único dato de salida o resultado operando con los datos de entrada y sus pesos. \\
+En la Figura \ref{fig:neurona} se muestra cómo esta los emplea para realizar una suma ponderada y posteriormente añadir un sesgo b, además de aplicar una función (que llamaremos función de activación) f sobre el resultado obtenido para obtener la salida. 
 
 \subsection{Estructura por capas}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.35]{imagenes/capa_neuronas.jpg}  
-	\caption{Imagen de una capa de neuronas}
+	\caption{Esquema de una capa de neuronas}
 	\label{fig:capa_neuronas}
 \end{figure}
 
-Las neuronas se suelen agrupas por capas, de tal forma que la salida de una compone la entrada de la siguiente, formando así modelos más sofisticados (Figura \ref{fig:capa_neuronas}). \\
-En este proyecto se desarrollarán redes neuronales para tareas de clasificación multiclase. Para clasificar N clases distintas, la capa de salida tendrá N neuronas. De esta forma, nuestra red totalmente conectada tendrá una capa de entrada (para recibir los datos de entrenamiento), una capa de salida, y las capas intermedias entre ellas recibirán el nombre de capas ocultas. 
+Las neuronas se suelen agrupar por capas, de tal forma que la salida de una compone la entrada de la siguiente, formando así modelos más sofisticados. En la Figura \ref{fig:capa_neuronas}, se puede ver cómo la salida de la neurona C se obtiene tomando como entrada la salida de las neuronas $M_1, M_2, ..., M_N$.\\
+En este proyecto se desarrollarán redes neuronales para tareas de clasificación multiclase. Para clasificar N clases distintas, la capa de salida tendrá N neuronas. De esta forma, nuestra red totalmente conectada tendrá una capa de entrada (para recibir los datos de entrenamiento), una capa de salida, y las capas intermedias entre estas dos recibirán el nombre de capas ocultas. 
 
 \subsection{Funciones de activación}
 
-Una función de activación en el contexto de las redes neuronales es una función matemática aplicada a la salida de una neurona. Su objetivo consiste en introducir no linealidad en el modelo, permitiendo que la red aprenda e identifique patrones complejos en los datos. Sin no linealidad, una red neuronal se comportaría esencialmente como un modelo de regresión lineal, independientemente del número de capas que tenga \cite{funcion_activacion_definicion}.
+Una función de activación, en el contexto de las redes neuronales, es una función matemática f que se aplica al resultado de sumar el producto escalar del vector de entrada y el vector de pesos con el sesgo para obtener la salida de una neurona. Su objetivo consiste en introducir no linealidad en el modelo, permitiendo que la red aprenda e identifique patrones complejos en los datos. Sin no linealidad, una red neuronal se comportaría esencialmente como un modelo de regresión lineal, independientemente del número de capas que tenga \cite{funcion_activacion_definicion}. Introduciremos a continuación una serie de funciones de activación de interés:
 
-\subsubsection{ReLU}
+\subsubsection{Función ReLU}
 
 \begin{gather}
 	ReLU(x) = max(0, x)
@@ -68,11 +68,11 @@ Una función de activación en el contexto de las redes neuronales es una funci�
 	\label{fig:ReLU}
 \end{figure}
 
-A cambio de un bajo coste computacional, la función de activación ReLU (Figura \ref{fig:ReLU}) aporta no linealidad a la neurona, permitiendo a esta aprender funciones de mayor complejidad. \\
-Como su gradiente es 0 o 1 (0 para valores negativos, 1 para valores positivos), evita una reducción excesiva del mismo para valores positivos, mitigando así el problema del desvanecimiento del gradiente, caracterizado por la presencia de gradientes muy pequeños en retropropagación (se analizará con detalle en secciones posteriores) y provocar un aprendizaje lento \cite{ReLU}. \\
+A cambio de un bajo coste computacional, la función de activación ReLU (véase la Figura \ref{fig:ReLU}) aporta no linealidad a la neurona, permitiendo a esta aprender funciones de mayor complejidad. \\
+Como su gradiente es 0 ó 1 (0 para valores negativos, 1 para valores positivos), evita una reducción excesiva del mismo para valores positivos, mitigando así el problema del desvanecimiento del gradiente, caracterizado por la presencia de gradientes muy pequeños en retropropagación (se analizará esto con detalle en secciones posteriores) y provocar un aprendizaje lento \cite{ReLU}. \\
 Además, tal y como sugieren los expertos, se empleará ReLU como función de activación en las capas intermedias de los modelos a implementar \cite{importancia_ReLU} \cite{importancia_ReLU_2}. 
 
-\subsubsection{Sigmoide}
+\subsubsection{Función Sigmoide}
 
 \begin{gather}
 	sigmoide(x) = \frac{1}{1+e^{-x}}
@@ -85,7 +85,7 @@ Además, tal y como sugieren los expertos, se empleará ReLU como función de ac
 	\label{fig:Sigmoide}
 \end{figure}
 
-La función de activación Sigmoide se trata de una función interesante en el ámbito de la clasificación binaria, pues se caracteriza por transformar un valor de entrada en una salida comprendida en el rango [0-1] , tal y como se muestra en la Figura \ref{fig:Sigmoide}. \\
+Se define la función de activación Sigmoide como una función interesante en el ámbito de la clasificación binaria, pues es caracterizada por transformar un valor de entrada en una salida perteneciente al rango [0-1] , tal y como se muestra en la Figura \ref{fig:Sigmoide}. \\
 Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a saturarse con valores extremos (positivos o negativos). Por tanto, su aplicación dependerá del caso concreto a tratar. \cite{Sigmoide}
 
 \subsection{Capa SoftMax}
@@ -97,36 +97,36 @@ Aunque sea monótona creciente y diferenciable en todos los puntos, tiende a sat
 	\label{fig:SoftMax}
 \end{figure}
 
-La función SoftMax se suele emplear en la capa de salida de la red. Se caracteriza por, para n entradas, producir n salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, cada salida i se puede interpretar como la probabilidad de pertenencia a la clase i, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
+La función SoftMax se suele emplear en la capa de salida de la red. Se caracteriza por, para N entradas, producir N salidas con valores en el rango [0-1] que mantienen la proporción de entrada y cuya suma es 1. Por tanto, cada salida i se puede interpretar como la probabilidad de pertenencia a la clase i, siendo especialmente útil en clasificación multiclase. \cite{SoftMax_MLM} \\
 De esta forma, en la Figura \ref{fig:SoftMax} se muestra un ejemplo de clasificación multiclase con 3 clases distintas. \\
-Para una entrada dada, el modelo estima que esta pertenece a la clase 0, pues este según este, dicha entrada presenta un 0.72\% de probabilidades de pertenecer a la clase 0, un 0.01\% a la clase 1, y un 0.26\% a la clase 2.
+Para una entrada dada, el modelo estima que esta pertenece a la clase 0, pues según este, dicha entrada presenta un 72\% de probabilidad de pertenecer a la clase 0, un 1\% a la clase 1, y un 26\% a la clase 2.
 
 
 \subsection{Tipos de codificaciones de etiquetas}
 
-En el campo de machine learning existen varios tipos de codificaciones. Así, para codificar 3 clases distintas se podrían codificar o bien mediante \{1, 2, 3\}, o mediante \{100, 010, 001\} (codificación one-hot), por ejemplo. En este proyecto se empleará la codificación one-hot por simplicidad y coincidir con la gran mayoría de bibliografía online.
+En el campo del machine learning existen varios tipos de codificaciones. Así, para codificar 3 clases distintas se podrían codificar o bien mediante \{1, 2, 3\}, o mediante \{100, 010, 001\} (codificación one-hot \cite{one_hot}), por ejemplo. En este proyecto se empleará la codificación one-hot por simplicidad y seguir el mismo enfoque seguido en la gran mayoría de bibliografía online.
 
 \subsection{Función de error o pérdida}
 
-En modelos de aprendizaje automático se suele emplear una función de optimización iterativa como descenso del gradiente (se muestra en el siguiente apartado) para, a partir de una función de error y unos datos de entrada, estimar el error del modelo sobre los mismos, y poder emplear dicha información para ir reduciendo el error iteración a iteración y así ir aprendiendo. 
+En modelos de aprendizaje automático se suele emplear una función de optimización iterativa como descenso del gradiente (se muestra en el siguiente apartado) para, a partir de una función de error y unos datos de entrada, estimar el error del modelo sobre los mismos. Esta estimación del error se puede emplear para ir reduciendo el error iteración a iteración y así ir aprendiendo. 
 
 \subsubsection{Entropía Cruzada}
 
 \begin{gather}
-	E(y, \hat{y}) = - \sum_{i=1}^{H}  [y_i * log( \hat{y}_i)]
+	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i * log( \hat{y}_i)]
 	\label{fig:loss_func_softmax}
 \end{gather}
 
-En los modelos a desarrollar en este proyecto se empleará Entropía Cruzada como función de error por ser una métrica empleada en aprendizaje automático para medir qué tan bien se desempeña un modelo de clasificación. La pérdida o error se mide como un valor en el rango [0-1], siendo 0 un modelo perfecto y 1 otro totalmente erróneo. \cite{Cross_entropy}
+En los modelos a desarrollar en este proyecto se empleará la Entropía Cruzada como función de error por ser una métrica empleada en aprendizaje automático para medir las prestaciones de un modelo de clasificación. La pérdida o error se mide como un valor en el rango [0-1], siendo 0 un modelo perfecto y 1 otro totalmente erróneo. \cite{Cross_entropy}
 
-En la fórmula \ref{fig:loss_func_softmax} se muestra el cálculo de la misma, donde H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$, $y_i$ representa la etiqueta real de la entrada $x_i$ empleada, y $\hat{y}_i$ representa la etiqueta que el modelo predijo dicha entrada $x_i$.  \\
+En la fórmula \ref{fig:loss_func_softmax} se muestra la fórmula para el cálculo de la entropía cruzada, donde H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$, $y_i$ representa la etiqueta real de la entrada $x_i$ empleada, e $\hat{y}_i$ representa la etiqueta que el modelo predijo para dicha entrada $x_i$.  \\
 
 \subsubsection{Importancia de la función de error en el aprendizaje}
 
-Para visualizar el papel de la función de error en el aprendizaje de un modelo, supondremos que los datos actuales cuentan con H=3 clases tal que para un $x_i \in X$ dado y empleando la codificación One-Hot para las etiquetas se tiene que $y_i = [0, 0, 1]$. 
+Para visualizar el papel de la función de error en el aprendizaje de un modelo, supondremos que los datos actuales cuentan con N=3 clases tal que, para un $x_i \in X$ dado y empleando la codificación One-Hot para las etiquetas, se tiene que $y_i = [0, 0, 1]$. 
 
 \begin{gather}
-	E(y, \hat{y}) = - \sum_{i=1}^{H}  [y_i * log( \hat{y}_i)] = 0 + 0 + log(0.1) = -log(0.1) = 2.3
+	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i * log( \hat{y}_i)] = 0 + 0 + log(0.1) = -log(0.1) = 2.3
 	\label{ejemplo_1}
 \end{gather}
 
@@ -134,12 +134,12 @@ Como la configuración inicial del modelo es desconocida, se supone que sus pred
 Por tanto, su función de error indicaría que el error obtenido viene dado por la fórmula \ref{ejemplo_1}.
 
 \begin{gather}
-	E(y, \hat{y}) = - \sum_{i=1}^{H}  [y_i * log( \hat{y}_i)] = 0 + 0 + log(0.6) = -log(0.6) = 0.5
+	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i * log( \hat{y}_i)] = 0 + 0 + log(0.6) = -log(0.6) = 0.5
 	\label{ejemplo_2}
 \end{gather}
 
 Tras entrenar el modelo durante varias iteraciones, $y_i$ permanece constante, pero $\hat{y_i}$ se modifica a $\hat{y_i} = [0.1, 0.3, 0.6]$, de forma que el nuevo error obtenido vendría dado por la fórmula \ref{ejemplo_2}, y ahora el modelo realizaría una predicción correcta sobre la clase de $x_i$, aunque todavía le quedaría margen de mejora pues el error es de 0.5 y este se puede minimizar. \\
-De esta forma, se visualiza como a lo largo del entrenamiento de un modelo este se centra en reducir el error obtenido, y como consecuencia de ello va modificando sus predicciones de tal forma que se vayan ajustando a lo especificado por sus datos de entrada y etiquetas asociadas.
+De esta forma, se visualiza como, a lo largo del entrenamiento de un modelo, este se centra en reducir el error obtenido, y como consecuencia de ello va modificando sus predicciones, de tal forma que se vayan ajustando a lo especificado por sus datos de entrada y etiquetas asociadas.
 
 
 % https://medium.com/mlearning-ai/understanding-loss-functions-for-classification-81c19ee72c2a
@@ -153,8 +153,8 @@ De esta forma, se visualiza como a lo largo del entrenamiento de un modelo este 
 	\label{fig:SGD}
 \end{figure}
 
-Tal y como se comentaba anteriormente, se trata de un método de optimización iterativo que busca el mínimo en una función diferenciable. En la figura \ref{fig:SGD} se muestra un ejemplo del mismo, donde la función objetivo hace referencia a la función de pérdida, y cada punto sobre ella representa una iteración del algoritmo, indicando como el error del modelo sobre la muestra se va reduciendo con cada iteración. \\
-Su nombre viene del término 'gradiente', siendo este una generalización multivariable de la derivada y denominado por el símbolo $\nabla$. Para una función f y un punto p, este indica la dirección del máximo incremento en la misma. El descenso del gradiente usa esta información para, una vez obtenido el gradiente, desplazarse en dirección contraria, es decir, en dirección del mínimo. Además, la distancia que se recorre en cada iteración viene dada por un hiperparámetro denominado ``learning rate'' o $\alpha$ \cite{SGD_1} \cite{Gradiente} \cite{SGD_2}. \\
+Tal y como se comentaba anteriormente, el descenso del gradiente es un método de optimización iterativo que busca el mínimo en una función diferenciable. En la figura \ref{fig:SGD} se muestra un ejemplo del mismo, donde la función objetivo a minimizar hace referencia a la función de pérdida, y cada punto sobre ella representa una iteración del algoritmo, indicando cómo el error del modelo sobre la muestra se va reduciendo con cada iteración. \\
+Su nombre viene del término 'gradiente', siendo este una generalización multivariable de la derivada y denominado por el símbolo $\nabla$. Para una función f y un punto p, este indica la dirección del máximo incremento en la misma. El descenso del gradiente usa esta información para, una vez obtenido el gradiente, desplazarse en dirección contraria, es decir, en dirección del mínimo. Además, la distancia que se recorre en cada iteración viene dada por un hiperparámetro alpha denominado ``learning rate'' \cite{SGD_1} \cite{Gradiente} \cite{SGD_2}. \\
 A diferencia de los parámetros de un modelo (pesos y sesgos), sus hiperparámetros son establecidos por el usuario y no se ``aprenden'' durante el entrenamiento del modelo.
 
 
@@ -170,7 +170,7 @@ De la misma forma, se vuelve a seguir la bibliografía, indicando esta vez una i
 El procedimiento para entrenar una red neuronal consiste en, para una entrada $x_i$ y una etiqueta asociada $y_i$, emplear $x_i$ para realizar una predicción $\hat{y}_i$ (Propagación hacia delante de $x_i$ por la red) que posteriormente se podrá comparar con $y_i$ mediante una función de error H(x) y obtener una medida de lo buena o mala que fue la misma. Una vez obtenido dicho ``error'', se aplica el algoritmo del descenso del gradiente para obtener el gradiente de la pérdida respecto a cada parámetro de la red (Retropropagación) \cite{Cross_entropy}. \\
 
 \begin{gather}
-	W_{t+1} = W_{t} - \alpha * \frac{\partial H(x)}{\partial W_{t}} 
+	W^{t+1}_i = W^{t}_i - \alpha * \frac{\partial H(x)}{\partial W_{i}} 
 	\label{act_pesos}
 \end{gather}
 
@@ -180,8 +180,8 @@ El procedimiento para entrenar una red neuronal consiste en, para una entrada $x
 \end{gather}
 
 
-Así, se actualizarán los parámetros de la red neuronal (pesos y sesgos) según las fórmulas \ref{act_pesos} y \ref{act_bias}. En ellas, $W_t$ y $b_t$ indican los valores del peso W y bias b en el instante o iteración t, de la misma forma que $W_{t+1}$ y $b_{t+1}$ representan los valores de los mismos en el instante t+1 \cite{SGD_act_params}. \\
-Es decir, dada una iteración t y unos datos de entrada X, primero se realiza la propagación hacia delante de los mismos a lo largo del modelo para obtener  $\hat{Y}$ o la predicción de los mismos. Una vez obtenida $\hat{Y}$, se emplea la función de error para obtener el error del modelo sobre los datos de entrada y, con ello, se realiza la retroprogacación del gradiente de la pérdida o error a lo largo del modelo, de forma que cada parámetro del mismo obtenga el gradiente de la pérdida respecto a él. Una vez cada parámetro tiene su gradiente respecto a la pérdida, lo emplea junto con $\alpha$ para actualizar su valor, dirigiéndose en dirección contraria al gradiente en una magnitud igual a $\alpha$ y poder reducir el posterior error en la iteración t+1. Los parámetros se actualizan una vez por iteración, tras realizar la retropropagación.
+Así, se actualizarán los parámetros de la red neuronal (pesos y sesgos) según las fórmulas \ref{act_pesos} y \ref{act_bias}. En ellas, $W^t_i$ y $b_t$ indican los valores del peso $W_i$ y bias b en el instante o iteración t, de la misma forma que $W^{t+1}_i$ y $b_{t+1}$ representan los valores de los mismos en el instante t+1 \cite{SGD_act_params}. \\
+Es decir, dada una iteración t y unos datos de entrada X, primero se realiza la propagación hacia delante de los mismos a lo largo del modelo para obtener  $\hat{Y}$ o la predicción de los mismos. Una vez obtenida $\hat{Y}$, se emplea la función de error para obtener el error del modelo sobre los datos de entrada. Con ello, se realiza la retropropagación del gradiente de la pérdida o error a lo largo del modelo, de forma que cada parámetro del mismo obtenga el gradiente de la pérdida respecto a él. Una vez cada parámetro tiene asociado su gradiente respecto a la pérdida, lo emplea junto con $\alpha$ para actualizar su valor, dirigiéndose en sentido contrario al gradiente con una magnitud igual a $\alpha$, permitiendo así la reducción del error en la iteración t+1. Los parámetros se actualizan una vez por iteración, tras realizar la retropropagación.
 
 \subsubsection{Descenso del gradiente estocástico}
 
@@ -203,17 +203,37 @@ Es decir, dada una iteración t y unos datos de entrada X, primero se realiza la
 	\end{algorithmic}
 \end{algorithm}
 
-Es una variante que sustituye el gradiente real por una estimación del mismo, logrando reducir la carga computacional y tiempo de entrenamiento a cambio de una menor tasa de convergencia \cite{sgd_stocastico} \cite{sgd_stocastico_1}. \\
-Se caracteriza por, en cada época, dividir el conjunto de entrenamiento en varios subconjuntos aleatorios y disjuntos entre ellos (minibatch). \\
-Para cada minibatch, se realiza la propagación hacia delante, cálculo de error, retropropagación y actualización de parámetros en ese orden. Se define como época la iteración del modelo por todos los minibatches \cite{sgd_stocastico}. \\
+El descenso del gradiente estocástico es una variante que sustituye el gradiente real por una estimación del mismo, logrando reducir la carga computacional y tiempo de entrenamiento a cambio de una menor tasa de convergencia \cite{sgd_stocastico} \cite{sgd_stocastico_1}. \\
+Se caracteriza por, en cada época (un paso completo a través de todo el conjunto de datos de entrenamiento durante el proceso de aprendizaje \cite{sgd_stocastico}), dividir el conjunto de entrenamiento en varios subconjuntos aleatorios y disjuntos entre ellos (minibatch). \\
+Para cada minibatch, se realiza la propagación hacia delante, el cálculo del error, la retropropagación y la actualización de parámetros en ese orden. \\
 
 \section{Redes Neuronales Convolucionales}
 
-Las redes neuronales convolucionales surgen como una adaptación de las redes neuronales totalmente conectadas ante el caso concreto de tratamiento de imágenes. Ambas comparten la ideología de contar con una serie de neuronas artificiales distribuidas por capas de forma de la salida de la capa i sea la entrada de la capa i+1. Su principal diferencia reside en los datos de entrada y en las operaciones que se realizan en cada capa. Por ello, en secciones posteriores se introducirán en detalle dos nuevas capas (capa convolucional y capa de agrupación máxima), cada una caracterizada por realizar un tipo de operación distinto.
+Las redes neuronales convolucionales \cite{CNN_definicion} surgen como una adaptación de las redes neuronales totalmente conectadas para el caso concreto de tratamiento de imágenes. Ambas comparten la idea de contar con una serie de neuronas artificiales distribuidas por capas de forma de la salida de la capa i sea la entrada de la capa i+1. Su principal diferencia reside en los datos de entrada y en las operaciones que se realizan en cada capa. Por ello, en secciones posteriores, se introducirán en detalle dos nuevas capas (capa convolucional y capa de agrupación máxima), cada una caracterizada por realizar un tipo de operación distinto.
 
 \subsection{Introducción a CNNs \label{intro_CNN}}
 
-Las redes neuronales convolucionales (CNN, Convolutional Neural Network) se caracterizan por trabajar con volúmenes de datos 3D. En este proyecto, se emplearán imágenes RGB como entrada para cada CNN. Por tanto, por simplificar la nomenclatura, cada capa 2D de un volumen 3D se denominará como imagen o imagen 2D, pues una imagen RGB se trata de 3 imágenes 2D, una por color. Además, la entrada de cada capa se define como X o X(C*H*W) y en ambos casos cuenta con unas dimensiones de C*H*W, siendo C el número de canales de profundidad, H el número de filas y W el número de columnas de dicho volumen 3D. De la misma forma, se define el volumen de salida como Y($M*H_{out}*W_{out}$). En cuanto a los pesos de la capa convolucional, cada filtro o kernel se denominará mediante un símbolo/s diferente/s (K,K1, G, etc), pues cada uno puede presentar unos valores diferentes. Aun así, se podrá definir a un filtro de pesos como K1(K*K), indicando que posee K filas y columnas. Además, también se trata de una estructura con 3 dimensiones. Sin embargo, no se requiere especificar el número de canales de profundidad de un kernel de pesos pues siempre será C (depende de X). De la misma forma, el número de filtros a aplicar sobre X recibe el nombre de M, y el tamaño de Y depende de este, pues tal y como se verá posteriormente, cada filtro genera una canal de profundidad distinto de la salida Y. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.2]{imagenes/conv_dims.jpg}  
+	\caption{Esquema de las dimensiones en una capa convolucional de una red neuronal convolucional}
+	\label{fig:Dimensiones_convolucion}
+\end{figure}
+
+
+Las redes neuronales convolucionales (CNN, Convolutional Neural Network) se distinguen por su capacidad para trabajar con volúmenes de datos 3D. En este proyecto, se emplearán imágenes RGB como entrada para cada CNN. De este modo, cada imagen RGB puede interpretarse como un conjunto de capas 2D. De esta manera, si definimos X como un volumen 3D que representa una imagen RGB, X estará compuesto por 3 imágenes 2D, cada una correspondiente a un color (rojo, verde y azul). 
+Adicionalmente, las dimensiones de X se definen como H (filas), W (columnas) y C(canales de profundidad), o, de forma abreviada, X(H,W,C) (véase la Figura \ref{fig:Dimensiones_convolucion}). \\
+De manera equivalente, en una capa convolucional, los kernels de pesos se definen como $\{K_1, K_2, ..., K_M\}$ o $\{K_1(K,K), K_2(K,K), ..., K_M(K,K)\}$, donde cada uno de ellos tendrá K filas y K columnas. \\
+Finalmente, en cada capa de una red neuronal convolucional, se define el volumen de salida como Y o Y($H_{out}, W_{out}, M$), y estará compuesto de $H_{out}$ filas, $W_{out}$ columnas, y M canales de profundidad, (uno por kernel de pesos).
+
+\subsection{Tipos de capas}
+
+\begin{enumerate}[label=\textbullet]
+	\item \textbf{Capa convolucional}: La capa convolucional, extrae características de la entrada X mediante la operación de convolución, y esta se realiza con un filtro de tamaño KxK. De esta manera, genera un mapa de características de salida (Y), que preserva la relación espacial entre los píxeles, y resalta elementos clave como bordes y esquinas.
+	\item \textbf{Capa de agrupación máxima}: Se define como capa de agrupación máxima, aquella centrada en reducir la dimensionalidad de la entrada. Dicha reducción se obtiene al seleccionar, dentro de una región definida de la entrada, el valor máximo, preservando así las características más relevantes. Esta operación no solo disminuye la complejidad computacional, sino que también contribuye a que la red sea más invariante a pequeñas traslaciones en la entrada.
+	\item \textbf{Capa de aplanado}: Se define como capa de aplanado aquella que transforma un volumen tridimensional en un vector unidimensional. De este modo, facilita la transición de las características extraídas por capas convolucionales y de agrupamiento hacia capas totalmente conectadas.
+	\item \textbf{Capa totalmente conectada}: Se define como capa totalmente conectada aquella en la que cada neurona está conectada a todas las neuronas de la capa anterior y posterior. De este modo, permite la combinación de todas las características extraídas para realizar la clasificación multiclase que se llevará a cabo en este proyecto.
+\end{enumerate}
 
 \subsection{Capa convolucional}
 
@@ -260,7 +280,7 @@ Una capa convolucional parte de un volumen de entrada X, un kernel de filtros K,
 \end{figure}
 
 Una convolución entre 2 volúmenes de datos X y K, consiste en ``deslizar K sobre X'' tal y como se muestra en la Figura \ref{fig:forward_prop_convolucional}. 
-De esta forma, en cada ``paso'' se recorren ambos volúmenes, multiplicando los elementos de X y K que se encuentren superpuestos en la misma posición. Posteriormente, se suma cada resultado obtenido, además de un sesgo B y finalmente aplicar una función de activación \cite{capa_convolucional}. \\
+De esta forma, en cada ``paso'' se recorren ambos volúmenes, multiplicando los elementos de X y K que se encuentren superpuestos en la misma posición. Posteriormente, se suma cada resultado obtenido, además de un sesgo B y finalmente se aplica una función de activación \cite{capa_convolucional}. \\
 Por simplicidad inicial, en la Figura \ref{fig:forward_prop_convolucional} se emplea un volumen X con un solo canal de profundidad. Sin embargo, este no es el caso común. Por tanto, se denotará como $X^{c}_{ij}$ al elemento de X que se encuentre en la posición (i,j) del canal de profundidad c. De la misma forma, se definirá $K^{c}_{ij}$ como el peso $k \in K$ que se encuentre en la posición (i, j) del canal de profundidad c del kernel de pesos K \cite{capa_convolucional_Stanford}.
 
 \subsubsection{Propagación hacia delante de X con varios canales de profundidad}
@@ -288,8 +308,17 @@ Por simplicidad inicial, en la Figura \ref{fig:forward_prop_convolucional} se em
 	\label{fig:forward_prop_convolucional_canales_profundidad}
 \end{figure}
 
-De esta forma, en la Figura \ref{fig:forward_prop_convolucional_canales_profundidad} se muestra como una convolución con C canales de profundidad se descompone en la suma de C convoluciones con un canal de profundidad. \\ Para una entrada X con C canales de profundidad, convolución\_C\_canales(X,K) = convolución\_1\_canal($X^1,K^1$) + convolución\_1\_canal($X^2,K^2$) + ... + convolución\_1\_canal($X^C,K^C$). \\
+De esta forma, en la Figura \ref{fig:forward_prop_convolucional_canales_profundidad} se muestra como una convolución con C canales de profundidad se descompone en la suma de C convoluciones con un canal de profundidad (véase la fórmula \ref{descomposicion_convoluciones_C_canales}).  \\
 Por último, en cada ``paso'' del ``deslizamiento'' se suma un solo sesgo y se aplica una sola vez la función de activación, independientemente del número de canales de profundidad que presente la entrada X.
+
+\begin{equation}
+	\begin{split}
+		\text{convolucion\_C\_canales}(X,K) = \text{convolucion\_1\_canal}(X^1,K^1) + \\
+		\text{convolucion\_1\_canal}(X^2,K^2) + \cdots + \text{convolucion\_1\_canal}(X^C,K^C)
+	\end{split}
+	\label{descomposicion_convoluciones_C_canales}
+\end{equation}
+
 
 \subsubsection{Propagación hacia delante de X con varios filtros}
 
@@ -315,7 +344,7 @@ En la Figura \ref{fig:forward_prop_convolucional_varios_kernels} se observa como
 \subsubsection{Relleno o ``Padding''}
 
 En la figura \ref{fig:forward_prop_convolucional} se visualiza como al realizar una convolución entre un volumen X con dimensiones 1x4x4 y un kernel de pesos K con dimensiones 1x3x3, el resultado obtenido es un volumen Y de dimensiones 1x2x2. La reducción de dimensionalidad es un problema pues afecta directamente al número de convoluciones que se pueden aplicar sobre un volumen. \\
-Por tanto, el ``relleno' o ``padding'' se aplica antes de realizar una convolución y es una técnica empleada para conservar las dimensiones espaciales de un volumen de entrada X, expandiendo cada canal del mismo tal y como se muestra en la figura \ref{fig:padding} \cite{padding_1}.
+Por tanto, el ``relleno' o ``padding'' \cite{padding_definicion} se aplica antes de realizar una convolución y es una técnica empleada para conservar las dimensiones espaciales de un volumen de entrada X, expandiendo cada canal del mismo tal y como se muestra en la figura \ref{fig:padding} \cite{padding_1}.
 
 \begin{figure}[H]
 	\centering
@@ -337,7 +366,7 @@ De esta forma, un relleno a un nivel sobre un volumen añadirá sobre el mismo d
 
 \subsubsection{Relleno completo}
 
-Se denomina como relleno completo aquel que asegura que cada valor o casilla de X sea visitada el mismo número de veces que el resto en una operación de convolución \cite{padding_2}.
+Se denomina como relleno completo \cite{full_padding_definicion} \cite{padding_2} aquel que asegura que cada valor o casilla de X sea visitada el mismo número de veces que el resto en una operación de convolución.
 
 \begin{figure}[H]
 	\centering

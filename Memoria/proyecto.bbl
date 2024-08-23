@@ -194,6 +194,19 @@ Hsuan-Tien~Lin Yaser S. Abu-Mostafa, Malik Magdon-Ismail.
 \newblock California Institute of Technology Pasadena, CA 91125, USA, 1
   edition, 2012.
 
+\bibitem{aprendizaje_supervisado}
+IBM.
+\newblock ¿qué es el aprendizaje supervisado?, 2024.
+\newblock \url{https://www.ibm.com/es-es/topics/supervised-learning}
+  [Accessed:22/08/2024].
+
+\bibitem{etiquetas}
+Interactive Chaos.
+\newblock ¿qué es el aprendizaje supervisado?, 2024.
+\newblock
+  \url{https://interactivechaos.com/es/manual/tutorial-de-machine-learning/etiquetas}
+  [Accessed:22/08/2024].
+
 \bibitem{NN_intro}
 IBM.
 \newblock ¿qué son las redes neuronales?, 2024.
@@ -241,6 +254,13 @@ Jason Brownlee.
 \newblock
   \url{https://machinelearningmastery.com/softmax-activation-function-with-python/}
   [Accessed:24/02/2024].
+
+\bibitem{one_hot}
+Interactive Chaos.
+\newblock One hot encoding, 2024.
+\newblock
+  \url{https://interactivechaos.com/es/manual/tutorial-de-machine-learning/one-hot-encoding}
+  [Accessed:22/08/2024].
 
 \bibitem{Cross_entropy}
 Saurav Maheshkar.
@@ -340,11 +360,24 @@ Stanford.
 \newblock \url{https://cs231n.github.io/convolutional-networks/}
   [Accessed:19/03/2024].
 
+\bibitem{padding_definicion}
+DeepAI.
+\newblock Understanding padding in machine learning, 2024.
+\newblock \url{https://deepai.org/machine-learning-glossary-and-terms/padding}
+  [Accessed:23/08/2024].
+
 \bibitem{padding_1}
 savyakhosla.
 \newblock Cnn | introduction to padding, 2024.
 \newblock \url{https://www.geeksforgeeks.org/cnn-introduction-to-padding/}
   [Accessed:02/04/2024].
+
+\bibitem{full_padding_definicion}
+Avinash Kumar.
+\newblock Full padding, 2020.
+\newblock
+  \url{https://www.researchgate.net/figure/Full-padding-and-same-padding-10_fig5_337287600}
+  [Accessed:23/08/2024].
 
 \bibitem{padding_2}
 Avinash Kumar, Sobhangi Sarkar, and Chittaranjan Pradhan.
