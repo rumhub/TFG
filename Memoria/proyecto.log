@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  23 AUG 2024 11:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  23 AUG 2024 13:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1364,96 +1364,99 @@ Overfull \hbox (66.88553pt too wide) in paragraph at lines 553--555
 []  [] 
  []
 
-LaTeX Info: Redefining \. on input line 568.
-LaTeX Info: Redefining \% on input line 568.
+LaTeX Info: Redefining \. on input line 563.
+LaTeX Info: Redefining \% on input line 563.
 [24 <./imagenes/maxpool_2capas_1.jpg> <./imagenes/maxpool_2capas_2.jpg> <./imag
 enes/back_maxpool_1.jpg> <./imagenes/back_maxpool_2.jpg> <./imagenes/back_maxpo
 ol_3.jpg> <./imagenes/back_maxpool_4.jpg>]
-LaTeX Info: Redefining \. on input line 587.
-LaTeX Info: Redefining \% on input line 587.
- [25]
-<imagenes/flatten_1.jpg, id=940, 1575.8875pt x 455.7025pt>
+<imagenes/flatten_1.jpg, id=929, 1575.8875pt x 455.7025pt>
 File: imagenes/flatten_1.jpg Graphic file (type jpg)
 <use imagenes/flatten_1.jpg>
-Package pdftex.def Info: imagenes/flatten_1.jpg  used on input line 592.
+Package pdftex.def Info: imagenes/flatten_1.jpg  used on input line 583.
 (pdftex.def)             Requested size: 360.0pt x 104.10011pt.
 
-Overfull \hbox (153.98059pt too wide) in paragraph at lines 591--593
+Overfull \hbox (153.98059pt too wide) in paragraph at lines 582--584
 []  [] 
  []
 
-<imagenes/flatten_2.jpg, id=941, 1575.8875pt x 455.7025pt>
+<imagenes/flatten_2.jpg, id=930, 1575.8875pt x 455.7025pt>
 File: imagenes/flatten_2.jpg Graphic file (type jpg)
 <use imagenes/flatten_2.jpg>
-Package pdftex.def Info: imagenes/flatten_2.jpg  used on input line 597.
+Package pdftex.def Info: imagenes/flatten_2.jpg  used on input line 588.
 (pdftex.def)             Requested size: 360.0pt x 104.10011pt.
 
-Overfull \hbox (153.98059pt too wide) in paragraph at lines 596--598
-[]  [] 
- []
-
-<imagenes/back_flatten_1.jpg, id=944, 1601.985pt x 477.785pt>
-File: imagenes/back_flatten_1.jpg Graphic file (type jpg)
-<use imagenes/back_flatten_1.jpg>
-Package pdftex.def Info: imagenes/back_flatten_1.jpg  used on input line 614.
-(pdftex.def)             Requested size: 360.0pt x 107.36575pt.
-
-Overfull \hbox (97.07507pt too wide) in paragraph at lines 613--615
-[]  [] 
- []
-
-<imagenes/back_flatten_2.jpg, id=945, 1601.985pt x 477.785pt>
-File: imagenes/back_flatten_2.jpg Graphic file (type jpg)
-<use imagenes/back_flatten_2.jpg>
-Package pdftex.def Info: imagenes/back_flatten_2.jpg  used on input line 619.
-(pdftex.def)             Requested size: 360.0pt x 107.36575pt.
-
-Overfull \hbox (97.07507pt too wide) in paragraph at lines 618--620
+Overfull \hbox (153.98059pt too wide) in paragraph at lines 587--589
 []  [] 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+LaTeX Info: Redefining \. on input line 595.
+LaTeX Info: Redefining \% on input line 595.
+ [25]
+<imagenes/back_flatten_1.jpg, id=944, 1601.985pt x 477.785pt>
+File: imagenes/back_flatten_1.jpg Graphic file (type jpg)
+<use imagenes/back_flatten_1.jpg>
+Package pdftex.def Info: imagenes/back_flatten_1.jpg  used on input line 605.
+(pdftex.def)             Requested size: 360.0pt x 107.36575pt.
+
+Overfull \hbox (97.07507pt too wide) in paragraph at lines 604--606
+[]  [] 
+ []
+
+<imagenes/back_flatten_2.jpg, id=945, 1601.985pt x 477.785pt>
+File: imagenes/back_flatten_2.jpg Graphic file (type jpg)
+<use imagenes/back_flatten_2.jpg>
+Package pdftex.def Info: imagenes/back_flatten_2.jpg  used on input line 610.
+(pdftex.def)             Requested size: 360.0pt x 107.36575pt.
+
+Overfull \hbox (97.07507pt too wide) in paragraph at lines 609--611
+[]  [] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+LaTeX Info: Redefining \. on input line 617.
+LaTeX Info: Redefining \% on input line 617.
+ [26 <./imagenes/flatten_1.jpg> <./imagenes/flatten_2.jpg>]
 LaTeX Info: Redefining \. on input line 626.
 LaTeX Info: Redefining \% on input line 626.
- [26 <./imagenes/flatten_1.jpg> <./imagenes/flatten_2.jpg>]
-LaTeX Info: Redefining \. on input line 635.
-LaTeX Info: Redefining \% on input line 635.
  [27 <./imagenes/back_flatten_1.jpg> <./imagenes/back_flatten_2.jpg>]
-LaTeX Info: Redefining \. on input line 663.
-LaTeX Info: Redefining \% on input line 663.
+LaTeX Info: Redefining \. on input line 654.
+LaTeX Info: Redefining \% on input line 654.
  [28]
 <imagenes/ejemplo_tensor.png, id=974, 405.515pt x 407.5225pt>
 File: imagenes/ejemplo_tensor.png Graphic file (type png)
 <use imagenes/ejemplo_tensor.png>
-Package pdftex.def Info: imagenes/ejemplo_tensor.png  used on input line 673.
+Package pdftex.def Info: imagenes/ejemplo_tensor.png  used on input line 664.
 (pdftex.def)             Requested size: 202.75699pt x 203.76074pt.
 <imagenes/tensor_nchw.png, id=976, 396.48125pt x 157.58875pt>
 File: imagenes/tensor_nchw.png Graphic file (type png)
 <use imagenes/tensor_nchw.png>
-Package pdftex.def Info: imagenes/tensor_nchw.png  used on input line 688.
+Package pdftex.def Info: imagenes/tensor_nchw.png  used on input line 679.
 (pdftex.def)             Requested size: 198.24013pt x 78.79417pt.
 
 Underfull \vbox (badness 2103) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 692.
-LaTeX Info: Redefining \% on input line 692.
+LaTeX Info: Redefining \. on input line 683.
+LaTeX Info: Redefining \% on input line 683.
  [29 <./imagenes/ejemplo_tensor.png>]
-LaTeX Info: Redefining \. on input line 723.
-LaTeX Info: Redefining \% on input line 723.
+LaTeX Info: Redefining \. on input line 714.
+LaTeX Info: Redefining \% on input line 714.
  [30 <./imagenes/tensor_nchw.png>]
-LaTeX Info: Redefining \. on input line 756.
-LaTeX Info: Redefining \% on input line 756.
+LaTeX Info: Redefining \. on input line 747.
+LaTeX Info: Redefining \% on input line 747.
  [31]
-LaTeX Info: Redefining \. on input line 790.
-LaTeX Info: Redefining \% on input line 790.
+LaTeX Info: Redefining \. on input line 781.
+LaTeX Info: Redefining \% on input line 781.
  [32]
-LaTeX Info: Redefining \. on input line 823.
-LaTeX Info: Redefining \% on input line 823.
+LaTeX Info: Redefining \. on input line 814.
+LaTeX Info: Redefining \% on input line 814.
  [33]
-LaTeX Info: Redefining \. on input line 858.
-LaTeX Info: Redefining \% on input line 858.
+LaTeX Info: Redefining \. on input line 849.
+LaTeX Info: Redefining \% on input line 849.
 
 [34]) (capitulos/03_Aportaciones.tex
 LaTeX Info: Redefining \. on input line 1.
@@ -3214,7 +3217,7 @@ Here is how much of TeX's memory you used:
  18287 strings out of 474485
  313350 string characters out of 5743734
  1951542 words of memory out of 5000000
- 39483 multiletter control sequences out of 15000+600000
+ 39487 multiletter control sequences out of 15000+600000
  567397 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,18n,84p,1333b,801s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -3242,9 +3245,9 @@ xyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 .pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
 cm/cmti10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (137 pages, 8780217 bytes).
+Output written on proyecto.pdf (137 pages, 8780718 bytes).
 PDF statistics:
- 2505 PDF objects out of 2984 (max. 8388607)
- 825 named destinations out of 1000 (max. 500000)
+ 2504 PDF objects out of 2984 (max. 8388607)
+ 821 named destinations out of 1000 (max. 500000)
  1080 words of extra memory for PDF output out of 10000 (max. 10000000)
 
