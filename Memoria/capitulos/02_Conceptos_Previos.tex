@@ -226,7 +226,23 @@ Adicionalmente, las dimensiones de X se definen como H (filas), W (columnas) y C
 De manera equivalente, en una capa convolucional, los kernels de pesos se definen como $\{K_1, K_2, ..., K_M\}$ o $\{K_1(K,K), K_2(K,K), ..., K_M(K,K)\}$, donde cada uno de ellos tendrá K filas y K columnas. \\
 Finalmente, en cada capa de una red neuronal convolucional, se define el volumen de salida como Y o Y($H_{out}, W_{out}, M$), y estará compuesto de $H_{out}$ filas, $W_{out}$ columnas, y M canales de profundidad, (uno por kernel de pesos).
 
-\subsection{Tipos de capas}
+\subsection{Estructura por capas}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{imagenes/CNN_estructura.jpg}  
+	\caption{Estructura por capas en una red neuronal convolucional}
+	\label{fig:CNN_estructura}
+\end{figure}
+
+La arquitectura básica de una CNN se compone de dos partes principales (véase la Figura \ref{fig:CNN_estructura}):
+
+\begin{enumerate} [label=\textbullet]
+	\item \textbf{Extracción de Características}: Se define como extracción de características, al proceso que emplea múltiples pares de capas convolucionales y de agrupamiento máxima. Estas, se emplean para reducir y resumir las características de especial importancia, presentes en el conjunto de datos original.
+	\item \textbf{Clasificación}: Una vez obtenido el resultado del proceso de extracción de características, en la etapa de clasificación, se emplea para predecir la clase de las imágenes de entrada. La capa totalmente conectada, realiza la clasificación final, combinando la información procesada en las etapas anteriores.
+\end{enumerate}
+
+A continuación, se define cada una de las capas involucradas en una red neuronal convolucional:
 
 \begin{enumerate}[label=\textbullet]
 	\item \textbf{Capa convolucional}: La capa convolucional, extrae características de la entrada X mediante la operación de convolución, y esta se realiza con un filtro de tamaño KxK. De esta manera, genera un mapa de características de salida (Y), que preserva la relación espacial entre los píxeles, y resalta elementos clave como bordes y esquinas.
