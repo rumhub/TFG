@@ -406,6 +406,26 @@ Piotr Skalski.
   \url{https://towardsdatascience.com/lets-code-convolutional-neural-network-in-plain-numpy-ce48e732f5d5}
   [Accessed:24/03/2024].
 
+\bibitem{openmp_intro}
+Arnab Chakraborty.
+\newblock What is openmp?, 2019.
+\newblock \url{https://www.tutorialspoint.com/what-is-openmp}
+  [Accessed:24/08/2024].
+
+\bibitem{openmp_directivas}
+Microsoft.
+\newblock Directivas de openmp, 2024.
+\newblock
+  \url{https://learn.microsoft.com/es-es/cpp/parallel/openmp/reference/openmp-directives?view=msvc-170}
+  [Accessed:24/08/2024].
+
+\bibitem{cuda_kernels}
+NVIDIA.
+\newblock Cuda c++ programming guide, 2024.
+\newblock
+  \url{https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html}
+  [Accessed:24/08/2024].
+
 \bibitem{cuDNN_core_concepts}
 NVIDIA.
 \newblock Nvidia cudnn, 2024.
