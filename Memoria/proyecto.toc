@@ -64,7 +64,7 @@
 \contentsline {section}{\numberline {3.2}Retropropagación en redes neuronales rotalmente conectadas}{43}{section.3.2}%
 \contentsline {subsection}{\numberline {3.2.1}Retropropagación en capa SoftMax, \cite {Cross_entropy_backprop} \cite {Cross_entropy_backprop_grad_input}}{43}{subsection.3.2.1}%
 \contentsline {subsubsection}{Cálculo del gradiente de la función de error}{44}{section*.60}%
-\contentsline {subsubsection}{Derivada de softmax respecto de su entrada, $\frac {\partial O_i}{\partial Z_k}$}{45}{section*.61}%
+\contentsline {subsubsection}{Derivada de softmax con respecto a su entrada, $\frac {\partial O_i}{\partial Z_k}$}{45}{section*.61}%
 \contentsline {subsubsection}{Caso $\frac {\partial S(Z_i)}{\partial Z_i}$}{45}{section*.62}%
 \contentsline {subsubsection}{Caso $\frac {\partial S(Z_i)}{\partial Z_j}$, con i $\neq $ j}{46}{section*.63}%
 \contentsline {subsubsection}{Combinación de casos}{46}{section*.64}%
@@ -77,23 +77,23 @@
 \contentsline {subsubsection}{Pesos capas entrada-h1}{51}{section*.75}%
 \contentsline {subsubsection}{Sesgos capa h1}{52}{section*.77}%
 \contentsline {subsubsection}{Capa de entrada}{52}{section*.78}%
-\contentsline {subsection}{\numberline {3.2.3}Retropropagación con 2 capas ocultas}{53}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.3}Retropropagación con 2 capas ocultas}{54}{subsection.3.2.3}%
 \contentsline {subsubsection}{Capa SoftMax}{54}{section*.82}%
-\contentsline {subsubsection}{Pesos capas h2-SoftMax}{54}{section*.84}%
+\contentsline {subsubsection}{Pesos capas h2-SoftMax}{55}{section*.84}%
 \contentsline {subsubsection}{Sesgos capa softmax}{55}{section*.86}%
-\contentsline {subsubsection}{Capa oculta h2}{55}{section*.87}%
+\contentsline {subsubsection}{Capa oculta h2}{56}{section*.87}%
 \contentsline {subsubsection}{Pesos capas h1-h2}{57}{section*.90}%
-\contentsline {subsubsection}{Sesgos capa h2}{57}{section*.92}%
+\contentsline {subsubsection}{Sesgos capa h2}{58}{section*.92}%
 \contentsline {subsubsection}{Capa oculta h1}{58}{section*.93}%
-\contentsline {subsubsection}{Pesos capa input-h1}{59}{section*.96}%
+\contentsline {subsubsection}{Pesos capa input-h1}{60}{section*.96}%
 \contentsline {subsubsection}{Sesgos capa h1}{60}{section*.98}%
-\contentsline {subsubsection}{Capa input}{60}{section*.99}%
-\contentsline {subsection}{\numberline {3.2.4}Conclusiones}{61}{subsection.3.2.4}%
+\contentsline {subsubsection}{Capa input}{61}{section*.99}%
+\contentsline {subsection}{\numberline {3.2.4}Conclusiones}{62}{subsection.3.2.4}%
 \contentsline {subsubsection}{Gradiente respecto a la entrada de la capa}{62}{section*.102}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{62}{section*.104}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{63}{section*.104}%
 \contentsline {subsubsection}{Gradiente respecto a sesgos}{63}{section*.106}%
-\contentsline {section}{\numberline {3.3}Paralelización mediante OpenMP}{63}{section.3.3}%
-\contentsline {subsubsection}{Tipos de paralelismo}{63}{section*.107}%
+\contentsline {section}{\numberline {3.3}Paralelización mediante OpenMP}{64}{section.3.3}%
+\contentsline {subsubsection}{Tipos de paralelismo}{64}{section*.107}%
 \contentsline {subsubsection}{Paralelismo en SGD}{64}{section*.108}%
 \contentsline {section}{\numberline {3.4}Retropropagación en redes neuronales convolucionales}{65}{section.3.4}%
 \contentsline {subsubsection}{Sumatoria de gradientes}{65}{section*.110}%

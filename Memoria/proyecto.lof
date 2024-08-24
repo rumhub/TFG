@@ -29,25 +29,25 @@
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Estructura de una red totalmente conectada con softmax en la última capa}}{44}{figure.caption.59}%
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{48}{figure.caption.66}%
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Retropropagación en la capa softmax}}{48}{figure.caption.68}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Retropropagación respecto a pesos entre la capa oculta y la capa SoftMax}}{49}{figure.caption.70}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Retropropagación con respecto a pesos entre la capa oculta y la capa SoftMax}}{49}{figure.caption.70}%
 \contentsline {figure}{\numberline {3.5}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}}{50}{figure.caption.73}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Retropropagación respecto a neuronas de la capa oculta h1}}{50}{figure.caption.74}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}}{51}{figure.caption.76}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Retropropagación con respecto a neuronas de la capa oculta h1}}{50}{figure.caption.74}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Retropropagación con respecto a los pesos entre la capa de entrada y la capa oculta h1}}{51}{figure.caption.76}%
 \contentsline {figure}{\numberline {3.8}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{52}{figure.caption.79}%
 \contentsline {figure}{\numberline {3.9}{\ignorespaces Retropropagación en la capa input}}{53}{figure.caption.80}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{53}{figure.caption.81}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{54}{figure.caption.81}%
 \contentsline {figure}{\numberline {3.11}{\ignorespaces Retropropagación en la capa softmax}}{54}{figure.caption.83}%
-\contentsline {figure}{\numberline {3.12}{\ignorespaces Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}}{54}{figure.caption.85}%
-\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{55}{figure.caption.88}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}}{55}{figure.caption.85}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{56}{figure.caption.88}%
 \contentsline {figure}{\numberline {3.14}{\ignorespaces Retropropagación en la capa oculta h2}}{56}{figure.caption.89}%
 \contentsline {figure}{\numberline {3.15}{\ignorespaces Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}}{57}{figure.caption.91}%
 \contentsline {figure}{\numberline {3.16}{\ignorespaces 'Caminos' desde la capa softmax hasta $n^1_0$}}{58}{figure.caption.94}%
-\contentsline {figure}{\numberline {3.17}{\ignorespaces Retropropagación en la capa oculta h1}}{58}{figure.caption.95}%
-\contentsline {figure}{\numberline {3.18}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada (input) y la capa oculta h1}}{59}{figure.caption.97}%
-\contentsline {figure}{\numberline {3.19}{\ignorespaces 'Caminos' desde la capa oculta h1 hasta $n^0_0$}}{60}{figure.caption.100}%
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Retropropagación en la capa oculta h1}}{59}{figure.caption.95}%
+\contentsline {figure}{\numberline {3.18}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}}{60}{figure.caption.97}%
+\contentsline {figure}{\numberline {3.19}{\ignorespaces 'Caminos' desde la capa oculta h1 hasta $n^0_0$}}{61}{figure.caption.100}%
 \contentsline {figure}{\numberline {3.20}{\ignorespaces Retropropagación en la capa input}}{61}{figure.caption.101}%
 \contentsline {figure}{\numberline {3.21}{\ignorespaces Retropropagación en la capa l}}{62}{figure.caption.103}%
-\contentsline {figure}{\numberline {3.22}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{62}{figure.caption.105}%
+\contentsline {figure}{\numberline {3.22}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{63}{figure.caption.105}%
 \contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{65}{figure.caption.109}%
 \contentsline {figure}{\numberline {3.24}{\ignorespaces Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}}{67}{figure.caption.113}%
 \contentsline {figure}{\numberline {3.25}{\ignorespaces Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}}{68}{figure.caption.115}%
