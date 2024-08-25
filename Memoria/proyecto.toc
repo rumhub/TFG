@@ -50,7 +50,7 @@
 \contentsline {section}{\numberline {2.8}cuDNN (Deep Neural Network)}{30}{section.2.8}%
 \contentsline {subsection}{\numberline {2.8.1}Manejador}{30}{subsection.2.8.1}%
 \contentsline {subsection}{\numberline {2.8.2}Tensores}{30}{subsection.2.8.2}%
-\contentsline {subsubsection}{Tensor 3D}{30}{section*.48}%
+\contentsline {subsubsection}{Tensor 3D}{31}{section*.48}%
 \contentsline {subsubsection}{Tensor 4D}{31}{section*.49}%
 \contentsline {subsubsection}{Representación de un tensor 4D}{31}{section*.50}%
 \contentsline {subsection}{\numberline {2.8.3}Principales funciones}{32}{subsection.2.8.3}%
@@ -94,7 +94,7 @@
 \contentsline {subsubsection}{Gradiente respecto a sesgos}{63}{section*.106}%
 \contentsline {section}{\numberline {3.3}Paralelización mediante OpenMP}{64}{section.3.3}%
 \contentsline {subsubsection}{Tipos de paralelismo}{64}{section*.107}%
-\contentsline {subsubsection}{Paralelismo en SGD}{64}{section*.108}%
+\contentsline {subsubsection}{Paralelismo en SGD con OpenMP}{64}{section*.108}%
 \contentsline {section}{\numberline {3.4}Retropropagación en redes neuronales convolucionales}{65}{section.3.4}%
 \contentsline {subsubsection}{Sumatoria de gradientes}{65}{section*.110}%
 \contentsline {subsubsection}{Gradiente de $Y^c_{11}$}{66}{section*.111}%

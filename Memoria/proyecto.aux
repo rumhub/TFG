@@ -226,6 +226,11 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.7.1}Gestión de memoria}{28}{subsection.2.7.1}\protected@file@percent }
 \citation{Professional_CUDA_C}
 \citation{cuDNN}
+\citation{Caffe2}
+\citation{Keras}
+\citation{Matlab}
+\citation{Pytorch}
+\citation{Tensorflow}
 \citation{cuDNN_librerias}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.7.2}Kernels}{29}{subsection.2.7.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.7.3}Jerarquía de hebras}{29}{subsection.2.7.3}\protected@file@percent }
@@ -236,7 +241,7 @@
 \@writefile{toc}{\contentsline {section}{\numberline {2.8}cuDNN (Deep Neural Network)}{30}{section.2.8}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.8.1}Manejador}{30}{subsection.2.8.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.8.2}Tensores}{30}{subsection.2.8.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Tensor 3D}{30}{section*.48}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Tensor 3D}{31}{section*.48}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Tensor 4D}{31}{section*.49}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Representación de un tensor 4D}{31}{section*.50}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {2.22}{\ignorespaces Ejemplo de tensor 4D con dimensiones: N=1, C=1, H=5, y W=6}}{31}{figure.caption.51}\protected@file@percent }
@@ -397,6 +402,8 @@
 \newlabel{grad_input_l_3}{{3.86}{62}{Gradiente respecto a la entrada de la capa}{equation.3.2.86}{}}
 \newlabel{grad_input_l_4}{{3.87}{62}{Gradiente respecto a la entrada de la capa}{equation.3.2.87}{}}
 \newlabel{grad_input_l_5}{{3.88}{62}{Gradiente respecto a la entrada de la capa}{equation.3.2.88}{}}
+\citation{data_model_parallelism}
+\citation{model_parallelism}
 \@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a los pesos}{63}{section*.104}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.22}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{63}{figure.caption.105}\protected@file@percent }
 \newlabel{fig:conclusion_pesos}{{3.22}{63}{Retropropagación respecto a los pesos entre la capa l-1 y l}{figure.caption.105}{}}
@@ -412,7 +419,7 @@
 \citation{CNN_parallel_Ome_Weird_Trick}
 \@writefile{toc}{\contentsline {section}{\numberline {3.3}Paralelización mediante OpenMP}{64}{section.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Tipos de paralelismo}{64}{section*.107}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Paralelismo en SGD}{64}{section*.108}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Paralelismo en SGD con OpenMP}{64}{section*.108}\protected@file@percent }
 \@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Descenso del gradiente estocástico}}{64}{algorithm.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3.4}Retropropagación en redes neuronales convolucionales}{65}{section.3.4}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.23}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{65}{figure.caption.109}\protected@file@percent }
@@ -456,14 +463,14 @@
 \newlabel{grad_Y_K_2}{{3.126}{70}{Gradiente respecto a pesos como convolución}{equation.3.4.126}{}}
 \newlabel{grad_Y_K_3}{{3.127}{70}{Gradiente respecto a pesos como convolución}{equation.3.4.127}{}}
 \newlabel{grad_Y_K_4}{{3.128}{70}{Gradiente respecto a pesos como convolución}{equation.3.4.128}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{70}{figure.caption.119}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_X_Y}{{3.27}{70}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.119}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.27}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{70}{figure.caption.119}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_X_Y}{{3.27}{70}{Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}{figure.caption.119}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{70}{section*.120}\protected@file@percent }
 \citation{conv_backprop}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.28}{\ignorespaces Invertir pesos en K tanto horizontal como verticalmente}}{71}{figure.caption.121}\protected@file@percent }
-\newlabel{fig:flip_W}{{3.28}{71}{Invertir pesos en K tanto horizontal como verticalmente}{figure.caption.121}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada valor de entrada como convolución entre K e Y}}{72}{figure.caption.122}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Y_W}{{3.29}{72}{Cálculo del gradiente de la pérdida respecto a cada valor de entrada como convolución entre K e Y}{figure.caption.122}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.28}{\ignorespaces Inversión de los pesos en K tanto horizontal como verticalmente}}{71}{figure.caption.121}\protected@file@percent }
+\newlabel{fig:flip_W}{{3.28}{71}{Inversión de los pesos en K tanto horizontal como verticalmente}{figure.caption.121}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.29}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre K e Y}}{72}{figure.caption.122}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Y_W}{{3.29}{72}{Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre K e Y}{figure.caption.122}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Retropropagación con relleno}{73}{subsection.3.4.1}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {3.30}{\ignorespaces Ejemplo de retropropagación en una capa convolucional con relleno}}{73}{figure.caption.123}\protected@file@percent }
 \newlabel{fig:conv_back_padding_intro}{{3.30}{73}{Ejemplo de retropropagación en una capa convolucional con relleno}{figure.caption.123}{}}
@@ -520,13 +527,21 @@
 \newlabel{gradr_Y33_z_1}{{3.192}{80}{Gradiente de $Y^c_{33}$}{equation.3.4.192}{}}
 \newlabel{gradr_Y33_z_2}{{3.193}{80}{Gradiente de $Y^c_{33}$}{equation.3.4.193}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a pesos como convolución}{80}{section*.142}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.40}{\ignorespaces Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}}{81}{figure.caption.143}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Xpad_Y}{{3.40}{81}{Cálculo del gradiente de la pérdida respecto a cada filtro como convolución entre X e Y}{figure.caption.143}{}}
+\newlabel{result_conv_1}{{3.194}{81}{Gradiente respecto a pesos como convolución}{equation.3.4.194}{}}
+\newlabel{result_conv_2}{{3.195}{81}{Gradiente respecto a pesos como convolución}{equation.3.4.195}{}}
+\newlabel{result_conv_3}{{3.196}{81}{Gradiente respecto a pesos como convolución}{equation.3.4.196}{}}
+\newlabel{result_conv_4}{{3.197}{81}{Gradiente respecto a pesos como convolución}{equation.3.4.197}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.40}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{81}{figure.caption.143}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Xpad_Y}{{3.40}{81}{Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}{figure.caption.143}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Gradiente respecto a entrada como convolución}{81}{section*.144}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida respecto de la entrada como convolución}}{82}{figure.caption.145}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Y_K_pad}{{3.41}{82}{Cálculo del gradiente de la pérdida respecto de la entrada como convolución}{figure.caption.145}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}}{83}{figure.caption.146}\protected@file@percent }
-\newlabel{fig:conv_full_vs_normal}{{3.42}{83}{Cálculo del gradiente de la pérdida respecto a la entrada X con uno o dos niveles de relleno}{figure.caption.146}{}}
+\newlabel{result_conv_x1}{{3.198}{82}{Gradiente respecto a entrada como convolución}{equation.3.4.198}{}}
+\newlabel{result_conv_x2}{{3.199}{82}{Gradiente respecto a entrada como convolución}{equation.3.4.199}{}}
+\newlabel{result_conv_x3}{{3.200}{82}{Gradiente respecto a entrada como convolución}{equation.3.4.200}{}}
+\newlabel{result_conv_x4}{{3.201}{82}{Gradiente respecto a entrada como convolución}{equation.3.4.201}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}}{82}{figure.caption.145}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Y_K_pad}{{3.41}{82}{Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}{figure.caption.145}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{83}{figure.caption.146}\protected@file@percent }
+\newlabel{fig:conv_full_vs_normal}{{3.42}{83}{Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}{figure.caption.146}{}}
 \citation{conv_GEMM_FFT_comparacion}
 \citation{Programming_Massively}
 \@writefile{toc}{\contentsline {chapter}{\numberline {4}Adaptación GPU}{85}{chapter.4}\protected@file@percent }
@@ -667,11 +682,13 @@
 \bibcite{cuDNN_pool_fwd}{69}
 \bibcite{cuDNN_conv_back_w}{70}
 \bibcite{cuDNN_conv_back_x}{71}
-\bibcite{CNN_parallel_Stanford}{72}
-\bibcite{CNN_parallel_International_Conference}{73}
-\bibcite{CNN_parallel_Ome_Weird_Trick}{74}
-\bibcite{conv_backprop}{75}
-\bibcite{conv_GEMM_FFT_comparacion}{76}
-\bibcite{cuda_mult_matrix_v3}{77}
-\bibcite{nvidia_mult_matrix_v4}{78}
+\bibcite{data_model_parallelism}{72}
+\bibcite{model_parallelism}{73}
+\bibcite{CNN_parallel_Stanford}{74}
+\bibcite{CNN_parallel_International_Conference}{75}
+\bibcite{CNN_parallel_Ome_Weird_Trick}{76}
+\bibcite{conv_backprop}{77}
+\bibcite{conv_GEMM_FFT_comparacion}{78}
+\bibcite{cuda_mult_matrix_v3}{79}
+\bibcite{nvidia_mult_matrix_v4}{80}
 \gdef \@abspage@last{139}

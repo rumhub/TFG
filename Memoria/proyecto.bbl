@@ -461,6 +461,21 @@ NVIDIA.
   \url{https://docs.nvidia.com/deeplearning/cudnn/latest/api/cudnn-cnn-library.html#cudnnconvolutionbackwarddata}
   [Accessed:03/08/2024].
 
+\bibitem{data_model_parallelism}
+Lei Mao.
+\newblock Data parallelism vs model parallelism in distributed deep learning
+  training, 2024.
+\newblock
+  \url{https://leimao.github.io/blog/Data-Parallelism-vs-Model-Paralelism/}
+  [Accessed:25/08/2024].
+
+\bibitem{model_parallelism}
+PureStorage.
+\newblock What is model parallelism?, 2024.
+\newblock
+  \url{https://www.purestorage.com/knowledge/what-is-model-parallelism.html}
+  [Accessed:25/08/2024].
+
 \bibitem{CNN_parallel_Stanford}
 Vishakh Hegde and Sheema Usmani.
 \newblock Parallel and distributed deep learning.
