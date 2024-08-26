@@ -1,18 +1,18 @@
 \chapter{Adaptación GPU}
 
-Una vez comprendidos los cálculos empleados por una CNN, en esta sección se tratará de introducir como se realizarán los mismos desde una perspectiva heterogénea. Esto es, mediante el uso de GPU para multiplicación matricial.
+Una vez comprendidos los cálculos empleados por una CNN, en esta sección se introducirá la metodlogía para llevar a cabo estos cálculos desde una perspectiva heterogénea. Es decir, mediante el uso de unidades de procesamiento gráfico (GPU) para la multiplicación matricial.
 
 \section{GEMM}
 
-Se trata de un enfoque ampliamente conocido en el mundo de deep learning, empleándolo gran cantidad de librerías del sector como Caffe, Torch-cunn, Theano-CorrMM, o incluso CuDNN \cite{conv_GEMM_FFT_comparacion}. \\
-El enfoque GEMM (General Matrix Multiply o Multiplicación General de Matrices) en redes neuronales convolucionales permite reducir el tiempo de cómputo requerido en distintas capas a cambio de aumentar el espacio necesario para la misma. 
+El enfoque GEMM \cite{GEMM_definition} (General Matrix Multiply o Multiplicación General de Matrices) es ampliamente reconocido en el campo del aprendizaje profundo, y se utiliza en numerosas bibliotecas especializadas, como Caffe, Torch-cunn, Theano-CorrMM, o incluso CuDNN \cite{conv_GEMM_FFT_comparacion}. \\
+En el contexto de redes neuronales convolucionales, el método GEMM facilita una reducción significativa en el tiempo de cómputo requerido. Sin embargo, esta optimización conlleva un incremento en el espacio de memoria necesario. 
 
 \section{Convolución como GEMM \label{Intro_GEMMM}}
 
-En el caso de capas convolucionales, seguir un enfoque GEMM consiste en ``desenrrollar'' tanto el volumen de entrada X como la matriz de filtros K, además de realizar una serie de duplicaciones en X, de tal forma que cada columna de esta nueva matriz 2D X\_unroll contenga todos los elementos de X implicados en el cálculo de una posición distinta del volumen de salida Y. Como los resultados de cada convolución se suman a lo largo de cada canal de profundidad, estos se pueden concatenar en una matriz de gran tamaño. De esta forma, cada kernel de pesos se transforma en una fila de una gran matriz de pesos, tal y como se muestra en la figura \ref{fig:conv_std_vs_gemm} con los kernels K y G (colores verde y marrón). \\
-Mientras que el método estándar requiere de varias iteraciones para calcular cada valor del volumen de salida Y (figura \ref{fig:forward_prop_convolucional}), en la parte inferior de la figura \ref{fig:conv_std_vs_gemm} se observa como la alternativa GEMM permite que cada valor de Y sea el resultado de multiplicar una fila de pesos (K o G en la figura \ref{fig:conv_std_vs_gemm}) por una columna de X\_unroll (azul) \cite{Programming_Massively}. \\
-De esta forma, con N kernels de tamaño KxK, un volumen de entrada con C canales de profundidad, y un volumen de salida de dimensiones $NxH_{out}xW_{out}$, una multiplicación matricial entre la matriz de pesos $M_1$ con N filas y $K^2*C$ columnas, y X\_unroll con $K^2*C$ filas y $H_{out}*W_{out}$ columnas, produce el mismo volumen de salida Y que una convolución ordinaria con N kernels distintos. \\
-Por último, aunque se haya omitido para simplificar la comprensión del método planteado, tras realizar dicha multiplicación matricial se debe sumar el sesgo y aplicar la función de activación correspondiente a cada elemento del volumen de salida Y.
+En el contexto de las capas convolucionales, la aplicación del enfoque GEMM (General MAtrix Multiply), implica un proceso de ``desenrrollado'' tanto el volumen de entrada X, como de la matriz de filtros K. Este proceso, incluye la creación de una nueva matriz 2D, denominada $X_{unroll}$, donde, cada columna de dicha matriz, contiene todos los elementos de X necesarios para calcular una posición específica del volumen de salida Y. Dado que los resultados de cada convolución se suman a lo largo de cada canal de profundidad, estos pueden ser organizados en una matriz de gran tamaño. En este enfoque, cada kernel de pesos K se transforma en una fila de una extensa matriz de pesos. Este procedimiento se ilustra en la figura \ref{fig:conv_std_vs_gemm}, donde los kernels K y G se representan en colores verde y marrón, respectivamente. \\
+Mientras que el método estándar requiere varias iteraciones para calcular cada valor del volumen de salida Y, (como se ilustra en la Figura \ref{fig:forward_prop_convolucional}), el enfoque GEMM, permite que cada valor de Y se obtenga mediante la multiplicación de una fila de la matriz de pesos, (denotada como K o G en la Figura \ref{fig:conv_std_vs_gemm}), con una columna de la matriz $X_{unroll}$, (representada en azul). Esta técnica, detallada en \cite{Programming_Massively}, optimiza el tiempo de cómputo necesario para la operación de convolución, al transformar el problema en una multiplicación matricial más eficiente.
+De este modo, dado un conjunto de M filtros, (kernels) de tamaño KxK, un volumen de entrada con C canales de profundidad, y un volumen de salida de dimensiones $MxH_{out}xW_{out}$, la multiplicación matricial entre la matriz de pesos $M_1$, que posee M filas y $K^2*C$ columnas, y $X_unroll$ que contiene $K^2*C$ filas y $H_{out}*W_{out}$ columnas, produce el mismo volumen de salida Y que una convolución ordinaria con M kernels distintos. \\
+Finalmente, aunque se haya omitido para simplificar la explicación del método, es necesario destacar que, una vez realizada la multiplicación matricial, se debe sumar el sesgo correspondiente y aplicar la función de activación a cada elemento del volumen de salida Y.
 
 \begin{figure}[H]
 	\centering
@@ -23,18 +23,16 @@ Por último, aunque se haya omitido para simplificar la comprensión del método
 
 \subsection{Memoria requerida al emplear GEMM}
 
-Al realizar una convolución, un mismo filtro de pesos puede iterar más de una vez por varios valores de X. Esto implica la duplicación dichos valores de X en la matriz X\_unroll tantas veces como se requiera el acceso a los mismos. En el caso de una entrada X(3x3) y un kernel de pesos K(2x2) (ejemplo de la figura \ref{fig:conv_std_vs_gemm}), el valor central de X deberá duplicarse 4 veces, mientras que el valor central de cada lateral se duplicará 2 veces y los valores de cada esquina solo requieren 1 acceso por lo que no  se duplican. Así, una matriz inicial X(3x3) con 9 valores, se transforma en X\_unroll con 4*1 + 2*4 + 1*4 = 16 valores, contando con un ratio de expansión de 16/9 = 1.8 . \\
- Como cada valor de salida $Y^m_{ij}$ es producto de una convolución de K*K pesos a lo largo de X sobre C canales de profundidad, el número de columnas de X\_unroll se define por C*K*K. De la misma forma, como el resultado de cada fila multiplicada por cada columna de las matrices ``desenrolladas'' aportan un valor $Y^m_{ij}$, X\_unrolled tiene tantas columnas como Y elementos ($M*H_{out}*W_{out}$). \\
- El ratio de expansión se define mediante $\frac{C*K*K*H_{out}*W_{out}}{C*H*W}$, donde H y W hacen referencia a las filas y columnas de X, y $H_{out}$ y $W_{out}$ a las filas y columnas de la salida $Y$ respectivamente. En general, si la entrada X y la salida Y poseen unas dimensiones mucho más grandes que el filtro de pesos K, el ratio de expansión será de K*K. \\
- Dado que cada kernel de pesos presenta unas dimensiones de K*K y se representa como una fila en la matriz total de pesos, esta tendrá K*K filas y M columnas, siendo M el número de filtros de pesos a aplicar sobre X. \\
- Realizar varias convoluciones sobre una misma entrada X(una con cada filtro de pesos distinto) implica compartir una única matriz X\_unrolled. Sin embargo, para valores comunes de filtros de pesos (5 o superior), una matriz de entrada con dimensiones expandidas con un ratio de K*K puede ser excesivamente grande. Como el consumo de memoria por almacenar todas las matrices de entrada expandidas en un minibatch puede suponer un problema, simplemente se reservará un espacio de $C*K*K*H_{out}*W_{out}$ (una instancia de X\_unrolled), de forma que se reutilice para cada dato del minibatch \cite{Programming_Massively}.
-
-\newpage
+Al realizar una convolución, un mismo filtro de pesos puede aplicarse a múltiples posiciones de la matriz de entrada X. Esto requiere duplicar los valores de X en la matriz $X_{unroll}$ tantas veces como sea necesario para garantizar el acceso adecuado. Por ejemplo, en una matriz de entrada X de dimensiones (3x3) y un kernel de pesos K de (2x2) (como se ilustra en la figura \ref{fig:conv_std_vs_gemm}), el valor central de X deberá duplicarse 4 veces, mientras que los valores en las posiciones laterales centrales se duplican dos veces, y los valores en las esquinas no requieren duplicación, ya que solo se accede a ellos una vez. De esta forma, una matriz inicial X de (3x3) con 9 valores, se transforma en una matriz $X_{unroll}$ con 4*1 + 2*4 + 1*4 = 16 valores, lo que genera un factor de expansión de 16/9 = 1.8 . \\
+Cada valor de salida $Y^m_{ij}$ se obtiene a partir de la convolución de un kernel de K*K pesos aplicados a la entrada X a lo largo de sus C canales de profundidad. Por lo tanto, el número de columnas de la matriz desenrrollada $X_{unroll}$ se define como CxKxK. De igual manera, dado que el resultado de la multiplicación de cada fila por cada columna de las matrices desenrolladas genera un valor $Y^m_{ij}$, la matriz $X_{unrolled}$ tiene tantas columnas como elementos en el volumen de salida Y, es decir, $MxH_{out}xW_{out}$. \\
+El ratio de expansión se calcula mediante $\frac{C*K*K*H_{out}*W_{out}}{C*H*W}$, donde H y W hacen representan las dimensiones de la entrada X en términos de filas y columnas, respectivamente, y $H_{out}$ y $W_{out}$ corresponden a las dimensiones de la salida Y. En términos generales, cuando las dimensiones de la entrada X y de la salida Y son considerablemente mayores que las del filtro de pesos K, el ratio de expansión será de KxK. \\
+Cada kernel de pesos, con dimensiones KxK, se representa como una fila dentro de la matriz total de pesos. Por lo tanto, la matriz total de pesos estará compuesta de KxK filas y M columnas, siendo M el número de filtros de pesos a aplicados sobre la entrada X. \\
+Al realizar múltiples convoluciones sobre una misma entrada X (una por cada filtro de pesos distinto), es posible utilizar una única matriz expandida, denominada $X_{unrolled}$. Por otro lado, cuando se emplean filtros de pesos considerables (como 5x5 o mayores), la expansión de la matriz de entrada con un ratio de KxK puede generar matrices de tamaño excesivo. Dado que el almacenamiento de todas las matrices de entrada expandidas para un minibatch completo podría resultar en un consumo de memoria significativo, se adopta una estrategia más eficiente. Esta consiste en reservar un único espacio de memoria con dimensiones $CxKxKxH_{out}xW_{out}$ (es decir, una instancia de $X_{unrolled}$), que se reutiliza para procesar cada dato del minibatch, optimizando así el uso de la memoria y evitando la sobrecarga que supondría almacenar múltiples matrices expandidas simultáneamente \cite{Programming_Massively}.
 
 \section{Retropropagación GEMM en capa convolucional}
 
-En la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad} se vio como la retropropagación respecto a la entrada en una capa convolucional consistía en una convolución entre los kernels de pesos y el volumen de salida. Del mismo modo, en la figura \ref{fig:conv_backprop_como_convolucion_Xpad_Y} también se mostró como el gradiente respecto a los pesos consistía en una convolución entre el volumen de entrada y el de salida. \\
-Como ambos gradientes se pueden implementar como convoluciones, y en la sección \ref{Intro_GEMMM} se mostró como implementar convoluciones con el enfoque GEMM, tiene sentido asumir que la retropropagación en una capa convolucional se puede implementar mediante el enfoque GEMM.
+En la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad}, se observó cómo la retropropagación, con respecto a la entrada en una capa convolucional, consiste en una convolución entre los kernels de pesos, y el volumen de salida. De manera análoga, en la Figura \ref{fig:conv_backprop_como_convolucion_Xpad_Y}, también se mostró cómo el gradiente con respecto a los pesos, se obtiene mediante una convolución entre el volumen de entrada, y el volumen de salida. \\
+Dado que ambos gradientes se pueden implementar como convoluciones, y, considerando que en la sección \ref{Intro_GEMMM}, se demostró cómo implementar convoluciones utilizando el enfoque GEMM, es razonable asumir que la retropropagación en una capa convolucional, también se puede llevar a cabo mediante dicho enfoque.
 
 \begin{figure}[H]
 	\hspace{-38mm}
@@ -43,7 +41,7 @@ Como ambos gradientes se pueden implementar como convoluciones, y en la sección
 	\label{fig:conv_std_vs_gemm_backprop}
 \end{figure}
 
-En la Figura \ref{fig:conv_std_vs_gemm_backprop} cabe destacar que, como cada canal de profundidad c$\in$C de cada kernel solo influye sobre dicho canal c sobre el volumen de entrada X, en la retropropagación sólo recibirá el gradiente proveniente de dicho canal. De esta forma, como cada kernel se empleó para producir un canal m$\in$M distinto sobre el volumen de salida Y, se pueden concatenar los M distintos kernels para un mismo canal de profundidad c, de forma que cada canal c de cada kernel m se multiplique por su subconjunto correspondiente en el canal m de Y e influya sobre el canal c de X (Figura \ref{fig:conv_std_vs_gemm_backprop}). 
+En la Figura \ref{fig:conv_std_vs_gemm_backprop}, es importante destacar que, dado que canal de profundidad c$\in$C de cada kernel solo influye en el correspondiente canal c del volumen de entrada X, en la retropropagación, únicamente recibirá el gradiente proveniente de dicho canal. De esta manera, dado que cada kernel se utilizó para producir un canal m$\in$M distinto en el volumen de salida Y, es posible concatenar los M diferentes kernels para un mismo canal de profundidad c, de modo que, cada canal c de cada kernel m, se multiplique por su subconjunto correspondiente en el canal m de Y, e influya sobre el canal c de X, (véase la Figura \ref{fig:conv_std_vs_gemm_backprop}). 
 
 \begin{figure}[H]
 	\includegraphics[scale=0.33]{imagenes/conv_std_vs_gemm_backprop_pesos.jpg}  
@@ -51,14 +49,11 @@ En la Figura \ref{fig:conv_std_vs_gemm_backprop} cabe destacar que, como cada ca
 	\label{fig:conv_std_vs_gemm_backprop_pesos}
 \end{figure}
 
-En el caso del cálculo del gradiente de la pérdida respecto a los pesos de una capa convolucional, se recuerda que se podía implementar como una convolción entre el volumen de salida y el de entrada. Mediante el enfoque GEMM, se puede observar en la Figura \ref{fig:conv_std_vs_gemm_backprop_pesos} como para ello es necesario `desenrrollar' tanto el volumen de entrada X como el de salida Y. De esta forma, multiplicando cada fila de Y (desenrrollada) por cada columna de X (desenrrollada), se estarán multiplicando todos los elementos del volumen de salida Y y del volumen de entrada X que fueron multiplicados anteriormente (en la propagación hacia delante) por un peso distinto, calculando así el gradiente de dicho peso.
-
-
-
+En el caso del cálculo del gradiente de la pérdida respecto a los pesos de una capa convolucional, cabe recuerdar que este proceso se puede implementar como una convolución entre el volumen de salida y el volumen de entrada. Utilizando el enfoque GEMM, tal como se ilustra en la Figura \ref{fig:conv_std_vs_gemm_backprop_pesos}, se observa que, para llevar a cabo esta operación, es necesario ``desenrrollar'' tanto el volumen de entrada X como el volumen de salida Y. De este modo, al multiplicar cada fila de Y (desenrrollado) por cada columna de X (desenrrollado), se multiplican todos los elementos del volumen de salida Y y del volumen de entrada X que previamente, en la propagación hacia delante, fueron multiplicados por un peso distinto, calculando así el gradiente de dicho peso.
 
 \section{Capa totalmente conectada como GEMM \cite{nvidia_back_fully_GEMM}}
 
-Al igual que las capas convolucionales, las capas totalmente conectadas también se pueden implementar mediante un enfoque GEMM. Para ello, analizaremos por separado cada uno de los 3 casos que nos encontraremos:
+Al igual que las capas convolucionales, las capas totalmente conectadas también se pueden implementar mediante un enfoque GEMM. Para ello, analizaremos por separado cada uno de los tres casos que se presentan:
 \begin{enumerate}[label=\textbullet, nosep]
 	\item Propagación hacia delante
 	\item Cálculo del gradiente respecto a la entrada
@@ -74,8 +69,8 @@ Al igual que las capas convolucionales, las capas totalmente conectadas también
 	\label{fig:gemm_fully_forward}
 \end{figure}
 
-En la Figura \ref{fig:gemm_fully_forward} se muestran 2 formas distintas de implementar la propagación hacia delante en una capa totalmente conectada. El método \textbf{ESTÁNDAR} hace referencia al método empleado en secciones anteriores. Sin embargo, el método \textbf{GEMM} aporta un nuevo ángulo desde el cual afrontarlo. Este último consiste en, para una capa i, agrupar por un lado pesos y sesgos de dicha capa en una matriz, y por otra parte tener otra matriz de una sola columna con todas las neuronas de dicha capa i más un elemento con valor igual a 1 (para sumar el sesgo). \\
-Siguiendo la estructura planteada en la Figura \ref{fig:gemm_fully_forward}, cada multiplicación de fila matriz\_pesos\_sesgos por columna de matriz\_neuronas produce como resultado una neurona de la capa i+1 (para completar la propagación hacia delante de dicha capa habría que aplicar la función de activación sobre los resultados obtenidos).
+En la Figura \ref{fig:gemm_fully_forward}, se presentan dos enfoques distintos para implementar la propagación hacia delante en una capa totalmente conectada. El método \textbf{ESTÁNDAR} se refiere enfoque utilizado en secciones anteriores. En contraste, el método \textbf{GEMM} ofrfece una perspectiva alternativa para abordar esta tarea. Este enfoque implica, para una capa i, agrupar los pesos y sesgos de dicha capa en una matriz, y, por otro lado, utilizar una matriz de una sola columna que contiene todas las neuronas de la capa i junto con un elemento adicional con valor igual a 1, que se emplea para sumar el sesgo. \\
+Siguiendo la estructura descrita en la Figura \ref{fig:gemm_fully_forward}, cada multiplicación de una fila de la matriz M\_pesos\_sesgos por una columna de la matriz M\_neuronas produce el valor de una neurona en la capa i+1. Para completar la propagación hacia delante de dicha capa, es necesario aplicar la función de activación a los resultados obtenidos.
 
 \begin{figure}[H]
 	\centering
@@ -84,13 +79,13 @@ Siguiendo la estructura planteada en la Figura \ref{fig:gemm_fully_forward}, cad
 	\label{fig:gemm_fully_forward_minibatch}
 \end{figure}
 
-Si tenemos en cuenta que los pesos y sesgos durante el entrenamiento permanecen constantes durante todo un minibatch, para un minibatch de tamaño N, podemos expandir la matriz matriz\_neuronas definida anteriormente para que tenga N columnas, una por cada elemento del minibatch. De esta forma, mediante una simple multiplicación matricial (enfoque GEMM) se puede realizar la propagación hacia delante de un minibatch entero para una capa totalmente conectada, tal y como se muestra en la Figura \ref{fig:gemm_fully_forward_minibatch} \cite{nvidia_back_fully_GEMM}.
+Dado que los pesos y sesgos permanecen constantes durante todo un minibatch durante el entrenamiento, para un minibatch de tamaño N, podemos expandir la matriz M\_neuronas definida anteriormente para que tenga N columnas, una para cada elemento del minibatch. De esta manera, mediante una simple multiplicación matricial (enfoque GEMM), es posible realizar la propagación hacia delante de un minibatch completo para una capa totalmente conectada, tal como se muestra en la Figura \ref{fig:gemm_fully_forward_minibatch} \cite{nvidia_back_fully_GEMM}.
 
 \newpage
 
 \subsection{Retropropagación}
 
-Al igual que la propagación hacia delante, la retropropagación en una capa totalmente conectada también puede se calcular mediante un enfoque de multiplicación matricial como es GEMM.
+De manera similar a la propagación hacia delante, la retropropagación en una capa totalmente conectada también puede se calcular utilizando un enfoque de multiplicación matricial, como es el enfoque GEMM.
 
 \subsubsection{Gradiente respecto a la entrada}
 \begin{figure}[H]
@@ -100,9 +95,9 @@ Al igual que la propagación hacia delante, la retropropagación en una capa tot
 	\label{fig:gemm_fully_back_input}
 \end{figure}
 
-Suponiendo que que nos encontramos en la capa i y ya tenemos el gradiente de la pérdida respecto a la entrada de la capa i+1, podemos calcular dicho gradiente respecto a la entrada de la capa i tal y como se muestra en la Figura \ref{fig:gemm_fully_back_input}. \\
-Esto es, teniendo por un lado una matriz matriz\_pesos donde cada fila j tiene los pesos que conectan a la neurona j de dicha capa i y a cualquier otra neurona de la capa i+1. En este caso, la matriz matriz\_neuronas vuelve a tener una sola columna y contiene las neuronas de la capa i+1. Sin embargo, esta vez dichas neuronas contendrán el gradiente de la pérdida hasta dicha capa. Así, cada multiplicación de una fila de matriz\_pesos por una columna de matriz\_neuronas producirá el cálculo del gradiente de la pérdida respecto a una neurona de entrada distinta. \\
-En la Figura \ref{fig:gemm_fully_back_input} se muestra tanto una representación visual de ambas matrices como la fórmula que se emplea en el método estándar, facilitando así una mejor comprensión de que estos dos métodos son simplemente caminos que llevan al mismo destino y por tanto producen los mismos resultados.
+Supongamos que estamos en la capa i, y, ya disponemos del gradiente de la pérdida con respecto a la entrada de la capa i+1. En este caso, podemos calcular el gradiente con respecto a la entrada de la capa i, tal como se ilustra en la Figura \ref{fig:gemm_fully_back_input}. \\
+En este contexto, se considera una matriz \texttt{pesos}, en la que cada fila j, contiene los pesos que conectan la neurona j de la capa i, con todas las neuronas de la capa i+1. La matriz \texttt{neuronas}, por su parte, tiene una sola columna y contiene las neuronas de la capa i+1. Sin embargo, en esta ocasión, las neuronas de esta matriz contienen el gradiente de la pérdida hasta esa capa. De este modo, cada multiplicación de una fila de \texttt{pesos}, por una columna de \texttt{neuronas}, produce el cálculo del gradiente de la pérdida con respecto a una neurona de entrada distinta. \\
+En la Figura \ref{fig:gemm_fully_back_input}, se presenta tanto una representación visual de las matrices \texttt{neuronas}, y \texttt{pesos}, así como la fórmula utilizada en el método estándar. Esto, facilita una comprensión más clara, de que ambos métodos representan enfoques alternativos para lograr el mismo objetivo, produciendo así resultados equivalentes.
 
 \begin{figure}[H]
 	\centering
@@ -111,7 +106,7 @@ En la Figura \ref{fig:gemm_fully_back_input} se muestra tanto una representació
 	\label{fig:gemm_fully_back_input_minibatch}
 \end{figure}
 
-De forma similar al apartado anterior, para un minibatch de N elementos, se puede expandir la matriz matriz\_neuronas para que contenga N columnas, permitiendo así el cálculo del gradiente de la pérdida respecto a la entrada para una capa i para todo un minibatch mediante una simple multiplicación matricial, tal y como se muestra en la Figura \ref{fig:gemm_fully_back_input_minibatch}.
+De manera similar al apartado anterior, para un minibatch de N elementos, es posible expandir la matriz \texttt{neuronas} para que contenga N columnas. Esto, permite calcular el gradiente de la pérdida con respecto a la entrada para una capa i, a lo largo de todo el minibatch, mediante una simple multiplicación matricial, tal como se ilustra en la Figura \ref{fig:gemm_fully_back_input_minibatch}.
 
 \subsubsection{Gradiente respecto a los pesos}
 \begin{figure}[H]
@@ -121,7 +116,7 @@ De forma similar al apartado anterior, para un minibatch de N elementos, se pued
 	\label{fig:gemm_fully_back_w}
 \end{figure}
 
-En este caso, para una capa i, tendremos 2 matrices a las que denominaremos matriz\_entrada y matriz\_salida. La primera de ellas se caracterizará por tener una sola columna con las neuronas de entrada de la capa i, y la segunda contendrá una sola fila con el gradiente de la pérdida respecto a cada neurona de salida de la capa i. De esta forma, cada multiplicación de fila matriz\_entrada por columna de matriz\_salida producirá el cálculo del gradiente de la pérdida respecto a un peso que une una neurona de la capa i con otra de la capa i+1. Es decir, se calcula el gradiente de la pérdida respecto a los pesos de la capa i, tal y como se muestra en la Figura \ref{fig:gemm_fully_back_w}.
+En este caso, para una capa i, consideramos dos matrices que denominaremos \texttt{matriz\_entrada} y \texttt{matriz\_salida}. La primera matriz, \texttt{matriz\_entrada}, se caracteriza por tener una sola columna que contiene las neuronas de entrada de la capa i. La segunda matriz, \texttt{matriz\_salida}, tiene una sola fila, con el gradiente de la pérdida con respecto a cada neurona de salida de la capa i. De esta manera, cada multiplicación de una fila de \texttt{matriz\_entrada} por una columna de \texttt{matriz\_salida}, produce el cálculo del gradiente de la pérdida con respecto a un peso que conecta una neurona de la capa i con una neurona de la capa i+1. En otras palabras, se calcula el gradiente de la pérdida con respecto a los pesos de la capa i, tal y como se muestra en la Figura \ref{fig:gemm_fully_back_w}.
 
 \begin{figure}[H]
 	\centering
@@ -130,11 +125,12 @@ En este caso, para una capa i, tendremos 2 matrices a las que denominaremos matr
 	\label{fig:gemm_fully_back_w_minibatch}
 \end{figure}
 
-Para un minibatch de tamaño N, se pueden expandir ambas matrices de forma que estas tengan N filas o columnas (según se indica en la Figura \ref{fig:gemm_fully_back_w_minibatch}) y calcular el gradiente de la pérdida respecto a los pesos para una capa i en un minibatch entero mediante una multiplicación matricial.
+Para un minibatch de tamaño N, se pueden expandir ambas matrices de manera que cada una contenga N filas o columnas, según se indica en la Figura \ref{fig:gemm_fully_back_w_minibatch}. Esto permite calcular el gradiente de la pérdida con respecto a los pesos para una capa i en todo un minibatch mediante una multiplicación matricial.
 
 \subsection{Multiplicación de matrices en CUDA}
 
-Dadas dos matrices A(MxK) y B(KxN), se obtiene C(KxN) como producto de la multiplicación AB. Basándome en mi propia experiencia, una primera aproximación de cara a realizar dicha operación en CUDA consiste en crear un bloque Block(KxN), de forma que cada hebra calcule una posición de la matriz resultado C. Dada la naturaleza extremadamente simple de tal implementación, el desarrollador que la llevó a cabo optará por buscar formas de reducir el tiempo de cómputo requerido por la misma, optando en la mayoría de los casos por emplear memoria compartida de bloque. Tras desarrollar esta ``segunda versión'', el siguiente paso del desarrollador consiste en comparar ambas implementaciones para verificar si efectivamente se obtiene una ganancia notable sobre la primera. En el proceso se observa como para matrices de tamaño reducido ambas implementaciones parecen funcionar. Sin embargo, a medida que aumenta el tamaño de las mismas se ve un claro ``tope'' pues ambas comparten un mismo defecto, el tamaño de bloque. Por ejemplo, para calcular C(50x50) = A(50x10) x B(10x50) ambas implementaciones requerirían un bloque de 50x50 = 2500 hebras, lo cual es imposible pues excede el tamaño límite (CUDA solo permite 1024 hebras por bloque). \\
+Dadas dos matrices A de tamaño MxK y B de tamaño KxN, el producto ded la multiplicación AB produce una matriz C de tamaño MxN. Basándome en mi experiencia, una primera aproximación para realizar esta operación en CUDA consiste en crear un bloque de tamaño KxN, de manera que cada hebra calcule una posición de la matriz resultado C. Dada la simplicidad extrema de esta implementación, el desarrollador que la llevó a cabo buscará formas de reducir el tiempo de cómputo requerido, optando en la mayoría de los casos por emplear memoria compartida de bloque. Tras desarrollar esta ``segunda versión'', el siguiente paso es comparar ambas implementaciones para verificar si realmente se obtiene una mejora significativa en el redimiento. \\
+En el proceso, se observa que, para matrices de tamaño reducido, ambas implementaciones parecen funcionar adecuadamente. Sin embargo, a medida que aumenta el tamaño de las matrices, se detecta un claro ``tope'' debido a un defecto compartido por ambas: el tamaño de bloque. Por ejemplo, para calcular C(50x50) = A(50x10) x B(10x50), ambas implementaciones requerirían un bloque de 50x50 = 2500 hebras, lo cual excede el límite permitido por CUDA (1024 hebras por bloque). \\
 
 \begin{figure}[H]
 	\centering
@@ -143,8 +139,8 @@ Dadas dos matrices A(MxK) y B(KxN), se obtiene C(KxN) como producto de la multip
 	\label{fig:mult_matrix_cuda_v3}
 \end{figure}
 
-Por tanto, resulta evidente la existencia de una ``tercera'' implementación carente de este gran defecto. Esta se caracteriza por la división la matriz C en submatrices o tiles, de forma que cada tile sea un bloque cuda. Partiendo de las implementaciones anteriores, el cambio resulta inmediato y los resultados descomunales pues aporta la capacidad de multiplicación matricial con independencia del tamaño de A y B, además de mejoras en cuanto a rendimiento \cite{cuda_mult_matrix_v3}. \\
-Sin embargo, esta última implementación carece de los beneficios de la memoria compartida nivel de bloque, por lo que una vez más indica la muy posible existencia de una mejora sobre la misma. \\
+Por lo tanto, resulta evidente la necesidad de una ``tercera'' implementación que carezca de este importante defecto. Esta se caracteriza por la dividir la matriz C en submatrices, o tiles, de manera que cada tile corresponda a un bloque CUDA. A partir de las implementaciones anteriores, el cambio es inmediato, y los resultados son extraordinarios, ya que esta solución permite multiplicación matricial sin limitaciones de tamaño para A y B, además de ofrecer mejoras significativas en el rendimiento \cite{cuda_mult_matrix_v3}. \\
+Sin embargo, esta última implementación carece de los beneficios que ofrece la memoria compartida a nivel de bloque, lo que sugiere, una vez más, la posible existencia de una mejora adicional sobre la misma. \\
 
 \begin{figure}[H]
 	\centering
@@ -152,4 +148,5 @@ Sin embargo, esta última implementación carece de los beneficios de la memoria
 	\caption{Cuarta implementación de multiplicación matricial con CUDA}
 	\label{fig:mult_matrix_cuda_v4}
 \end{figure}
-Para realizar el cálculo de cada valor de C es necesario multiplicar una fila de A por una columna de B. Es decir, multiplicar dos vectores de K elementos. Una idea inicial consiste en cargar 2K elementos en memoria compartida para posteriormente usarlos. Sin embargo, si cada hebra de cada bloque requiere 2K elementos, esto no es viable pues la memoria compartida es limitada y escasa. En su lugar, un mejor enfoque consiste en, dado un bloque 2D de dimensiones TILExTILE, almacenar 2*TILE*TILE. Su objetivo es dividir el cálculo de cada valor de C en iteraciones, y en cada una de ellas, cada hebra multiplica TILE elementos de A por TILE de B, además de acumular y sumar los resultados obtenidos en cada iteración \cite{nvidia_mult_matrix_v4}. \\
+
+Para calcular cada valor de C, es necesario multiplicar una fila de A por una columna de B. Es decir, multiplicar dos vectores de K elementos. Una idea inicial consiste en cargar 2K elementos en memoria compartida para su posterior uso. Sin embargo, si cada hebra de cada bloque requiere 2K elementos, esta estrategia no es viable debido a la limitada y escasa memoria compartida disponible. Un enfoque más eficiente consiste en, dado un bloque 2D de dimensiones TILExTILE, almacenar 2*TILE*TILE elementos. El objetivo es dividir el cálculo de cada valor de C en iteraciones, y, en cada una de ellas, cada hebra multiplica TILE elementos de A por TILE elementos de B, acumulando y sumando los resultados obtenidos en cada iteración \cite{nvidia_mult_matrix_v4}. \\

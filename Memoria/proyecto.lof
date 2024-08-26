@@ -69,17 +69,17 @@
 \contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}}{82}{figure.caption.145}%
 \contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{83}{figure.caption.146}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{86}{figure.caption.147}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{88}{figure.caption.148}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{89}{figure.caption.149}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{90}{figure.caption.150}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{91}{figure.caption.151}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{92}{figure.caption.153}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{93}{figure.caption.154}%
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{94}{figure.caption.156}%
-\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{95}{figure.caption.157}%
-\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{96}{figure.caption.158}%
-\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{97}{figure.caption.159}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{87}{figure.caption.147}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{89}{figure.caption.148}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{90}{figure.caption.149}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{91}{figure.caption.150}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{92}{figure.caption.151}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{93}{figure.caption.153}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{94}{figure.caption.154}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{95}{figure.caption.156}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{96}{figure.caption.157}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{97}{figure.caption.158}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{98}{figure.caption.159}%
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {5.1}{\ignorespaces Secuencial vs OpenMP}}{101}{figure.caption.161}%
 \contentsline {figure}{\numberline {5.2}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{102}{figure.caption.162}%

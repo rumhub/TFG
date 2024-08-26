@@ -121,11 +121,11 @@
 \contentsline {subsection}{\numberline {4.2.1}Memoria requerida al emplear GEMM}{87}{subsection.4.2.1}%
 \contentsline {section}{\numberline {4.3}Retropropagación GEMM en capa convolucional}{88}{section.4.3}%
 \contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{90}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{90}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{92}{subsection.4.4.2}%
-\contentsline {subsubsection}{Gradiente respecto a la entrada}{92}{section*.152}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{94}{section*.155}%
-\contentsline {subsection}{\numberline {4.4.3}Multiplicación de matrices en CUDA}{95}{subsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{91}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{93}{subsection.4.4.2}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada}{93}{section*.152}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{95}{section*.155}%
+\contentsline {subsection}{\numberline {4.4.3}Multiplicación de matrices en CUDA}{96}{subsection.4.4.3}%
 \contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{99}{chapter.5}%
 \contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{99}{subsection.5.0.1}%
 \contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{101}{subsection.5.0.2}%

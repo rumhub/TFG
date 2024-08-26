@@ -1,11 +1,11 @@
 \chapter{Conclusiones y trabajo futuro}
 
-Tras la comparación de las distintas implementaciones sobre redes neuronales convoluionales realizadas a lo largo de este proyecto, se llega a la conclusión de que la mejor de todas ellas es la que usa cuDNN. Aunque todas las implementaciones producen los mismos resultados y logran aprender tal y como se esperaba, cuDNN logra obtener unos tiempos de cómputo menores al resto. Por tanto, tiene sentido su uso en gran cantidad de librerías de más alto nivel como TensorFlow o Caffe2, entre otras. Además, se han cumplido los objetivos propuestos tal y como se esperaba. \\
-Con respecto al trabajo futuro que se podría realizar, destaca la realización de ciertas mejoras en varios ámbitos:
+Tras la comparación de las distintas implementaciones para redes neuronales convolucionales realizada a lo largo de este proyecto, se concluye que la implementación que utiliza cuDNN es la más eficiente. Aunque todas las implementaciones producen resultados equivalentes y logran el aprendizaje esperado, cuDNN destaca por su capacidad para reducir los timepos de cómputo en comparación con las demás opciones. Esta eficiencia es una de las razones por las que cuDNN se emplea en numerosas librerías de alto nivel, como TensorFlow o Caffe2, entre otras. Además, se han cumplido los objetivos planteados al inicio del proyecto de manera satisfactoria. \\
+Con respecto al trabajo futuro que se podría realizar, se destacan la siguientes áreas de mejora
 \begin{enumerate}[label=\textbullet]
-	\item Mejorar la implementación en CUDA para intentar reducir la diferencia en el tiempo requerido respecto a cuDNN.
-	\item Realizar distintas implementaciones sobre redes neuronales convolucionales con librerías de alto nivel y comparar los resultados con las implementaciones ya existentes en este proyecto.
-	\item Investigar el funcionamiento de cuDNN a bajo nivel y tratar de mejorarlo en algún caso concreto.
-	\item Comparar el rendimiento obtenido con cuDNN respecto al ofrecido por librerías de alto nivel que usen cuDNN por debajo.
-	\item Emplear librerías de bajo nivel como cuDNN para desarrollar sistemas heterogéneos optimizados sobre algoritmos de deep learning más complejos que redes neuronales convolucionales.  
+	\item \textbf{Optimización de la implementación en CUDA}: Mejora de la implementación en CUDA para reducir la brecha en los tiempos ded cómputo en comparación con cuDNN.
+	\item \textbf{Evaluación de librerías de alto nivel}: Realizar implementaciones adicionales de redes neuronales convolucionales utilizando librerías de alto nivel y comparar los resultados con las implementaciones existentes en este proyecto.
+	\item \textbf{Investigación de cuDNN a bajo nivel}: Explorar el funcionamiento interno de cuDNN y tratar de optimizarlo en casos específicos para mejorar su rendimiento.
+	\item \textbf{Comparación con librerías de alto nivel que emplean cuDNN}: Analizar el rendimiento de cuDNN en comparación con las librerías de alto nivel que lol utilizan como componente subyacente.
+	\item \textbf{Desarrollo de sistemas heterogéneos optimizados}: Utilizar librerías de bajo nivel, como cuDNN, para desarrollar sistemas heterogéneos optimizados en algoritmos de aprendizaje profundo más complejos que las redes neuronales convolcionales.  
 \end{enumerate}

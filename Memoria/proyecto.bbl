@@ -499,6 +499,11 @@ Hide Inada.
 \newblock \url{https://hideyukiinada.github.io/cnn_backprop_strides2.html}
   [Accessed:01/04/2024].
 
+\bibitem{GEMM_definition}
+Stanford University.
+\newblock General matrix multiply (gemm), 2018.
+\newblock \url{https://spatial-lang.org/gemm} [Accessed:25/08/2024].
+
 \bibitem{conv_GEMM_FFT_comparacion}
 H.~Howie Huang¶ Zhufan Wang†‡ Weimin Zheng†‡ †Department of
   Computer~Science Xiaqing~Li†‡§, Guangyan~Zhang†‡§, Tsinghua

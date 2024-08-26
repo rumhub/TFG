@@ -2,7 +2,7 @@
 
 \subsection{Modelos a emplear}
 
-A continuación se muestra la arquitectura general de algunos de los modelos que se emplearán para tomar medidas de rendimiento y así poder comparar las distintas implementaciones de CNN desarrolladas a lo largo de este proyecto.
+A continuación, se presenta la arquitectura general de algunos de los modelos que se utilizarán para medir el rendimiento y comparar las distintas implementaciones de redes neuronales convolucionales (CNN) desarrolladas a lo largo de este proyecto.
 
 \begin{enumerate}
 	\item \textbf{Modelo 0}
@@ -86,9 +86,9 @@ A continuación se muestra la arquitectura general de algunos de los modelos que
 
 \subsection{Comparación de rendimiento}
 
-En esta sección se compararán las prestaciones de cada implementación. Como todas y cada una de ellas producen los mismos resultados (cuando se eliminan factores aleatorios como inicialización de pesos, entre otros), dicha comparación se centrará en el tiempo de cómputo requerido por cada una. \\
-Se comienza analizando aquellas implementaciones que requieren más tiempo de cómputo. Es decir, las que emplean exclusivamente CPU, (Secuencial y OpenMP). Tras ello, el análisis se posiciona sobre el comportamiento en aquellos sistemas heterogéneos que emplean tanto CPU como GPU (CUDA y cuDNN). \\
-Además, se proporcionan figuras que ayudan a comprender mejor dichos análisis de rendimiento, así como una tabla con los resultados de tiempo exactos empleados por cada capa de una misma arquitectura desarrollada en distintas implementaciones.
+En esta sección, se compararán las prestaciones de cada implementación. Dado que todas producen los mismos resultados (una vez eliminados factores aleatorios como inicialización de pesos, entre otros), la comparación se centrará en el tiempo de cómputo requerido por cada una. \\
+Se inicia el análisis con las implementaciones que requieren mayor tiempo de cómputo. Es decir, aquellas que emplean exclusivamente CPU, (Secuencial y OpenMP). Posteriormente, el análisis se enfocará en el rendimiento de los sistemas heterogéneos que emplean tanto CPU como GPU (CUDA y cuDNN). \\
+Además, se presentan figuras que facilitan la comprensión  de los análisis de rendimiento, junto con una tabla que detalla los tiempos exactos empleados por cada capa de una misma arquitectura, desarrollada en distintas implementaciones.
 
 \subsubsection{Implementaciones CPU}
 
@@ -99,7 +99,7 @@ Además, se proporcionan figuras que ayudan a comprender mejor dichos análisis 
 	\label{fig:sec_openmp}
 \end{figure}
 
-En la Figura \ref{fig:sec_openmp} se muestra una comparación de rendimiento entre la implementación secuencial y la implementación en OpenMP. En el eje Y se muestra el tiempo requerido en el entrenamiento de una época, mientras que en el eje X se muestra el modelo empleado para realizar dicho entrenamiento. De esta forma, el punto p1(100, 0) indica que el modelo 0 emplea 101 segundos en el entrenamiento de una época según la implementación secuencial, pero 12.76 segundos en la implementación con OpenMP.
+En la Figura \ref{fig:sec_openmp} se presenta una comparación de rendimiento entre la implementación secuencial y la implementación en OpenMP. El eje Y se muestra el tiempo requerido en el entrenamiento de una época, mientras que el eje X indica el modelo empleado para dicho entrenamiento. De esta manera, el punto p1(100, 0) señala que el modelo 0 requiere 101 segundos para entrenar una época con la implementación secuencial, mientras que solo necesita 12.76 segundos con la implementación en OpenMP.
 
 \begin{figure}[H]
 	\centering
@@ -108,7 +108,7 @@ En la Figura \ref{fig:sec_openmp} se muestra una comparación de rendimiento ent
 	\label{fig:ganancia_sec_openmp}
 \end{figure}
 
-La implementación con OpenMP se caracteriza por un paralelismo a nivel de CPU mediante 8 hebras. Por tanto, lo esperado es una ganancia cercana a 8 respecto a la implementación secuencial, tal y como se muestra en la Figura \ref{fig:ganancia_sec_openmp}.
+La implementación utilizando OpenMP está diseñada para explotar el paralelismo a nivel de CPU mediante el uso de 8 hilos. Por lo tanto, se anticipa una mejora de rendimiento cercana a un factor de 8 en comparación con la implementación secuencial, como se muestra en la Figura \ref{fig:ganancia_sec_openmp}.
 
 \vspace{10mm}
 
@@ -123,8 +123,8 @@ La implementación con OpenMP se caracteriza por un paralelismo a nivel de CPU m
 
 \newpage
 
-En la Figura \ref{fig:openmp_cuda_cudnn} se emplean los mismos modelos que en las Figuras \ref{fig:sec_openmp} y \ref{fig:ganancia_sec_openmp}.
-Al igual que la implementación en OpenMP muestra una diferencia notable respecto a la implementación secuencial, esto también es esperable entre implementaciones heterogéneas con CPU-GPU e implementaciones caracterizadas por un uso exclusivo de CPU como es OpenMP en este caso. Esto se observa en la Figura \ref{fig:openmp_cuda_cudnn}, donde en este caso las diferencias de rendimiento son incluso mayores que las observadas en el apartado anterior.
+En la Figura \ref{fig:openmp_cuda_cudnn} se utilizan los mismos modelos que se emplearon en las Figuras \ref{fig:sec_openmp} y \ref{fig:ganancia_sec_openmp}.
+De manera similar a cómo la implementación en OpenMP presenta una mejora notable respecto a la implementación secuencial, también se espera uuna diferencia significativa entre las implementaciones heterogéneas que combinan CPU y GPU  y aquellas que se basan exclusivamente en el uso de CPU, como es el caso de OpenMP. Esta diferencia de rendimiento es particularmente evidente en la Figura \ref{fig:openmp_cuda_cudnn}, donde las variaciones observadas en el rendimiento son incluso más pronunciadas que las reportadas en el apartado anterior.
 
 \begin{figure}[H]
 	\centering
@@ -133,8 +133,8 @@ Al igual que la implementación en OpenMP muestra una diferencia notable respect
 	\label{fig:cuda_cudnn_1}
 \end{figure}
 
-Para comparar las implementaciones en GPU se añaden 2 modelos, uno menos y otro más complejo que los anteriores. Al igual que en el experimento anterior, dichos modelos están ordenados en las figuras de izquierda a derecha, de menor a mayor complejidad. El objetivo de ello es facilitar la comprensión entre el rendimiento de la implementación CUDA y la implementación cuDNN. \\
-Tal y como se muestra en la Figura \ref{fig:cuda_cudnn_1}, la implementación CUDA obtiene mejores resultados en modelos menos complejos, pero a medida que incrementa la complejidad de los mismos, el modelo cuDNN va tomando la ventaja dada la naturaleza de una librería altamente optimizada como se trata de cuDNN. Gracias a esta importante característica se ha empleado en una gran cantidad de librerías de alto nivel y gran prestigio como Caffe2, MATLAB, PyTorch, o TensorFlow, entre otras. 
+Para comparar las implementaciones en GPU, se han añadeido dos modelos adicionales: uno de menor complejidad y otro de mayor complejidad en relación con los modelos previamente evaluados. Al igual que en el experimento anterior, estos modelos están dispuestos en las figuras de izquierda a derecha, organizados de menor a mayor complejidad. Este orden tiene como objetivo facilitar la comparación entre las distintas implementaciones en función de la complejidad creciente de los modelos. \\
+Como se ilustra en la Figura \ref{fig:cuda_cudnn_1}, la implementación CUDA muestra un rendimiento ligeramente superior en modelos menos complejos. Sin embargo, a medida que aumenta la complejidad de los modelos, la implementación cuDNN comienza a superar a CUDA. Esta característica distintiva ha llevado a que cuDNN sea utilizada en numerosas librerías de alto nivel y prestigio, como Caffe2, MATLAB, PyTorch y TensorFlow, entre otras. 
 
 \begin{table}[H]
 	\centering
@@ -168,5 +168,5 @@ Tal y como se muestra en la Figura \ref{fig:cuda_cudnn_1}, la implementación CU
 	\label{tabla_resultados}
 \end{table}
 
-Además, empleando el modelo con la mayor complejidad de la Figura \ref{fig:cuda_cudnn_1}, se crea una la Tabla \ref{tabla_resultados}, mostrando el tiempo requerido en cada capa para realizar tanto la propagación hacia delante como la retroprogación de la misma.
-En dicha tabla, se observa como a medida que los datos se van procesando por las distintas capas de la CNN, se va reduciendo la ventaja que cuDNN tenía sobre CUDA al inicio de la misma. Esto tiene sentido con lo comentado anteriormente, pues en cada capa se reduce el coste computacional (no siempre es así, pero en este caso concreto sí).
+Además, utilizando el modelo con la mayor complejidad mostrado en la Figura \ref{fig:cuda_cudnn_1}, se ha generado la Tabla \ref{tabla_resultados}, la cual presenta el tiempo requerido para realizar la propagación hacia delante como la retroprogación en cada capa.
+En esta tabla, se puede observar que, a medida que los datos avanzan a través de las distintas capas de la red neuronal convolucional (CNN), la ventaja inicial que cuDNN tenía sobre CUDA tiende a disminuir. Este comportamiento es coherente con la observación anterior, ya que en cada capa el coste computacional tiende a reducirse, (aunque no siempre es el caso, en el contexto específico de este modelo sí se cumple).
