@@ -69,9 +69,9 @@
 \contentsline {figure}{\numberline {3.41}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}}{82}{figure.caption.145}%
 \contentsline {figure}{\numberline {3.42}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{83}{figure.caption.146}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Imagen de una convolución estándar frente a una convolución empleando GEMM}}{87}{figure.caption.147}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a la entrada}}{89}{figure.caption.148}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación en una capa convolucional de forma estándar frente a GEMM respecto a los pesos}}{90}{figure.caption.149}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Convolución estándar frente a convolución GEMM}}{87}{figure.caption.147}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Retropropagación respecto a la entrada en una capa convolucional de forma estándar frente a GEMM}}{89}{figure.caption.148}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Retropropagación respecto a los pesos en una capa convolucional de forma estándar frente a GEMM}}{90}{figure.caption.149}%
 \contentsline {figure}{\numberline {4.4}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{91}{figure.caption.150}%
 \contentsline {figure}{\numberline {4.5}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{92}{figure.caption.151}%
 \contentsline {figure}{\numberline {4.6}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{93}{figure.caption.153}%

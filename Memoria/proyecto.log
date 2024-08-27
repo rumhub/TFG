@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  26 AUG 2024 21:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  27 AUG 2024 22:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -774,19 +774,7 @@ Package spanish Warning: Replacing `OT1/cmr/bx/sc' by
 
 LaTeX Info: Redefining \. on input line 63.
 LaTeX Info: Redefining \% on input line 63.
-[4]
-Overfull \hbox (5.51765pt too wide) in paragraph at lines 73--73
- [][] [][]\OT1/cmr/m/n/10.95 Retropropagaci^^Son en una ca-pa con-vo-lu-cio-nal
- de for-ma est^^Sandar 
- []
-
-
-Overfull \hbox (5.51765pt too wide) in paragraph at lines 74--74
- [][] [][]\OT1/cmr/m/n/10.95 Retropropagaci^^Son en una ca-pa con-vo-lu-cio-nal
- de for-ma est^^Sandar 
- []
-
-)
+[4])
 \tf@lof=\write5
 \openout5 = `proyecto.lof'.
 
@@ -886,12 +874,12 @@ been already used, duplicate ignored
                    \relax 
 l.29 
       [6]
-<imagenes/neurona.jpg, id=705, 662.475pt x 442.65375pt>
+<imagenes/neurona.jpg, id=704, 662.475pt x 442.65375pt>
 File: imagenes/neurona.jpg Graphic file (type jpg)
 <use imagenes/neurona.jpg>
 Package pdftex.def Info: imagenes/neurona.jpg  used on input line 34.
 (pdftex.def)             Requested size: 231.86972pt x 154.93112pt.
-<imagenes/capa_neuronas.jpg, id=707, 689.57625pt x 542.025pt>
+<imagenes/capa_neuronas.jpg, id=706, 689.57625pt x 542.025pt>
 File: imagenes/capa_neuronas.jpg Graphic file (type jpg)
 <use imagenes/capa_neuronas.jpg>
 Package pdftex.def Info: imagenes/capa_neuronas.jpg  used on input line 46.
@@ -919,12 +907,12 @@ been already used, duplicate ignored
                    \relax 
 l.62 \end{gather}
                   [8 <./imagenes/capa_neuronas.jpg>]
-<imagenes/ReLU.jpg.png, id=718, 380.8629pt x 310.761pt>
+<imagenes/ReLU.jpg.png, id=717, 380.8629pt x 310.761pt>
 File: imagenes/ReLU.jpg.png Graphic file (type png)
 <use imagenes/ReLU.jpg.png>
 Package pdftex.def Info: imagenes/ReLU.jpg.png  used on input line 66.
 (pdftex.def)             Requested size: 171.3867pt x 139.84116pt.
-<imagenes/sigmoide.jpg, id=723, 380.8629pt x 310.761pt>
+<imagenes/sigmoide.jpg, id=722, 380.8629pt x 310.761pt>
 File: imagenes/sigmoide.jpg Graphic file (type jpg)
 <use imagenes/sigmoide.jpg>
 Package pdftex.def Info: imagenes/sigmoide.jpg  used on input line 83.
@@ -941,7 +929,7 @@ been already used, duplicate ignored
                    \relax 
 l.87 
       [9 <./imagenes/ReLU.jpg.png>]
-<imagenes/softmax.jpg, id=738, 721.69624pt x 252.945pt>
+<imagenes/softmax.jpg, id=737, 721.69624pt x 252.945pt>
 File: imagenes/softmax.jpg Graphic file (type jpg)
 <use imagenes/softmax.jpg>
 Package pdftex.def Info: imagenes/softmax.jpg  used on input line 95.
@@ -968,7 +956,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.11}) has
                    \relax 
 l.135 
        [11]
-<imagenes/sgd.jpg, id=762, 388.0899pt x 310.761pt>
+<imagenes/sgd.jpg, id=761, 388.0899pt x 310.761pt>
 File: imagenes/sgd.jpg Graphic file (type jpg)
 <use imagenes/sgd.jpg>
 Package pdftex.def Info: imagenes/sgd.jpg  used on input line 151.
@@ -999,7 +987,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 206--209
 LaTeX Info: Redefining \. on input line 213.
 LaTeX Info: Redefining \% on input line 213.
 [14]
-<imagenes/conv_dims.jpg, id=815, 2496.32625pt x 1318.9275pt>
+<imagenes/conv_dims.jpg, id=814, 2496.32625pt x 1318.9275pt>
 File: imagenes/conv_dims.jpg Graphic file (type jpg)
 <use imagenes/conv_dims.jpg>
 Package pdftex.def Info: imagenes/conv_dims.jpg  used on input line 218.
@@ -1012,7 +1000,7 @@ Overfull \hbox (139.25641pt too wide) in paragraph at lines 218--219
 LaTeX Info: Redefining \. on input line 228.
 LaTeX Info: Redefining \% on input line 228.
 [15 <./imagenes/conv_dims.jpg>]
-<imagenes/CNN_estructura.jpg, id=821, 960.58875pt x 336.25626pt>
+<imagenes/CNN_estructura.jpg, id=820, 960.58875pt x 336.25626pt>
 File: imagenes/CNN_estructura.jpg Graphic file (type jpg)
 <use imagenes/CNN_estructura.jpg>
 Package pdftex.def Info: imagenes/CNN_estructura.jpg  used on input line 233.
@@ -1020,12 +1008,12 @@ Package pdftex.def Info: imagenes/CNN_estructura.jpg  used on input line 233.
 LaTeX Info: Redefining \. on input line 250.
 LaTeX Info: Redefining \% on input line 250.
  [16 <./imagenes/CNN_estructura.jpg>]
-<imagenes/conv_nombres.jpg, id=831, 825.0825pt x 305.14pt>
+<imagenes/conv_nombres.jpg, id=830, 825.0825pt x 305.14pt>
 File: imagenes/conv_nombres.jpg Graphic file (type jpg)
 <use imagenes/conv_nombres.jpg>
 Package pdftex.def Info: imagenes/conv_nombres.jpg  used on input line 261.
 (pdftex.def)             Requested size: 288.7832pt x 106.80058pt.
-<imagenes/conv_1.jpg, id=834, 818.05624pt x 305.14pt>
+<imagenes/conv_1.jpg, id=833, 818.05624pt x 305.14pt>
 File: imagenes/conv_1.jpg Graphic file (type jpg)
 <use imagenes/conv_1.jpg>
 Package pdftex.def Info: imagenes/conv_1.jpg  used on input line 274.
@@ -1035,7 +1023,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 273--275
 []  [] 
  []
 
-<imagenes/conv_2.jpg, id=835, 818.05624pt x 305.14pt>
+<imagenes/conv_2.jpg, id=834, 818.05624pt x 305.14pt>
 File: imagenes/conv_2.jpg Graphic file (type jpg)
 <use imagenes/conv_2.jpg>
 Package pdftex.def Info: imagenes/conv_2.jpg  used on input line 279.
@@ -1045,7 +1033,7 @@ Overfull \hbox (66.88553pt too wide) in paragraph at lines 278--280
 []  [] 
  []
 
-<imagenes/conv_3.jpg, id=836, 818.05624pt x 305.14pt>
+<imagenes/conv_3.jpg, id=835, 818.05624pt x 305.14pt>
 File: imagenes/conv_3.jpg Graphic file (type jpg)
 <use imagenes/conv_3.jpg>
 Package pdftex.def Info: imagenes/conv_3.jpg  used on input line 286.
@@ -1055,7 +1043,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 285--287
 []  [] 
  []
 
-<imagenes/conv_4.jpg, id=837, 818.05624pt x 305.14pt>
+<imagenes/conv_4.jpg, id=836, 818.05624pt x 305.14pt>
 File: imagenes/conv_4.jpg Graphic file (type jpg)
 <use imagenes/conv_4.jpg>
 Package pdftex.def Info: imagenes/conv_4.jpg  used on input line 291.
@@ -1071,7 +1059,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 297.
 LaTeX Info: Redefining \% on input line 297.
  [17 <./imagenes/conv_nombres.jpg>]
-<imagenes/conv_1_1canal.jpg, id=851, 824.07875pt x 455.7025pt>
+<imagenes/conv_1_1canal.jpg, id=850, 824.07875pt x 455.7025pt>
 File: imagenes/conv_1_1canal.jpg Graphic file (type jpg)
 <use imagenes/conv_1_1canal.jpg>
 Package pdftex.def Info: imagenes/conv_1_1canal.jpg  used on input line 308.
@@ -1081,7 +1069,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 307--309
 []  [] 
  []
 
-<imagenes/conv_1_2canales.jpg, id=852, 824.07875pt x 455.7025pt>
+<imagenes/conv_1_2canales.jpg, id=851, 824.07875pt x 455.7025pt>
 File: imagenes/conv_1_2canales.jpg Graphic file (type jpg)
 <use imagenes/conv_1_2canales.jpg>
 Package pdftex.def Info: imagenes/conv_1_2canales.jpg  used on input line 313.
@@ -1091,7 +1079,7 @@ Overfull \hbox (66.88553pt too wide) in paragraph at lines 312--314
 []  [] 
  []
 
-<imagenes/conv_1_3canales.jpg, id=853, 825.0825pt x 661.47125pt>
+<imagenes/conv_1_3canales.jpg, id=852, 825.0825pt x 661.47125pt>
 File: imagenes/conv_1_3canales.jpg Graphic file (type jpg)
 <use imagenes/conv_1_3canales.jpg>
 Package pdftex.def Info: imagenes/conv_1_3canales.jpg  used on input line 320.
@@ -1108,7 +1096,7 @@ LaTeX Info: Redefining \. on input line 326.
 LaTeX Info: Redefining \% on input line 326.
  [18 <./imagenes/conv_1.jpg> <./imagenes/conv_2.jpg> <./imagenes/conv_3.jpg> <.
 /imagenes/conv_4.jpg>]
-<imagenes/conv_2kernels_1.jpg, id=862, 824.07875pt x 543.02875pt>
+<imagenes/conv_2kernels_1.jpg, id=861, 824.07875pt x 543.02875pt>
 File: imagenes/conv_2kernels_1.jpg Graphic file (type jpg)
 <use imagenes/conv_2kernels_1.jpg>
 Package pdftex.def Info: imagenes/conv_2kernels_1.jpg  used on input line 345.
@@ -1118,7 +1106,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 344--346
 []  [] 
  []
 
-<imagenes/conv_2kernels_2.jpg, id=863, 824.07875pt x 543.02875pt>
+<imagenes/conv_2kernels_2.jpg, id=862, 824.07875pt x 543.02875pt>
 File: imagenes/conv_2kernels_2.jpg Graphic file (type jpg)
 <use imagenes/conv_2kernels_2.jpg>
 Package pdftex.def Info: imagenes/conv_2kernels_2.jpg  used on input line 350.
@@ -1132,13 +1120,13 @@ LaTeX Info: Redefining \. on input line 356.
 LaTeX Info: Redefining \% on input line 356.
 [19 <./imagenes/conv_1_1canal.jpg> <./imagenes/conv_1_2canales.jpg> <./imagenes
 /conv_1_3canales.jpg>]
-<imagenes/padding_a_1_nivel.jpg, id=877, 633.36626pt x 238.8925pt>
+<imagenes/padding_a_1_nivel.jpg, id=876, 633.36626pt x 238.8925pt>
 File: imagenes/padding_a_1_nivel.jpg Graphic file (type jpg)
 <use imagenes/padding_a_1_nivel.jpg>
 Package pdftex.def Info: imagenes/padding_a_1_nivel.jpg  used on input line 369
 .
 (pdftex.def)             Requested size: 215.99945pt x 81.47025pt.
-<imagenes/padding_a_2_niveles.jpg, id=878, 750.805pt x 349.305pt>
+<imagenes/padding_a_2_niveles.jpg, id=877, 750.805pt x 349.305pt>
 File: imagenes/padding_a_2_niveles.jpg Graphic file (type jpg)
 <use imagenes/padding_a_2_niveles.jpg>
 Package pdftex.def Info: imagenes/padding_a_2_niveles.jpg  used on input line 3
@@ -1155,82 +1143,82 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 380.
 LaTeX Info: Redefining \% on input line 380.
  [20 <./imagenes/conv_2kernels_1.jpg> <./imagenes/conv_2kernels_2.jpg>]
-<imagenes/conv_padding_1.jpg, id=889, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_1.jpg, id=888, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_1.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_1.jpg>
 Package pdftex.def Info: imagenes/conv_padding_1.jpg  used on input line 392.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_2.jpg, id=890, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_2.jpg, id=889, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_2.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_2.jpg>
 Package pdftex.def Info: imagenes/conv_padding_2.jpg  used on input line 396.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_3.jpg, id=891, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_3.jpg, id=890, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_3.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_3.jpg>
 Package pdftex.def Info: imagenes/conv_padding_3.jpg  used on input line 400.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_4.jpg, id=892, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_4.jpg, id=891, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_4.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_4.jpg>
 Package pdftex.def Info: imagenes/conv_padding_4.jpg  used on input line 404.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_5.jpg, id=893, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_5.jpg, id=892, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_5.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_5.jpg>
 Package pdftex.def Info: imagenes/conv_padding_5.jpg  used on input line 414.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_6.jpg, id=894, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_6.jpg, id=893, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_6.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_6.jpg>
 Package pdftex.def Info: imagenes/conv_padding_6.jpg  used on input line 418.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_7.jpg, id=895, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_7.jpg, id=894, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_7.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_7.jpg>
 Package pdftex.def Info: imagenes/conv_padding_7.jpg  used on input line 422.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_8.jpg, id=896, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_8.jpg, id=895, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_8.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_8.jpg>
 Package pdftex.def Info: imagenes/conv_padding_8.jpg  used on input line 426.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_9.jpg, id=897, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_9.jpg, id=896, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_9.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_9.jpg>
 Package pdftex.def Info: imagenes/conv_padding_9.jpg  used on input line 430.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_10.jpg, id=898, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_10.jpg, id=897, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_10.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_10.jpg>
 Package pdftex.def Info: imagenes/conv_padding_10.jpg  used on input line 434.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_11.jpg, id=899, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_11.jpg, id=898, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_11.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_11.jpg>
 Package pdftex.def Info: imagenes/conv_padding_11.jpg  used on input line 438.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_12.jpg, id=900, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_12.jpg, id=899, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_12.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_12.jpg>
 Package pdftex.def Info: imagenes/conv_padding_12.jpg  used on input line 442.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_13.jpg, id=901, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_13.jpg, id=900, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_13.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_13.jpg>
 Package pdftex.def Info: imagenes/conv_padding_13.jpg  used on input line 446.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_14.jpg, id=902, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_14.jpg, id=901, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_14.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_14.jpg>
 Package pdftex.def Info: imagenes/conv_padding_14.jpg  used on input line 450.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_15.jpg, id=903, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_15.jpg, id=902, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_15.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_15.jpg>
 Package pdftex.def Info: imagenes/conv_padding_15.jpg  used on input line 454.
 (pdftex.def)             Requested size: 161.9989pt x 78.94104pt.
-<imagenes/conv_padding_16.jpg, id=904, 751.80875pt x 366.36874pt>
+<imagenes/conv_padding_16.jpg, id=903, 751.80875pt x 366.36874pt>
 File: imagenes/conv_padding_16.jpg Graphic file (type jpg)
 <use imagenes/conv_padding_16.jpg>
 Package pdftex.def Info: imagenes/conv_padding_16.jpg  used on input line 458.
@@ -1253,12 +1241,12 @@ LaTeX Info: Redefining \% on input line 463.
 .jpg> <./imagenes/conv_padding_10.jpg> <./imagenes/conv_padding_11.jpg> <./imag
 enes/conv_padding_12.jpg> <./imagenes/conv_padding_13.jpg> <./imagenes/conv_pad
 ding_14.jpg> <./imagenes/conv_padding_15.jpg> <./imagenes/conv_padding_16.jpg>]
-<imagenes/pool_nombres.jpg, id=917, 827.09pt x 249.93375pt>
+<imagenes/pool_nombres.jpg, id=916, 827.09pt x 249.93375pt>
 File: imagenes/pool_nombres.jpg Graphic file (type jpg)
 <use imagenes/pool_nombres.jpg>
 Package pdftex.def Info: imagenes/pool_nombres.jpg  used on input line 472.
 (pdftex.def)             Requested size: 289.48582pt x 87.47812pt.
-<imagenes/maxpool_1.jpg, id=918, 798.985pt x 211.79124pt>
+<imagenes/maxpool_1.jpg, id=917, 798.985pt x 211.79124pt>
 File: imagenes/maxpool_1.jpg Graphic file (type jpg)
 <use imagenes/maxpool_1.jpg>
 Package pdftex.def Info: imagenes/maxpool_1.jpg  used on input line 484.
@@ -1268,7 +1256,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 483--485
 []  [] 
  []
 
-<imagenes/maxpool_2.jpg, id=919, 800.9925pt x 211.79124pt>
+<imagenes/maxpool_2.jpg, id=918, 800.9925pt x 211.79124pt>
 File: imagenes/maxpool_2.jpg Graphic file (type jpg)
 <use imagenes/maxpool_2.jpg>
 Package pdftex.def Info: imagenes/maxpool_2.jpg  used on input line 489.
@@ -1278,7 +1266,7 @@ Overfull \hbox (66.88553pt too wide) in paragraph at lines 488--490
 []  [] 
  []
 
-<imagenes/maxpool_3.jpg, id=920, 800.9925pt x 211.79124pt>
+<imagenes/maxpool_3.jpg, id=919, 800.9925pt x 211.79124pt>
 File: imagenes/maxpool_3.jpg Graphic file (type jpg)
 <use imagenes/maxpool_3.jpg>
 Package pdftex.def Info: imagenes/maxpool_3.jpg  used on input line 496.
@@ -1288,7 +1276,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 495--497
 []  [] 
  []
 
-<imagenes/maxpool_4.jpg, id=921, 800.9925pt x 211.79124pt>
+<imagenes/maxpool_4.jpg, id=920, 800.9925pt x 211.79124pt>
 File: imagenes/maxpool_4.jpg Graphic file (type jpg)
 <use imagenes/maxpool_4.jpg>
 Package pdftex.def Info: imagenes/maxpool_4.jpg  used on input line 501.
@@ -1298,7 +1286,7 @@ Overfull \hbox (66.88553pt too wide) in paragraph at lines 500--502
 []  [] 
  []
 
-<imagenes/maxpool_2capas_1.jpg, id=924, 816.04875pt x 435.6275pt>
+<imagenes/maxpool_2capas_1.jpg, id=923, 816.04875pt x 435.6275pt>
 File: imagenes/maxpool_2capas_1.jpg Graphic file (type jpg)
 <use imagenes/maxpool_2capas_1.jpg>
 Package pdftex.def Info: imagenes/maxpool_2capas_1.jpg  used on input line 517.
@@ -1309,7 +1297,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 516--518
 []  [] 
  []
 
-<imagenes/maxpool_2capas_2.jpg, id=925, 816.04875pt x 435.6275pt>
+<imagenes/maxpool_2capas_2.jpg, id=924, 816.04875pt x 435.6275pt>
 File: imagenes/maxpool_2capas_2.jpg Graphic file (type jpg)
 <use imagenes/maxpool_2capas_2.jpg>
 Package pdftex.def Info: imagenes/maxpool_2capas_2.jpg  used on input line 522.
@@ -1324,7 +1312,7 @@ LaTeX Info: Redefining \. on input line 529.
 LaTeX Info: Redefining \% on input line 529.
 [23 <./imagenes/pool_nombres.jpg> <./imagenes/maxpool_1.jpg> <./imagenes/maxpoo
 l_2.jpg> <./imagenes/maxpool_3.jpg> <./imagenes/maxpool_4.jpg>]
-<imagenes/back_maxpool_1.jpg, id=933, 810.02625pt x 211.79124pt>
+<imagenes/back_maxpool_1.jpg, id=932, 810.02625pt x 211.79124pt>
 File: imagenes/back_maxpool_1.jpg Graphic file (type jpg)
 <use imagenes/back_maxpool_1.jpg>
 Package pdftex.def Info: imagenes/back_maxpool_1.jpg  used on input line 538.
@@ -1334,7 +1322,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 537--539
 []  [] 
  []
 
-<imagenes/back_maxpool_2.jpg, id=934, 810.02625pt x 211.79124pt>
+<imagenes/back_maxpool_2.jpg, id=933, 810.02625pt x 211.79124pt>
 File: imagenes/back_maxpool_2.jpg Graphic file (type jpg)
 <use imagenes/back_maxpool_2.jpg>
 Package pdftex.def Info: imagenes/back_maxpool_2.jpg  used on input line 543.
@@ -1344,7 +1332,7 @@ Overfull \hbox (66.88553pt too wide) in paragraph at lines 542--544
 []  [] 
  []
 
-<imagenes/back_maxpool_3.jpg, id=935, 810.02625pt x 211.79124pt>
+<imagenes/back_maxpool_3.jpg, id=934, 810.02625pt x 211.79124pt>
 File: imagenes/back_maxpool_3.jpg Graphic file (type jpg)
 <use imagenes/back_maxpool_3.jpg>
 Package pdftex.def Info: imagenes/back_maxpool_3.jpg  used on input line 549.
@@ -1354,7 +1342,7 @@ Overfull \hbox (9.98004pt too wide) in paragraph at lines 548--550
 []  [] 
  []
 
-<imagenes/back_maxpool_4.jpg, id=936, 810.02625pt x 211.79124pt>
+<imagenes/back_maxpool_4.jpg, id=935, 810.02625pt x 211.79124pt>
 File: imagenes/back_maxpool_4.jpg Graphic file (type jpg)
 <use imagenes/back_maxpool_4.jpg>
 Package pdftex.def Info: imagenes/back_maxpool_4.jpg  used on input line 554.
@@ -1369,7 +1357,7 @@ LaTeX Info: Redefining \% on input line 563.
 [24 <./imagenes/maxpool_2capas_1.jpg> <./imagenes/maxpool_2capas_2.jpg> <./imag
 enes/back_maxpool_1.jpg> <./imagenes/back_maxpool_2.jpg> <./imagenes/back_maxpo
 ol_3.jpg> <./imagenes/back_maxpool_4.jpg>]
-<imagenes/flatten_1.jpg, id=951, 1575.8875pt x 455.7025pt>
+<imagenes/flatten_1.jpg, id=950, 1575.8875pt x 455.7025pt>
 File: imagenes/flatten_1.jpg Graphic file (type jpg)
 <use imagenes/flatten_1.jpg>
 Package pdftex.def Info: imagenes/flatten_1.jpg  used on input line 583.
@@ -1379,7 +1367,7 @@ Overfull \hbox (153.98059pt too wide) in paragraph at lines 582--584
 []  [] 
  []
 
-<imagenes/flatten_2.jpg, id=952, 1575.8875pt x 455.7025pt>
+<imagenes/flatten_2.jpg, id=951, 1575.8875pt x 455.7025pt>
 File: imagenes/flatten_2.jpg Graphic file (type jpg)
 <use imagenes/flatten_2.jpg>
 Package pdftex.def Info: imagenes/flatten_2.jpg  used on input line 588.
@@ -1395,7 +1383,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 595.
 LaTeX Info: Redefining \% on input line 595.
  [25]
-<imagenes/back_flatten_1.jpg, id=966, 1601.985pt x 477.785pt>
+<imagenes/back_flatten_1.jpg, id=965, 1601.985pt x 477.785pt>
 File: imagenes/back_flatten_1.jpg Graphic file (type jpg)
 <use imagenes/back_flatten_1.jpg>
 Package pdftex.def Info: imagenes/back_flatten_1.jpg  used on input line 605.
@@ -1405,7 +1393,7 @@ Overfull \hbox (97.07507pt too wide) in paragraph at lines 604--606
 []  [] 
  []
 
-<imagenes/back_flatten_2.jpg, id=967, 1601.985pt x 477.785pt>
+<imagenes/back_flatten_2.jpg, id=966, 1601.985pt x 477.785pt>
 File: imagenes/back_flatten_2.jpg Graphic file (type jpg)
 <use imagenes/back_flatten_2.jpg>
 Package pdftex.def Info: imagenes/back_flatten_2.jpg  used on input line 610.
@@ -1440,7 +1428,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 658--659
 LaTeX Info: Redefining \. on input line 659.
 LaTeX Info: Redefining \% on input line 659.
 [28]
-<imagenes/cuda_grid.jpg, id=1001, 627.34375pt x 411.5375pt>
+<imagenes/cuda_grid.jpg, id=1000, 627.34375pt x 411.5375pt>
 File: imagenes/cuda_grid.jpg Graphic file (type jpg)
 <use imagenes/cuda_grid.jpg>
 Package pdftex.def Info: imagenes/cuda_grid.jpg  used on input line 664.
@@ -1453,7 +1441,7 @@ Underfull \vbox (badness 2790) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 690.
 LaTeX Info: Redefining \% on input line 690.
  [30]
-<imagenes/ejemplo_tensor.png, id=1023, 405.515pt x 407.5225pt>
+<imagenes/ejemplo_tensor.png, id=1022, 405.515pt x 407.5225pt>
 File: imagenes/ejemplo_tensor.png Graphic file (type png)
 <use imagenes/ejemplo_tensor.png>
 Package pdftex.def Info: imagenes/ejemplo_tensor.png  used on input line 714.
@@ -1462,7 +1450,7 @@ LaTeX Info: Redefining \. on input line 721.
 LaTeX Info: Redefining \% on input line 721.
 
 [31 <./imagenes/ejemplo_tensor.png>]
-<imagenes/tensor_nchw.png, id=1041, 396.48125pt x 157.58875pt>
+<imagenes/tensor_nchw.png, id=1040, 396.48125pt x 157.58875pt>
 File: imagenes/tensor_nchw.png Graphic file (type png)
 <use imagenes/tensor_nchw.png>
 Package pdftex.def Info: imagenes/tensor_nchw.png  used on input line 729.
@@ -1536,7 +1524,7 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `subscript' on input line 113.
 
-<imagenes/NN_softmax.jpg, id=1217, 620.3175pt x 218.8175pt>
+<imagenes/NN_softmax.jpg, id=1216, 620.3175pt x 218.8175pt>
 File: imagenes/NN_softmax.jpg Graphic file (type jpg)
 <use imagenes/NN_softmax.jpg>
 Package pdftex.def Info: imagenes/NN_softmax.jpg  used on input line 119.
@@ -1625,7 +1613,7 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `subscript' on input line 241.
 
-<imagenes/nn_1_capa.jpg, id=1290, 381.425pt x 291.0875pt>
+<imagenes/nn_1_capa.jpg, id=1289, 381.425pt x 291.0875pt>
 File: imagenes/nn_1_capa.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa.jpg  used on input line 247.
@@ -1636,13 +1624,13 @@ Underfull \vbox (badness 4779) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 251.
 LaTeX Info: Redefining \% on input line 251.
  [47]
-<imagenes/nn_1_capa_output.jpg, id=1303, 381.425pt x 291.0875pt>
+<imagenes/nn_1_capa_output.jpg, id=1302, 381.425pt x 291.0875pt>
 File: imagenes/nn_1_capa_output.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_output.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_output.jpg  used on input line 261.
 
 (pdftex.def)             Requested size: 133.50075pt x 101.88214pt.
-<imagenes/nn_1_capa_pesos_h1_output.jpg, id=1305, 381.425pt x 291.0875pt>
+<imagenes/nn_1_capa_pesos_h1_output.jpg, id=1304, 381.425pt x 291.0875pt>
 File: imagenes/nn_1_capa_pesos_h1_output.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_pesos_h1_output.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_pesos_h1_output.jpg  used on input 
@@ -1652,7 +1640,7 @@ LaTeX Info: Redefining \. on input line 279.
 LaTeX Info: Redefining \% on input line 279.
 
 [48 <./imagenes/nn_1_capa.jpg> <./imagenes/nn_1_capa_output.jpg>]
-<imagenes/nn_caminos_posibles.jpg, id=1316, 381.425pt x 291.0875pt>
+<imagenes/nn_caminos_posibles.jpg, id=1315, 381.425pt x 291.0875pt>
 File: imagenes/nn_caminos_posibles.jpg Graphic file (type jpg)
 <use imagenes/nn_caminos_posibles.jpg>
 Package pdftex.def Info: imagenes/nn_caminos_posibles.jpg  used on input line 3
@@ -1665,7 +1653,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 311--312
 
  []
 
-<imagenes/nn_1_capa_h1.jpg, id=1332, 381.425pt x 291.0875pt>
+<imagenes/nn_1_capa_h1.jpg, id=1331, 381.425pt x 291.0875pt>
 File: imagenes/nn_1_capa_h1.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_h1.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_h1.jpg  used on input line 327.
@@ -1673,7 +1661,7 @@ Package pdftex.def Info: imagenes/nn_1_capa_h1.jpg  used on input line 327.
 LaTeX Info: Redefining \. on input line 334.
 LaTeX Info: Redefining \% on input line 334.
 [50 <./imagenes/nn_caminos_posibles.jpg> <./imagenes/nn_1_capa_h1.jpg>]
-<imagenes/nn_1_capa_pesos_input_h1.jpg, id=1347, 381.425pt x 291.0875pt>
+<imagenes/nn_1_capa_pesos_input_h1.jpg, id=1346, 381.425pt x 291.0875pt>
 File: imagenes/nn_1_capa_pesos_input_h1.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_pesos_input_h1.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_pesos_input_h1.jpg  used on input l
@@ -1683,7 +1671,7 @@ LaTeX Info: Redefining \. on input line 370.
 LaTeX Info: Redefining \% on input line 370.
 
 [51 <./imagenes/nn_1_capa_pesos_input_h1.jpg>]
-<imagenes/nn_caminos_posibles_input.jpg, id=1364, 381.425pt x 291.0875pt>
+<imagenes/nn_caminos_posibles_input.jpg, id=1363, 381.425pt x 291.0875pt>
 File: imagenes/nn_caminos_posibles_input.jpg Graphic file (type jpg)
 <use imagenes/nn_caminos_posibles_input.jpg>
 Package pdftex.def Info: imagenes/nn_caminos_posibles_input.jpg  used on input 
@@ -1692,7 +1680,7 @@ line 389.
 LaTeX Info: Redefining \. on input line 395.
 LaTeX Info: Redefining \% on input line 395.
  [52 <./imagenes/nn_caminos_posibles_input.jpg>]
-<imagenes/nn_1_capa_input.jpg, id=1377, 381.425pt x 291.0875pt>
+<imagenes/nn_1_capa_input.jpg, id=1376, 381.425pt x 291.0875pt>
 File: imagenes/nn_1_capa_input.jpg Graphic file (type jpg)
 <use imagenes/nn_1_capa_input.jpg>
 Package pdftex.def Info: imagenes/nn_1_capa_input.jpg  used on input line 403.
@@ -1702,7 +1690,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 408--409
 
  []
 
-<imagenes/nn_2_capas.jpg, id=1378, 537.00626pt x 294.09875pt>
+<imagenes/nn_2_capas.jpg, id=1377, 537.00626pt x 294.09875pt>
 File: imagenes/nn_2_capas.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capas.jpg>
 Package pdftex.def Info: imagenes/nn_2_capas.jpg  used on input line 419.
@@ -1717,7 +1705,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 424--425
 
  []
 
-<imagenes/nn_2_capa_output.jpg, id=1388, 537.00626pt x 294.09875pt>
+<imagenes/nn_2_capa_output.jpg, id=1387, 537.00626pt x 294.09875pt>
 File: imagenes/nn_2_capa_output.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capa_output.jpg>
 Package pdftex.def Info: imagenes/nn_2_capa_output.jpg  used on input line 430.
@@ -1728,7 +1716,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 434--435
 
  []
 
-<imagenes/nn_2_capa_pesos_h2_output.jpg, id=1390, 537.00626pt x 294.09875pt>
+<imagenes/nn_2_capa_pesos_h2_output.jpg, id=1389, 537.00626pt x 294.09875pt>
 File: imagenes/nn_2_capa_pesos_h2_output.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capa_pesos_h2_output.jpg>
 Package pdftex.def Info: imagenes/nn_2_capa_pesos_h2_output.jpg  used on input 
@@ -1744,7 +1732,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 445--446
 
  []
 
-<imagenes/nn_h2_caminos_posibles.jpg, id=1407, 537.00626pt x 294.09875pt>
+<imagenes/nn_h2_caminos_posibles.jpg, id=1406, 537.00626pt x 294.09875pt>
 File: imagenes/nn_h2_caminos_posibles.jpg Graphic file (type jpg)
 <use imagenes/nn_h2_caminos_posibles.jpg>
 Package pdftex.def Info: imagenes/nn_h2_caminos_posibles.jpg  used on input lin
@@ -1757,7 +1745,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 478--479
 
  []
 
-<imagenes/nn_2_capa_h2.jpg, id=1422, 537.00626pt x 294.09875pt>
+<imagenes/nn_2_capa_h2.jpg, id=1421, 537.00626pt x 294.09875pt>
 File: imagenes/nn_2_capa_h2.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capa_h2.jpg>
 Package pdftex.def Info: imagenes/nn_2_capa_h2.jpg  used on input line 492.
@@ -1769,7 +1757,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 519--520
 
  []
 
-<imagenes/nn_2_capa_pesos_h1_h2.jpg, id=1441, 537.00626pt x 288.07625pt>
+<imagenes/nn_2_capa_pesos_h1_h2.jpg, id=1440, 537.00626pt x 288.07625pt>
 File: imagenes/nn_2_capa_pesos_h1_h2.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capa_pesos_h1_h2.jpg>
 Package pdftex.def Info: imagenes/nn_2_capa_pesos_h1_h2.jpg  used on input line
@@ -1781,7 +1769,7 @@ Underfull \vbox (badness 1072) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 536.
 LaTeX Info: Redefining \% on input line 536.
  [57 <./imagenes/nn_2_capa_pesos_h1_h2.jpg>]
-<imagenes/nn_h1_caminos_posibles.jpg, id=1454, 537.00626pt x 295.1025pt>
+<imagenes/nn_h1_caminos_posibles.jpg, id=1453, 537.00626pt x 295.1025pt>
 File: imagenes/nn_h1_caminos_posibles.jpg Graphic file (type jpg)
 <use imagenes/nn_h1_caminos_posibles.jpg>
 Package pdftex.def Info: imagenes/nn_h1_caminos_posibles.jpg  used on input lin
@@ -1795,7 +1783,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 561--562
 LaTeX Info: Redefining \. on input line 566.
 LaTeX Info: Redefining \% on input line 566.
 [58 <./imagenes/nn_h1_caminos_posibles.jpg>]
-<imagenes/nn_2_capa_h1.jpg, id=1467, 537.00626pt x 295.1025pt>
+<imagenes/nn_2_capa_h1.jpg, id=1466, 537.00626pt x 295.1025pt>
 File: imagenes/nn_2_capa_h1.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capa_h1.jpg>
 Package pdftex.def Info: imagenes/nn_2_capa_h1.jpg  used on input line 572.
@@ -1809,7 +1797,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 594--595
 
  []
 
-<imagenes/nn_2_capa_pesos_input_h1.jpg, id=1473, 537.00626pt x 295.1025pt>
+<imagenes/nn_2_capa_pesos_input_h1.jpg, id=1472, 537.00626pt x 295.1025pt>
 File: imagenes/nn_2_capa_pesos_input_h1.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capa_pesos_input_h1.jpg>
 Package pdftex.def Info: imagenes/nn_2_capa_pesos_input_h1.jpg  used on input l
@@ -1818,7 +1806,7 @@ ine 601.
 LaTeX Info: Redefining \. on input line 605.
 LaTeX Info: Redefining \% on input line 605.
 [59 <./imagenes/nn_2_capa_h1.jpg>]
-<imagenes/nn_2_capas_caminos_posibles_input.jpg, id=1497, 537.00626pt x 295.102
+<imagenes/nn_2_capas_caminos_posibles_input.jpg, id=1496, 537.00626pt x 295.102
 5pt>
 File: imagenes/nn_2_capas_caminos_posibles_input.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capas_caminos_posibles_input.jpg>
@@ -1828,7 +1816,7 @@ n input line 630.
 LaTeX Info: Redefining \. on input line 634.
 LaTeX Info: Redefining \% on input line 634.
  [60 <./imagenes/nn_2_capa_pesos_input_h1.jpg>]
-<imagenes/nn_2_capa_input.jpg, id=1514, 537.00626pt x 295.1025pt>
+<imagenes/nn_2_capa_input.jpg, id=1513, 537.00626pt x 295.1025pt>
 File: imagenes/nn_2_capa_input.jpg Graphic file (type jpg)
 <use imagenes/nn_2_capa_input.jpg>
 Package pdftex.def Info: imagenes/nn_2_capa_input.jpg  used on input line 644.
@@ -1847,13 +1835,13 @@ LaTeX Info: Redefining \. on input line 659.
 LaTeX Info: Redefining \% on input line 659.
 [61 <./imagenes/nn_2_capas_caminos_posibles_input.jpg> <./imagenes/nn_2_capa_in
 put.jpg>]
-<imagenes/conclusion_capa_l.jpg, id=1525, 624.3325pt x 281.05pt>
+<imagenes/conclusion_capa_l.jpg, id=1524, 624.3325pt x 281.05pt>
 File: imagenes/conclusion_capa_l.jpg Graphic file (type jpg)
 <use imagenes/conclusion_capa_l.jpg>
 Package pdftex.def Info: imagenes/conclusion_capa_l.jpg  used on input line 664
 .
 (pdftex.def)             Requested size: 218.51964pt x 98.36896pt.
-<imagenes/conclusion_pesos.jpg, id=1531, 624.3325pt x 281.05pt>
+<imagenes/conclusion_pesos.jpg, id=1530, 624.3325pt x 281.05pt>
 File: imagenes/conclusion_pesos.jpg Graphic file (type jpg)
 <use imagenes/conclusion_pesos.jpg>
 Package pdftex.def Info: imagenes/conclusion_pesos.jpg  used on input line 683.
@@ -1872,7 +1860,7 @@ LaTeX Info: Redefining \% on input line 711.
 LaTeX Info: Redefining \. on input line 742.
 LaTeX Info: Redefining \% on input line 742.
  [64]
-<imagenes/conv_ejemplo_backprop_1.jpg, id=1577, 768.8725pt x 254.9525pt>
+<imagenes/conv_ejemplo_backprop_1.jpg, id=1576, 768.8725pt x 254.9525pt>
 File: imagenes/conv_ejemplo_backprop_1.jpg Graphic file (type jpg)
 <use imagenes/conv_ejemplo_backprop_1.jpg>
 Package pdftex.def Info: imagenes/conv_ejemplo_backprop_1.jpg  used on input li
@@ -1884,13 +1872,13 @@ LaTeX Info: Redefining \% on input line 763.
 LaTeX Info: Redefining \. on input line 782.
 LaTeX Info: Redefining \% on input line 782.
  [66]
-<imagenes/conv_ejemplo_backprop_2.jpg, id=1606, 768.8725pt x 254.9525pt>
+<imagenes/conv_ejemplo_backprop_2.jpg, id=1605, 768.8725pt x 254.9525pt>
 File: imagenes/conv_ejemplo_backprop_2.jpg Graphic file (type jpg)
 <use imagenes/conv_ejemplo_backprop_2.jpg>
 Package pdftex.def Info: imagenes/conv_ejemplo_backprop_2.jpg  used on input li
 ne 787.
 (pdftex.def)             Requested size: 360.0pt x 119.3764pt.
-<imagenes/conv_ejemplo_backprop_3.jpg, id=1612, 768.8725pt x 254.9525pt>
+<imagenes/conv_ejemplo_backprop_3.jpg, id=1611, 768.8725pt x 254.9525pt>
 File: imagenes/conv_ejemplo_backprop_3.jpg Graphic file (type jpg)
 <use imagenes/conv_ejemplo_backprop_3.jpg>
 Package pdftex.def Info: imagenes/conv_ejemplo_backprop_3.jpg  used on input li
@@ -1899,7 +1887,7 @@ ne 813.
 LaTeX Info: Redefining \. on input line 817.
 LaTeX Info: Redefining \% on input line 817.
  [67 <./imagenes/conv_ejemplo_backprop_2.jpg>]
-<imagenes/conv_ejemplo_backprop_4.jpg, id=1631, 768.8725pt x 254.9525pt>
+<imagenes/conv_ejemplo_backprop_4.jpg, id=1630, 768.8725pt x 254.9525pt>
 File: imagenes/conv_ejemplo_backprop_4.jpg Graphic file (type jpg)
 <use imagenes/conv_ejemplo_backprop_4.jpg>
 Package pdftex.def Info: imagenes/conv_ejemplo_backprop_4.jpg  used on input li
@@ -1914,7 +1902,7 @@ LaTeX Info: Redefining \% on input line 844.
 LaTeX Info: Redefining \. on input line 871.
 LaTeX Info: Redefining \% on input line 871.
  [69 <./imagenes/conv_ejemplo_backprop_4.jpg>]
-<imagenes/conv_backprop_1.jpg, id=1672, 917.4275pt x 220.825pt>
+<imagenes/conv_backprop_1.jpg, id=1671, 917.4275pt x 220.825pt>
 File: imagenes/conv_backprop_1.jpg Graphic file (type jpg)
 <use imagenes/conv_backprop_1.jpg>
 Package pdftex.def Info: imagenes/conv_backprop_1.jpg  used on input line 879.
@@ -1924,7 +1912,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 878--880
 []  [] 
  []
 
-<imagenes/conv_backprop_2.jpg, id=1673, 917.4275pt x 220.825pt>
+<imagenes/conv_backprop_2.jpg, id=1672, 917.4275pt x 220.825pt>
 File: imagenes/conv_backprop_2.jpg Graphic file (type jpg)
 <use imagenes/conv_backprop_2.jpg>
 Package pdftex.def Info: imagenes/conv_backprop_2.jpg  used on input line 884.
@@ -1934,7 +1922,7 @@ Overfull \hbox (88.6586pt too wide) in paragraph at lines 883--885
 []  [] 
  []
 
-<imagenes/conv_backprop_3.jpg, id=1674, 917.4275pt x 220.825pt>
+<imagenes/conv_backprop_3.jpg, id=1673, 917.4275pt x 220.825pt>
 File: imagenes/conv_backprop_3.jpg Graphic file (type jpg)
 <use imagenes/conv_backprop_3.jpg>
 Package pdftex.def Info: imagenes/conv_backprop_3.jpg  used on input line 890.
@@ -1944,7 +1932,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 889--891
 []  [] 
  []
 
-<imagenes/conv_backprop_4.jpg, id=1675, 917.4275pt x 220.825pt>
+<imagenes/conv_backprop_4.jpg, id=1674, 917.4275pt x 220.825pt>
 File: imagenes/conv_backprop_4.jpg Graphic file (type jpg)
 <use imagenes/conv_backprop_4.jpg>
 Package pdftex.def Info: imagenes/conv_backprop_4.jpg  used on input line 895.
@@ -1962,12 +1950,12 @@ Overfull \hbox (9.079pt too wide) detected at line 919
 []
  []
 
-<imagenes/flip_pesos.jpg, id=1689, 404.51125pt x 107.40125pt>
+<imagenes/flip_pesos.jpg, id=1688, 404.51125pt x 107.40125pt>
 File: imagenes/flip_pesos.jpg Graphic file (type jpg)
 <use imagenes/flip_pesos.jpg>
 Package pdftex.def Info: imagenes/flip_pesos.jpg  used on input line 931.
 (pdftex.def)             Requested size: 288.0011pt x 76.46844pt.
-<imagenes/conv_back_entrada_1.jpg, id=1690, 909.3975pt x 277.035pt>
+<imagenes/conv_back_entrada_1.jpg, id=1689, 909.3975pt x 277.035pt>
 File: imagenes/conv_back_entrada_1.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_1.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_1.jpg  used on input line 9
@@ -1978,7 +1966,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 939--941
 []  [] 
  []
 
-<imagenes/conv_back_entrada_2.jpg, id=1691, 867.24pt x 277.035pt>
+<imagenes/conv_back_entrada_2.jpg, id=1690, 867.24pt x 277.035pt>
 File: imagenes/conv_back_entrada_2.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_2.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_2.jpg  used on input line 9
@@ -1989,7 +1977,7 @@ Overfull \hbox (88.6586pt too wide) in paragraph at lines 944--946
 []  [] 
  []
 
-<imagenes/conv_back_entrada_3.jpg, id=1692, 931.48pt x 277.035pt>
+<imagenes/conv_back_entrada_3.jpg, id=1691, 931.48pt x 277.035pt>
 File: imagenes/conv_back_entrada_3.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_3.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_3.jpg  used on input line 9
@@ -2000,7 +1988,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 950--952
 []  [] 
  []
 
-<imagenes/conv_back_entrada_4.jpg, id=1693, 931.48pt x 277.035pt>
+<imagenes/conv_back_entrada_4.jpg, id=1692, 931.48pt x 277.035pt>
 File: imagenes/conv_back_entrada_4.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_4.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_4.jpg  used on input line 9
@@ -2011,7 +1999,7 @@ Overfull \hbox (88.6586pt too wide) in paragraph at lines 955--957
 []  [] 
  []
 
-<imagenes/conv_back_entrada_5.jpg, id=1694, 931.48pt x 277.035pt>
+<imagenes/conv_back_entrada_5.jpg, id=1693, 931.48pt x 277.035pt>
 File: imagenes/conv_back_entrada_5.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_5.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_5.jpg  used on input line 9
@@ -2022,7 +2010,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 961--963
 []  [] 
  []
 
-<imagenes/conv_back_entrada_6.jpg, id=1695, 915.42pt x 277.035pt>
+<imagenes/conv_back_entrada_6.jpg, id=1694, 915.42pt x 277.035pt>
 File: imagenes/conv_back_entrada_6.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_6.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_6.jpg  used on input line 9
@@ -2033,7 +2021,7 @@ Overfull \hbox (88.6586pt too wide) in paragraph at lines 966--968
 []  [] 
  []
 
-<imagenes/conv_back_entrada_7.jpg, id=1696, 915.42pt x 277.035pt>
+<imagenes/conv_back_entrada_7.jpg, id=1695, 915.42pt x 277.035pt>
 File: imagenes/conv_back_entrada_7.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_7.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_7.jpg  used on input line 9
@@ -2044,7 +2032,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 972--974
 []  [] 
  []
 
-<imagenes/conv_back_entrada_8.jpg, id=1697, 915.42pt x 277.035pt>
+<imagenes/conv_back_entrada_8.jpg, id=1696, 915.42pt x 277.035pt>
 File: imagenes/conv_back_entrada_8.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_8.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_8.jpg  used on input line 9
@@ -2055,7 +2043,7 @@ Overfull \hbox (88.6586pt too wide) in paragraph at lines 977--979
 []  [] 
  []
 
-<imagenes/conv_back_entrada_9.jpg, id=1698, 915.42pt x 277.035pt>
+<imagenes/conv_back_entrada_9.jpg, id=1697, 915.42pt x 277.035pt>
 File: imagenes/conv_back_entrada_9.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_9.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_9.jpg  used on input line 9
@@ -2078,13 +2066,13 @@ LaTeX Info: Redefining \% on input line 992.
 agenes/conv_back_entrada_5.jpg> <./imagenes/conv_back_entrada_6.jpg> <./imagene
 s/conv_back_entrada_7.jpg> <./imagenes/conv_back_entrada_8.jpg> <./imagenes/con
 v_back_entrada_9.jpg>]
-<imagenes/conv_back_padding_intro.jpg, id=1719, 755.82375pt x 257.96375pt>
+<imagenes/conv_back_padding_intro.jpg, id=1718, 755.82375pt x 257.96375pt>
 File: imagenes/conv_back_padding_intro.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_intro.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_intro.jpg  used on input li
 ne 997.
 (pdftex.def)             Requested size: 288.0011pt x 98.29489pt.
-<imagenes/conv_back_padding_1.jpg, id=1721, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_1.jpg, id=1720, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_1.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_1.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_1.jpg  used on input line 1
@@ -2094,7 +2082,7 @@ LaTeX Info: Redefining \. on input line 1019.
 LaTeX Info: Redefining \% on input line 1019.
  [73 <./imagenes/conv_back_padding_intro.jpg> <./imagenes/conv_back_padding_1.j
 pg>]
-<imagenes/conv_back_padding_2.jpg, id=1733, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_2.jpg, id=1732, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_2.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_2.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_2.jpg  used on input line 1
@@ -2103,13 +2091,13 @@ Package pdftex.def Info: imagenes/conv_back_padding_2.jpg  used on input line 1
 LaTeX Info: Redefining \. on input line 1048.
 LaTeX Info: Redefining \% on input line 1048.
  [74 <./imagenes/conv_back_padding_2.jpg>]
-<imagenes/conv_back_padding_3.jpg, id=1752, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_3.jpg, id=1751, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_3.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_3.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_3.jpg  used on input line 1
 057.
 (pdftex.def)             Requested size: 288.0011pt x 100.52603pt.
-<imagenes/conv_back_padding_4.jpg, id=1757, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_4.jpg, id=1756, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_4.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_4.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_4.jpg  used on input line 1
@@ -2118,7 +2106,7 @@ Package pdftex.def Info: imagenes/conv_back_padding_4.jpg  used on input line 1
 LaTeX Info: Redefining \. on input line 1085.
 LaTeX Info: Redefining \% on input line 1085.
  [75 <./imagenes/conv_back_padding_3.jpg>]
-<imagenes/conv_back_padding_5.jpg, id=1775, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_5.jpg, id=1774, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_5.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_5.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_5.jpg  used on input line 1
@@ -2130,7 +2118,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 1110.
 LaTeX Info: Redefining \% on input line 1110.
  [76 <./imagenes/conv_back_padding_4.jpg>]
-<imagenes/conv_back_padding_6.jpg, id=1791, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_6.jpg, id=1790, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_6.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_6.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_6.jpg  used on input line 1
@@ -2139,7 +2127,7 @@ Package pdftex.def Info: imagenes/conv_back_padding_6.jpg  used on input line 1
 LaTeX Info: Redefining \. on input line 1139.
 LaTeX Info: Redefining \% on input line 1139.
  [77 <./imagenes/conv_back_padding_5.jpg> <./imagenes/conv_back_padding_6.jpg>]
-<imagenes/conv_back_padding_7.jpg, id=1808, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_7.jpg, id=1807, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_7.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_7.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_7.jpg  used on input line 1
@@ -2148,13 +2136,13 @@ Package pdftex.def Info: imagenes/conv_back_padding_7.jpg  used on input line 1
 LaTeX Info: Redefining \. on input line 1172.
 LaTeX Info: Redefining \% on input line 1172.
  [78 <./imagenes/conv_back_padding_7.jpg>]
-<imagenes/conv_back_padding_8.jpg, id=1828, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_8.jpg, id=1827, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_8.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_8.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_8.jpg  used on input line 1
 183.
 (pdftex.def)             Requested size: 288.0011pt x 100.52603pt.
-<imagenes/conv_back_padding_9.jpg, id=1833, 681.54625pt x 237.88875pt>
+<imagenes/conv_back_padding_9.jpg, id=1832, 681.54625pt x 237.88875pt>
 File: imagenes/conv_back_padding_9.jpg Graphic file (type jpg)
 <use imagenes/conv_back_padding_9.jpg>
 Package pdftex.def Info: imagenes/conv_back_padding_9.jpg  used on input line 1
@@ -2169,7 +2157,7 @@ Underfull \vbox (badness 1708) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 1242.
 LaTeX Info: Redefining \% on input line 1242.
  [80 <./imagenes/conv_back_padding_9.jpg>]
-<imagenes/conv_back_pad_1.jpg, id=1869, 842.14626pt x 237.88875pt>
+<imagenes/conv_back_pad_1.jpg, id=1868, 842.14626pt x 237.88875pt>
 File: imagenes/conv_back_pad_1.jpg Graphic file (type jpg)
 <use imagenes/conv_back_pad_1.jpg>
 Package pdftex.def Info: imagenes/conv_back_pad_1.jpg  used on input line 1250.
@@ -2180,7 +2168,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 1249--1251
 []  [] 
  []
 
-<imagenes/conv_back_pad_2.jpg, id=1870, 842.14626pt x 237.88875pt>
+<imagenes/conv_back_pad_2.jpg, id=1869, 842.14626pt x 237.88875pt>
 File: imagenes/conv_back_pad_2.jpg Graphic file (type jpg)
 <use imagenes/conv_back_pad_2.jpg>
 Package pdftex.def Info: imagenes/conv_back_pad_2.jpg  used on input line 1255.
@@ -2191,7 +2179,7 @@ Overfull \hbox (88.6586pt too wide) in paragraph at lines 1254--1256
 []  [] 
  []
 
-<imagenes/conv_back_pad_3.jpg, id=1871, 842.14626pt x 237.88875pt>
+<imagenes/conv_back_pad_3.jpg, id=1870, 842.14626pt x 237.88875pt>
 File: imagenes/conv_back_pad_3.jpg Graphic file (type jpg)
 <use imagenes/conv_back_pad_3.jpg>
 Package pdftex.def Info: imagenes/conv_back_pad_3.jpg  used on input line 1261.
@@ -2202,7 +2190,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 1260--1262
 []  [] 
  []
 
-<imagenes/conv_back_pad_4.jpg, id=1872, 842.14626pt x 237.88875pt>
+<imagenes/conv_back_pad_4.jpg, id=1871, 842.14626pt x 237.88875pt>
 File: imagenes/conv_back_pad_4.jpg Graphic file (type jpg)
 <use imagenes/conv_back_pad_4.jpg>
 Package pdftex.def Info: imagenes/conv_back_pad_4.jpg  used on input line 1266.
@@ -2222,7 +2210,7 @@ LaTeX Info: Redefining \. on input line 1283.
 LaTeX Info: Redefining \% on input line 1283.
 [81 <./imagenes/conv_back_pad_1.jpg> <./imagenes/conv_back_pad_2.jpg> <./imagen
 es/conv_back_pad_3.jpg> <./imagenes/conv_back_pad_4.jpg>]
-<imagenes/conv_back_entrada_pad_1.jpg, id=1888, 763.85374pt x 235.88126pt>
+<imagenes/conv_back_entrada_pad_1.jpg, id=1887, 763.85374pt x 235.88126pt>
 File: imagenes/conv_back_entrada_pad_1.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_pad_1.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_pad_1.jpg  used on input li
@@ -2233,7 +2221,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 1290--1292
 []  [] 
  []
 
-<imagenes/conv_back_entrada_pad_2.jpg, id=1889, 763.85374pt x 235.88126pt>
+<imagenes/conv_back_entrada_pad_2.jpg, id=1888, 763.85374pt x 235.88126pt>
 File: imagenes/conv_back_entrada_pad_2.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_pad_2.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_pad_2.jpg  used on input li
@@ -2244,7 +2232,7 @@ Overfull \hbox (88.6586pt too wide) in paragraph at lines 1295--1297
 []  [] 
  []
 
-<imagenes/conv_back_entrada_pad_3.jpg, id=1890, 763.85374pt x 235.88126pt>
+<imagenes/conv_back_entrada_pad_3.jpg, id=1889, 763.85374pt x 235.88126pt>
 File: imagenes/conv_back_entrada_pad_3.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_pad_3.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_pad_3.jpg  used on input li
@@ -2255,7 +2243,7 @@ Overfull \hbox (3.30035pt too wide) in paragraph at lines 1301--1303
 []  [] 
  []
 
-<imagenes/conv_back_entrada_pad_4.jpg, id=1891, 763.85374pt x 235.88126pt>
+<imagenes/conv_back_entrada_pad_4.jpg, id=1890, 763.85374pt x 235.88126pt>
 File: imagenes/conv_back_entrada_pad_4.jpg Graphic file (type jpg)
 <use imagenes/conv_back_entrada_pad_4.jpg>
 Package pdftex.def Info: imagenes/conv_back_entrada_pad_4.jpg  used on input li
@@ -2271,7 +2259,7 @@ LaTeX Info: Redefining \% on input line 1315.
 [82 <./imagenes/conv_back_entrada_pad_1.jpg> <./imagenes/conv_back_entrada_pad_
 2.jpg> <./imagenes/conv_back_entrada_pad_3.jpg> <./imagenes/conv_back_entrada_p
 ad_4.jpg>]
-<imagenes/full_vs_normal_conv_1.jpg, id=1902, 726.715pt x 276.03125pt>
+<imagenes/full_vs_normal_conv_1.jpg, id=1901, 726.715pt x 276.03125pt>
 File: imagenes/full_vs_normal_conv_1.jpg Graphic file (type jpg)
 <use imagenes/full_vs_normal_conv_1.jpg>
 Package pdftex.def Info: imagenes/full_vs_normal_conv_1.jpg  used on input line
@@ -2282,7 +2270,7 @@ Overfull \hbox (71.9989pt too wide) in paragraph at lines 1320--1321
 [][] 
  []
 
-<imagenes/full_vs_normal_conv_2.jpg, id=1903, 880.28876pt x 380.42125pt>
+<imagenes/full_vs_normal_conv_2.jpg, id=1902, 880.28876pt x 380.42125pt>
 File: imagenes/full_vs_normal_conv_2.jpg Graphic file (type jpg)
 <use imagenes/full_vs_normal_conv_2.jpg>
 Package pdftex.def Info: imagenes/full_vs_normal_conv_2.jpg  used on input line
@@ -2329,13 +2317,16 @@ Package pdftex.def Info: imagenes/conv_std_vs_gemm_backprop.jpg  used on input
 line 39.
 (pdftex.def)             Requested size: 562.80698pt x 363.76181pt.
 
-Overfull \hbox (97.11984pt too wide) in paragraph at lines 38--40
+Overfull \hbox (148.33481pt too wide) in paragraph at lines 38--40
 []  [] 
  []
 
+
+Underfull \vbox (badness 1354) has occurred while \output is active []
+
 LaTeX Info: Redefining \. on input line 43.
 LaTeX Info: Redefining \% on input line 43.
-[88]
+ [88]
 <imagenes/conv_std_vs_gemm_backprop_pesos.jpg, id=1947, 1428.33624pt x 863.225p
 t>
 File: imagenes/conv_std_vs_gemm_backprop_pesos.jpg Graphic file (type jpg)
@@ -2379,7 +2370,7 @@ File: imagenes/gemm_fully_forward.jpg Graphic file (type jpg)
 Package pdftex.def Info: imagenes/gemm_fully_forward.jpg  used on input line 67
 .
 (pdftex.def)             Requested size: 292.99689pt x 272.2191pt.
-<imagenes/gemm_fully_forward_minibatch.jpg, id=1964, 1531.7225pt x 868.24374pt>
+<imagenes/gemm_fully_forward_minibatch.jpg, id=1965, 1531.7225pt x 868.24374pt>
 
 File: imagenes/gemm_fully_forward_minibatch.jpg Graphic file (type jpg)
 <use imagenes/gemm_fully_forward_minibatch.jpg>
@@ -2391,16 +2382,13 @@ Overfull \hbox (22.92969pt too wide) in paragraph at lines 77--78
  [][] 
  []
 
-
-Underfull \vbox (badness 2662) has occurred while \output is active []
-
-LaTeX Info: Redefining \. on input line 81.
-LaTeX Info: Redefining \% on input line 81.
- [91 <./imagenes/gemm_fully_forward.jpg>]
+LaTeX Info: Redefining \. on input line 80.
+LaTeX Info: Redefining \% on input line 80.
+[91 <./imagenes/gemm_fully_forward.jpg>]
 LaTeX Info: Redefining \. on input line 84.
 LaTeX Info: Redefining \% on input line 84.
  [92 <./imagenes/gemm_fully_forward_minibatch.jpg>]
-<imagenes/gemm_fully_back_input.jpg, id=1978, 947.54pt x 869.2475pt>
+<imagenes/gemm_fully_back_input.jpg, id=1979, 947.54pt x 869.2475pt>
 File: imagenes/gemm_fully_back_input.jpg Graphic file (type jpg)
 <use imagenes/gemm_fully_back_input.jpg>
 Package pdftex.def Info: imagenes/gemm_fully_back_input.jpg  used on input line
@@ -2409,7 +2397,7 @@ Package pdftex.def Info: imagenes/gemm_fully_back_input.jpg  used on input line
 LaTeX Info: Redefining \. on input line 101.
 LaTeX Info: Redefining \% on input line 101.
  [93 <./imagenes/gemm_fully_back_input.jpg>]
-<imagenes/gemm_fully_back_input_minibatch.jpg, id=1986, 1596.96625pt x 907.39pt
+<imagenes/gemm_fully_back_input_minibatch.jpg, id=1987, 1596.96625pt x 907.39pt
 >
 File: imagenes/gemm_fully_back_input_minibatch.jpg Graphic file (type jpg)
 <use imagenes/gemm_fully_back_input_minibatch.jpg>
@@ -2421,7 +2409,7 @@ Overfull \hbox (39.24059pt too wide) in paragraph at lines 104--105
  [][] 
  []
 
-<imagenes/gemm_fully_back_w.jpg, id=1988, 1217.54875pt x 928.46875pt>
+<imagenes/gemm_fully_back_w.jpg, id=1989, 1217.54875pt x 928.46875pt>
 File: imagenes/gemm_fully_back_w.jpg Graphic file (type jpg)
 <use imagenes/gemm_fully_back_w.jpg>
 Package pdftex.def Info: imagenes/gemm_fully_back_w.jpg  used on input line 114
@@ -2438,13 +2426,13 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 118.
 LaTeX Info: Redefining \% on input line 118.
  [94 <./imagenes/gemm_fully_back_input_minibatch.jpg>]
-Overfull \hbox (11.58347pt too wide) in paragraph at lines 119--120
-\OT1/cmr/m/n/10.95 re-mos \OT1/cmtt/m/n/10.95 matriz[]entrada \OT1/cmr/m/n/10.9
-5 y \OT1/cmtt/m/n/10.95 matriz[]salida\OT1/cmr/m/n/10.95 . La pri-me-ra ma-triz
-, \OT1/cmtt/m/n/10.95 matriz[]entrada\OT1/cmr/m/n/10.95 ,
+Overfull \hbox (14.62636pt too wide) in paragraph at lines 119--120
+\OT1/cmr/m/n/10.95 re-mos \OT1/cmtt/m/n/10.95 matriz[]entrada\OT1/cmr/m/n/10.95
+ , y \OT1/cmtt/m/n/10.95 matriz[]salida\OT1/cmr/m/n/10.95 . La pri-me-ra ma-tri
+z, \OT1/cmtt/m/n/10.95 matriz[]entrada\OT1/cmr/m/n/10.95 ,
  []
 
-<imagenes/gemm_fully_back_w_minibatch.jpg, id=1995, 1516.66624pt x 844.15375pt>
+<imagenes/gemm_fully_back_w_minibatch.jpg, id=1998, 1516.66624pt x 844.15375pt>
 
 File: imagenes/gemm_fully_back_w_minibatch.jpg Graphic file (type jpg)
 <use imagenes/gemm_fully_back_w_minibatch.jpg>
@@ -2469,7 +2457,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 132--134
 LaTeX Info: Redefining \. on input line 134.
 LaTeX Info: Redefining \% on input line 134.
 [96 <./imagenes/gemm_fully_back_w_minibatch.jpg>]
-<imagenes/gemm_tile_v3.jpg, id=2007, 755.82375pt x 482.80376pt>
+<imagenes/gemm_tile_v3.jpg, id=2010, 755.82375pt x 482.80376pt>
 File: imagenes/gemm_tile_v3.jpg Graphic file (type jpg)
 <use imagenes/gemm_tile_v3.jpg>
 Package pdftex.def Info: imagenes/gemm_tile_v3.jpg  used on input line 137.
@@ -2479,7 +2467,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 142--144
 
  []
 
-<imagenes/gemm_tile_v4.jpg, id=2009, 841.1425pt x 710.655pt>
+<imagenes/gemm_tile_v4.jpg, id=2012, 841.1425pt x 710.655pt>
 File: imagenes/gemm_tile_v4.jpg Graphic file (type jpg)
 <use imagenes/gemm_tile_v4.jpg>
 Package pdftex.def Info: imagenes/gemm_tile_v4.jpg  used on input line 147.
@@ -2505,12 +2493,12 @@ Package hyperref Warning: Difference (2) between bookmark levels is greater
 [99
 
 ] [100]
-<imagenes/sec_openmp.png, id=2079, 614.295pt x 381.5856pt>
+<imagenes/sec_openmp.png, id=2082, 614.295pt x 381.5856pt>
 File: imagenes/sec_openmp.png Graphic file (type png)
 <use imagenes/sec_openmp.png>
 Package pdftex.def Info: imagenes/sec_openmp.png  used on input line 97.
 (pdftex.def)             Requested size: 307.14674pt x 190.79233pt.
-<imagenes/ganancia_sec_openmp.png, id=2081, 617.9085pt x 381.5856pt>
+<imagenes/ganancia_sec_openmp.png, id=2084, 617.9085pt x 381.5856pt>
 File: imagenes/ganancia_sec_openmp.png Graphic file (type png)
 <use imagenes/ganancia_sec_openmp.png>
 Package pdftex.def Info: imagenes/ganancia_sec_openmp.png  used on input line 1
@@ -2519,14 +2507,14 @@ Package pdftex.def Info: imagenes/ganancia_sec_openmp.png  used on input line 1
 LaTeX Info: Redefining \. on input line 110.
 LaTeX Info: Redefining \% on input line 110.
  [101 <./imagenes/sec_openmp.png>]
-<imagenes/openmp_cuda_cudnn.png, id=2089, 607.7907pt x 381.5856pt>
+<imagenes/openmp_cuda_cudnn.png, id=2092, 607.7907pt x 381.5856pt>
 File: imagenes/openmp_cuda_cudnn.png Graphic file (type png)
 <use imagenes/openmp_cuda_cudnn.png>
 Package pdftex.def Info: imagenes/openmp_cuda_cudnn.png  used on input line 119
 .
 (pdftex.def)             Requested size: 316.05298pt x 198.42564pt.
  [102 <./imagenes/ganancia_sec_openmp.png> <./imagenes/openmp_cuda_cudnn.png>]
-<imagenes/cuda_cudnn_1.png, id=2101, 609.9588pt x 381.5856pt>
+<imagenes/cuda_cudnn_1.png, id=2104, 609.9588pt x 381.5856pt>
 File: imagenes/cuda_cudnn_1.png Graphic file (type png)
 <use imagenes/cuda_cudnn_1.png>
 Package pdftex.def Info: imagenes/cuda_cudnn_1.png  used on input line 131.
@@ -3313,9 +3301,9 @@ xyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 .pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
 cm/cmti10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (139 pages, 8861659 bytes).
+Output written on proyecto.pdf (139 pages, 8864790 bytes).
 PDF statistics:
- 2594 PDF objects out of 2984 (max. 8388607)
+ 2597 PDF objects out of 2984 (max. 8388607)
  844 named destinations out of 1000 (max. 500000)
  1117 words of extra memory for PDF output out of 10000 (max. 10000000)
 
