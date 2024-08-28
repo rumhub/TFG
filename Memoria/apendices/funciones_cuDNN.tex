@@ -1,0 +1,173 @@
+
+\chapter{cuDNN, Principales funciones} \label{apendice_cuDNN_principales_funciones}
+
+A continuación se mencionarán las principales funciones de cuDNN que se han empleado en este proyecto, siendo las responsables tanto de la propagación hacia delante como de la retropropagación en capas convolucionales y de agrupación máxima, entre otras.
+
+\subsubsection{cudnnConvolutionForward} \label{cudnnConvolutionForward}
+Realiza la propagación hacia delante en una capa convolucional.
+
+\begin{verbatim}
+	cudnnStatus_t cudnnConvolutionForward(
+	cudnnHandle_t                       handle,
+	const void                         *alpha,
+	const cudnnTensorDescriptor_t       xDesc,
+	const void                         *x,
+	const cudnnFilterDescriptor_t       wDesc,
+	const void                         *w,
+	const cudnnConvolutionDescriptor_t  convDesc,
+	cudnnConvolutionFwdAlgo_t           algo,
+	void                               *workSpace,
+	size_t                              workSpaceSizeInBytes,
+	const void                         *beta,
+	const cudnnTensorDescriptor_t       yDesc,
+	void                               *y)
+\end{verbatim}
+
+\begin{enumerate}
+	\item \textbf{handle}: Manejador.
+	\item \textbf{alpha, beta}: Punteros a escalares empleados para combinar los resultados con valores anteriores tal que valor\_final = alpha*result + beta*valor\_anterior.
+	\item \textbf{xDesc}: Descriptor asociado al tensor de entrada.
+	\item \textbf{x}: Puntero a los datos de entrada en GPU asociados con el descriptor de tensor xDesc.
+	\item \textbf{wDesc}: Descriptor asociado al tensor de pesos.
+	\item \textbf{w}: Puntero a los pesos en GPU asociados con el descriptor de tensor wDesc.
+	\item \textbf{convDesc}: Descriptor de convolución.
+	\item \textbf{algo}: Especifica qué algoritmo de convolución aplicar.
+	\item \textbf{workSpace}: Puntero a un espacio de trabajo en memoria de GPU.
+	\item \textbf{workSpaceSizeInBytes}: Especifica el tamaño en bytes de workSpace.
+	\item \textbf{yDesc}: Descriptor asociado al tensor de salida.
+	\item \textbf{y}: Puntero a los datos de salida en GPU asociados con el descriptor de tensor yDesc.
+\end{enumerate}
+\cite{cuDNN_conv_fwd}
+
+\subsubsection{cudnnPoolingForward} \label{cudnnPoolingForward}
+Se encarga de la propagación hacia delante en una capa de agrupación máxima.
+
+\begin{verbatim}
+	cudnnStatus_t cudnnPoolingForward(
+	cudnnHandle_t                    handle,
+	const cudnnPoolingDescriptor_t   poolingDesc,
+	const void                      *alpha,
+	const cudnnTensorDescriptor_t    xDesc,
+	const void                      *x,
+	const void                      *beta,
+	const cudnnTensorDescriptor_t    yDesc,
+	void                            *y)
+\end{verbatim}
+
+\begin{enumerate}
+	\item \textbf{handle}: Manejador.
+	\item \textbf{poolingDesc}: Descriptor de la operación de agrupación.
+	\item \textbf{alpha, beta}: Punteros a escalares empleados para combinar los resultados con valores anteriores tal que valor\_final = alpha*result + beta*valor\_anterior.
+	\item \textbf{xDesc}: Descriptor asociado al tensor de entrada.
+	\item \textbf{x}: Puntero a los datos de entrada en GPU asociados con el descriptor de tensor xDesc.
+	\item \textbf{yDesc}: Descriptor asociado al tensor de salida.
+	\item \textbf{y}: Puntero a los datos de salida en GPU asociados con el descriptor de tensor yDesc.
+\end{enumerate}
+\cite{cuDNN_pool_fwd}
+
+\subsubsection{cudnnPoolingBackward} \label{cudnnPoolingBackward}
+Realiza la retropropagación en una capa de agrupación máxima.
+
+\begin{verbatim}
+	cudnnStatus_t cudnnPoolingBackward(
+	cudnnHandle_t                       handle,
+	const cudnnPoolingDescriptor_t      poolingDesc,
+	const void                         *alpha,
+	const cudnnTensorDescriptor_t       yDesc,
+	const void                         *y,
+	const cudnnTensorDescriptor_t       dyDesc,
+	const void                         *dy,
+	const cudnnTensorDescriptor_t       xDesc,
+	const void                         *xData,
+	const void                         *beta,
+	const cudnnTensorDescriptor_t       dxDesc,
+	void                               *dx)
+\end{verbatim}
+
+\begin{enumerate}
+	\item \textbf{handle}: Manejador.
+	\item \textbf{poolingDesc}: Descriptor de la operación de agrupación.
+	\item \textbf{alpha, beta}: Punteros a escalares empleados para combinar los resultados con valores anteriores tal que valor\_final = alpha*result + beta*valor\_anterior.
+	\item \textbf{yDesc}: Descriptor asociado al tensor de salida.
+	\item \textbf{y}: Puntero a los datos de salida en GPU asociados con el descriptor de tensor yDesc.
+	\item \textbf{dyDesc}: Descriptor asociado al tensor que almacena el gradiente de la pérdida respecto a los datos de salida.
+	\item \textbf{dy}: Puntero al gradiente de la pérdida respecto a los datos de salida en GPU asociados con el descriptor de tensor dyDesc.
+	\item \textbf{xDesc}: Descriptor asociado al tensor de entrada.
+	\item \textbf{x}: Puntero a los datos de entrada en GPU asociados con el descriptor de tensor xDesc.
+	\item \textbf{dxDesc}: Descriptor asociado al tensor que almacena el gradiente de la pérdida respecto a los datos de entrada.
+	\item \textbf{dx}: Puntero al gradiente de la pérdida respecto a los datos de entrada en GPU asociados con el descriptor de tensor dxDesc.	
+\end{enumerate}
+\cite{cuDNN_pool_fwd}
+
+\subsubsection{cudnnConvolutionBackwardFilter} \label{cudnnConvolutionBackwardFilter}
+Realiza la retropropagación respecto a los pesos en una capa convolucional.
+
+\begin{verbatim}
+	cudnnStatus_t cudnnConvolutionBackwardFilter(
+	cudnnHandle_t                       handle,
+	const void                         *alpha,
+	const cudnnTensorDescriptor_t       xDesc,
+	const void                         *x,
+	const cudnnTensorDescriptor_t       dyDesc,
+	const void                         *dy,
+	const cudnnConvolutionDescriptor_t  convDesc,
+	cudnnConvolutionBwdFilterAlgo_t     algo,
+	void                               *workSpace,
+	size_t                              workSpaceSizeInBytes,
+	const void                         *beta,
+	const cudnnFilterDescriptor_t       dwDesc,
+	void                               *dw)
+\end{verbatim}
+
+\begin{enumerate}
+	\item \textbf{handle}: Manejador.
+	\item \textbf{alpha, beta}: Punteros a escalares empleados para combinar los resultados con valores anteriores tal que valor\_final = alpha*result + beta*valor\_anterior.
+	\item \textbf{xDesc}: Descriptor asociado al tensor de entrada.
+	\item \textbf{x}: Puntero a los datos de entrada en GPU asociados con el descriptor de tensor xDesc.	
+	\item \textbf{dyDesc}: Descriptor asociado al tensor que almacena el gradiente de la pérdida respecto a los datos de salida.
+	\item \textbf{dy}: Puntero al gradiente de la pérdida respecto a los datos de salida en GPU asociados con el descriptor de tensor dyDesc.
+	\item \textbf{convDesc}: Descriptor de convolución.
+	\item \textbf{algo}: Especifica qué algoritmo de convolución aplicar.
+	\item \textbf{workSpace}: Puntero a un espacio de trabajo en memoria de GPU.
+	\item \textbf{workSpaceSizeInBytes}: Especifica el tamaño en bytes de workSpace.
+	\item \textbf{dwDesc}: Descriptor del tensor asociado al gradiente de la pérdida respecto a los pesos.
+	\item \textbf{dw}: Puntero al gradiente de los pesos en GPU asociados con el descriptor de tensor dwDesc.
+\end{enumerate}
+\cite{cuDNN_conv_back_w}
+
+
+\subsubsection{cudnnConvolutionBackwardData} \label{cudnnConvolutionBackwardData}
+Realiza la retropropagación respecto a los datos de entrada en una capa convolucional.
+
+\begin{verbatim}
+	cudnnStatus_t cudnnConvolutionBackwardData(
+	cudnnHandle_t                       handle,
+	const void                         *alpha,
+	const cudnnFilterDescriptor_t       wDesc,
+	const void                         *w,
+	const cudnnTensorDescriptor_t       dyDesc,
+	const void                         *dy,
+	const cudnnConvolutionDescriptor_t  convDesc,
+	cudnnConvolutionBwdDataAlgo_t       algo,
+	void                               *workSpace,
+	size_t                              workSpaceSizeInBytes,
+	const void                         *beta,
+	const cudnnTensorDescriptor_t       dxDesc,
+	void                               *dx)
+\end{verbatim}
+
+\begin{enumerate}
+	\item \textbf{handle}: Manejador.
+	\item \textbf{alpha, beta}: Punteros a escalares empleados para combinar los resultados con valores anteriores tal que valor\_final = alpha*result + beta*valor\_anterior.
+	\item \textbf{wDesc}: Descriptor asociado al tensor de pesos.
+	\item \textbf{w}: Puntero a los pesos en GPU asociados con el descriptor de tensor wDesc.
+	\item \textbf{dyDesc}: Descriptor asociado al tensor que almacena el gradiente de la pérdida respecto a los datos de salida.
+	\item \textbf{dy}: Puntero al gradiente de la pérdida respecto a los datos de salida en GPU asociados con el descriptor de tensor dyDesc.
+	\item \textbf{convDesc}: Descriptor de convolución.
+	\item \textbf{algo}: Especifica qué algoritmo de convolución aplicar.
+	\item \textbf{workSpace}: Puntero a un espacio de trabajo en memoria de GPU.
+	\item \textbf{workSpaceSizeInBytes}: Especifica el tamaño en bytes de workSpace.
+	\item \textbf{dxDesc}: Descriptor asociado al tensor que almacena el gradiente de la pérdida respecto a los datos de entrada.
+	\item \textbf{dx}: Puntero al gradiente de la pérdida respecto a los datos de entrada en GPU asociados con el descriptor de tensor dxDesc.	
+\end{enumerate}
+\cite{cuDNN_conv_back_x}
