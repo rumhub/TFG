@@ -70,34 +70,34 @@
 \contentsline {subsubsection}{cudnnPoolingBackward}{42}{section*.69}%
 \contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{42}{section*.70}%
 \contentsline {subsubsection}{cudnnConvolutionBackwardData}{43}{section*.71}%
-\contentsline {chapter}{\numberline {3}Aportaciones}{45}{chapter.3}%
+\contentsline {chapter}{\numberline {3}Paralelización con sistemas homogéneos y heterogéneos}{45}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Planificación}{45}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Paralelización mediante OpenMP}{46}{section.3.2}%
-\contentsline {subsubsection}{Tipos de paralelismo}{46}{section*.73}%
+\contentsline {section}{\numberline {3.2}Paralelización en sistemas homogéneos mediante OpenMP}{47}{section.3.2}%
+\contentsline {subsubsection}{Tipos de paralelismo}{47}{section*.73}%
 \contentsline {subsubsection}{Paralelismo en SGD con OpenMP}{47}{section*.74}%
-\contentsline {chapter}{\numberline {4}Adaptación GPU}{49}{chapter.4}%
-\contentsline {section}{\numberline {4.1}GEMM}{49}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Convolución como GEMM }{49}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Memoria requerida al emplear GEMM}{51}{subsection.4.2.1}%
-\contentsline {section}{\numberline {4.3}Retropropagación GEMM en capa convolucional}{52}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{54}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{55}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Retropropagación}{57}{subsection.4.4.2}%
-\contentsline {subsubsection}{Gradiente respecto a la entrada}{57}{section*.81}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{59}{section*.84}%
-\contentsline {subsection}{\numberline {4.4.3}Multiplicación de matrices en CUDA}{60}{subsection.4.4.3}%
-\contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{63}{chapter.5}%
-\contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{63}{subsection.5.0.1}%
-\contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{65}{subsection.5.0.2}%
-\contentsline {subsubsection}{Implementaciones CPU}{65}{section*.89}%
-\contentsline {subsubsection}{Implementaciones GPU}{66}{section*.92}%
-\contentsline {chapter}{\numberline {6}Conclusiones y trabajo futuro}{69}{chapter.6}%
+\contentsline {section}{\numberline {3.3}Paralelización en sistemas heterogéneos}{48}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}GEMM}{48}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Convolución como GEMM }{49}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Memoria requerida al emplear GEMM}{50}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Retropropagación GEMM en capa convolucional}{51}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{53}{subsection.3.3.5}%
+\contentsline {subsubsection}{Propagación hacia delante}{54}{section*.79}%
+\contentsline {subsubsection}{Retropropagación}{56}{section*.82}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada}{56}{section*.83}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{58}{section*.86}%
+\contentsline {subsection}{\numberline {3.3.6}Multiplicación de matrices en CUDA}{59}{subsection.3.3.6}%
+\contentsline {chapter}{\numberline {4}Comparación entre distintas implementaciones}{63}{chapter.4}%
+\contentsline {subsection}{\numberline {4.0.1}Modelos a emplear}{63}{subsection.4.0.1}%
+\contentsline {subsection}{\numberline {4.0.2}Comparación de rendimiento}{65}{subsection.4.0.2}%
+\contentsline {subsubsection}{Implementaciones CPU}{65}{section*.91}%
+\contentsline {subsubsection}{Implementaciones GPU}{66}{section*.94}%
+\contentsline {chapter}{\numberline {5}Conclusiones y trabajo futuro}{69}{chapter.5}%
 \contentsline {chapter}{\numberline {A}cuDNN, Principales funciones}{71}{appendix.Alph1}%
-\contentsline {subsubsection}{cudnnConvolutionForward}{71}{section*.96}%
-\contentsline {subsubsection}{cudnnPoolingForward}{72}{section*.97}%
-\contentsline {subsubsection}{cudnnPoolingBackward}{73}{section*.98}%
-\contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{74}{section*.99}%
-\contentsline {subsubsection}{cudnnConvolutionBackwardData}{75}{section*.100}%
+\contentsline {subsubsection}{cudnnConvolutionForward}{71}{section*.98}%
+\contentsline {subsubsection}{cudnnPoolingForward}{72}{section*.99}%
+\contentsline {subsubsection}{cudnnPoolingBackward}{73}{section*.100}%
+\contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{74}{section*.101}%
+\contentsline {subsubsection}{cudnnConvolutionBackwardData}{75}{section*.102}%
 \contentsline {chapter}{\numberline {B}Planificación}{77}{appendix.Alph2}%
 \contentsline {chapter}{\numberline {C}Retropropagación en capa SoftMax}{83}{appendix.Alph3}%
 \contentsline {section}{\numberline {C.1}Cálculo del gradiente de la función de error}{83}{section.Alph3.1}%

@@ -1,13 +1,115 @@
-\chapter{Adaptación GPU}
+\chapter{Paralelización con sistemas homogéneos y heterogéneos}
 
+\section{Planificación}
+
+Para el desarrollo de este proyecto, se ha requerido llevar a cabo una serie de tareas con diferentes dificultades e importancias. A continuación, se muestra una planificación general del mismo en la tabla \ref{tabla_planificación}, junto con las fases que componen su desarrollo, y una planificación temporal de cada apartado por separado,  (para obtener información adicional, véase el apéndice \ref{planificacion}). Cabe destacar que, cada apartado, se basa en los conocimientos adquiridos en los apartados anteriores, a la vez que introduce conceptos nuevos y mejora las prestaciones del modelo. De esta manera, cada apartado supondrá retos nuevos nunca antes vistos y, si un apartado anterior presenta algún fallo desconocido en el momento, se deberá volver a la etapa anterior y subsanarlo. Tras solventarlo, se podrá proseguir con la etapa posterior. Además, dada la naturaleza de `caja negra' de las redes neuronales, estas presentan cierta dificultad a la hora de depurar el código. Por tanto, esto supondrá un tiempo de depuración considerable en todas y cada una de las implementaciones, tal y como se mostrará a continuación.
+
+\begin{enumerate}[label=\textbullet]
+	\item \textbf{Estudio previo}: Consiste en el estudio y comprensión de cuestiones generales, dentro del campo de aprendizaje automático y visión por computador, comunes a redes neuronales totalmente conectadas, y redes neuronales convolucionales.
+	
+	\item \textbf{Investigación y desarrollo de redes neuronales totalmente conectadas}: En este periodo, me centré en la investigación y comprensión sobre las redes neuronales totalmente conectadas a bajo nivel. De esta manera, sabía que podría generar cualquier tipo de red totalmente conectada de manera dinámica, sin necesidad de realizar ningún tipo de cálculo posterior, independientemente del lenguaje de programación empleado, así como del uso o no de librerías que faciliten el proceso. 
+	
+	\item \textbf{Investigación y desarrollo de redes neuronales convolucionales}:
+	Una vez familiarizado con redes neuronales totalmente conectadas, se trató de comprender de igual forma las redes neuronales convolucionales, pues se encuentran ampliamente relacionadas.
+	\item \textbf{Investigación y desarrollo de sistemas homogéneos con OpenMP}:
+	
+	Una vez, comprendido el funcionamiento tanto de las redes neuronales totalmente conectadas, como de las redes neuronales convolucionales, me centré en reducir los tiempos de cómputo requeridos en ellas, mediante un paralelismo orientado a datos con OpenMP, (se analizará en detalle en secciones posteriores).
+	
+	\item \textbf{Investigación y desarrollo de sistemas heterogéneos con CUDA y cuDNN}:
+	Con el conocimiento teórico y práctico ya adquirido sobre sistemas homogéneos, aplicados tanto a redes neuronales totalmente conectadas como a redes neuronales convolucionales, se avanza ahora hacia la exploración de sistemas heterogéneos, aplicados a estas mismas arquitecturas de redes neuronales.
+\end{enumerate}
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|lll|}
+		\hline
+		Apartado 	 &\vline  & Tiempo (Horas) \\
+		\hline
+		
+		Estudio previo    & \vline & 16 \\			
+		\hline
+		Investigación y desarrollo  	 & \vline & 	\\
+		de redes neuronales  	 & \vline & 143	\\
+		totalmente conectadas 	 & \vline & 	\\
+		\hline
+		Investigación y desarrollo    & \vline & 	 \\	
+		de redes neuronales    & \vline & 152	 \\			
+		convolucionales    & \vline & 	 \\					
+		\hline
+		Investigación y desarrollo  	 & \vline & 	 \\
+		de sistemas homogéneos  	 & \vline & 103	 \\
+		con OpenMP 	 & \vline & 	 \\
+		\hline
+		Investigación y desarrollo     & \vline &  	\\
+		de sistemas heterogéneos    & \vline &  \\ 
+		con CUDA y cuDNN    & \vline & 282 \\ 	
+		\hline
+		\hline
+		Tiempo total:				& \vline & 696 \\
+		\hline
+	\end{tabular}
+	\caption{Planificación del proyecto}
+	\label{tabla_planificación}
+\end{table}
+
+
+\section{Paralelización en sistemas homogéneos mediante OpenMP}
+
+\subsubsection{Tipos de paralelismo}
+
+El entrenamiento de una red neuronal convolucional (CNN) se puede paralelizar de diversas maneras. Cuando el modelo se divide entre varios ordenadores que son entrenados con los mismos datos, se conoce \textbf{paralelismo del modelo} \cite{data_model_parallelism} (por ejemplo, asignando una capa por computador). Por otro lado, cuando se distribuyen los datos entre múltiples nodos, pero se utiliza el mismo modelo para el entrenamiento en cada uno de ellos, se denomina \textbf{paralelismo de datos} \cite{model_parallelism}. En este proyecto, la implementación con OpenMP se basará en un paralelismo de datos, mientras que las implementaciones heterogéneas, utilizando CUDA y cuDNN, se fundamentarán en el paralelismo del modelo. \\
+
+\subsubsection{Paralelismo en SGD con OpenMP}
+\begin{algorithm}[H]
+	\caption{Descenso del gradiente estocástico} 
+	\begin{algorithmic}
+		\State Datos de entrenamiento $D=\{(x_1, y_1), (x_2, y_2), ..., (x_N, y_N)\}$.
+		
+		\For{cada trabajador $t =0, ..., T-1$ en paralelo}
+		\For{época $p\in\{0, ..., P-1\}$}
+		\State Desordenar vector de datos D.
+		\For{cada mini batch $m =0, ..., M-1$}
+		\State Inicializar $gradientes^t$ a 0.
+		\State Reparto de datos del batch m al trabajador t
+		\State Realizar propagación hacia delante
+		\State Obtener error total con la función de pérdida
+		\State Cada trabajador t realiza la propagación hacia 
+		\State detrás y obtiene el gradiente con respecto a 
+		\State cada parámetro del modelo.
+		
+		\State Acumular gradientes obtenidos por cada trabajador t.
+		\State Actualizar parámetros.
+		
+		\EndFor
+		\EndFor
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+
+La naturaleza iterativa del algoritmo del descenso del gradiente estocástico, podría parecer un impedimento para la paralelización del entrenamiento del modelo, ya que, la iteración \textit{i}, depende del resultado obtenido en la iteración \textit{i-1}. Sin embargo, tal y como se expone en \cite{CNN_parallel_Stanford}, \cite{CNN_parallel_International_Conference}, y \cite{CNN_parallel_Ome_Weird_Trick}, es posible implementar paralelismo en cada iteración del proceso. \\
+En cada época el modelo, se entrena con \textit{M} subconjuntos de $N_m$ datos, los cuales son disjuntos entre sí. Dados \textit{T} ``trabajadores'' o procesos paralelos, cada subconjunto de $N_m$ datos (mini-batch), puede dividirse en \textit{T} subconjuntos de $\frac{N_m}{T}$ datos, asignando cada uno a un trabajador diferente.\\
+De acuerdo con este enfoque, los datos de entrenamiento se distribuyen entre los distintos trabajadores \textit{T} tanto para la propagación hacia delante como para la retropropagación posterior. En el caso de la retropropagación, se debe acumular el gradiente de la pérdida con respecto a cada parámetro obtenido por cada trabajor. Una vez en posesión este gradiente `total', se procede a la actualización de los parámetros del modelo.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.2\linewidth]{imagenes/openmp_flujo.jpg} 
+	\caption{Flujo de las hebras en la implementación con OpenMP}
+	\label{fig:openmp_flujo}
+\end{figure}
+
+Tal como se muestra en la Figura \ref{fig:openmp_flujo}, aunque cada hebra realiza ciertas secciones de código en paralelo, como la propagación hacia delante o la retropropagación, existen momentos en los que estas hebras deben sincronizarse, como durante la distribución de los datos de un minibatch, o coordinarse para llevar a cabo operaciones conjuntas, como la acumulación y actualización de pesos.
+
+
+\section{Paralelización en sistemas heterogéneos}
 Una vez comprendidos los cálculos empleados por una CNN, en esta sección, se introducirá la metodología para llevar a cabo estos cálculos desde una perspectiva heterogénea. Es decir, mediante el uso de unidades de procesamiento gráfico (GPU) para la multiplicación matricial.
 
-\section{GEMM}
+\subsection{GEMM}
 
 El enfoque GEMM \cite{GEMM_definition} (General Matrix Multiply o Multiplicación General de Matrices), es ampliamente reconocido en el campo del aprendizaje profundo, y se utiliza en numerosas bibliotecas especializadas, como Caffe, Torch-cunn, Theano-CorrMM, o incluso CuDNN \cite{conv_GEMM_FFT_comparacion}. \\
 En el contexto de redes neuronales convolucionales, el método GEMM facilita una reducción significativa en el tiempo de cómputo requerido. Sin embargo, esta optimización conlleva un incremento en el espacio de memoria necesario. 
 
-\section{Convolución como GEMM \label{Intro_GEMMM}}
+\subsection{Convolución como GEMM \label{Intro_GEMMM}}
 
 En el contexto de las capas convolucionales, la aplicación del enfoque GEMM (General Matrix Multiply), implica un proceso de ``desenrrollado'' tanto del volumen de entrada \textit{X}, como de la matriz de filtros \textit{K}. Este proceso, incluye la creación de una nueva matriz 2D, denominada $X_{unroll}$, donde, cada columna de dicha matriz, contiene todos los elementos de \textit{X} necesarios para calcular una posición específica del volumen de salida \textit{Y}. Dado que los resultados de cada convolución se suman a lo largo de cada canal de profundidad, estos pueden ser organizados en una matriz de gran tamaño. En este enfoque, cada kernel de pesos \textit{K}, se transforma en una fila de una extensa matriz de pesos denominada $M_{K}$. Este procedimiento, se ilustra en la Figura \ref{fig:conv_std_vs_gemm}, donde, los kernels \textit{K} y \textit{G}, se representan en colores verde y marrón, respectivamente. \\
 Mientras que el método estándar, requiere varias iteraciones para calcular cada valor del volumen de salida \textit{Y}, (como se ilustra en la Figura \ref{fig:forward_prop_convolucional}), el enfoque GEMM, permite que cada valor de \textit{Y} se obtenga mediante la multiplicación de una fila de la matriz de pesos $M_{K}$, (ilustrada como verde y marrón en la Figura \ref{fig:conv_std_vs_gemm}), con una columna de la matriz $X_{unroll}$, (representada en azul en la Figura \ref{fig:conv_std_vs_gemm}). Esta técnica, detallada en \cite{Programming_Massively}, optimiza el tiempo de cómputo necesario para la operación de convolución, al transformar el problema en una multiplicación matricial que puede llevarse a cabo en GPU.
@@ -29,7 +131,7 @@ El ratio de expansión, se calcula mediante $\frac{C*K*K*H_{out}*W_{out}}{C*H*W}
 Cada kernel de pesos, con dimensiones KxK, se representa como una fila dentro de la matriz total de pesos. Por lo tanto, la matriz total de pesos estará compuesta de KxK filas, y \textit{M} columnas, siendo \textit{M} el número de filtros de pesos aplicados sobre la entrada \textit{X}. \\
 Al realizar múltiples convoluciones sobre una misma entrada \textit{X}, (una por cada filtro de pesos distinto), es posible utilizar una única matriz expandida, denominada $X_{unrolled}$. Por otro lado, cuando se emplean filtros de pesos considerables, (como 5x5 o mayores), la expansión de la matriz de entrada con un ratio de KxK, puede generar matrices de tamaño excesivo. Dado que, el almacenamiento de todas las matrices de entrada expandidas, para un minibatch completo, podría resultar en un consumo de memoria significativo, se adopta una estrategia más eficiente. Esta consiste, en reservar un único espacio de memoria, con dimensiones $CxKxKxH_{out}xW_{out}$, (es decir, una instancia de $X_{unrolled}$), que se reutiliza para procesar cada dato del minibatch, optimizando así el uso de la memoria, y evitando la sobrecarga que supondría almacenar múltiples matrices expandidas simultáneamente \cite{Programming_Massively}.
 
-\section{Retropropagación GEMM en capa convolucional}
+\subsection{Retropropagación GEMM en capa convolucional}
 
 En la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad}, se observó cómo la retropropagación, con respecto a la entrada en una capa convolucional, consiste en una convolución entre los kernels de pesos, y el volumen de salida. De manera análoga, en la Figura \ref{fig:conv_backprop_como_convolucion_Xpad_Y}, también se mostró cómo el gradiente con respecto a los pesos, se obtiene mediante una convolución entre el volumen de entrada, y el volumen de salida. \\
 Dado que ambos gradientes se pueden implementar como convoluciones, y, considerando que en la sección \ref{Intro_GEMMM}, se demostró cómo implementar convoluciones utilizando el enfoque GEMM, es razonable asumir que la retropropagación en una capa convolucional, también se puede llevar a cabo mediante dicho enfoque.
@@ -51,7 +153,7 @@ En la Figura \ref{fig:conv_std_vs_gemm_backprop}, es importante destacar que, da
 
 En el caso del cálculo del gradiente de la pérdida con respecto a los pesos de una capa convolucional, cabe recordar que, este proceso, se puede implementar como una convolución entre el volumen de salida \textit{Y}, y el volumen de entrada \textit{X}. Utilizando el enfoque GEMM, tal como se ilustra en la Figura \ref{fig:conv_std_vs_gemm_backprop_pesos}, se observa que, para llevar a cabo esta operación, es necesario ``desenrrollar'' tanto el volumen de entrada X como el volumen de salida Y. De este modo, al multiplicar cada fila de Y (desenrrollado), por cada columna de X (desenrrollado), se multiplican todos los elementos del volumen de salida Y, y del volumen de entrada X, que, previamente, en la propagación hacia delante, fueron multiplicados por un peso distinto, calculando así el gradiente de dicho peso.
 
-\section{Capa totalmente conectada como GEMM \cite{nvidia_back_fully_GEMM}}
+\subsection{Capa totalmente conectada como GEMM \cite{nvidia_back_fully_GEMM}}
 
 Al igual que las capas convolucionales, las capas totalmente conectadas también se pueden implementar mediante un enfoque GEMM. Para ello, analizaremos por separado cada uno de los tres casos que se presentan:
 \begin{enumerate}[label=\textbullet, nosep]
@@ -60,7 +162,7 @@ Al igual que las capas convolucionales, las capas totalmente conectadas también
 	\item Cálculo del gradiente con respecto a los pesos
 \end{enumerate}
 
-\subsection{Propagación hacia delante}
+\subsubsection{Propagación hacia delante}
 
 \begin{figure}[H]
 	\centering
@@ -83,7 +185,7 @@ Dado que, los pesos y sesgos permanecen constantes durante todo un minibatch dur
 
 \newpage
 
-\subsection{Retropropagación}
+\subsubsection{Retropropagación}
 
 De manera similar a la propagación hacia delante, la retropropagación en una capa totalmente conectada también puede se calcular utilizando un enfoque de multiplicación matricial, como es el enfoque GEMM.
 
