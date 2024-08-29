@@ -91,3 +91,11 @@ La naturaleza iterativa del algoritmo del descenso del gradiente estocástico, p
 En cada época el modelo, se entrena con \textit{M} subconjuntos de $N_m$ datos, los cuales son disjuntos entre sí. Dados \textit{T} ``trabajadores'' o procesos paralelos, cada subconjunto de $N_m$ datos (mini-batch), puede dividirse en \textit{T} subconjuntos de $\frac{N_m}{T}$ datos, asignando cada uno a un trabajador diferente.\\
 De acuerdo con este enfoque, los datos de entrenamiento se distribuyen entre los distintos trabajadores \textit{T} tanto para la propagación hacia delante como para la retropropagación posterior. En el caso de la retropropagación, se debe acumular el gradiente de la pérdida con respecto a cada parámetro obtenido por cada trabajor. Una vez en posesión este gradiente `total', se procede a la actualización de los parámetros del modelo.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.2\linewidth]{imagenes/openmp_flujo.jpg} 
+	\caption{Flujo de las hebras en la implementación con OpenMP}
+	\label{fig:openmp_flujo}
+\end{figure}
+
+Tal como se muestra en la Figura \ref{fig:openmp_flujo}, aunque cada hebra realiza ciertas secciones de código en paralelo, como la propagación hacia delante o la retropropagación, existen momentos en los que estas hebras deben sincronizarse, como durante la distribución de los datos de un minibatch, o coordinarse para llevar a cabo operaciones conjuntas, como la acumulación y actualización de pesos.

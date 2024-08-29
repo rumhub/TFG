@@ -83,21 +83,21 @@
 \contentsline {section}{\numberline {4.4}Capa totalmente conectada como GEMM \cite {nvidia_back_fully_GEMM}}{54}{section.4.4}%
 \contentsline {subsection}{\numberline {4.4.1}Propagación hacia delante}{55}{subsection.4.4.1}%
 \contentsline {subsection}{\numberline {4.4.2}Retropropagación}{57}{subsection.4.4.2}%
-\contentsline {subsubsection}{Gradiente respecto a la entrada}{57}{section*.80}%
-\contentsline {subsubsection}{Gradiente respecto a los pesos}{59}{section*.83}%
+\contentsline {subsubsection}{Gradiente respecto a la entrada}{57}{section*.81}%
+\contentsline {subsubsection}{Gradiente respecto a los pesos}{59}{section*.84}%
 \contentsline {subsection}{\numberline {4.4.3}Multiplicación de matrices en CUDA}{60}{subsection.4.4.3}%
 \contentsline {chapter}{\numberline {5}Comparación entre distintas implementaciones}{63}{chapter.5}%
 \contentsline {subsection}{\numberline {5.0.1}Modelos a emplear}{63}{subsection.5.0.1}%
 \contentsline {subsection}{\numberline {5.0.2}Comparación de rendimiento}{65}{subsection.5.0.2}%
-\contentsline {subsubsection}{Implementaciones CPU}{65}{section*.88}%
-\contentsline {subsubsection}{Implementaciones GPU}{66}{section*.91}%
+\contentsline {subsubsection}{Implementaciones CPU}{65}{section*.89}%
+\contentsline {subsubsection}{Implementaciones GPU}{66}{section*.92}%
 \contentsline {chapter}{\numberline {6}Conclusiones y trabajo futuro}{69}{chapter.6}%
 \contentsline {chapter}{\numberline {A}cuDNN, Principales funciones}{71}{appendix.Alph1}%
-\contentsline {subsubsection}{cudnnConvolutionForward}{71}{section*.95}%
-\contentsline {subsubsection}{cudnnPoolingForward}{72}{section*.96}%
-\contentsline {subsubsection}{cudnnPoolingBackward}{73}{section*.97}%
-\contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{74}{section*.98}%
-\contentsline {subsubsection}{cudnnConvolutionBackwardData}{75}{section*.99}%
+\contentsline {subsubsection}{cudnnConvolutionForward}{71}{section*.96}%
+\contentsline {subsubsection}{cudnnPoolingForward}{72}{section*.97}%
+\contentsline {subsubsection}{cudnnPoolingBackward}{73}{section*.98}%
+\contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{74}{section*.99}%
+\contentsline {subsubsection}{cudnnConvolutionBackwardData}{75}{section*.100}%
 \contentsline {chapter}{\numberline {B}Planificación}{77}{appendix.Alph2}%
 \contentsline {chapter}{\numberline {C}Retropropagación en capa SoftMax}{83}{appendix.Alph3}%
 \contentsline {section}{\numberline {C.1}Cálculo del gradiente de la función de error}{83}{section.Alph3.1}%
