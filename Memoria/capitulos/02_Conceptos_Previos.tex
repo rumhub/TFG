@@ -121,6 +121,16 @@ En los modelos a desarrollar en este proyecto se empleará la Entropía Cruzada 
 
 En la fórmula \ref{fig:loss_func_softmax} se muestra la fórmula para el cálculo de la entropía cruzada, donde H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$, $y_i$ representa la etiqueta real de la entrada $x_i$ empleada, e $\hat{y}_i$ representa la etiqueta que el modelo predijo para dicha entrada $x_i$.  \\
 
+\subsection{Precisión}
+
+En los modelos a desarrollar en este proyecto, se utilizará la precisión (accuracy) como métrica para evaluar la eficacia del modelo en la clasificación de un conjunto de datos específico. La precisión representa la proporción de predicciones correctas sobre el total de predicciones realizadas, y se calcula mediante la fórmula \ref{accuracy_formula}. Este valor se expresa como un porcentaje o como un número en el rango [0-1], donde 1 indica un modelo perfecto y 0 denota un modelo totalmente erróneo \cite{accuracy}. 
+
+\begin{gather}
+	Precision = \frac{Predicciones\ correctas}{Predicciones\ totales}
+	\label{accuracy_formula}
+\end{gather}
+
+
 \subsubsection{Importancia de la función de error en el aprendizaje}
 
 Para visualizar el papel de la función de error en el aprendizaje de un modelo, supondremos que los datos actuales cuentan con N=3 clases tal que, para un $x_i \in X$ dado y empleando la codificación One-Hot para las etiquetas, se tiene que $y_i = [0, 0, 1]$. 

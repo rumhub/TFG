@@ -1,18 +1,11 @@
 \begin{thebibliography}{10}
 
-\bibitem{Cross_entropy_backprop}
-mehran@mldawn.com.
-\newblock Back-propagation through cross-entropy softmax, 2021.
+\bibitem{nvidia_back_fully_GEMM}
+NVIDIA.
+\newblock Linear/fully-connected layers user's guide, 2024.
 \newblock
-  \url{https://www.mldawn.com/back-propagation-with-cross-entropy-and-softmax/}
-  [Accessed:29/02/2024].
-
-\bibitem{Cross_entropy_backprop_grad_input}
-mehran@mldawn.com.
-\newblock The derivative of softmax function wrt z, 2021.
-\newblock
-  \url{https://www.mldawn.com/the-derivative-of-softmaxz-function-w-r-t-z/}
-  [Accessed:05/03/2024].
+  \url{https://docs.nvidia.com/deeplearning/performance/dl-performance-fully-connected/index.html}
+  [Accessed:11/05/2024].
 
 \bibitem{NN_backpropagation}
 Prakash Jay.
@@ -27,13 +20,6 @@ Chamanth mvs.
 \newblock
   \url{https://pub.aimind.so/no-more-confusion-on-backpropagation-7adfc271539f}
   [Accessed:07/03/2024].
-
-\bibitem{nvidia_back_fully_GEMM}
-NVIDIA.
-\newblock Linear/fully-connected layers user's guide, 2024.
-\newblock
-  \url{https://docs.nvidia.com/deeplearning/performance/dl-performance-fully-connected/index.html}
-  [Accessed:11/05/2024].
 
 \bibitem{CPU_definicion}
 Amazon.
@@ -269,6 +255,14 @@ Saurav Maheshkar.
   \url{https://wandb.ai/sauravmaheshkar/cross-entropy/reports/What-Is-Cross-Entropy-Loss-A-Tutorial-With-Code--VmlldzoxMDA5NTMx#:~:text=Cross%20entropy%20loss%20is%20a,close%20to%200%20as%20possible.}
   [Accessed:29/02/2024].
 
+\bibitem{accuracy}
+Google.
+\newblock Classification: Accuracy, recall, precision, and related metrics,
+  2024.
+\newblock
+  \url{https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall}
+  [Accessed:30/08/2024].
+
 \bibitem{SGD_1}
 Descenso del gradiente, 2024.
 \newblock
@@ -347,6 +341,20 @@ Aishwarya~V Srinivasan.
   \url{https://towardsdatascience.com/stochastic-gradient-descent-clearly-explained-53d239905d31}
   [Accessed:22/03/2024].
 
+\bibitem{Cross_entropy_backprop}
+mehran@mldawn.com.
+\newblock Back-propagation through cross-entropy softmax, 2021.
+\newblock
+  \url{https://www.mldawn.com/back-propagation-with-cross-entropy-and-softmax/}
+  [Accessed:29/02/2024].
+
+\bibitem{Cross_entropy_backprop_grad_input}
+mehran@mldawn.com.
+\newblock The derivative of softmax function wrt z, 2021.
+\newblock
+  \url{https://www.mldawn.com/the-derivative-of-softmaxz-function-w-r-t-z/}
+  [Accessed:05/03/2024].
+
 \bibitem{capa_convolucional}
 Afshine~Amidi y~Shervine~Amidi.
 \newblock Convolutional neural networks cheatsheet, 2018.
@@ -384,6 +392,12 @@ Avinash Kumar, Sobhangi Sarkar, and Chittaranjan Pradhan.
 \newblock {\em Malaria Disease Detection Using CNN Technique with SGD, RMSprop
   and ADAM Optimizers}, pages 211--230.
 \newblock 01 2020.
+
+\bibitem{conv_backprop}
+Hide Inada.
+\newblock Calculate cnn backprop with padding and stride set to 2, 2024.
+\newblock \url{https://hideyukiinada.github.io/cnn_backprop_strides2.html}
+  [Accessed:01/04/2024].
 
 \bibitem{max_pool_backprop}
 Archana David.
@@ -493,12 +507,6 @@ Alex Krizhevsky.
 \newblock One weird trick for parallelizing convolutional neural networks.
 \newblock {\em ArXiv}, abs/1404.5997, 2014.
 
-\bibitem{conv_backprop}
-Hide Inada.
-\newblock Calculate cnn backprop with padding and stride set to 2, 2024.
-\newblock \url{https://hideyukiinada.github.io/cnn_backprop_strides2.html}
-  [Accessed:01/04/2024].
-
 \bibitem{GEMM_definition}
 Stanford University.
 \newblock General matrix multiply (gemm), 2018.
@@ -528,5 +536,18 @@ NVIDIA.
 \newblock
   \url{https://docs.nvidia.com/deeplearning/performance/pdf/Matrix-Multiplication-Background-User-Guide.pdf}
   [Accessed:10/05/2024].
+
+\bibitem{cifar10}
+Alex Krizhevsky.
+\newblock Cifar10 dataset, 2009.
+\newblock \url{https://www.cs.toronto.edu/~kriz/cifar.html}
+  [Accessed:30/08/2024].
+
+\bibitem{10_big_cats}
+Guerry.
+\newblock 10 big cats of the wild - image classification, 2022.
+\newblock
+  \url{https://www.kaggle.com/datasets/gpiosenka/cats-in-the-wild-image-classification}
+  [Accessed:30/08/2024].
 
 \end{thebibliography}

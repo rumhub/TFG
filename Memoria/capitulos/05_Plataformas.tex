@@ -7,6 +7,30 @@ A continuación, se presenta la arquitectura general de algunos de los modelos q
 \begin{enumerate}
 	\item \textbf{Modelo 0}
 	\begin{enumerate}[label=\textbullet, nosep]
+		\item Tamaño imágenes de entrada: 3x12x12
+		\item Capas convolucionales
+		\begin{enumerate}[label=\textbullet, nosep]
+			\item 16 kernels de tamaño 3x3, padding=1
+			\item 32 kernels de tamaño 3x3, padding=1
+		\end{enumerate}
+		\item Capas de Agrupación Máxima
+		\begin{enumerate}[label=\textbullet, nosep]
+			\item Kernel de tamaño 2x2
+			\item Kernel de tamaño 2x2
+		\end{enumerate}
+		\item Capas totalmente conectadas
+		\begin{enumerate}[label=\textbullet, nosep]
+			\item n\_neuronas\_tras\_flatten
+			\item 100 neuronas
+			\item 10 neuronas
+		\end{enumerate}
+		\item learning rate = 0.01
+		\item 1000 imágenes de entrenamiento
+		\item Tamaño de mini batch = 32
+	\end{enumerate}
+	
+	\item \textbf{Modelo 1}
+	\begin{enumerate}[label=\textbullet, nosep]
 		\item Tamaño imágenes de entrada: 3x32x32
 		\item Capas convolucionales
 			\begin{enumerate}[label=\textbullet, nosep]
@@ -24,13 +48,12 @@ A continuación, se presenta la arquitectura general de algunos de los modelos q
 			\item 100 neuronas
 			\item 10 neuronas
 		\end{enumerate}
-		\item learning rate = 0.001
+		\item learning rate = 0.01
 		\item 1000 imágenes de entrenamiento
 		\item Tamaño de mini batch = 32
 	\end{enumerate}
 	
-	\newpage
-	\item \textbf{Modelo 1}
+	\item \textbf{Modelo 2}
 	\begin{enumerate}[label=\textbullet, nosep]
 		\item Tamaño imágenes de entrada: 3x40x40
 		\item Capas convolucionales
@@ -54,7 +77,7 @@ A continuación, se presenta la arquitectura general de algunos de los modelos q
 		\item Tamaño de mini batch = 32
 	\end{enumerate}
 	
-	\item \textbf{Modelo 2}
+	\item \textbf{Modelo 3}
 	\begin{enumerate}[label=\textbullet, nosep]
 		\item Tamaño imágenes de entrada: 3x40x40
 		\item Capas convolucionales
@@ -80,9 +103,59 @@ A continuación, se presenta la arquitectura general de algunos de los modelos q
 		\item 2000 imágenes de entrenamiento
 		\item Tamaño de mini batch = 32
 	\end{enumerate}	
+	
+	\item \textbf{Modelo 4}
+	\begin{enumerate}[label=\textbullet, nosep]
+		\item Tamaño imágenes de entrada: 3x50x50
+		\item Capas convolucionales
+		\begin{enumerate}[label=\textbullet, nosep]
+			\item 32 kernels de tamaño 3x3, padding=1
+			\item 32 kernels de tamaño 3x3, padding=1
+			\item 32 kernels de tamaño 3x3, padding=1
+		\end{enumerate}
+		\item Capas de Agrupación Máxima
+		\begin{enumerate}[label=\textbullet, nosep]
+			\item Kernel de tamaño 2x2
+			\item Kernel de tamaño 2x2
+			\item Kernel de tamaño 2x2
+		\end{enumerate}
+		\item Capas totalmente conectadas
+		\begin{enumerate}[label=\textbullet, nosep]
+			\item n\_neuronas\_tras\_flatten
+			\item 200 neuronas
+			\item 50 neuronas
+			\item 10 neuronas
+		\end{enumerate}
+		\item learning rate = 0.00001
+		\item 2500 imágenes de entrenamiento
+		\item Tamaño de mini batch = 32
+	\end{enumerate}		
+
+	
 \end{enumerate}
 
-\newpage
+
+\subsection{Resultados en entrenamiento}
+
+En esta sección, se emplea el \texttt{Modelo 1}, definido previamente, para entrenarlo en diferentes conjuntos de datos y analizar los resultados obtenidos. Los resultados se evaluarán empleando la entropía cruzada como función de error, y precisión como métrica de efectividad.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{imagenes/cifar10.png}  
+	\caption{Entrenamiento con CIFAR10}
+	\label{fig:cifar10}
+\end{figure}
+
+En la Figura \ref{fig:cifar10}, se presentan los resultados obtenidos durante el entrenamiento del \texttt{Modelo 1}, utilizando los datos del conjunto \texttt{CIFAR10} \cite{cifar10}. En dicha figura, el eje X representa las épocas de entrenamiento, mientras que el eje Y muestra la entropía cruzada o la precisión alcanzada en cada época, correspondientes a las gráficas azul y naranja, respectivamente. Se observa que, a medida que avanza el entrenamiento, la entropía cruzada disminuye progresivamente, mientras que la precisión aumenta. Este comportamiento es coherente con lo discutido en secciones anteriores, y refleja cómo el modelo mejora su capacidad para aprender las relaciones presentes en los datos de entrenamiento, incrementando gradualmente su precisión en las predicciones. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{imagenes/10_big_cats.png}  
+	\caption{Entrenamiento con 10 Big Cats}
+	\label{fig:10_big_cats}
+\end{figure}
+
+De manera similar, la Figura \ref{fig:10_big_cats} ilustra los resultados obtenidos durante el proceso de entrenamiento del \texttt{Modelo 1} utilizando los datos del conjunto \texttt{10 Big Cats} \cite{10_big_cats}. En esta figura, se puede observar el rendimiento del modelo a lo largo de las diferentes épocas de entrenamiento, destacándose la evolución tanto de la entropía cruzada como de la precisión a lo largo del tiempo. El comportamiento observado en esta figura proporciona información valiosa sobre la capacidad del modelo para aprender patrones y relaciones específicas dentro de este conjunto de datos, lo cual es fundamental para evaluar su efectividad en tareas de clasificación relacionadas con la base de datos \texttt{10 Big Cats}.
 
 \subsection{Comparación de rendimiento}
 
@@ -99,7 +172,7 @@ Además, se presentan figuras que facilitan la comprensión  de los análisis de
 	\label{fig:sec_openmp}
 \end{figure}
 
-En la Figura \ref{fig:sec_openmp} se presenta una comparación de rendimiento entre la implementación secuencial y la implementación en OpenMP. El eje Y se muestra el tiempo requerido en el entrenamiento de una época, mientras que el eje X indica el modelo empleado para dicho entrenamiento. De esta manera, el punto p1(100, 0) señala que el modelo 0 requiere 101 segundos para entrenar una época con la implementación secuencial, mientras que solo necesita 12.76 segundos con la implementación en OpenMP.
+En la Figura \ref{fig:sec_openmp} se presenta una comparación de rendimiento entre la implementación secuencial y la implementación en OpenMP. El eje Y muestra el tiempo requerido en el entrenamiento de una época, mientras que el eje X indica el modelo empleado para dicho entrenamiento. De esta manera, el punto p1(100, 0) señala que el modelo 0 requiere 101 segundos para entrenar una época con la implementación secuencial, mientras que solo necesita 12.76 segundos con la implementación en OpenMP.
 
 \begin{figure}[H]
 	\centering
@@ -121,10 +194,19 @@ La implementación utilizando OpenMP está diseñada para explotar el paralelism
 	\label{fig:openmp_cuda_cudnn}
 \end{figure}
 
-\newpage
 
-En la Figura \ref{fig:openmp_cuda_cudnn} se utilizan los mismos modelos que se emplearon en las Figuras \ref{fig:sec_openmp} y \ref{fig:ganancia_sec_openmp}.
+
+En las Figura \ref{fig:openmp_cuda_cudnn} se utiliza los mismos modelos que se emplearon en las Figuras \ref{fig:sec_openmp} y \ref{fig:ganancia_sec_openmp}.
 De manera similar a cómo la implementación en OpenMP presenta una mejora notable respecto a la implementación secuencial, también se espera uuna diferencia significativa entre las implementaciones heterogéneas que combinan CPU y GPU  y aquellas que se basan exclusivamente en el uso de CPU, como es el caso de OpenMP. Esta diferencia de rendimiento es particularmente evidente en la Figura \ref{fig:openmp_cuda_cudnn}, donde las variaciones observadas en el rendimiento son incluso más pronunciadas que las reportadas en el apartado anterior.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{imagenes/ganancia_cuda_cudnn_openmp.png}  
+	\caption{Ganancia de CUDA y cuDNN sobre OpenMP}
+	\label{fig:ganancia_cuda_cudnn_openmp}
+\end{figure}
+
+Para comparar las implementaciones en GPU, se han añadido dos modelos adicionales: uno de menor complejidad, \texttt{Modelo 0}, y otro de mayor complejidad, \texttt{Modelo 4}, en relación con los modelos previamente evaluados. Al igual que en el experimento anterior, estos modelos están dispuestos en las figuras de izquierda a derecha, organizados de menor a mayor complejidad. Este orden tiene como objetivo facilitar la comparación entre las distintas implementaciones en función de la complejidad creciente de los modelos.
 
 \begin{figure}[H]
 	\centering
@@ -133,7 +215,6 @@ De manera similar a cómo la implementación en OpenMP presenta una mejora notab
 	\label{fig:cuda_cudnn_1}
 \end{figure}
 
-Para comparar las implementaciones en GPU, se han añadeido dos modelos adicionales: uno de menor complejidad y otro de mayor complejidad en relación con los modelos previamente evaluados. Al igual que en el experimento anterior, estos modelos están dispuestos en las figuras de izquierda a derecha, organizados de menor a mayor complejidad. Este orden tiene como objetivo facilitar la comparación entre las distintas implementaciones en función de la complejidad creciente de los modelos. \\
 Como se ilustra en la Figura \ref{fig:cuda_cudnn_1}, la implementación CUDA muestra un rendimiento ligeramente superior en modelos menos complejos. Sin embargo, a medida que aumenta la complejidad de los modelos, la implementación cuDNN comienza a superar a CUDA. Esta característica distintiva ha llevado a que cuDNN sea utilizada en numerosas librerías de alto nivel y prestigio, como Caffe2, MATLAB, PyTorch y TensorFlow, entre otras. 
 
 \begin{table}[H]
@@ -168,5 +249,5 @@ Como se ilustra en la Figura \ref{fig:cuda_cudnn_1}, la implementación CUDA mue
 	\label{tabla_resultados}
 \end{table}
 
-Además, utilizando el modelo con la mayor complejidad mostrado en la Figura \ref{fig:cuda_cudnn_1}, se ha generado la Tabla \ref{tabla_resultados}, la cual presenta el tiempo requerido para realizar la propagación hacia delante como la retroprogación en cada capa.
-En esta tabla, se puede observar que, a medida que los datos avanzan a través de las distintas capas de la red neuronal convolucional (CNN), la ventaja inicial que cuDNN tenía sobre CUDA tiende a disminuir. Este comportamiento es coherente con la observación anterior, ya que en cada capa el coste computacional tiende a reducirse, (aunque no siempre es el caso, en el contexto específico de este modelo sí se cumple).
+Utilizando el modelo con la mayor complejidad mostrado en la Figura \ref{fig:cuda_cudnn_1}, se ha generado la Tabla \ref{tabla_resultados}, la cual detalla el tiempo requerido para llevar a cabo tanto la propagación hacia delante como la retroprogación en cada capa del modelo. En dicha tabla, la notación Conv\_fwd\_i representa el tiempo de propagación hacia adelante en la capa convolucional i, Conv\_back\_i denota el tiempo de retropropagación en la capa convolcional i, Pool\_fwd\_i indica el tiempo de propagación hacia delante en la capa de agrupación máxima i, y Pool\_back\_0 indica el tiempo de retropropagación en la capa de agrupación máxima i.
+Se observa en la tabla que, a medida que los datos avanzan a través de las distintas capas de la red neuronal convolucional (CNN), la ventaja inicial que cuDNN tenía sobre CUDA tiende a disminuir. Este comportamiento es coherente con la observación anterior, ya que en cada capa el coste computacional tiende a reducirse, (aunque no siempre es el caso, en el contexto específico de este modelo sí se cumple).

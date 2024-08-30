@@ -117,7 +117,7 @@ De este modo, dado un conjunto de \textit{M} filtros (kernels), de tamaño KxK, 
 Finalmente, aunque se haya omitido para simplificar la explicación del método, es necesario destacar que, una vez realizada la multiplicación matricial, se debe sumar el sesgo correspondiente, y aplicar la función de activación a cada elemento del volumen de salida \textit{Y}.
 
 \begin{figure}[H]
-	\centering
+	\hspace{-5mm}
 	\includegraphics[scale=0.35]{imagenes/conv_std_vs_gemm.jpg}  
 	\caption{Convolución estándar frente a convolución GEMM}
 	\label{fig:conv_std_vs_gemm}
@@ -137,7 +137,7 @@ En la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad}, se observó cómo
 Dado que ambos gradientes se pueden implementar como convoluciones, y, considerando que en la sección \ref{Intro_GEMMM}, se demostró cómo implementar convoluciones utilizando el enfoque GEMM, es razonable asumir que la retropropagación en una capa convolucional, también se puede llevar a cabo mediante dicho enfoque.
 
 \begin{figure}[H]
-	\hspace{-20mm}
+	\hspace{-40mm}
 	\includegraphics[scale=0.3]{imagenes/conv_std_vs_gemm_backprop.jpg}  
 	\caption{Retropropagación respecto a la entrada en una capa convolucional de forma estándar frente a GEMM}
 	\label{fig:conv_std_vs_gemm_backprop}
@@ -252,3 +252,17 @@ Sin embargo, esta última implementación carece de los beneficios que ofrece la
 \end{figure}
 
 Para calcular cada valor de la matriz resultado \texttt{C}, es necesario multiplicar una fila de \texttt{A}, por una columna de \texttt{B}. Es decir, multiplicar dos vectores de \texttt{K} elementos. Una idea inicial, consiste en cargar \texttt{2K} elementos en memoria compartida para su posterior uso. Sin embargo, si cada hebra de cada bloque, requiere \texttt{2K} elementos, esta estrategia no es viable, debido a la limitada y escasa memoria compartida disponible. Un enfoque más eficiente consiste en, dado un bloque 2D de dimensiones \texttt{TILExTILE}, almacenar \texttt{2xTILExTILE} elementos, siendo \texttt{TILE} el tamaño de cada tile. El objetivo, es dividir el cálculo de cada valor de la matriz resultado \texttt{C}, en iteraciones, y, en cada una de ellas, cada hebra multiplica TILE elementos de \texttt{A}, por \texttt{TILE} elementos de \texttt{B}, acumulando y sumando los resultados obtenidos en cada iteración. De este modo, este será el método utilizado en el presente proyecto para realizar multiplicaciones matriciales en entornos heterogéneos, siguiendo las recomendaciones de NVIDIA en \cite{nvidia_mult_matrix_v4}. \\
+
+
+\subsection{Flujo de ejecución}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/esquema_cpu_gpu.jpg} 
+	\caption{Flujo de las hebras en la implementación con CUDA}
+	\label{fig:cpu_gpu}
+\end{figure}
+
+La Figura \ref{fig:cpu_gpu} ilustra el flujo de ejecución para cada época de entrenamiento en la implementación con CUDA. Tal como se mencionó anteriormente, cada época se divide en \texttt{NB} minibatches. Durante cada uno de estos minibatches, la CPU se encarga de gestionar el inicio y la finalización, mientras que la GPU se ocupa del cómputo intensivo, que abarca la propagación hacia adelante, y la retropropagación, además de llevar a cabo la actualización de los parámetros.
+
+De este modo, la CPU controla la mayor parte del flujo de control del programa. Por ejemplo, cuando es necesario realizar la propagación hacia delante o la retropropagación, la CPU invoca un kernel CUDA que se ejecuta en GPU, delegando a esta última todo el cómputo intensivo, como en el caso de la multiplicación matricial. Una vez finalizado dicho cómputo, el control regresa a la CPU, que se encarga de gestionar la invocación del siguiente kernel CUDA, así como de iniciar o finalizar cada minibatch. De esta manera, la implementación con cuDNN es muy similar a la implementación con CUDA. Sin embargo, en la implementación con CUDA, la CPU invoca kernels que se ejecutan en la GPU, mientras que en la implementación con cuDNN, la CPU llama a funciones de cuDNN, las cuales se encargan de todo el cómputo intensivo.
