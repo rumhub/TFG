@@ -155,7 +155,7 @@ En la Figura \ref{fig:cifar10}, se presentan los resultados obtenidos durante el
 	\label{fig:10_big_cats}
 \end{figure}
 
-De manera similar, la Figura \ref{fig:10_big_cats} ilustra los resultados obtenidos durante el proceso de entrenamiento del \texttt{Modelo 1} utilizando los datos del conjunto \texttt{10 Big Cats} \cite{10_big_cats}. En esta figura, se puede observar el rendimiento del modelo a lo largo de las diferentes épocas de entrenamiento, destacándose la evolución tanto de la entropía cruzada como de la precisión a lo largo del tiempo. El comportamiento observado en esta figura proporciona información valiosa sobre la capacidad del modelo para aprender patrones y relaciones específicas dentro de este conjunto de datos, lo cual es fundamental para evaluar su efectividad en tareas de clasificación relacionadas con la base de datos \texttt{10 Big Cats}.
+De manera similar, la Figura \ref{fig:10_big_cats} ilustra los resultados obtenidos durante el proceso de entrenamiento del \texttt{Modelo 1}, utilizando los datos del conjunto \texttt{10 Big Cats} \cite{10_big_cats}. En esta figura, se puede observar el rendimiento del modelo a lo largo de las diferentes épocas de entrenamiento, destacándose la evolución tanto de la entropía cruzada como de la precisión a lo largo del tiempo. El comportamiento observado en esta figura proporciona información valiosa sobre la capacidad del modelo para aprender patrones y relaciones específicas dentro de este conjunto de datos, lo cual es fundamental para evaluar su efectividad en tareas de clasificación relacionadas con la base de datos \texttt{10 Big Cats}.
 
 \subsection{Comparación de rendimiento}
 
@@ -194,10 +194,8 @@ La implementación utilizando OpenMP está diseñada para explotar el paralelism
 	\label{fig:openmp_cuda_cudnn}
 \end{figure}
 
-
-
-En las Figura \ref{fig:openmp_cuda_cudnn} se utiliza los mismos modelos que se emplearon en las Figuras \ref{fig:sec_openmp} y \ref{fig:ganancia_sec_openmp}.
-De manera similar a cómo la implementación en OpenMP presenta una mejora notable respecto a la implementación secuencial, también se espera uuna diferencia significativa entre las implementaciones heterogéneas que combinan CPU y GPU  y aquellas que se basan exclusivamente en el uso de CPU, como es el caso de OpenMP. Esta diferencia de rendimiento es particularmente evidente en la Figura \ref{fig:openmp_cuda_cudnn}, donde las variaciones observadas en el rendimiento son incluso más pronunciadas que las reportadas en el apartado anterior.
+En la Figura \ref{fig:openmp_cuda_cudnn}, se utiliza los mismos modelos que se emplearon en las Figuras \ref{fig:sec_openmp} y \ref{fig:ganancia_sec_openmp}.
+De manera similar a cómo la implementación en OpenMP presenta una mejora notable respecto a la implementación secuencial, también se espera una diferencia significativa entre las implementaciones heterogéneas que combinan CPU y GPU  y aquellas que se basan exclusivamente en el uso de CPU, como es el caso de OpenMP. Esta diferencia de rendimiento es particularmente evidente en las Figuras \ref{fig:openmp_cuda_cudnn} y \ref{fig:ganancia_cuda_cudnn_openmp}, donde las variaciones observadas en el rendimiento son incluso más pronunciadas que las reportadas en el apartado anterior.
 
 \begin{figure}[H]
 	\centering
@@ -249,5 +247,5 @@ Como se ilustra en la Figura \ref{fig:cuda_cudnn_1}, la implementación CUDA mue
 	\label{tabla_resultados}
 \end{table}
 
-Utilizando el modelo con la mayor complejidad mostrado en la Figura \ref{fig:cuda_cudnn_1}, se ha generado la Tabla \ref{tabla_resultados}, la cual detalla el tiempo requerido para llevar a cabo tanto la propagación hacia delante como la retroprogación en cada capa del modelo. En dicha tabla, la notación Conv\_fwd\_i representa el tiempo de propagación hacia adelante en la capa convolucional i, Conv\_back\_i denota el tiempo de retropropagación en la capa convolcional i, Pool\_fwd\_i indica el tiempo de propagación hacia delante en la capa de agrupación máxima i, y Pool\_back\_0 indica el tiempo de retropropagación en la capa de agrupación máxima i.
+Utilizando el modelo con la mayor complejidad mostrado en la Figura \ref{fig:cuda_cudnn_1}, \texttt{Modelo 4}, se ha generado la Tabla \ref{tabla_resultados}, la cual detalla el tiempo requerido para llevar a cabo tanto la propagación hacia delante como la retroprogación en cada capa del modelo. En dicha tabla, la notación Conv\_fwd\_i representa el tiempo de propagación hacia adelante en la capa convolucional i, Conv\_back\_i denota el tiempo de retropropagación en la capa convolcional i, Pool\_fwd\_i indica el tiempo de propagación hacia delante en la capa de agrupación máxima i, y Pool\_back\_0 indica el tiempo de retropropagación en la capa de agrupación máxima i.
 Se observa en la tabla que, a medida que los datos avanzan a través de las distintas capas de la red neuronal convolucional (CNN), la ventaja inicial que cuDNN tenía sobre CUDA tiende a disminuir. Este comportamiento es coherente con la observación anterior, ya que en cada capa el coste computacional tiende a reducirse, (aunque no siempre es el caso, en el contexto específico de este modelo sí se cumple).
