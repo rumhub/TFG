@@ -117,9 +117,9 @@ En modelos de aprendizaje automático se suele emplear una función de optimizac
 	\label{fig:loss_func_softmax}
 \end{gather}
 
-En los modelos a desarrollar en este proyecto se empleará la Entropía Cruzada como función de error por ser una métrica empleada en aprendizaje automático para medir las prestaciones de un modelo de clasificación. La pérdida o error se mide como un valor en el rango [0-1], siendo 0 un modelo perfecto y 1 otro totalmente erróneo. \cite{Cross_entropy}
+En los modelos a desarrollar en este proyecto, se empleará la Entropía Cruzada como función de error por ser una métrica empleada en aprendizaje automático para medir las prestaciones de un modelo de clasificación. La pérdida o error, se mide como un valor positivo mayor que 0, siendo 0 un modelo perfecto. \cite{Cross_entropy}
 
-En la fórmula \ref{fig:loss_func_softmax} se muestra la fórmula para el cálculo de la entropía cruzada, donde H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$, $y_i$ representa la etiqueta real de la entrada $x_i$ empleada, e $\hat{y}_i$ representa la etiqueta que el modelo predijo para dicha entrada $x_i$.  \\
+En la fórmula \ref{fig:loss_func_softmax}, se muestra la fórmula para el cálculo de la entropía cruzada, donde H es el número de clases al que puede pertenecer cada dato de entrada $x_i \in X$, $y_i$ representa la etiqueta real de la entrada $x_i$ empleada, e $\hat{y}_i$ representa la etiqueta que el modelo predijo para dicha entrada $x_i$.  \\
 
 \subsection{Precisión}
 
