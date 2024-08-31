@@ -630,23 +630,18 @@ void leer_imagenes_cifar10_ptr(float *train_imgs, float *train_labels, float *te
     const unsigned int img_size = TAM_IMAGE + 2*pad, tam_img = img_size*img_size*3; // 3 -> RGB
     float *img = nullptr, *label = nullptr;  
 
-    // tam_img*3 porque las imágenes son RGB
-    //train_imgs = (float *)malloc(tam_img * n_imagenes_train * n_clases * sizeof(float));
-    //test_labels = (float *)malloc(tam_img * n_imagenes_test * n_clases * sizeof(float));
-
     float *y_1D = (float *)malloc(n_clases * sizeof(float));
 
     for(int i=0; i<n_clases; ++i)
         y_1D[i] = 0.0;
 
     // TRAIN ------------------------------------------------------------------------
-    // Leer n_imagenes de la clase c
     for(int c=0; c<n_clases; ++c)
     {
         // Establecer etiqueta one-hot para la clase i
         y_1D[c] = 1.0;
 
-        // Leer imágenes
+        // Leer n_imagenes_train de la clase c
         for(int p=1; p<n_imagenes_train; ++p)
         {
             ruta_ini = "../fotos/cifar10/train/";
@@ -680,96 +675,52 @@ void leer_imagenes_cifar10_ptr(float *train_imgs, float *train_labels, float *te
         // Reset todo "y_1D" a 0
         y_1D[c] = 0.0;
     }  
-    
 
-    /*
-    // Crear el vector y
+
     for(int i=0; i<n_clases; ++i)
-        y_1D.push_back(0.0);
+        y_1D[i] = 0.0;
 
-    // TRAIN ------------------------------------------------------------------------
-    // Leer n_imagenes de la clase c
-    for(int c=0; c<n_clases; ++c)
-    {
-        // Establecer etiqueta one-hot para la clase i
-        y_1D[c] = 1.0;
-
-        // Leer imágenes
-        for(int p=1; p<n_imagenes_train; ++p)
-        {
-            ruta_ini = "../fotos/cifar10/train/";
-            ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".png";
-
-            Mat image2 = imread(ruta), image;
-
-            resize(image2, image, Size(TAM_IMAGE, TAM_IMAGE));
-
-            //image = image2;
-
-            // Cargamos la imagen en un vector 3D
-            cargar_imagen_en_vector(image, imagen_k1);
-
-            // Normalizar imagen
-            for(int i=0; i<imagen_k1.size(); ++i)
-                for(int j=0; j<imagen_k1[0].size(); ++j)
-                    for(int k=0; k<imagen_k1[0][0].size(); ++k)
-                        imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255.0;
-
-            // Aplicamos padding a la imagen de entrada
-            aplicar_padding(imagen_k1, pad);
-
-            // Almacenamos las imágenes de entrada de la CNN
-            train_imgs.push_back(imagen_k1);
-
-            // Establecemos que la imagen tiene una etiqueta, 1 = perro, 0 = gato
-            train_labels.push_back(y_1D);
-        }
-
-        // Reset todo "y_1D" a 0
-        y_1D[c] = 0.0;
-    }  
-
-    
     // TEST ------------------------------------------------------------------------
-    // Leer n_imagenes de la clase c
     for(int c=0; c<n_clases; ++c)
     {
         // Establecer etiqueta one-hot para la clase i
         y_1D[c] = 1.0;
 
-        // Leer imágenes
+        // Leer n_imagenes_test de la clase c
         for(int p=1; p<n_imagenes_test; ++p)
         {
             ruta_ini = "../fotos/cifar10/test/";
             ruta = ruta_ini + to_string(c) + "/" + to_string(p) + ".png";
 
             Mat image2 = imread(ruta), image;
+            
+            resize(image2, image, Size(TAM_IMAGE, TAM_IMAGE));
 
-            image = image2;
+            //image = image2;
+
+            img = test_imgs + c*(n_imagenes_test-1)*tam_img + (p-1)*tam_img;  // Almacenar imagen actual en la CNN
+            label = test_labels + c*(n_imagenes_test-1)*n_clases + (p-1)*n_clases;    // Almacenar etiqueta de la imagen actual en la CNN
 
             // Cargamos la imagen en un vector 3D
-            cargar_imagen_en_vector(image, imagen_k1);
+            cargar_imagen_en_vector_ptr(image, img, img_size, img_size);
 
             // Normalizar imagen
-            for(int i=0; i<imagen_k1.size(); ++i)
-                for(int j=0; j<imagen_k1[0].size(); ++j)
-                    for(int k=0; k<imagen_k1[0][0].size(); ++k)
-                        imagen_k1[i][j][k] = imagen_k1[i][j][k] / 255.0;
+            for(int i=0; i<tam_img; ++i)
+                img[i] /= 255.0;
 
             // Aplicamos padding a la imagen de entrada
-            aplicar_padding(imagen_k1, pad);
+            aplicar_padding_ptr(img, 3, img_size, img_size, pad);
 
-            // Almacenamos las imágenes de entrada de la CNN
-            test_imgs.push_back(imagen_k1);
 
-            // Establecemos que la imagen tiene una etiqueta, 1 = perro, 0 = gato
-            test_labels.push_back(y_1D);
+            // Establecemos la etiqueta de la imagen
+            for(int i=0; i<n_clases; ++i)
+                label[i] = y_1D[i];
         }
 
         // Reset todo "y_1D" a 0
         y_1D[c] = 0.0;
     }  
-    */
+
 }
 
 
