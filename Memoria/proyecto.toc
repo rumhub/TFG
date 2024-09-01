@@ -90,10 +90,11 @@
 \contentsline {subsection}{\numberline {3.3.7}Flujo de ejecución}{62}{subsection.3.3.7}%
 \contentsline {chapter}{\numberline {4}Comparación entre distintas implementaciones}{63}{chapter.4}%
 \contentsline {subsection}{\numberline {4.0.1}Modelos a emplear}{63}{subsection.4.0.1}%
-\contentsline {subsection}{\numberline {4.0.2}Resultados en entrenamiento}{65}{subsection.4.0.2}%
-\contentsline {subsection}{\numberline {4.0.3}Comparación de rendimiento}{66}{subsection.4.0.3}%
-\contentsline {subsubsection}{Implementaciones CPU}{67}{section*.93}%
-\contentsline {subsubsection}{Implementaciones GPU}{68}{section*.96}%
+\contentsline {subsection}{\numberline {4.0.2}Bases de datos}{65}{subsection.4.0.2}%
+\contentsline {subsection}{\numberline {4.0.3}Resultados en entrenamiento}{65}{subsection.4.0.3}%
+\contentsline {subsection}{\numberline {4.0.4}Comparación de rendimiento}{67}{subsection.4.0.4}%
+\contentsline {subsubsection}{Implementaciones CPU}{68}{section*.93}%
+\contentsline {subsubsection}{Implementaciones GPU}{69}{section*.96}%
 \contentsline {chapter}{\numberline {5}Conclusiones y trabajo futuro}{73}{chapter.5}%
 \contentsline {chapter}{\numberline {A}cuDNN, Principales funciones}{75}{appendix.Alph1}%
 \contentsline {subsubsection}{cudnnConvolutionForward}{75}{section*.101}%

@@ -134,6 +134,9 @@ A continuación, se presenta la arquitectura general de algunos de los modelos q
 	
 \end{enumerate}
 
+\subsection{Bases de datos}
+
+Se utilizará una variedad de bases de datos en el presente estudio. Entre ellas, se incluyen los resultados obtenidos durante el entrenamiento con las bases de datos CIFAR10 \cite{cifar10}, y 10 Big Cats Of The Wild \cite{10_big_cats}, ambas caracterizadas por ser problemas de clasificación multiclase con 10 clases distintas. En CIFAR10, las 10 clases representan aviones, automóviles, pájaros, gatos, ciervos, perros, ranas, caballos, barcos y camiones. Por otro lado, en 10 Big Cats, las 10 clases representan el leopardo africano, caracal, guepardo, leopardo nublado, jaguar, leones, ocelote, puma, leopardo de las nieves y tigre. Además, para cada clase se utilizará el mismo número de imágenes.
 
 \subsection{Resultados en entrenamiento}
 
@@ -155,7 +158,7 @@ En la Figura \ref{fig:cifar10}, se presentan los resultados obtenidos durante el
 	\label{fig:10_big_cats}
 \end{figure}
 
-De manera similar, la Figura \ref{fig:10_big_cats} ilustra los resultados obtenidos durante el proceso de entrenamiento del \texttt{Modelo 1}, utilizando los datos del conjunto \texttt{10 Big Cats} \cite{10_big_cats}. En esta figura, se puede observar el rendimiento del modelo a lo largo de las diferentes épocas de entrenamiento, destacándose la evolución tanto de la entropía cruzada como de la precisión a lo largo del tiempo. El comportamiento observado en esta figura proporciona información valiosa sobre la capacidad del modelo para aprender patrones y relaciones específicas dentro de este conjunto de datos, lo cual es fundamental para evaluar su efectividad en tareas de clasificación relacionadas con la base de datos \texttt{10 Big Cats}.
+De manera similar, la Figura \ref{fig:10_big_cats} ilustra los resultados obtenidos durante el proceso de entrenamiento del \texttt{Modelo 1}, utilizando los datos del conjunto \texttt{10 Big Cats Of The Wild} \cite{10_big_cats}. En esta figura, se puede observar el rendimiento del modelo a lo largo de las diferentes épocas de entrenamiento, destacándose la evolución tanto de la entropía cruzada como de la precisión a lo largo del tiempo. El comportamiento observado en esta figura proporciona información valiosa sobre la capacidad del modelo para aprender patrones y relaciones específicas dentro de este conjunto de datos, lo cual es fundamental para evaluar su efectividad en tareas de clasificación relacionadas con la base de datos \texttt{10 Big Cats}.
 
 \subsection{Comparación de rendimiento}
 

@@ -48,12 +48,12 @@
 \contentsline {figure}{\numberline {3.12}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{61}{figure.caption.89}%
 \contentsline {figure}{\numberline {3.13}{\ignorespaces Flujo de las hebras en la implementación con CUDA}}{62}{figure.caption.90}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Entrenamiento con CIFAR10}}{65}{figure.caption.91}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Entrenamiento con 10 Big Cats}}{66}{figure.caption.92}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Secuencial vs OpenMP}}{67}{figure.caption.94}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Entrenamiento con CIFAR10}}{66}{figure.caption.91}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Entrenamiento con 10 Big Cats}}{67}{figure.caption.92}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Secuencial vs OpenMP}}{68}{figure.caption.94}%
 \contentsline {figure}{\numberline {4.4}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{68}{figure.caption.95}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{68}{figure.caption.97}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Ganancia de CUDA y cuDNN sobre OpenMP}}{69}{figure.caption.98}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{69}{figure.caption.97}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Ganancia de CUDA y cuDNN sobre OpenMP}}{70}{figure.caption.98}%
 \contentsline {figure}{\numberline {4.7}{\ignorespaces CUDA vs CUDNN}}{70}{figure.caption.99}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
