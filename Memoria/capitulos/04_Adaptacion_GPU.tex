@@ -1,68 +1,20 @@
 \chapter{Paralelización con sistemas homogéneos y heterogéneos}
 
-\section{Planificación}
+Este capítulo, explora las técnicas de paralelización en sistemas homogéneos y heterogéneos. Comienza con una revisión de los Tipos de paralelismo, diferenciando el paralelismo del modelo y el paralelismo de datos, y describe cómo se aplican en las implementaciones del proyecto: OpenMP utiliza paralelismo de datos, mientras que CUDA y cuDNN se basan en paralelismo del modelo.
 
-Para el desarrollo de este proyecto, se ha requerido llevar a cabo una serie de tareas con diferentes dificultades e importancias. A continuación, se muestra una planificación general del mismo en la tabla \ref{tabla_planificación}, junto con las fases que componen su desarrollo, y una planificación temporal de cada apartado por separado,  (para obtener información adicional, véase el apéndice \ref{planificacion}). Cabe destacar que, cada apartado, se basa en los conocimientos adquiridos en los apartados anteriores, a la vez que introduce conceptos nuevos y mejora las prestaciones del modelo. De esta manera, cada apartado supondrá retos nuevos nunca antes vistos y, si un apartado anterior presenta algún fallo desconocido en el momento, se deberá volver a la etapa anterior y subsanarlo. Tras solventarlo, se podrá proseguir con la etapa posterior. Además, dada la naturaleza de `caja negra' de las redes neuronales, estas presentan cierta dificultad a la hora de depurar el código. Por tanto, esto supondrá un tiempo de depuración considerable en todas y cada una de las implementaciones, tal y como se mostrará a continuación.
+Luego, se detalla la Paralelización en sistemas homogéneos mediante OpenMP, con un enfoque en el paralelismo en el descenso por gradiente estocástico (SGD).
 
-\begin{enumerate}[label=\textbullet]
-	\item \textbf{Estudio previo}: Consiste en el estudio y comprensión de cuestiones generales, dentro del campo de aprendizaje automático y visión por computador, comunes a redes neuronales totalmente conectadas, y redes neuronales convolucionales.
-	
-	\item \textbf{Investigación y desarrollo de redes neuronales totalmente conectadas}: En este periodo, me centré en la investigación y comprensión sobre las redes neuronales totalmente conectadas a bajo nivel. De esta manera, sabía que podría generar cualquier tipo de red totalmente conectada de manera dinámica, sin necesidad de realizar ningún tipo de cálculo posterior, independientemente del lenguaje de programación empleado, así como del uso o no de librerías que faciliten el proceso. 
-	
-	\item \textbf{Investigación y desarrollo de redes neuronales convolucionales}:
-	Una vez familiarizado con redes neuronales totalmente conectadas, se trató de comprender de igual forma las redes neuronales convolucionales, pues se encuentran ampliamente relacionadas.
-	\item \textbf{Investigación y desarrollo de sistemas homogéneos con OpenMP}:
-	
-	Una vez, comprendido el funcionamiento tanto de las redes neuronales totalmente conectadas, como de las redes neuronales convolucionales, me centré en reducir los tiempos de cómputo requeridos en ellas, mediante un paralelismo orientado a datos con OpenMP, (se analizará en detalle en secciones posteriores).
-	
-	\item \textbf{Investigación y desarrollo de sistemas heterogéneos con CUDA y cuDNN}:
-	Con el conocimiento teórico y práctico ya adquirido sobre sistemas homogéneos, aplicados tanto a redes neuronales totalmente conectadas como a redes neuronales convolucionales, se avanza ahora hacia la exploración de sistemas heterogéneos, aplicados a estas mismas arquitecturas de redes neuronales.
-\end{enumerate}
+El capítulo continúa con la Paralelización en sistemas heterogéneos, que abarca desde las operaciones GEMM y su aplicación en convoluciones y capas totalmente conectadas, hasta la memoria requerida para GEMM y la retropropagación en capas convolucionales. Finalmente, se analiza la multiplicación de matrices en CUDA y el flujo de ejecución en estos sistemas.
 
 
-\begin{table}[H]
-	\centering
-	\begin{tabular}{|lll|}
-		\hline
-		Apartado 	 &\vline  & Tiempo (Horas) \\
-		\hline
-		
-		Estudio previo    & \vline & 16 \\			
-		\hline
-		Investigación y desarrollo  	 & \vline & 	\\
-		de redes neuronales  	 & \vline & 143	\\
-		totalmente conectadas 	 & \vline & 	\\
-		\hline
-		Investigación y desarrollo    & \vline & 	 \\	
-		de redes neuronales    & \vline & 152	 \\			
-		convolucionales    & \vline & 	 \\					
-		\hline
-		Investigación y desarrollo  	 & \vline & 	 \\
-		de sistemas homogéneos  	 & \vline & 103	 \\
-		con OpenMP 	 & \vline & 	 \\
-		\hline
-		Investigación y desarrollo     & \vline &  	\\
-		de sistemas heterogéneos    & \vline &  \\ 
-		con CUDA y cuDNN    & \vline & 282 \\ 	
-		\hline
-		\hline
-		Tiempo total:				& \vline & 696 \\
-		\hline
-	\end{tabular}
-	\caption{Planificación del proyecto}
-	\label{tabla_planificación}
-\end{table}
-
-
-\section{Paralelización en sistemas homogéneos mediante OpenMP}
-
-\subsubsection{Tipos de paralelismo}
+\section{Tipos de paralelismo}
 
 El entrenamiento de una red neuronal convolucional (CNN) se puede paralelizar de diversas maneras. Cuando el modelo se divide entre varios ordenadores que son entrenados con los mismos datos, se conoce \textbf{paralelismo del modelo} \cite{data_model_parallelism} (por ejemplo, asignando una capa por computador). Por otro lado, cuando se distribuyen los datos entre múltiples nodos, pero se utiliza el mismo modelo para el entrenamiento en cada uno de ellos, se denomina \textbf{paralelismo de datos} \cite{model_parallelism}. En este proyecto, la implementación con OpenMP se basará en un paralelismo de datos, mientras que las implementaciones heterogéneas, utilizando CUDA y cuDNN, se fundamentarán en el paralelismo del modelo. \\
 
-\subsubsection{Paralelismo en SGD con OpenMP}
+\section{Paralelización en sistemas homogéneos mediante OpenMP}
+
 \begin{algorithm}[H]
-	\caption{Descenso del gradiente estocástico} 
+	\caption{Descenso del gradiente estocástico mediante OpenMP} 
 	\begin{algorithmic}
 		\State Datos de entrenamiento $D=\{(x_1, y_1), (x_2, y_2), ..., (x_N, y_N)\}$.
 		

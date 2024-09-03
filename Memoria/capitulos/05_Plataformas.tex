@@ -1,5 +1,11 @@
 \chapter{Comparación entre distintas implementaciones}
 
+En este capítulo, se compara el rendimiento de diversas implementaciones de redes neuronales convolucionales (CNN). Primero, se presentan cinco modelos diferentes con configuraciones variadas en cuanto al tamaño de las imágenes de entrada, el número de capas convolucionales, de agrupación máxima, y neuronas en las capas totalmente conectadas, junto con diferencias en los hiperparámetros como el learning rate y el tamaño del mini-batch.
+
+Luego, se utilizan dos bases de datos, CIFAR10 \cite{cifar10} y 10 Big Cats Of The Wild \cite{10_big_cats}, para entrenar y evaluar estos modelos. Los resultados muestran que el entrenamiento con el Modelo 1 en ambas bases de datos presenta una disminución en la entropía cruzada y un aumento en la precisión, confirmando la efectividad del modelo.
+
+Finalmente, se realiza una comparación detallada de los tiempos de cómputo de las distintas implementaciones. En cuanto a las implementaciones en CPU, se observa una mejora significativa en el rendimiento al utilizar OpenMP en comparación con la implementación secuencial. En el caso de las implementaciones en GPU, aunque CUDA muestra una ligera mejora de rendimiento en modelos de menor complejidad, cuDNN ofrece un rendimiento superior en modelos más complejos. Por último, se presentan gráficos y una tabla que detallan los tiempos de ejecución de las operaciones en cada implementación.
+
 \subsection{Modelos a emplear}
 
 A continuación, se presenta la arquitectura general de algunos de los modelos que se utilizarán para medir el rendimiento y comparar las distintas implementaciones de redes neuronales convolucionales (CNN) desarrolladas a lo largo de este proyecto.
@@ -140,7 +146,7 @@ Se utilizará una variedad de bases de datos en el presente estudio. Entre ellas
 
 \subsection{Resultados en entrenamiento}
 
-En esta sección, se emplea el \texttt{Modelo 1}, definido previamente, para entrenarlo en diferentes conjuntos de datos y analizar los resultados obtenidos. Los resultados se evaluarán empleando la entropía cruzada como función de error, y precisión como métrica de efectividad.
+En esta sección, se utiliza el \texttt{Modelo 1} previamente definido, para su entrenamiento en diversos conjuntos de datos, y se analizan los resultados obtenidos. La evaluación de los resultados se realiza mediante el uso de la entropía cruzada como función de error, y la precisión como métrica de efectividad. En relación con los resultados de las distintas implementaciones, todas ellas producen los mismos resultados. Esto es consistente con el hecho de que cada implementación se basa en la anterior y le incorpora algún tipo de mejora. Asimismo, se han llevado a cabo diversas pruebas, como fijar los valores iniciales de los pesos, así como los datos de entrada, y la estructura de una red neuronal convolucional (CNN) específica. Con estos tres aspectos establecidos, se ha procedido a realizar la propagación hacia delante de los mismos datos a lo largo de toda cada CNN (una por cada implementación), observando que todas las implementaciones producen resultados idénticos, tanto en cada capa como en la predicción final. Además, los gradientes calculados para cada parámetro de la red en cada capa también coinciden. En consecuencia, se puede concluir que todas las implementaciones producen resultados equivalentes en términos de entropía cruzada y precisión. 
 
 \begin{figure}[H]
 	\centering
