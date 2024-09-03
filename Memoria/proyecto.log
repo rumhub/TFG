@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  3 SEP 2024 11:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  3 SEP 2024 11:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1453,10 +1453,6 @@ LaTeX Info: Redefining \. on input line 646.
 LaTeX Info: Redefining \% on input line 646.
 [33 <./imagenes/conv_backprop_1.jpg> <./imagenes/conv_backprop_2.jpg> <./imagen
 es/conv_backprop_3.jpg> <./imagenes/conv_backprop_4.jpg>]
-Overfull \hbox (9.079pt too wide) detected at line 658
-[]
- []
-
 <imagenes/flip_pesos.jpg, id=1375, 404.51125pt x 107.40125pt>
 File: imagenes/flip_pesos.jpg Graphic file (type jpg)
 <use imagenes/flip_pesos.jpg>
@@ -2523,7 +2519,7 @@ Package pdftex.def Info: imagenes/nn_2_capa_pesos_h1_h2.jpg  used on input line
  290.
 (pdftex.def)             Requested size: 187.955pt x 100.82819pt.
 
-Underfull \vbox (badness 1048) has occurred while \output is active []
+Underfull \vbox (badness 1859) has occurred while \output is active []
 
 LaTeX Info: Redefining \. on input line 301.
 LaTeX Info: Redefining \% on input line 301.
@@ -2754,10 +2750,6 @@ Overfull \hbox (88.6586pt too wide) in paragraph at lines 152--154
 LaTeX Info: Redefining \. on input line 171.
 LaTeX Info: Redefining \% on input line 171.
 [120]
-Overfull \hbox (9.079pt too wide) detected at line 177
-[]
- []
-
 File: imagenes/flip_pesos.jpg Graphic file (type jpg)
 <use imagenes/flip_pesos.jpg>
 Package pdftex.def Info: imagenes/flip_pesos.jpg  used on input line 189.
@@ -3133,11 +3125,6 @@ Package pdftex.def Info: imagenes/conv_back_pad_4.jpg  used on input line 524.
 
 Overfull \hbox (88.6586pt too wide) in paragraph at lines 523--525
 []  [] 
- []
-
-
-Overfull \hbox (9.079pt too wide) detected at line 541
-[]
  []
 
 LaTeX Info: Redefining \. on input line 541.
@@ -3981,7 +3968,7 @@ Package rerunfilecheck Info: File `proyecto.out' has not changed.
 Here is how much of TeX's memory you used:
  18614 strings out of 474485
  320853 string characters out of 5743734
- 1952542 words of memory out of 5000000
+ 1951542 words of memory out of 5000000
  39669 multiletter control sequences out of 15000+600000
  569075 words of font info for 74 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -4012,7 +3999,7 @@ cm/cmsy10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmsy8.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1
 /public/amsfonts/cm/cmti10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fo
 nts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (167 pages, 9319520 bytes).
+Output written on proyecto.pdf (167 pages, 9318176 bytes).
 PDF statistics:
  3171 PDF objects out of 3580 (max. 8388607)
  951 named destinations out of 1000 (max. 500000)

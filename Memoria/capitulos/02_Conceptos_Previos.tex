@@ -116,7 +116,7 @@ En modelos de aprendizaje automático se suele emplear una función de optimizac
 \subsubsection{Entropía Cruzada}
 
 \begin{gather}
-	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i * log( \hat{y}_i)]
+	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i log( \hat{y}_i)]
 	\label{fig:loss_func_softmax}
 \end{gather}
 
@@ -139,7 +139,7 @@ En los modelos a desarrollar en este proyecto, se utilizará la precisión (accu
 Para visualizar el papel de la función de error en el aprendizaje de un modelo, supondremos que los datos actuales cuentan con N=3 clases tal que, para un $x_i \in X$ dado y empleando la codificación One-Hot para las etiquetas, se tiene que $y_i = [0, 0, 1]$. 
 
 \begin{gather}
-	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i * log( \hat{y}_i)] = 0 + 0 + log(0.1) = -log(0.1) = 2.3
+	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i log( \hat{y}_i)] = 0 + 0 + log(0.1) = -log(0.1) = 2.3
 	\label{ejemplo_1}
 \end{gather}
 
@@ -147,7 +147,7 @@ Como la configuración inicial del modelo es desconocida, se supone que sus pred
 Por tanto, su función de error indicaría que el error obtenido viene dado por la fórmula \ref{ejemplo_1}.
 
 \begin{gather}
-	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i * log( \hat{y}_i)] = 0 + 0 + log(0.6) = -log(0.6) = 0.5
+	E(y, \hat{y}) = - \sum_{i=1}^{N}  [y_i log( \hat{y}_i)] = 0 + 0 + log(0.6) = -log(0.6) = 0.5
 	\label{ejemplo_2}
 \end{gather}
 
@@ -183,12 +183,12 @@ De la misma forma, se vuelve a seguir la bibliografía, indicando esta vez una i
 El procedimiento para entrenar una red neuronal consiste en, para una entrada $x_i$ y una etiqueta asociada $y_i$, emplear $x_i$ para realizar una predicción $\hat{y}_i$ (Propagación hacia delante de $x_i$ por la red) que posteriormente se podrá comparar con $y_i$ mediante una función de error H(x) y obtener una medida de lo buena o mala que fue la misma. Una vez obtenido dicho ``error'', se aplica el algoritmo del descenso del gradiente para obtener el gradiente de la pérdida respecto a cada parámetro de la red (Retropropagación) \cite{Cross_entropy}. \\
 
 \begin{gather}
-	W^{t+1}_i = W^{t}_i - \alpha * \frac{\partial H(x)}{\partial W_{i}} 
+	W^{t+1}_i = W^{t}_i - \alpha \frac{\partial H(x)}{\partial W_{i}} 
 	\label{act_pesos}
 \end{gather}
 
 \begin{gather}
-	b_{t+1} = b_{t} - \alpha * \frac{\partial H(x)}{\partial b_{t}}
+	b_{t+1} = b_{t} - \alpha \frac{\partial H(x)}{\partial b_{t}}
 	\label{act_bias}
 \end{gather}
 
@@ -235,7 +235,7 @@ Tal y como se comentó en secciones anteriores, se empleará SoftMax en la últi
 Según esta notación, la función de error \ref{fig:loss_func_softmax} se convierte en la fórmula \ref{cross_entropy_notacion}.
 
 \begin{gather}
-	E = - \sum_{i=1}^{N}  [y_i * ln(O_i)] 
+	E = - \sum_{i=1}^{N}  [y_i ln(O_i)] 
 	\label{cross_entropy_notacion}
 \end{gather}
 
@@ -270,7 +270,7 @@ Para la neurona $n^l_j$, se denota como $a^l_j$ el valor de la neurona antes de 
 Además, se define como $gradiente\_a_{{l+1}_q}$ al gradiente de la pérdida con respecto a $a^{l+1}_q$. Asimismo, se denota como $ReLU'(a^l_j)$ a la derivada de la función de activación ReLU aplicada al valor $(a^l_j)$.\\
 
 \begin{gather}
-	\frac{\partial E_{total}}{\partial a^l_j} = \sum_{q=1}^Q  gradiente\_a_{{l+1}_q} * W^l_{ij} * ReLU'(a^l_j) \label{grad_input_l_4}
+	\frac{\partial E_{total}}{\partial a^l_j} = \sum_{q=1}^Q  gradiente\_a_{{l+1}_q} W^l_{ij} ReLU'(a^l_j) \label{grad_input_l_4}
 \end{gather}
 
 La fórmula \ref{grad_input_l_4}, ilustra el cálculo necesario para determinar el gradiente de la función de pérdida, con respecto a la neurona de entrada j, de una capa oculta intermedia \textit{l}, $\frac{\partial E_{total}}{\partial a^l_j}$, a partir del gradiente de la función de pérdida, con respecto a la entrada de capa \textit{l+1}, $gradiente\_a_{{l+1}_q}$.
@@ -286,7 +286,7 @@ La fórmula \ref{grad_input_l_4}, ilustra el cálculo necesario para determinar 
 \end{figure}
 
 \begin{gather}
-	\frac{\partial E_{total} }{\partial W^{l-1}_{ij} } = gradiente\_h_{l_j} * z^{l-1}_i \label{grad_w_l_3}
+	\frac{\partial E_{total} }{\partial W^{l-1}_{ij} } = gradiente\_h_{l_j} z^{l-1}_i \label{grad_w_l_3}
 \end{gather}
 
 La fórmula \ref{grad_w_l_3}, detalla el cálculo necesario para determinar el gradiente de la pérdida, con respecto a los pesos entre las capas ocultas \textit{l} y \textit{l-1}.
@@ -472,7 +472,7 @@ Por tanto, el ``relleno' o ``padding'' \cite{padding_definicion} se aplica antes
 	\label{fig:padding}
 \end{figure}
 
-De esta forma, un relleno a un nivel sobre un volumen añadirá sobre el mismo dos filas y dos columnas con valores igual a 0. Un relleno a dos niveles añadirá cuatro filas y columnas con valores igual a cero, ..., un relleno a n niveles añadirá 2*n filas y columnas con valores igual a 0.
+De esta forma, un relleno a un nivel sobre un volumen añadirá sobre el mismo dos filas y dos columnas con valores igual a 0. Un relleno a dos niveles añadirá cuatro filas y columnas con valores igual a cero, ..., un relleno a n niveles añadirá 2n filas y columnas con valores igual a 0.
 
 \subsubsection{Relleno completo}
 
@@ -573,8 +573,8 @@ Siguiendo la notación empleada en secciones anteriores, se denotará por $A^c_{
 \subsubsection{Sumatoria de gradientes}
 
 \begin{gather}
-	\frac{\partial E}{\partial K^c_{11}} = \sum_{i=1}^{I}\sum_{j=1}^{J}  [\frac{\partial E}{\partial Y^c_{ij}} * \frac{\partial Y^c_{ij}}{\partial K^c_{11}}] \notag \\
-	\frac{\partial E}{\partial X^c_{11}} = \sum_{i=1}^{I}\sum_{j=1}^{J}  [\frac{\partial E}{\partial Y^c_{ij}} * \frac{\partial Y^c_{ij}}{\partial Z^c_{11}} * \frac{\partial Z^c_{ij}}{\partial A^c_{11}}] \notag 
+	\frac{\partial E}{\partial K^c_{11}} = \sum_{i=1}^{I}\sum_{j=1}^{J}  [\frac{\partial E}{\partial Y^c_{ij}} \frac{\partial Y^c_{ij}}{\partial K^c_{11}}] \notag \\
+	\frac{\partial E}{\partial X^c_{11}} = \sum_{i=1}^{I}\sum_{j=1}^{J}  [\frac{\partial E}{\partial Y^c_{ij}} \frac{\partial Y^c_{ij}}{\partial Z^c_{11}} \frac{\partial Z^c_{ij}}{\partial A^c_{11}}] \notag 
 \end{gather}
 
 Para calcular el gradiente de la función de error con respecto a cada peso ${K_{xy}}$ o entrada ${X_{xy}}$, se debe realizar una sumatoria del gradiente correspondiente sobre cada valor de salida producido por la convolución. En el caso de los pesos asociados a un canal de profundidad $c \in C$, cada peso ${K_{xy}}$ se empleó en el cálculo de cada valor $Y^c_{ij}$. Por otro lado, los valores de la entrada ${X_{xy}}$ contribuyen al cálculo de varios valores de salida $\{Y_1, Y_2\} \in Y$. Este proceso fue detallado anteriormente en la sección \ref{intro_CNN}, y se aborda con mayor profundidad en el apéndice \ref{backprop_conv_apendice}.
@@ -582,8 +582,8 @@ Para calcular el gradiente de la función de error con respecto a cada peso ${K_
 \subsubsection{Gradiente de $Y^c_{11}$}
 
 \begin{gather}
-	Y^c_{11} = Z^c_{11} * K^c_{11} + Z^c_{12} * K^c_{12} + Z^c_{21} * K^c_{21} + Z^c_{22} * K^c_{22} \label{grad_y11_k_11} \\
-	\frac{\partial Y^c_{11}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{11} * K^c_{11} + Z^c_{12} * K^c_{12} + Z^c_{21} * K^c_{21} + Z^c_{22} * K^c_{22})}{\partial K^c_{xy}} \label{grad_y11_k_12} \\
+	Y^c_{11} = Z^c_{11} K^c_{11} + Z^c_{12} K^c_{12} + Z^c_{21} K^c_{21} + Z^c_{22} K^c_{22} \label{grad_y11_k_11} \\
+	\frac{\partial Y^c_{11}}{\partial K^c_{xy}} = \frac{\partial (Z^c_{11} K^c_{11} + Z^c_{12} K^c_{12} + Z^c_{21} K^c_{21} + Z^c_{22} K^c_{22})}{\partial K^c_{xy}} \label{grad_y11_k_12} \\
 	\frac{\partial Y^c_{11}}{\partial K^c_{11}} = Z^c_{11}, \hspace{10mm} \frac{\partial Y^c_{11}}{\partial K^c_{12}} = Z^c_{12} \label{grad_y11_k_21}\\
 	\frac{\partial Y^c_{11}}{\partial K^c_{21}} = Z^c_{21}, \hspace{10mm} \frac{\partial Y^c_{11}}{\partial K^c_{22}} = Z^c_{22} \label{grad_y11_k_22}
 \end{gather}
@@ -603,10 +603,10 @@ Además, dado que todo ha sido realizado manualmente por la misma persona, la ma
 Finalmente, se procede al cálculo de la suma total de gradientes con respecto a cada peso de la capa, conforme a las fórmulas \ref{grad_Y_K_1}, \ref{grad_Y_K_2}, \ref{grad_Y_K_3}, y \ref{grad_Y_K_4}. Para una explicación detallada del cálculo y los fundamentos de cada fórmula, se recomienda consultar el apéndice \ref{backprop_conv_apendice}. Los gradientes resultantes, revelan un patrón claro que refleja la contribución de cada peso en el cálculo del error total.
 
 \begin{gather}
-	\frac{\partial E}{\partial K^c_{11}} = \frac{\partial E}{\partial Y^c_{11}} * Z^c_{11} + \frac{\partial E}{\partial Y^c_{12}} * Z^c_{12} + \frac{\partial E}{\partial Y^c_{21}} * Z^c_{21} + \frac{\partial E}{\partial Y^c_{22}} * Z^c_{22} \label{grad_Y_K_1} \\
-	\frac{\partial E}{\partial K^c_{12}} = \frac{\partial E}{\partial Y^c_{11}} * Z^c_{12} + \frac{\partial E}{\partial Y^c_{12}} * Z^c_{13} + \frac{\partial E}{\partial Y^c_{21}} * Z^c_{22} + \frac{\partial E}{\partial Y^c_{22}} * Z^c_{23} \label{grad_Y_K_2} \\	
-	\frac{\partial E}{\partial K^c_{21}} = \frac{\partial E}{\partial Y^c_{11}} * Z^c_{21} + \frac{\partial E}{\partial Y^c_{12}} * Z^c_{22} + \frac{\partial E}{\partial Y^c_{31}} * Z^c_{21} + \frac{\partial E}{\partial Y^c_{22}} * Z^c_{32} \label{grad_Y_K_3} \\
-	\frac{\partial E}{\partial K^c_{22}} = \frac{\partial E}{\partial Y^c_{11}} * Z^c_{22} + \frac{\partial E}{\partial Y^c_{12}} * Z^c_{23} + \frac{\partial E}{\partial Y^c_{31}} * Z^c_{32} + \frac{\partial E}{\partial Y^c_{22}} * Z^c_{33} \label{grad_Y_K_4}
+	\frac{\partial E}{\partial K^c_{11}} = \frac{\partial E}{\partial Y^c_{11}} Z^c_{11} + \frac{\partial E}{\partial Y^c_{12}} Z^c_{12} + \frac{\partial E}{\partial Y^c_{21}} Z^c_{21} + \frac{\partial E}{\partial Y^c_{22}} Z^c_{22} \label{grad_Y_K_1} \\
+	\frac{\partial E}{\partial K^c_{12}} = \frac{\partial E}{\partial Y^c_{11}} Z^c_{12} + \frac{\partial E}{\partial Y^c_{12}} Z^c_{13} + \frac{\partial E}{\partial Y^c_{21}} Z^c_{22} + \frac{\partial E}{\partial Y^c_{22}} Z^c_{23} \label{grad_Y_K_2} \\	
+	\frac{\partial E}{\partial K^c_{21}} = \frac{\partial E}{\partial Y^c_{11}} Z^c_{21} + \frac{\partial E}{\partial Y^c_{12}} Z^c_{22} + \frac{\partial E}{\partial Y^c_{31}} Z^c_{21} + \frac{\partial E}{\partial Y^c_{22}} Z^c_{32} \label{grad_Y_K_3} \\
+	\frac{\partial E}{\partial K^c_{22}} = \frac{\partial E}{\partial Y^c_{11}} Z^c_{22} + \frac{\partial E}{\partial Y^c_{12}} Z^c_{23} + \frac{\partial E}{\partial Y^c_{31}} Z^c_{32} + \frac{\partial E}{\partial Y^c_{22}} Z^c_{33} \label{grad_Y_K_4}
 \end{gather}
 
 Como se observa en los cálculos realizados, estos coinciden con una operación de convolución entre la entrada \textit{X} y el gradiente respecto a la capa de salida \textit{Y}. Este procedimiento se detalla en la Figura \ref{fig:conv_backprop_como_convolucion_X_Y} \cite{conv_backprop}.
@@ -646,15 +646,15 @@ Por razones de simplicidad, y en consonancia con las recomendaciones de expertos
 
 
 \begin{gather}
-	\frac{\partial E}{\partial A^c_{11}} = \frac{\partial E}{\partial Y^c_{11}} * K^c_{11} *  ReLU'(A^c_{11}) \notag \\
-	\frac{\partial E}{\partial A^c_{12}} = (\frac{\partial E}{\partial Y^c_{11}} * K^c_{12} + \frac{\partial E}{\partial Y^c_{12}} * K^c_{11}) * ReLU'(A^c_{12}) \notag \\
-	\frac{\partial E}{\partial A^c_{13}} = \frac{\partial E}{\partial Y^c_{12}} * K^c_{12} * ReLU'(A^c_{13}) \notag \\
-	\frac{\partial E}{\partial A^c_{21}} = (\frac{\partial E}{\partial Y^c_{11}} * K^c_{21} + \frac{\partial E}{\partial Y^c_{21}} * K^c_{11}) * ReLU'(A^c_{21}) \notag \\
-	\frac{\partial E}{\partial A^c_{22}} = (\frac{\partial E}{\partial Y^c_{11}} * K^c_{22} + \frac{\partial E}{\partial Y^c_{12}} * K^c_{21} + \frac{\partial E}{\partial Y^c_{21}} * K^c_{12} + \frac{\partial E}{\partial Y^c_{22}} * K^c_{11}) * ReLU'(A^c_{22}) \notag \\
-	\frac{\partial E}{\partial A^c_{23}} = (\frac{\partial E}{\partial Y^c_{12}} * K^c_{22} + \frac{\partial E}{\partial Y^c_{22}} * K^c_{12}) * ReLU'(A^c_{22})\notag \\
-	\frac{\partial E}{\partial A^c_{31}} = \frac{\partial E}{\partial Y^c_{21}} * K^c_{21} * ReLU'(A^c_{31})\notag \\
-	\frac{\partial E}{\partial A^c_{32}} = (\frac{\partial E}{\partial Y^c_{21}} * K^c_{22} + \frac{\partial E}{\partial Y^c_{22}} * K^c_{21}) * ReLU'(A^c_{32}) \notag \\
-	\frac{\partial E}{\partial A^c_{33}} = \frac{\partial E}{\partial Y^c_{22}} * K^c_{22} * ReLU'(A^c_{33}) \notag
+	\frac{\partial E}{\partial A^c_{11}} = \frac{\partial E}{\partial Y^c_{11}} K^c_{11} ReLU'(A^c_{11}) \notag \\
+	\frac{\partial E}{\partial A^c_{12}} = (\frac{\partial E}{\partial Y^c_{11}} K^c_{12} + \frac{\partial E}{\partial Y^c_{12}} K^c_{11}) ReLU'(A^c_{12}) \notag \\
+	\frac{\partial E}{\partial A^c_{13}} = \frac{\partial E}{\partial Y^c_{12}} K^c_{12} ReLU'(A^c_{13}) \notag \\
+	\frac{\partial E}{\partial A^c_{21}} = (\frac{\partial E}{\partial Y^c_{11}} K^c_{21} + \frac{\partial E}{\partial Y^c_{21}} K^c_{11}) ReLU'(A^c_{21}) \notag \\
+	\frac{\partial E}{\partial A^c_{22}} = (\frac{\partial E}{\partial Y^c_{11}} K^c_{22} + \frac{\partial E}{\partial Y^c_{12}} K^c_{21} + \frac{\partial E}{\partial Y^c_{21}} K^c_{12} + \frac{\partial E}{\partial Y^c_{22}} K^c_{11}) ReLU'(A^c_{22}) \notag \\
+	\frac{\partial E}{\partial A^c_{23}} = (\frac{\partial E}{\partial Y^c_{12}} K^c_{22} + \frac{\partial E}{\partial Y^c_{22}} K^c_{12}) ReLU'(A^c_{22})\notag \\
+	\frac{\partial E}{\partial A^c_{31}} = \frac{\partial E}{\partial Y^c_{21}} K^c_{21} ReLU'(A^c_{31})\notag \\
+	\frac{\partial E}{\partial A^c_{32}} = (\frac{\partial E}{\partial Y^c_{21}} K^c_{22} + \frac{\partial E}{\partial Y^c_{22}} K^c_{21}) ReLU'(A^c_{32}) \notag \\
+	\frac{\partial E}{\partial A^c_{33}} = \frac{\partial E}{\partial Y^c_{22}} K^c_{22} ReLU'(A^c_{33}) \notag
 \end{gather}
 
 Tal y como se observa en los cálculos obtenidos, estos corresponden a una convolución completa entre el gradiente con respecto a la capa de salida (Y) y los pesos (K), invertidos tanto horizontal como verticalmente. El proceso de cálculo del gradiente con respecto a cada valor de entrada $x \in X$ se presenta en detalle en la figura \ref{fig:conv_backprop_como_convolucion_Y_W}, mientras que la manera de invertir los pesos se ilustra en la figura \ref{fig:flip_W} \cite{conv_backprop}.
@@ -847,10 +847,10 @@ En la Figura \ref{fig:back_prop_maxpool} se muestra un ejemplo de retropropagaci
 Tomando el ejemplo de la Figura \ref{fig:back_prop_maxpool} (a), se entiende que cuando se realizó la propagación hacia delante de dicha capa i, $Y^1_{11}$ tomó el valor de $X^1_{11}$, pues fue el máximo de entre todos los valores de la ventana (formada por $X^1_{11}$, $X^1_{12}$, $X^1_{21}$, y $X^1_{22}$). Por tanto, dado que en la propagación hacia delante se obtuvo $Y^1_{11} = X^1_{11}$, tiene sentido que el gradiente de $Y^1_{11}$ respecto a $X^1_{11}$ sea 1, pero 0 respecto al resto de valores de X, pues $X^1_{11}$ fue el único valor en influir sobre $Y^1_{11}$. De este modo, el gradiente de la pérdida respecto a la región de X afectada por la ventana $\{X^1_{11}, X^1_{12}, X^1_{21}, X^1_{2} \}$, se puede calcular como se muestra en las fórmulas \ref{grad_plms_x_1}, \ref{grad_plms_x_2}, \ref{grad_plms_x_3}, y \ref{grad_plms_x_4}:
 
 \begin{gather}
-	\frac{\partial E}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} * 1 = \frac{\partial E}{\partial Y} \label{grad_plms_x_1} \\
-	\frac{\partial E}{\partial X^1_{12}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{12}} = \frac{\partial E}{\partial Y} * 0 \label{grad_plms_x_2} \\
-	\frac{\partial E}{\partial X^1_{21}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{21}} = \frac{\partial E}{\partial Y} * 0 \label{grad_plms_x_3} \\
-	\frac{\partial E}{\partial X^1_{22}} = \frac{\partial E}{\partial Y} * \frac{\partial Y}{\partial X^1_{22}} = \frac{\partial E}{\partial Y} * 0 \label{grad_plms_x_4}
+	\frac{\partial E}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} \frac{\partial Y}{\partial X^1_{11}} = \frac{\partial E}{\partial Y} 1 = \frac{\partial E}{\partial Y} \label{grad_plms_x_1} \\
+	\frac{\partial E}{\partial X^1_{12}} = \frac{\partial E}{\partial Y} \frac{\partial Y}{\partial X^1_{12}} = \frac{\partial E}{\partial Y} 0 \label{grad_plms_x_2} \\
+	\frac{\partial E}{\partial X^1_{21}} = \frac{\partial E}{\partial Y} \frac{\partial Y}{\partial X^1_{21}} = \frac{\partial E}{\partial Y} 0 \label{grad_plms_x_3} \\
+	\frac{\partial E}{\partial X^1_{22}} = \frac{\partial E}{\partial Y} \frac{\partial Y}{\partial X^1_{22}} = \frac{\partial E}{\partial Y} 0 \label{grad_plms_x_4}
 \end{gather}
 
 
