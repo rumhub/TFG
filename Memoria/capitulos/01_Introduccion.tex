@@ -107,3 +107,75 @@ Para el desarrollo de este proyecto, se ha requerido llevar a cabo una serie de 
 \end{table}
 
 \section{Estimación de costos}
+
+Para la correcta ejecución del proyecto descrito, se ha desarrollado un plan de costos que contempla los recursos humanos, materiales y tecnológicos necesarios para completar las actividades descritas en la planificación. El presente plan se divide en las siguientes categorías: costos de personal, costos de equipos y software, y otros costos indirectos.
+
+\subsection{Costos de personal}
+
+El costo asociado al personal abarca las horas invertidas en cada una de las actividades planificadas en el proyecto. Para el cálculo de estos costos, se ha utilizado un valor promedio de 9€ por hora de trabajo.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|lll|}
+		\hline
+		Apartado 	 &\vline  & Costos (€) \\
+		\hline
+		
+		Estudio previo    & \vline & 144 \\			
+		\hline
+		Investigación y desarrollo  	 & \vline & 	\\
+		de redes neuronales  	 & \vline & 1287	\\
+		totalmente conectadas 	 & \vline & 	\\
+		\hline
+		Investigación y desarrollo    & \vline & 	 \\	
+		de redes neuronales    & \vline & 1368	 \\			
+		convolucionales    & \vline & 	 \\					
+		\hline
+		Investigación y desarrollo  	 & \vline & 	 \\
+		de sistemas homogéneos  	 & \vline & 927	 \\
+		con OpenMP 	 & \vline & 	 \\
+		\hline
+		Investigación y desarrollo     & \vline &  	\\
+		de sistemas heterogéneos    & \vline &  \\ 
+		con CUDA y cuDNN    & \vline & 2538 \\ 	
+		\hline
+		\hline
+		Costos de personal total:				& \vline & 6264 \\
+		\hline
+	\end{tabular}
+	\caption{Costes del proyecto}
+	\label{tabla_costes}
+\end{table}
+
+En el Cuadro \ref{tabla_costes}, se presentan los costos de personal correspondientes a cada sección del proyecto.
+
+\subsection{Costos de equipo}
+
+Para las implementaciones homogéneas que utilizan exclusivamente CPU, una instacia AWS comparable al equipo usado para el desarrollo de este proyecto, sería la instancia c6i.2xlarge, con un precio aproximado de 0,33€ por hora. Se estima que el costo total para el uso de esta instancia es de aproximadamente unos 92€.
+
+En el caso de entornos heterogéneos que requieren GPU, se contempla el uso de una Nvidia Tesla T4, con un costo aproximado de 0,60 €/hora. Se estima un costo total de 138€ para su utilización en el proyecto.
+
+\subsection{Resumen total de costos}
+
+Considerando los costos previamente detallados, el Cuadro \ref{tabla_costes_total} proporciona un resumen integral de los costos totales asociados al proyecto. Este cuadro, integra tanto los costos de personal, como los costos derivados del uso de recursos computacionales, permitiendo una visión consolidada de la inversión total requerida. En el cuadro, se desglosan los gastos por categorías, facilitando así una evaluación clara y precisa del presupuesto del proyecto.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|lll|}
+		\hline
+		Apartado 	 &\vline  & Costos (€) \\
+		\hline
+		
+		Costos de personal    & \vline & 6264 \\			
+		\hline
+		Costos de equipo  	 & \vline & 230	\\
+
+		\hline
+		\hline
+		Costos totales:				& \vline & 6494 \\
+		\hline
+	\end{tabular}
+	\caption{Costes totales del proyecto}
+	\label{tabla_costes_total}
+\end{table}
+

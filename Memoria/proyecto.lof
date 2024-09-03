@@ -1,105 +1,105 @@
 \babel@toc {spanish}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Esquema de una neurona}}{9}{figure.caption.8}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Esquema de una capa de neuronas}}{10}{figure.caption.9}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Imagen de la función de activación ReLU}}{11}{figure.caption.11}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Imagen de la función de activación Sigmoide}}{12}{figure.caption.13}%
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{12}{figure.caption.14}%
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{15}{figure.caption.17}%
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Estructura de una red totalmente conectada con una capa oculta, y con softmax en la última capa}}{17}{figure.caption.20}%
-\contentsline {figure}{\numberline {2.8}{\ignorespaces Retropropagación en la capa l}}{19}{figure.caption.22}%
-\contentsline {figure}{\numberline {2.9}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{20}{figure.caption.24}%
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Esquema de las dimensiones en una capa convolucional de una red neuronal convolucional}}{21}{figure.caption.25}%
-\contentsline {figure}{\numberline {2.11}{\ignorespaces Estructura por capas en una red neuronal convolucional}}{22}{figure.caption.26}%
-\contentsline {figure}{\numberline {2.12}{\ignorespaces Componentes en una capa convolucional}}{23}{figure.caption.28}%
-\contentsline {figure}{\numberline {2.13}{\ignorespaces Propagación hacia delante en una capa convolucional}}{24}{figure.caption.30}%
-\contentsline {figure}{\numberline {2.14}{\ignorespaces Propagación hacia delante en una capa convolucional con varios canales de profundidad}}{25}{figure.caption.32}%
-\contentsline {figure}{\numberline {2.15}{\ignorespaces Propagación hacia delante en una capa convolucional con varios filtros}}{26}{figure.caption.34}%
-\contentsline {figure}{\numberline {2.16}{\ignorespaces Relleno sobre un volumen de entrada X}}{27}{figure.caption.36}%
-\contentsline {figure}{\numberline {2.17}{\ignorespaces Relleno sobre un volumen de entrada X}}{27}{figure.caption.38}%
-\contentsline {figure}{\numberline {2.17}{\ignorespaces Convolución sobre X con relleno completo}}{28}{figure.caption.39}%
-\contentsline {figure}{\numberline {2.18}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{29}{figure.caption.40}%
-\contentsline {figure}{\numberline {2.19}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre la entrada X y la salida Y}}{31}{figure.caption.44}%
-\contentsline {figure}{\numberline {2.20}{\ignorespaces Inversión de los pesos en K tanto horizontal como verticalmente}}{32}{figure.caption.46}%
-\contentsline {figure}{\numberline {2.21}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre los pesos K y la salida Y}}{33}{figure.caption.47}%
-\contentsline {figure}{\numberline {2.22}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{34}{figure.caption.48}%
-\contentsline {figure}{\numberline {2.23}{\ignorespaces Componentes en una capa de agrupación máxima}}{35}{figure.caption.50}%
-\contentsline {figure}{\numberline {2.24}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{35}{figure.caption.52}%
-\contentsline {figure}{\numberline {2.25}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{36}{figure.caption.54}%
-\contentsline {figure}{\numberline {2.26}{\ignorespaces Retropropagación en capa de agrupación máxima}}{36}{figure.caption.56}%
-\contentsline {figure}{\numberline {2.27}{\ignorespaces Propagación hacia delante en una capa de aplanado}}{38}{figure.caption.58}%
-\contentsline {figure}{\numberline {2.28}{\ignorespaces Retropropagación en una capa de aplanado}}{39}{figure.caption.60}%
-\contentsline {figure}{\numberline {2.29}{\ignorespaces Jerarquía de hebras en un grid CUDA}}{41}{figure.caption.61}%
-\contentsline {figure}{\numberline {2.30}{\ignorespaces Ejemplo de tensor 4D con dimensiones: N=1, C=1, H=5, y W=6}}{44}{figure.caption.65}%
-\contentsline {figure}{\numberline {2.31}{\ignorespaces Ejemplo de tensor 4D NCHW con dimensiones: N=1, C=1, H=5, y W=6}}{44}{figure.caption.66}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Esquema de una neurona}}{11}{figure.caption.10}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Esquema de una capa de neuronas}}{12}{figure.caption.11}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Imagen de la función de activación ReLU}}{13}{figure.caption.13}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Imagen de la función de activación Sigmoide}}{14}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Imagen de la función de activación SoftMax}}{14}{figure.caption.16}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Ejemplo de funcionamiento del descenso del gradiente}}{17}{figure.caption.19}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Estructura de una red totalmente conectada con una capa oculta, y con softmax en la última capa}}{19}{figure.caption.22}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Retropropagación en la capa l}}{21}{figure.caption.24}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{22}{figure.caption.26}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Esquema de las dimensiones en una capa convolucional de una red neuronal convolucional}}{23}{figure.caption.27}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Estructura por capas en una red neuronal convolucional}}{24}{figure.caption.28}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Componentes en una capa convolucional}}{25}{figure.caption.30}%
+\contentsline {figure}{\numberline {2.13}{\ignorespaces Propagación hacia delante en una capa convolucional}}{26}{figure.caption.32}%
+\contentsline {figure}{\numberline {2.14}{\ignorespaces Propagación hacia delante en una capa convolucional con varios canales de profundidad}}{27}{figure.caption.34}%
+\contentsline {figure}{\numberline {2.15}{\ignorespaces Propagación hacia delante en una capa convolucional con varios filtros}}{28}{figure.caption.36}%
+\contentsline {figure}{\numberline {2.16}{\ignorespaces Relleno sobre un volumen de entrada X}}{29}{figure.caption.38}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Relleno sobre un volumen de entrada X}}{29}{figure.caption.40}%
+\contentsline {figure}{\numberline {2.17}{\ignorespaces Convolución sobre X con relleno completo}}{30}{figure.caption.41}%
+\contentsline {figure}{\numberline {2.18}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{31}{figure.caption.42}%
+\contentsline {figure}{\numberline {2.19}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre la entrada X y la salida Y}}{33}{figure.caption.46}%
+\contentsline {figure}{\numberline {2.20}{\ignorespaces Inversión de los pesos en K tanto horizontal como verticalmente}}{34}{figure.caption.48}%
+\contentsline {figure}{\numberline {2.21}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre los pesos K y la salida Y}}{35}{figure.caption.49}%
+\contentsline {figure}{\numberline {2.22}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{36}{figure.caption.50}%
+\contentsline {figure}{\numberline {2.23}{\ignorespaces Componentes en una capa de agrupación máxima}}{37}{figure.caption.52}%
+\contentsline {figure}{\numberline {2.24}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{37}{figure.caption.54}%
+\contentsline {figure}{\numberline {2.25}{\ignorespaces Propagación hacia delante en una capa de agrupación máxima}}{38}{figure.caption.56}%
+\contentsline {figure}{\numberline {2.26}{\ignorespaces Retropropagación en capa de agrupación máxima}}{38}{figure.caption.58}%
+\contentsline {figure}{\numberline {2.27}{\ignorespaces Propagación hacia delante en una capa de aplanado}}{40}{figure.caption.60}%
+\contentsline {figure}{\numberline {2.28}{\ignorespaces Retropropagación en una capa de aplanado}}{41}{figure.caption.62}%
+\contentsline {figure}{\numberline {2.29}{\ignorespaces Jerarquía de hebras en un grid CUDA}}{43}{figure.caption.63}%
+\contentsline {figure}{\numberline {2.30}{\ignorespaces Ejemplo de tensor 4D con dimensiones: N=1, C=1, H=5, y W=6}}{46}{figure.caption.67}%
+\contentsline {figure}{\numberline {2.31}{\ignorespaces Ejemplo de tensor 4D NCHW con dimensiones: N=1, C=1, H=5, y W=6}}{46}{figure.caption.68}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Flujo de las hebras en la implementación con OpenMP}}{49}{figure.caption.72}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Convolución estándar frente a convolución GEMM}}{51}{figure.caption.73}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Retropropagación respecto a la entrada en una capa convolucional de forma estándar frente a GEMM}}{53}{figure.caption.74}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Retropropagación respecto a los pesos en una capa convolucional de forma estándar frente a GEMM}}{54}{figure.caption.75}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{55}{figure.caption.77}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{56}{figure.caption.78}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{57}{figure.caption.81}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{58}{figure.caption.82}%
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{59}{figure.caption.84}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{60}{figure.caption.85}%
-\contentsline {figure}{\numberline {3.11}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{61}{figure.caption.86}%
-\contentsline {figure}{\numberline {3.12}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{62}{figure.caption.87}%
-\contentsline {figure}{\numberline {3.13}{\ignorespaces Flujo de las hebras en la implementación con CUDA}}{63}{figure.caption.88}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Flujo de las hebras en la implementación con OpenMP}}{51}{figure.caption.74}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Convolución estándar frente a convolución GEMM}}{53}{figure.caption.75}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Retropropagación respecto a la entrada en una capa convolucional de forma estándar frente a GEMM}}{55}{figure.caption.76}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Retropropagación respecto a los pesos en una capa convolucional de forma estándar frente a GEMM}}{56}{figure.caption.77}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Propagación GEMM hacia delante en una capa totalmente conectada}}{57}{figure.caption.79}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Propagación GEMM de un minibatch entero hacia delante en una capa totalmente conectada}}{58}{figure.caption.80}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Cálculo del gradiente respecto a la entrada en una capa totalmente conectada}}{59}{figure.caption.83}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Cálculo del gradiente respecto a la entrada de todo un minibatch en una capa totalmente conectada}}{60}{figure.caption.84}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Cálculo del gradiente respecto a los pesos en una capa totalmente conectada}}{61}{figure.caption.86}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Cálculo del gradiente respecto a los pesos de todo un minibatch en una capa totalmente conectada}}{62}{figure.caption.87}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Tercera implementación de multiplicación matricial con CUDA}}{63}{figure.caption.88}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Cuarta implementación de multiplicación matricial con CUDA}}{64}{figure.caption.89}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Flujo de las hebras en la implementación con CUDA}}{65}{figure.caption.90}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Entrenamiento con CIFAR10}}{69}{figure.caption.89}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Entrenamiento con 10 Big Cats}}{70}{figure.caption.90}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Secuencial vs OpenMP}}{71}{figure.caption.92}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{71}{figure.caption.93}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{72}{figure.caption.95}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Ganancia de CUDA y cuDNN sobre OpenMP}}{73}{figure.caption.96}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces CUDA vs CUDNN}}{73}{figure.caption.97}%
-\addvspace {10\p@ }
-\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Entrenamiento con CIFAR10}}{71}{figure.caption.91}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Entrenamiento con 10 Big Cats}}{72}{figure.caption.92}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Secuencial vs OpenMP}}{73}{figure.caption.94}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{73}{figure.caption.95}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{74}{figure.caption.97}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Ganancia de CUDA y cuDNN sobre OpenMP}}{75}{figure.caption.98}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces CUDA vs CUDNN}}{75}{figure.caption.99}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {C.1}{\ignorespaces Estructura de una red totalmente conectada con softmax en la última capa}}{89}{figure.caption.105}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {D.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{95}{figure.caption.106}%
-\contentsline {figure}{\numberline {D.2}{\ignorespaces Retropropagación en la capa softmax}}{96}{figure.caption.107}%
-\contentsline {figure}{\numberline {D.3}{\ignorespaces Retropropagación con respecto a pesos entre la capa oculta y la capa SoftMax}}{97}{figure.caption.108}%
-\contentsline {figure}{\numberline {D.4}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}}{98}{figure.caption.109}%
-\contentsline {figure}{\numberline {D.5}{\ignorespaces Retropropagación con respecto a neuronas de la capa oculta h1}}{98}{figure.caption.110}%
-\contentsline {figure}{\numberline {D.6}{\ignorespaces Retropropagación con respecto a los pesos entre la capa de entrada y la capa oculta h1}}{99}{figure.caption.111}%
-\contentsline {figure}{\numberline {D.7}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{100}{figure.caption.112}%
-\contentsline {figure}{\numberline {D.8}{\ignorespaces Retropropagación en la capa input}}{101}{figure.caption.113}%
-\contentsline {figure}{\numberline {D.9}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{102}{figure.caption.114}%
-\contentsline {figure}{\numberline {D.10}{\ignorespaces Retropropagación en la capa softmax}}{102}{figure.caption.115}%
-\contentsline {figure}{\numberline {D.11}{\ignorespaces Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}}{103}{figure.caption.116}%
-\contentsline {figure}{\numberline {D.12}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{104}{figure.caption.117}%
-\contentsline {figure}{\numberline {D.13}{\ignorespaces Retropropagación en la capa oculta h2}}{104}{figure.caption.118}%
-\contentsline {figure}{\numberline {D.14}{\ignorespaces Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}}{105}{figure.caption.119}%
-\contentsline {figure}{\numberline {D.15}{\ignorespaces 'Caminos' desde la capa softmax hasta $n^1_0$}}{106}{figure.caption.120}%
-\contentsline {figure}{\numberline {D.16}{\ignorespaces Retropropagación en la capa oculta h1}}{107}{figure.caption.121}%
-\contentsline {figure}{\numberline {D.17}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}}{108}{figure.caption.122}%
-\contentsline {figure}{\numberline {D.18}{\ignorespaces 'Caminos' desde la capa oculta h1 hasta $n^0_0$}}{109}{figure.caption.123}%
-\contentsline {figure}{\numberline {D.19}{\ignorespaces Retropropagación en la capa input}}{109}{figure.caption.124}%
-\contentsline {figure}{\numberline {D.20}{\ignorespaces Retropropagación en la capa l}}{110}{figure.caption.125}%
-\contentsline {figure}{\numberline {D.21}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{111}{figure.caption.126}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {E.1}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{113}{figure.caption.127}%
-\contentsline {figure}{\numberline {E.2}{\ignorespaces Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}}{115}{figure.caption.128}%
-\contentsline {figure}{\numberline {E.3}{\ignorespaces Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}}{116}{figure.caption.129}%
-\contentsline {figure}{\numberline {E.4}{\ignorespaces Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}}{117}{figure.caption.130}%
-\contentsline {figure}{\numberline {E.5}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{118}{figure.caption.131}%
-\contentsline {figure}{\numberline {E.6}{\ignorespaces Inversión de los pesos en K tanto horizontal como verticalmente}}{119}{figure.caption.132}%
-\contentsline {figure}{\numberline {E.7}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre K e Y}}{120}{figure.caption.133}%
-\contentsline {figure}{\numberline {E.8}{\ignorespaces Ejemplo de retropropagación en una capa convolucional con relleno}}{121}{figure.caption.134}%
-\contentsline {figure}{\numberline {E.9}{\ignorespaces Retropropagación de $Y^c_{11}$}}{121}{figure.caption.135}%
-\contentsline {figure}{\numberline {E.10}{\ignorespaces Retropropagación de $Y^c_{12}$}}{122}{figure.caption.136}%
-\contentsline {figure}{\numberline {E.11}{\ignorespaces Retropropagación de $Y^c_{13}$}}{123}{figure.caption.137}%
-\contentsline {figure}{\numberline {E.12}{\ignorespaces Retropropagación de $Y^c_{21}$}}{124}{figure.caption.138}%
-\contentsline {figure}{\numberline {E.13}{\ignorespaces Retropropagación de $Y^c_{22}$}}{125}{figure.caption.139}%
-\contentsline {figure}{\numberline {E.14}{\ignorespaces Retropropagación de $Y^c_{23}$}}{125}{figure.caption.140}%
-\contentsline {figure}{\numberline {E.15}{\ignorespaces Retropropagación de $Y^c_{31}$}}{126}{figure.caption.141}%
-\contentsline {figure}{\numberline {E.16}{\ignorespaces Retropropagación de $Y^c_{32}$}}{127}{figure.caption.142}%
-\contentsline {figure}{\numberline {E.17}{\ignorespaces Retropropagación de $Y^c_{33}$}}{128}{figure.caption.143}%
-\contentsline {figure}{\numberline {E.18}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{129}{figure.caption.144}%
-\contentsline {figure}{\numberline {E.19}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}}{130}{figure.caption.145}%
-\contentsline {figure}{\numberline {E.20}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{131}{figure.caption.146}%
+\contentsline {figure}{\numberline {C.1}{\ignorespaces Estructura de una red totalmente conectada con softmax en la última capa}}{91}{figure.caption.107}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {D.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{97}{figure.caption.108}%
+\contentsline {figure}{\numberline {D.2}{\ignorespaces Retropropagación en la capa softmax}}{98}{figure.caption.109}%
+\contentsline {figure}{\numberline {D.3}{\ignorespaces Retropropagación con respecto a pesos entre la capa oculta y la capa SoftMax}}{99}{figure.caption.110}%
+\contentsline {figure}{\numberline {D.4}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}}{100}{figure.caption.111}%
+\contentsline {figure}{\numberline {D.5}{\ignorespaces Retropropagación con respecto a neuronas de la capa oculta h1}}{100}{figure.caption.112}%
+\contentsline {figure}{\numberline {D.6}{\ignorespaces Retropropagación con respecto a los pesos entre la capa de entrada y la capa oculta h1}}{101}{figure.caption.113}%
+\contentsline {figure}{\numberline {D.7}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{102}{figure.caption.114}%
+\contentsline {figure}{\numberline {D.8}{\ignorespaces Retropropagación en la capa input}}{103}{figure.caption.115}%
+\contentsline {figure}{\numberline {D.9}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{104}{figure.caption.116}%
+\contentsline {figure}{\numberline {D.10}{\ignorespaces Retropropagación en la capa softmax}}{104}{figure.caption.117}%
+\contentsline {figure}{\numberline {D.11}{\ignorespaces Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}}{105}{figure.caption.118}%
+\contentsline {figure}{\numberline {D.12}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{106}{figure.caption.119}%
+\contentsline {figure}{\numberline {D.13}{\ignorespaces Retropropagación en la capa oculta h2}}{106}{figure.caption.120}%
+\contentsline {figure}{\numberline {D.14}{\ignorespaces Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}}{107}{figure.caption.121}%
+\contentsline {figure}{\numberline {D.15}{\ignorespaces 'Caminos' desde la capa softmax hasta $n^1_0$}}{108}{figure.caption.122}%
+\contentsline {figure}{\numberline {D.16}{\ignorespaces Retropropagación en la capa oculta h1}}{109}{figure.caption.123}%
+\contentsline {figure}{\numberline {D.17}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}}{110}{figure.caption.124}%
+\contentsline {figure}{\numberline {D.18}{\ignorespaces 'Caminos' desde la capa oculta h1 hasta $n^0_0$}}{111}{figure.caption.125}%
+\contentsline {figure}{\numberline {D.19}{\ignorespaces Retropropagación en la capa input}}{111}{figure.caption.126}%
+\contentsline {figure}{\numberline {D.20}{\ignorespaces Retropropagación en la capa l}}{112}{figure.caption.127}%
+\contentsline {figure}{\numberline {D.21}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{113}{figure.caption.128}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {E.1}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{115}{figure.caption.129}%
+\contentsline {figure}{\numberline {E.2}{\ignorespaces Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}}{117}{figure.caption.130}%
+\contentsline {figure}{\numberline {E.3}{\ignorespaces Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}}{118}{figure.caption.131}%
+\contentsline {figure}{\numberline {E.4}{\ignorespaces Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}}{119}{figure.caption.132}%
+\contentsline {figure}{\numberline {E.5}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{120}{figure.caption.133}%
+\contentsline {figure}{\numberline {E.6}{\ignorespaces Inversión de los pesos en K tanto horizontal como verticalmente}}{121}{figure.caption.134}%
+\contentsline {figure}{\numberline {E.7}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre K e Y}}{122}{figure.caption.135}%
+\contentsline {figure}{\numberline {E.8}{\ignorespaces Ejemplo de retropropagación en una capa convolucional con relleno}}{123}{figure.caption.136}%
+\contentsline {figure}{\numberline {E.9}{\ignorespaces Retropropagación de $Y^c_{11}$}}{123}{figure.caption.137}%
+\contentsline {figure}{\numberline {E.10}{\ignorespaces Retropropagación de $Y^c_{12}$}}{124}{figure.caption.138}%
+\contentsline {figure}{\numberline {E.11}{\ignorespaces Retropropagación de $Y^c_{13}$}}{125}{figure.caption.139}%
+\contentsline {figure}{\numberline {E.12}{\ignorespaces Retropropagación de $Y^c_{21}$}}{126}{figure.caption.140}%
+\contentsline {figure}{\numberline {E.13}{\ignorespaces Retropropagación de $Y^c_{22}$}}{127}{figure.caption.141}%
+\contentsline {figure}{\numberline {E.14}{\ignorespaces Retropropagación de $Y^c_{23}$}}{127}{figure.caption.142}%
+\contentsline {figure}{\numberline {E.15}{\ignorespaces Retropropagación de $Y^c_{31}$}}{128}{figure.caption.143}%
+\contentsline {figure}{\numberline {E.16}{\ignorespaces Retropropagación de $Y^c_{32}$}}{129}{figure.caption.144}%
+\contentsline {figure}{\numberline {E.17}{\ignorespaces Retropropagación de $Y^c_{33}$}}{130}{figure.caption.145}%
+\contentsline {figure}{\numberline {E.18}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{131}{figure.caption.146}%
+\contentsline {figure}{\numberline {E.19}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}}{132}{figure.caption.147}%
+\contentsline {figure}{\numberline {E.20}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{133}{figure.caption.148}%
