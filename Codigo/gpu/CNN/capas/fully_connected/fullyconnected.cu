@@ -3,9 +3,15 @@
 using namespace std;
 
 /*
-    Realiza una multiplicación matricial con tiles. Un tile por bloque. Usa memoria compartida.
-    Además, añade una fila al final de la matriz "B" con todos sus valores a 1.
-    Por último, al establecer el valor final de cada casilla de la matriz resultado C, aplica la función de activación ReLU.
+    @brief          Propagación hacia delante de capas intermedias mediante multiplicación matricial A(MxK)xB(KxN)
+    @M              Filas de la matriz A
+    @N              Columnas de la matriz B
+    @K              Columnas de la matriz A
+    @A              Primera matriz a multiplicar
+    @B              Segunda matriz a multiplicar
+    @C              Matriz resultado
+    @a              Matriz resultado sin aplicar la función de activación
+    @aplicar_relu   Aplicar la función de activación ReLU o no
 */
 __global__ void forward_capas_intermedias(int M, int N, int K, const float *A, const float *B, float *C, float *a, bool aplicar_relu)
 {
@@ -87,8 +93,11 @@ __global__ void forward_capas_intermedias(int M, int N, int K, const float *A, c
 }
 
 /*
-    Entrada: Matrix X(MxK)
-    Salida: Y(K), cada Y[i] contiene el valor máximo de la columna X[i]
+    @brief  Realiza la propagación hacia delante en una capa SoftMax
+    @M      Filas de la matriz de entrada X
+    @K      Columnas de la matriz de entrada X
+    @X      Matriz de entrada X
+    @a      Matriz resultado sin aplicar función de activación
 */
 __global__ void kernel_sofmax(int M, int K, float *X, float *a)
 {
@@ -125,6 +134,13 @@ __global__ void kernel_sofmax(int M, int K, float *X, float *a)
     }
 }
 
+/*
+    @brief  Calcula la transpuesta de una matriz
+    @X      Matriz de entrada
+    @Y      Matriz transpuesta
+    @row    Número de filas de la matriz de entrada
+    @cols   Número de columnas de la matriz de entrada
+*/
 __global__ void matrizTranspuesta_GPU(float* X, float *Y, int rows, int cols)
 {
     int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
@@ -134,6 +150,16 @@ __global__ void matrizTranspuesta_GPU(float* X, float *Y, int rows, int cols)
 
 }
 
+/*
+    @brief      Realiza la retropropagación en una capa SoftMax
+    @M          Filas de la matriz de entrada X
+    @K          Columnas de la matriz de entrada X
+    @grad_a     Gradiente respecto a las neuronas de entrada
+    @Z          Neuronas de entrada
+    @a          Matriz resultado sin aplicar función de activación
+    @Y          Salida
+    @n_clases   Número de clases
+*/
 __global__ void kernel_back_softmax(int M, int K, float *grad_a, float *Z, float *Y, int n_clases)
 {
     int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
@@ -146,6 +172,13 @@ __global__ void kernel_back_softmax(int M, int K, float *grad_a, float *Z, float
     }
 }
 
+/*
+    @brief      Realiza la retropropagación respecto a los sesgos
+    @M          Filas de la matriz de entrada 
+    @K          Columnas de la matriz de entrada 
+    @grad_a     Matriz de entrada con los gradientes respecto a las neuronas de entrada de ua capa determinada
+    @grad_b     Gradientes respecto a los sesgos 
+*/
 __global__ void kernel_grad_bias(int M, int K, float *grad_a, float *grad_b)
 {
     int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
@@ -161,7 +194,14 @@ __global__ void kernel_grad_bias(int M, int K, float *grad_a, float *grad_b)
     }
 }
 
-
+/*
+    @brief      Actualiza los sesgos de una capa determinada
+    @N          Número de sesgos
+    @bias       Sesgos
+    @grad_bias  Gradiente respecto a los sesgos
+    @lr         Learning rate
+    @mini_batch Tamaño del mini_batch  
+*/
 __global__ void kernel_actualizar_bias(int N, float *bias, float *grad_bias, float lr, int mini_batch)
 {
     int i = blockIdx.x * blockDim.x + threadIdx.x; // tid = threadIdx.x
@@ -170,6 +210,15 @@ __global__ void kernel_actualizar_bias(int N, float *bias, float *grad_bias, flo
         bias[i] -= lr * (grad_bias[i] / mini_batch);
 }
 
+/*
+    @brief      Actualiza los pesos de una capa determinada
+    @M          Número de filas
+    @K          Número de columnas
+    @w          Matriz de pesos
+    @grad_w     Gradientes de los pesos
+    @lr         Learning rate
+    @mini_batch Tamaño del mini_batch  
+*/
 __global__ void kernel_actualizar_pesos(int M, int K, float *w, float *grad_w, float lr, int mini_batch)
 {
   	int iy = threadIdx.y + blockIdx.y * blockDim.y, ix = threadIdx.x + blockIdx.x * blockDim.x;
@@ -184,7 +233,14 @@ __global__ void kernel_actualizar_pesos(int M, int K, float *w, float *grad_w, f
 
 
 /*
-    Emplea tiles. Un tile por bloque. Usa memoria compartida
+    @brief          Retropropagación de capas intermedias mediante multiplicación matricial A(MxK)xB(KxN)
+    @M              Filas de la matriz A
+    @N              Columnas de la matriz B
+    @K              Columnas de la matriz A
+    @A              Primera matriz a multiplicar
+    @B              Segunda matriz a multiplicar
+    @C              Matriz resultado
+    @aplicar_relu   Aplicar la función de activación ReLU o no
 */
 __global__ void backprop_capas_intermedias(int M, int N, int K, const float *A, const float *B, float *C, bool aplicar_deriv_relu)
 {
@@ -254,7 +310,13 @@ __global__ void backprop_capas_intermedias(int M, int N, int K, const float *A, 
 
 
 /*
-    Emplea tiles. Un tile por bloque. Usa memoria compartida
+    @brief          Multiplicación matricial A(MxK)xB(KxN)
+    @M              Filas de la matriz A
+    @N              Columnas de la matriz B
+    @K              Columnas de la matriz A
+    @A              Primera matriz a multiplicar
+    @B              Segunda matriz a multiplicar
+    @C              Matriz resultado
 */
 __global__ void multiplicarMatricesGPU_fully(int M, int N, int K, const float *A, const float *B, float *C)
 {
@@ -318,7 +380,14 @@ __global__ void multiplicarMatricesGPU_fully(int M, int N, int K, const float *A
 }
 
 
-
+/*
+    @brief          Evalúa al modelo
+    @M              Filas
+    @K              Columnas
+    @X              Matriz de entrada
+    @Y              Matriz de salida
+    @sumas          Accuracy y entropía cruzada
+*/
 __global__ void kernel_evaluacion_modelo(int M, int K, float * X, float * Y, float *sumas)
 {
 		int i = blockIdx.x * blockDim.x + threadIdx.x, predic_acc = 0; // tid = threadIdx.x
@@ -711,20 +780,6 @@ void FullyConnected::mostrar_pesos_Traspuestos_ptr()
     cout << endl;
 }
 
-void FullyConnected::mostrar_neuronas_ptr(float *z_ptr)
-{
-    // Mostrar neuronas
-    cout << "Neuronas" << endl;
-    for(int i=0; i<n_capas; i++)
-    {
-        cout << "Capa " << i << endl;
-        for(int j=0; j<capas[i]; j++)
-            cout << z_ptr[i_capa[i] + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-}
-
 /*
     @brief  Genera los pesos entre 2 capas de neuronas
     @capa   Capa a generar los pesos con la siguiente
@@ -810,185 +865,7 @@ void FullyConnected::forwardPropagationGEMM()
 
     this->grid_1D.x = (mini_batch  + block_1D.x -1) / block_1D.x;
     kernel_sofmax<<<grid_1D, block_1D>>>(mini_batch, capas[n_capas-1], d_softmax, d_a + i_capasGEMM[n_capas-1]);
-
-    // ---------------------------------------------------------------
-    // ---------------------------------------------------------------
-    /*
-    float * capa = capasGEMM[0];
-
-    cout << " ---------------------------- A ---------------------------- " << endl;
-    capa = capasGEMM[0];
-    for(int c=0; c<n_capas-1; c++)
-    {
-        capa = capasGEMM[c];
-        cudaMemcpy(capa, d_a + i_capasGEMM[c],  capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-        cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess)
-            printf("Error: %s\n", cudaGetErrorString(err));
-
-
-        cout << "CAPA " << c << " A" << endl;
-        for(int i=0; i<this->capas[c]; i++)
-        {
-            for(int j=0; j<this->mini_batch; j++)
-                cout << capa[i*mini_batch + j] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-
-    capa = capasGEMM[n_capas-1];
-    cudaMemcpy(capa, d_a + i_capasGEMM[n_capas-1],  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-    cout << "CAPA SoftMax " << endl;
-    for(int i=0; i<this->mini_batch; i++)
-    {
-        for(int j=0; j<this->capas[n_capas-1]; j++)
-            cout << capa[i*this->capas[n_capas-1] + j]<< " ";
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << " ---------------------------- Z ---------------------------- " << endl;
-    float *capa = capasGEMM[0];
-    for(int c=0; c<n_capas-2; c++)
-    {
-        capa = capasGEMM[c+1];
-        cudaMemcpy(capa, d_z + i_capasGEMM[c+1],  capas[c+1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-        cudaError_t err = cudaGetLastError();
-        if (err != cudaSuccess)
-            printf("Error: %s\n", cudaGetErrorString(err));
-
-
-        cout << "CAPA " << c+1 << " A" << endl;
-        for(int i=0; i<this->capas[c+1]; i++)
-        {
-            for(int j=0; j<this->mini_batch; j++)
-                cout << capa[i*mini_batch + j] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-
-
-    capa = capasGEMM[n_capas-1];
-    cudaMemcpy(capa, d_softmax,  capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToHost);
-    cout << "CAPA SoftMax " << endl;
-    for(int i=0; i<this->mini_batch; i++)
-    {
-        for(int j=0; j<this->capas[n_capas-1]; j++)
-            cout << capa[i*this->capas[n_capas-1] + j]<< " ";
-        cout << endl;
-    }
-    cout << endl;
-    */
 }
-
-
-
-/*
-    @brief  Propagación hacia delante por toda la red totalmente conectada
-    @x      Valores de entrada a la red
-    @a      Neuronas de la red antes de aplicar la función de activación
-    @z      Neuronas de la red después de aplicar la función de activación
-
-    @return Se actualizan los valores de @a y @z
-*/
-void FullyConnected::forwardPropagation_ptr(float *x, float *a_ptr, float *z_ptr)
-{
-    float max, sum = 0.0;
-
-    // Introducimos input -------------------------------------------------------
-    for(int i=0; i<capas[0]; i++)
-    {
-        z_ptr[i] = x[i];
-        a_ptr[i] = x[i];
-    }
-
-
-    // Forward Propagation ------------------------------------------------------------
-    // Por cada capa
-    for(int i=0; i<n_capas -1; ++i)
-    {
-
-        // Por cada neurona de la capa siguiente
-        for(int k=0; k<capas[i+1]; ++k)
-        {
-            // Reset siguiente capa
-            a_ptr[i_capa[i+1] + k] = 0.0;
-
-            for(int j=0; j<capas[i]; ++j)
-                a_ptr[i_capa[i+1] + k] += z_ptr[i_capa[i] + j] * w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
-
-            // Aplicar bias o sesgo
-            a_ptr[i_capa[i+1] + k] += this->bias_ptr[i_capa[i+1] + k];
-        }
-
-        // Aplicamos función de activación asociada a la capa actual -------------------------------
-
-        // En capas ocultas se emplea ReLU como función de activación
-        if(i < n_capas - 2)
-        {
-            for(int k=0; k<capas[i+1]; ++k)
-                z_ptr[i_capa[i+1] + k] = relu(a_ptr[i_capa[i+1] + k]);
-        }else
-        {
-
-            // En la capa output se emplea softmax como función de activación
-            sum = 0.0;
-            max = a_ptr[i_capa[i+1]];
-
-            // Normalizar -----------------------------------------------------------------
-            // Encontrar el máximo
-            for(int k=0; k<capas[i+1]; ++k)
-                if(max < a_ptr[i_capa[i+1] + k])
-                    max = a_ptr[i_capa[i+1] + k];
-
-            // Normalizar
-            for(int k=0; k<capas[i+1]; ++k)
-                a_ptr[i_capa[i+1] + k] = a_ptr[i_capa[i+1] + k] - max;
-
-            // Calculamos la suma exponencial de todas las neuronas de la capa output ---------------------
-            for(int k=0; k<capas[i+1]; ++k)
-                sum += exp(a_ptr[i_capa[i+1] + k]);
-
-            for(int k=0; k<capas[i+1]; ++k)
-                z_ptr[i_capa[i+1] + k] = exp(a_ptr[i_capa[i+1] + k]) / sum;
-
-        }
-    }
-
-}
-
-
-/*
-    @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
-    @x      Conjunto de datos de entrada
-    @y      Etiquetas de los datos de entrada
-    @ini    Primera posición i en cumplir {y[i] corresponde a x[i], y[i+1] corresponde a x[i+1], ...}
-    @return Valor de entropía cruzada sobre el conjunto de datos de entrada x
-*/
-float FullyConnected::cross_entropy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr)
-{
-    float sum = 0.0, prediccion = 0.0, epsilon = 0.000000001;
-    int n=n_capas-1;
-
-    for(int i=0; i<n_datos; ++i)
-    {
-        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
-        forwardPropagation_ptr(x_i, a_ptr, z_ptr);
-
-        for(int c=0; c<capas[n]; ++c)
-            if(y[i*capas[n] + c] == 1)                      // Cada y[i] tiene valores como neuronas hay en la última capa. 1 neurona y 1 valor por clase. One-hot.
-                prediccion = z_ptr[i_capa[n] + c];
-
-        sum += log(prediccion+epsilon);
-    }
-
-    sum = -sum / n_datos;
-
-    return sum;
-}
-
 
 /*
     @brief  Realiza la medida de Entropía Cruzada sobre un conjunto de datos
@@ -1004,50 +881,11 @@ void FullyConnected::evaluar_modelo_GEMM()
     kernel_evaluacion_modelo<<<grid_1D, this->block_1D>>>(mini_batch, this->capas[n_capas-1], d_softmax, d_y, d_sum_acc_entr);
 }
 
-
 /*
-    @brief  Realiza la medida de Accuracy sobre un conjunto de datos
-    @x      Conjunto de datos de entrada
-    @y      Etiquetas de los datos de entrada
-    @return Valor de accuracy sobre el conjunto de datos de entrada x
+    @brief      Entrenamiento de la red
+    @grad_x     Gradiente respecto a la entrada x
 */
-float FullyConnected::accuracy_ptr(float *x, float *y, int n_datos, float *a_ptr, float *z_ptr)
-{
-    float sum =0.0, max;
-    int prediccion, n=n_capas-1;
-    float *x_i = nullptr;
-
-    for(int i=0; i<n_datos; i++)
-    {
-        // Propagación hacia delante de la entrada x[i] a lo largo de la red
-        x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
-        forwardPropagation_ptr(x_i, a_ptr, z_ptr);
-
-        // Inicialización
-        max = z_ptr[i_capa[n]];
-        prediccion = 0;
-
-        // Obtener valor más alto de la capa output
-        for(int c=0; c<capas[n]; ++c)
-        {
-            if(max < z_ptr[i_capa[n] + c])
-            {
-                max = z_ptr[i_capa[n] + c];
-                prediccion = c;
-            }
-        }
-
-        // Ver si etiqueta real y predicción coindicen
-        sum += y[i*capas[n] + prediccion];
-    }
-    cout << endl;
-
-    sum = sum / n_datos * 100;
-
-    return sum;
-}
-
-void FullyConnected::train_vectores_externos(float *grad_x)
+void FullyConnected::train_GEMM(float *grad_x)
 {
     int n_clases = capas[n_capas-1];
 
@@ -1102,164 +940,6 @@ void FullyConnected::train_vectores_externos(float *grad_x)
     cudaMemcpy(grad_x, d_aT + i_capasGEMM[c], capas[c] * mini_batch * sizeof(float), cudaMemcpyDeviceToDevice);
 }
 
-/*
-    @brief      Entrenamiento de la red
-    @x          Conjunto de datos de entrada
-    @y          Etiquetas asociadas a cada dato de entrada
-    @batch      Conjunto de índices desordenados tal que para cada dato de entrada x[i], este está asociado con y[batch[i]]
-    @n_datos    Número de datos con los que entrenar
-    @grad_pesos Gradiente de cada peso de la red
-    @grad_b     Gradiente de cada bias de la red
-    @grad_x     Gradiente respecto a la entrada x
-    @a          Neuronas de la red antes de aplicar la función de activación
-    @z          Neuronas de la red después de aplicar la función de activación
-    @grad_a     Gradiente respecto a cada neurona de la red antes de aplicar la función de activación
-    @return     Se actualizan los valores de @grad_pesos, @grad_b, @grad_x, @a, @z, y @grad_a
-*/
-//void FullyConnected::train(const vector<vector<float>> &x, const vector<vector<float>> &y, const vector<int> &batch, const int &n_datos, vector<vector<vector<float>>> &grad_pesos, vector<vector<float>> &grad_b, vector<vector<float>> &grad_x, vector<vector<float>> &a, vector<vector<float>> &z, vector<vector<float>> &grad_a)
-void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr)
-{
-    int i_output = n_capas -1, i_last_h = i_output-1; // índice de la capa output, Índice de la capa h1 respectivamente
-
-    for(int i=0; i<n_datos; ++i)
-    {
-        // Propagación hacia delante
-        float *x_i = x + i*capas[0];                                // Cada x[i] tiene tantos valores como neuronas hay en la primera capa
-        forwardPropagation_ptr(x_i, a_ptr, z_ptr);
-
-        // ---------------------
-        // ---------------------
-        /*
-        cout << "z_ptr " << i << endl;
-        for(int c=0; c<n_capas; c++)
-        {
-            for(int j=0; j<capas[c]; j++)
-                cout << z_ptr[i_capa[c] + j] << " ";
-            cout << endl;
-        }
-        cout << endl;
-        */
-        // ---------------------
-        // ---------------------
-
-        // Propagación hacia detrás
-        // Inicializar a 0 gradiente respecto a input
-        for(int _i = 0; _i < n_capas; ++_i)
-            for(int j = 0; j < capas[_i]; ++j)
-                grad_a_ptr[i_capa[_i] + j] = 0.0;
-
-        // Capa SoftMax -----------------------------------------------
-        // Se calcula gradiente del error respecto a cada Z_k
-        for(int k=0; k<capas[i_output]; ++k)
-            grad_a_ptr[i_capa[i_output] + k] = z_ptr[i_capa[i_output] + k] - y[batch[i]*capas[i_output] + k];
-            // grad_Zk = O_k - y_k
-
-        // Pesos h_last - Softmax
-        for(int p=0; p<capas[i_last_h]; ++p)
-            for(int k=0; k<capas[i_output]; ++k)
-                grad_w_ptr[i_w_ptr[i_last_h] + p*capas[i_last_h+1] + k] += grad_a_ptr[i_capa[i_output] + k] * z_ptr[i_capa[i_last_h] + p];
-                //                                 grad_Zk                  *  z^i_last_h_p
-
-        // Sesgos capa softmax
-        for(int k=0; k<capas[i_output]; ++k)
-            grad_bias_ptr[i_capa[i_output] + k] += grad_a_ptr[i_capa[i_output] + k];
-            // bk = grad_Zk
-
-        // Última capa oculta -----------------------------------------------
-        for(int p=0; p<capas[i_last_h]; ++p)
-            for(int k=0; k<capas[i_output]; ++k)
-                grad_a_ptr[i_capa[i_last_h] + p] += grad_a_ptr[i_capa[i_output] + k] * w_ptr[i_w_ptr[i_last_h] + p*capas[i_last_h+1] + k] * deriv_relu(a_ptr[i_capa[i_last_h] + p]);
-                //                              grad_Zk           *  w^i_last_h_pk          * ...
-
-        // Capas ocultas intermedias
-        for(int capa= i_last_h; capa > 1; capa--)
-        {
-            // Pesos
-            for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
-                for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
-                    grad_w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act] * z_ptr[i_capa[capa-1] + i_ant];
-
-            // Bias
-            for(int i_act = 0; i_act < capas[capa]; ++i_act)
-                grad_bias_ptr[i_capa[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act];
-
-            // Grad input
-            for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
-                for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
-                    grad_a_ptr[i_capa[capa-1] + i_ant] += grad_a_ptr[i_capa[capa] + i_act] * w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] * deriv_relu(a_ptr[i_capa[capa-1] + i_ant]);
-        }
-
-
-        // Capa input
-        // Pesos
-        int capa=1;
-        for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
-            for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
-                grad_w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act] * z_ptr[i_capa[capa-1] + i_ant];
-
-        // Grad input
-        for(int i_ant = 0; i_ant < capas[capa-1]; ++i_ant)     // Por cada neurona de la capa anterior
-            for(int i_act = 0; i_act < capas[capa]; ++i_act)       // Por cada neurona de la capa actual
-                grad_a_ptr[i_capa[capa-1] + i_ant] += grad_a_ptr[i_capa[capa] + i_act] * w_ptr[i_w_ptr[capa-1] + i_ant*capas[capa] + i_act];
-
-        // Bias
-        for(int i_act = 0; i_act < capas[capa]; ++i_act)
-            grad_bias_ptr[i_capa[capa] + i_act] += grad_a_ptr[i_capa[capa] + i_act];
-
-        // Copiar gradiente respecto a input de primera capa en grad_x[i]
-        for(int j=0; j<capas[0]; j++)
-            grad_x[i*capas[0] + j] = grad_a_ptr[j];
-
-
-        // ---------------------
-        // ---------------------
-        /*
-        cout << "grad_a_ptr " << i << endl;
-        for(int c=0; c<n_capas; c++)
-        {
-            for(int j=0; j<capas[c]; j++)
-                cout << grad_a_ptr[i_capa[c] + j] << " ";
-            cout << endl;
-        }
-        cout << endl;
-        */
-        // ---------------------
-        // ---------------------
-
-    }
-
-    // Mostrar pesos
-    /*
-    cout << "Gradiente de Pesos" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        cout << "Capa " << i << endl;
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-            {
-                cout << "W(" << j << "," << k << "): ";
-                cout << grad_w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-    */
-
-    /*
-    cout << "grad_bias_ptr " << endl;
-    for(int c=0; c<n_capas; c++)
-    {
-        for(int j=0; j<capas[c]; j++)
-            cout << grad_bias_ptr[i_capa[c] + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-    */
-}
-
 
 /*
     @brief          Escalar los pesos para evitar que los gradientes "exploten"
@@ -1268,54 +948,10 @@ void FullyConnected::train_ptr(float *x, float *y, int *batch, const int &n_dato
 */
 void FullyConnected::escalar_pesos_GEMM(float clip_value)
 {
-    /*
-    //float *bias_copy = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
-
-    float *pesos_copy = (float *)malloc(n_pesos * n_neuronas * sizeof(float)),
-          *max = (float *)malloc(sizeof(float)),
-          *min = (float *)malloc(sizeof(float));
-
-    cudaMemcpy(pesos_copy, d_w, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
-
-    // Mostrar pesos
-    cout << "Pesos antes " << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-    /*
-    cudaMemcpy(pesos_copy, d_wT, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
-
-
-    // Mostrar pesos
-    cout << "Pesos ^T" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i+1]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas_wT[i]; k++)     // Por cada neurona de la siguiente capa
-            {
-                cout << pesos_copy[i_wT[i] + j*capas_wT[i] + k] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-    */
-
     this->grid_1D.x = (n_pesos + block_1D.x -1) / block_1D.x;
 
-
     reduceMax<<<grid_1D, block_1D, smem_1D>>>(d_w, d_max, n_pesos);
-		reduceMin<<<grid_1D, block_1D, smem_1D>>>(d_w, d_min, n_pesos);
+    reduceMin<<<grid_1D, block_1D, smem_1D>>>(d_w, d_min, n_pesos);
     min_max<<<grid_1D, block_1D>>>(d_max, d_min, grid_1D.x);
     kernel_escalar_pesos<<<grid_1D, block_1D>>>(d_w, n_pesos, d_max, d_min, clip_value);
 
@@ -1331,130 +967,8 @@ void FullyConnected::escalar_pesos_GEMM(float clip_value)
 
     // Pasar cambios a CPU, TEMPORAL --------------------------------------------------------------
     cudaMemcpy(w_ptr, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
-		cudaMemcpy(bias_ptr, d_b, n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
-
-    /*
-    cudaMemcpy(max, d_max, sizeof(float), cudaMemcpyDeviceToHost);
-    cudaMemcpy(min, d_min, sizeof(float), cudaMemcpyDeviceToHost);
-
-    cout << "Máximo GEMM: " << max[0] << endl;
-    cout << "Mínimo GEMM: " << min[0] << endl;
-
-
-    cudaMemcpy(pesos_copy, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
-
-    // Mostrar pesos
-    cout << "Pesos GEMM " << endl;
-    for(int j=0; j<10; j++)   // Por cada neurona de la capa actual
-    {
-        for(int k=0; k<10; k++)     // Por cada neurona de la siguiente capa
-            cout << pesos_copy[i_w_ptr[1] + j*capas[1+1] + k] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
-    /*
-    // Mostrar pesos
-    cudaMemcpy(pesos_copy, d_w, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
-    cout << "Pesos GEMM después" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-
-    cudaMemcpy(pesos_copy, d_wT, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
-
-
-    // Mostrar pesos
-    cout << "Pesos ^T" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i+1]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas_wT[i]; k++)     // Por cada neurona de la siguiente capa
-            {
-                cout << pesos_copy[i_wT[i] + j*capas_wT[i] + k] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-    */
+    cudaMemcpy(bias_ptr, d_b, n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
 }
-
-
-/*
-    @brief          Escalar los pesos para evitar que los gradientes "exploten"
-    @clip_value     Valor a emplear para realizar el "clip" o escalado
-    @return         Se actualizan los valores de w (pesos de la red)
-*/
-void FullyConnected::escalar_pesos_ptr(float clip_value)
-{
-    /*
-    // Mostrar pesos
-    cout << "Pesos antes " << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-    */
-
-    // Calcular el máximo y el mínimo de los pesos
-    float max = this->w_ptr[0], min = this->w_ptr[0];
-
-    for(int i=0; i<n_capas-1; i++)
-        for(int j=0; j<capas[i]; j++)
-            for(int k=0; k<capas[i+1]; k++)
-            {
-                if(max < this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k])
-                    max = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
-
-                if(min > this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k])
-                    min = this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k];
-            }
-
-    //cout << "Máximo: " << max << endl;
-    //cout << "Mínimo: " << min << endl;
-    // Realizar gradient clipping
-    float scaling_factor = clip_value / std::max(std::abs(max), std::abs(min));
-    for(int i=0; i<n_capas-1; i++)
-        for(int j=0; j<capas[i]; j++)
-            for(int k=0; k<capas[i+1]; k++)
-                this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k] = std::max(std::min(this->w_ptr[i_w_ptr[i] + j*capas[i+1] + k], clip_value), -clip_value);
-
-    // Mostrar pesos
-    /*
-    cout << "Pesos después " << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-    */
-}
-
 
 /*
     @brief          Actualizar los pesos y sesgos de la red
@@ -1464,39 +978,6 @@ void FullyConnected::escalar_pesos_ptr(float clip_value)
 */
 void FullyConnected::actualizar_parametros_gpu()
 {
-		/*
-    float *bias_copy = (float *)malloc(n_neuronas * sizeof(float));       // Cada neurona tiene asociado un bias
-    float *grad_pesos_copy = (float *)malloc(n_pesos * sizeof(float));
-    float *pesos_copy = (float *)malloc(n_pesos * n_neuronas * sizeof(float));
-
-    cudaMemcpy(pesos_copy, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
-
-    // Mostrar pesos
-    cout << "Pesos GEMM antes" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cudaMemcpy(bias_copy, d_b, n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
-
-    cout << "bias antes GEMM " << endl;
-    for(int c=0; c<n_capas; c++)
-    {
-        for(int j=0; j<capas[c]; j++)
-            cout << bias_copy[i_capa[c] + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-		*/
-
     for(int i=0; i<n_capas; i++)
     {
         // Tamaño de grid
@@ -1511,172 +992,16 @@ void FullyConnected::actualizar_parametros_gpu()
         grid_2D.x = (capas[i+1]  + block_1D.x -1) / block_1D.x;
         grid_2D.y = (capas[i]  + block_1D.x -1) / block_1D.x;
         kernel_actualizar_pesos<<<grid_2D, block_2D>>>(capas[i], capas[i+1], d_w + i_w_ptr[i], d_grad_w + i_w_ptr[i], this->lr, mini_batch);
-
-
-				kernel_transpuesta_pesos<<<grid_2D, block_2D>>>(d_capas_wT, d_capas, d_w + i_w_ptr[i], d_wT + i_wT[i], i, d_b + i_capa[i+1]);
+        kernel_transpuesta_pesos<<<grid_2D, block_2D>>>(d_capas_wT, d_capas, d_w + i_w_ptr[i], d_wT + i_wT[i], i, d_b + i_capa[i+1]);
     }
-
-
-    /*
-    cudaMemcpy(pesos_copy, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
-
-    // Mostrar pesos
-    cout << "Pesos GEMM " << endl;
-    for(int j=0; j<10; j++)   // Por cada neurona de la capa actual
-    {
-        for(int k=0; k<10; k++)     // Por cada neurona de la siguiente capa
-            cout << pesos_copy[i_w_ptr[1] + j*capas[1+1] + k] << " ";
-        cout << endl;
-    }
-    cout << endl;
-    */
-
-    /*
-    cudaMemcpy(pesos_copy, d_w, n_pesos * sizeof(float), cudaMemcpyDeviceToHost);
-
-    // Mostrar pesos
-    cout << "Pesos antes " << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-
-    // Mostrar pesos
-    cout << "Pesos GEMM después" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << pesos_copy[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    int k1;
-    cin >> k1;
-
-    /*
-    cudaMemcpy(pesos_copy, d_wT, n_pesos * n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
-
-    // Mostrar pesos
-    cout << "Pesos ^T" << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i+1]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas_wT[i]; k++)     // Por cada neurona de la siguiente capa
-            {
-                cout << pesos_copy[i_wT[i] + j*capas_wT[i] + k] << " ";
-            }
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cudaMemcpy(bias_copy, d_b, n_neuronas * sizeof(float), cudaMemcpyDeviceToHost);
-
-    cout << "bias después GEMM " << endl;
-    for(int c=0; c<n_capas; c++)
-    {
-        for(int j=0; j<capas[c]; j++)
-            cout << bias_copy[i_capa[c] + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-		*/
 }
 
 /*
-    @brief          Actualizar los pesos y sesgos de la red
-    @grad_pesos     Gradiente de cada peso de la red
-    @grad_b         Gradiente de cada sesgo de la red
-    @return         Se actualizar los valores de w y bias (pesos y sesgos de la red)
+    @brief          Establace el conjunto de entrenamiento
+    @x              Imágenes de entrenamiento
+    @y              Etiquetas de entrenamiento
+    @mini_batch     Tamaño del mini_batch
 */
-void FullyConnected::actualizar_parametros_ptr(float *grad_pesos, float *grad_b)
-{
-    /*
-    // Mostrar pesos
-    cout << "Pesos antes " << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-    */
-
-    // Actualizar pesos
-    for(int i=0; i<n_capas-1; i++)
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                w_ptr[i_w_ptr[i] + j*capas[i+1] + k] -= this->lr * grad_pesos[i_w_ptr[i] + j*capas[i+1] + k];
-
-    /*
-    // Mostrar pesos
-    cout << "Pesos después " << endl;
-    for(int i=0; i<n_capas-1; i++)
-    {
-        for(int j=0; j<capas[i]; j++)   // Por cada neurona de la capa actual
-        {
-            for(int k=0; k<capas[i+1]; k++)     // Por cada neurona de la siguiente capa
-                cout << w_ptr[i_w_ptr[i] + j*capas[i+1] + k] << " ";
-            cout << endl;
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << "bias antes " << endl;
-    for(int c=0; c<n_capas; c++)
-    {
-        for(int j=0; j<capas[c]; j++)
-            cout << bias_ptr[i_capa[c] + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-		*/
-    for(int i=0; i<n_capas; i++)
-        for(int j=0; j<capas[i]; j++)
-            bias_ptr[i_capa[i] + j] -= this->lr * grad_b[i_capa[i] + j];
-		/*
-    cout << "bias después " << endl;
-    for(int c=0; c<n_capas; c++)
-    {
-        for(int j=0; j<capas[c]; j++)
-            cout << bias_ptr[i_capa[c] + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-		*/
-}
-
-void FullyConnected::set_train(float *x, float *y, int mini_batch)
-{
-    this->mini_batch = mini_batch;
-
-    // Pasar valores de primera capa a GPU
-    cudaMemcpy(d_z, x,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_a, x,  mini_batch * (capas[0]+1) * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_y, y, capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyHostToDevice);
-}
-
 void FullyConnected::set_train_gpu(float *x, float *y, int mini_batch)
 {
     this->mini_batch = mini_batch;
@@ -1686,230 +1011,3 @@ void FullyConnected::set_train_gpu(float *x, float *y, int mini_batch)
     cudaMemcpy(d_a, x,  mini_batch * (capas[0]) * sizeof(float), cudaMemcpyDeviceToDevice);
     cudaMemcpy(d_y, y, capas[n_capas-1] * mini_batch * sizeof(float), cudaMemcpyDeviceToDevice);
 }
-
-void FullyConnected::matrizTranspuesta(float* X, float *Y, int rows, int cols)
-{
-    for (int i = 0; i < rows; i++)
-        for (int j = 0; j < cols; j++)
-            Y[j * rows + i] = X[i * cols + j];
-}
-
-void FullyConnected::matrizTranspuesta(float* matrix, int rows, int cols)
-{
-    // Allocate a new matrix to hold the transposed data
-    float* transposedMatrix = (float*)malloc(cols * rows * sizeof(float));
-
-    if (transposedMatrix == nullptr) {
-        cerr << "Memory allocation for transposed matrix failed" << endl;
-        exit(1);
-    }
-
-    // Transpose the matrix
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            // Copy the element from original matrix at position (i, j) to
-            // transposed matrix at position (j, i)
-            transposedMatrix[j * rows + i] = matrix[i * cols + j];
-        }
-    }
-
-    // Copy the transposed data back to the original matrix
-    // This requires the original matrix to be able to hold the new dimensions
-    // i.e., it must have space for 'cols * rows' elements
-    for (int i = 0; i < cols * rows; i++) {
-        matrix[i] = transposedMatrix[i];
-    }
-
-    // Free the allocated memory for the transposed matrix
-    free(transposedMatrix);
-}
-
-/*
-void mostrar_ptr_2D(float *x, int H, int W)
-{
-    for(int i=0; i<H; i++)
-    {
-        for(int j=0; j<W; j++)
-            cout << x[i*W + j] << " ";
-        cout << endl;
-    }
-}
-
-void mostrar_vector_2D(vector<vector<float>> x)
-{
-    for(int i=0; i<x.size(); i++)
-    {
-        for(int j=0; j<x[i].size(); j++)
-            cout << x[i][j] << " ";
-        cout << endl;
-    }
-}
-
-
-int main()
-{
-
-    // CPU --------------
-    cout << " ---------- CPU ---------- " << endl;
-    int tam_x = 3, n_datos = 2, n_clases = 5;
-    //int tam_x = 3, n_datos = 2, n_clases = 2;
-    vector<int> capas = {tam_x, 5, n_clases};
-    //vector<int> capas = {tam_x, 5, n_clases};
-    vector<vector<float>> a_cpu, z_cpu, grad_a_cpu, y_cpu = {{0.0, 1.0}, {0.0, 1.0}};
-    vector<vector<vector<float>>> grad_w_cpu;
-    vector<float> x_cpu;
-    vector<vector<float>> X_cpu, grad_b_cpu, grad_x_cpu;
-    vector<int> batch_cpu(n_datos);
-
-    // GPU --------------
-    cout << " ---------- GPU ---------- " << endl;
-    int n_capas = 3;
-    int *capas_ptr = (int *)malloc(n_capas * sizeof(int));
-    int *i_capa = (int *)malloc(n_capas * sizeof(int));
-
-    for(int i=0; i<n_capas; i++)
-        capas_ptr[i] = capas[i];
-    FullyConnected fully_gpu(capas_ptr, n_capas, 0.1, n_datos);
-
-
-    int n_neuronas = 0, n_pesos = 0;
-
-    // Pesos ------------------------------------------------------------------
-    int *i_w_ptr = (int *)malloc(n_capas * sizeof(int));
-
-    // Neuronas ------------------------------------------------------------------
-    for(int i=0; i<n_capas; i++)
-    {
-        i_capa[i] = n_neuronas;
-        n_neuronas += capas_ptr[i];
-        capas_ptr[i] = capas[i];
-    }
-
-    for(int i=0; i<n_capas-1; i++)
-    {
-        i_w_ptr[i] = n_pesos;
-        n_pesos += capas_ptr[i] * capas_ptr[i+1];   // Cada neurona de la capa actual se conecta a cada neurona de la capa siguiente
-    }
-
-
-    float *grad_w_ptr = (float *)malloc(n_pesos * sizeof(float));
-
-    // Inicializar gradientes de pesos a 0.0
-    for(int i=0; i<n_pesos; i++)
-        grad_w_ptr[i] = 0.0;
-
-
-    // Entrada y salida ------------------------------------------------------------------
-    float *X_gpu = (float *)malloc(n_datos * tam_x * sizeof(float));
-    float *X_gpuT = (float *)malloc(n_datos * tam_x * sizeof(float));
-    float *y_gpu = (float *)malloc(n_datos * n_clases * sizeof(float));
-    int *batch_gpu = (int *)malloc(n_datos * sizeof(int));
-
-    for(int i=0; i<n_datos; i++)
-        batch_gpu[i] = i;
-
-
-    int cont = -2;
-    for(int i=0; i<n_datos; i++)
-        for(int j=0; j<tam_x; j++)
-        {
-            X_gpu[i*tam_x + j] = cont;
-            X_gpuT[i*tam_x + j] = cont++;
-            //X_gpu[i*tam_x + j] = X_cpu[i][j];
-        }
-
-
-    for(int i=0; i<n_datos; i++)
-        for(int j=0; j<n_clases; j++)
-            (j == 1) ? y_gpu[i*n_clases + j] = 1.0 : y_gpu[i*n_clases + j] = 0.0;
-
-
-    fully_gpu.matrizTranspuesta(X_gpuT, n_datos, tam_x);
-
-    float *a_ptr = (float *)malloc(n_neuronas * sizeof(float));
-    float *z_ptr = (float *)malloc(n_neuronas * sizeof(float));
-    float *grad_bias_ptr = (float *)malloc(n_neuronas * sizeof(float));
-    float * bias_copy = (float *)malloc(n_neuronas * sizeof(float)),
-           * bias_GEMM = (float *)malloc(n_neuronas * sizeof(float)),
-           * w_copy = (float *)malloc(n_pesos * sizeof(float)),
-           * w_GEMM = (float *)malloc(n_pesos * sizeof(float));
-    float *grad_a_ptr = (float *)malloc(n_neuronas * sizeof(float));
-
-    // Inicializar gradientes de sesgos a 0.0
-    for(int i=0; i<n_neuronas; i++)
-        grad_bias_ptr[i] = 0.0;
-
-    bias_copy = fully_gpu.get_bias_ptr();
-    for(int i=0; i<n_neuronas; i++)
-        bias_GEMM[i] = bias_copy[i];
-
-    w_copy = fully_gpu.get_pesos_ptr();
-    for(int i=0; i<n_pesos; i++)
-        w_GEMM[i] = w_copy[i];
-
-    float *grad_x_gpu = (float *)malloc(tam_x * n_datos * sizeof(float));
-    fully_gpu.train_ptr(X_gpu, y_gpu, batch_gpu, n_datos, grad_w_ptr, grad_bias_ptr, grad_x_gpu, a_ptr, z_ptr, grad_a_ptr);
-
-		// Realizar media
-		for(int i=0; i<n_neuronas; i++)
-			grad_bias_ptr[i] /= n_datos;
-
-			for(int i=0; i<n_pesos; i++)
-	        grad_w_ptr[i] /= n_datos;
-
-
-    fully_gpu.actualizar_parametros_ptr(grad_w_ptr, grad_bias_ptr);
-    fully_gpu.escalar_pesos_ptr(0.5);
-    //fully_gpu.mostrar_pesos_ptr();
-    printf("Accuracy: %f, Entropía Cruzada: %f\n", fully_gpu.accuracy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr), fully_gpu.cross_entropy_ptr(X_gpu, y_gpu, n_datos, a_ptr, z_ptr));
-
-
-    cout << "grad_x_gpu: " << endl;
-    for(int i=0; i<n_datos; i++)
-    {
-        for(int j=0; j<tam_x; j++)
-            cout << grad_x_gpu[i*tam_x + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
-
-    for(int i=0; i<n_datos; i++)
-        for(int j=0; j<tam_x; j++)
-            grad_x_gpu[i*tam_x + j] = 0.0;
-
-
-    // -------------------------------------------------------------
-    fully_gpu.set_biasGEMM(bias_GEMM);
-		fully_gpu.set_wGEMM(w_GEMM);
-		fully_gpu.set_train(X_gpuT, y_gpu, n_datos);
-
-
-    //fully_gpu.forwardPropagationGEMM();
-    fully_gpu.trainGEMM(grad_x_gpu);
-
-
-		fully_gpu.actualizar_parametros_gpu();
-    fully_gpu.escalar_pesos_GEMM(0.5);
-    fully_gpu.evaluar_modelo_GEMM();
-
-
-    cout << "grad_x_gpu: " << endl;
-    for(int i=0; i<n_datos; i++)
-    {
-        for(int j=0; j<tam_x; j++)
-            cout << grad_x_gpu[i*tam_x + j] << " ";
-        cout << endl;
-    }
-    cout << endl;
-
-
-
-    free(capas_ptr); free(i_w_ptr); free(grad_w_ptr); free(X_gpu); free(X_gpuT); free(y_gpu); free(a_ptr); free(z_ptr); free(grad_bias_ptr); free(grad_a_ptr);
-    free(grad_x_gpu);
-    free(batch_gpu);
-
-
-    return 0;
-}
-*/

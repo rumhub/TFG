@@ -7,17 +7,12 @@
 #include <chrono>
 #include "random"
 #include "omp.h"
-//#include <cuda_runtime.h>
-//#include <device_launch_parameters.h>
-//#include <cublas_v2.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <cfloat>
 #include <limits>
 
 using namespace std;
-
-//#define BLOCK_SIZE 32
 
 class PoolingMax
 {
@@ -48,32 +43,29 @@ class PoolingMax
         // Tamaño de grid
         dim3 grid;
 
-        // Posiciones en GPU
+        // Punteros en GPU
         float *d_input = nullptr;       // Imagen de entrada
         float *d_input_copy = nullptr;      // Copia de la imagen de entrada
         float *d_output = nullptr;      // Imagen de salida
         bool liberar_memoria;
 
     public:
-        PoolingMax(int kernel_fils, int kernel_cols, vector<vector<vector<float>>> &input);
+
+        // Constructores
         PoolingMax(int kernel_fils, int kernel_cols, int C, int H, int W, int pad);
         PoolingMax(){liberar_memoria = false;};
+        
+        // Copia
         void copiar(const PoolingMax & plm);
 
+        // Destructor
         ~PoolingMax(){if(this->liberar_memoria){cudaFree(d_input); cudaFree(d_input_copy); cudaFree(d_output);}};
 
-        // CPU -------------------------------------------
-        // Aplica padding a un conjunto de imágenes 2D
-        void forwardPropagation(vector<vector<vector<float>>> &input, vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad);
-        void backPropagation(vector<vector<vector<float>>> &input, const vector<vector<vector<float>>> &output, vector<vector<vector<float>>> &input_copy, const int &pad_output);
-
         // GPU ------------------------------------------
-        void forwardPropagationGPU(float *input, float *output, float *input_copy);
         void forwardPropagation_vectores_externos(float *input, float *output, float *input_copy);
-        void backPropagationGPU(float *input, float *output, float *input_copy);
         void backPropagation_vectores_externos(float *input, float *output, float *input_copy);
 
-        // Comunes ------------------------------------------
+        // Gets ------------------------------------------
         void mostrar_tam_kernel();
         int get_kernel_fils(){return this->kernel_fils;};
         int get_kernel_cols(){return this->kernel_cols;};
@@ -81,8 +73,6 @@ class PoolingMax
         int get_bytes_input(){return this->bytes_input;};
         int get_bytes_output(){return this->bytes_output;};
         int get_pad(){return this->pad;};
-
-        // GPU
         float * get_d_input(){return this->d_input;};
         float * get_d_input_copy(){return this->d_input_copy;};
         float * get_d_output(){return this->d_output;};
@@ -94,8 +84,5 @@ class PoolingMax
         int get_H_out(){return this->H_out;};
         int get_W_out(){return this->W_out;};
 };
-
-
-// https://www.linkedin.com/pulse/implementation-from-scratch-forward-back-propagation-layer-coy-ulloa
 
 #endif

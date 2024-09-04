@@ -494,7 +494,7 @@ void CNN::train(int epocas, int mini_batch)
             // Realizar propagación hacia delante y hacia detrás en la capa totalmente conectada
             transpuesta_flat_outs<<<grid_1D, block_1D>>>(d_flat_outs_batch, d_flat_outs_T, tam_batches[i], tam_flat_out);
             this->fully->set_train_gpu(d_flat_outs_T, d_y_batch, tam_batches[i]);
-            this->fully->train_vectores_externos(d_grad_x_fully);
+            this->fully->train_GEMM(d_grad_x_fully);
             this->fully->actualizar_parametros_gpu();
             this->fully->escalar_pesos_GEMM(2);
 

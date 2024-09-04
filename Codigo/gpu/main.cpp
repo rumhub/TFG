@@ -8,7 +8,7 @@ using namespace std;
 int main()
 {
     // int C=3, H=100, W=100, n_capas_fully = 2, n_capas_conv = 4, n_imgs_train = 700, n_imgs_test = 100, n_clases = 10, mini_batch = 32;
-    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs = 1000, n_clases = 10, mini_batch = 32;
+    int C=3, H=32, W=32, n_capas_fully = 2, n_capas_conv = 2, n_imgs = 100, n_clases = 10, mini_batch = 32;
     int *capas_fully = (int *)malloc(n_capas_fully * sizeof(int)),
         *capas_conv = (int *)malloc(n_capas_conv*3 * sizeof(int)),
         *capas_pool = (int *)malloc(n_capas_conv*2 * sizeof(int)),
