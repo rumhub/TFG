@@ -18,14 +18,6 @@ void Flatten::forwardPropagation(const vector<vector<vector<float>>> &input, vec
         for(int j=0; j<n2; ++j)
             for(int k=0; k<n3; ++k, ++cont)
                 out[cont] = input[i][j][k];
-            
-    //cout << endl << out[1] << endl;
-
-    /*
-    // Normalizar entre 0 y 1 -------------------------------------------------------------
-    for(int i=0; i<cont; i++)
-        out[i] = out[i]/this->max;  
-    */
 
     output = out;
 };
@@ -60,94 +52,3 @@ int Flatten::get_canales()
 {
     return this->canales;
 }
-
-/*
-void mostrar_imagen(vector<vector<float>> imagen)
-{
-    int n = imagen.size();
-
-    for(int i=0; i<n; i++)
-    {
-        for(int j=0; j<imagen[i].size(); j++)
-        {
-            cout << imagen[i][j] << " ";
-        }
-        cout << endl;
-    }
-};
-
-void mostrar_imagenes_2D(vector<vector<vector<float>>> imagenes_2D)
-{
-    int n = imagenes_2D.size();
-
-    for(int k=0; k<n; k++)
-    {
-        cout << "IMAGEN " << k << endl;
-
-        mostrar_imagen(imagenes_2D[k]);
-        cout << endl;
-    }
-
-};
-
-void mostrar_imagenes(vector<vector<vector<vector<float>>>> imagenes)
-{
-    int n = imagenes.size();
-
-    for(int k=0; k<n; k++)
-    {
-        cout << "Capa " << k << endl;
-
-        mostrar_imagenes_2D(imagenes[k]);
-        cout << endl;
-    }
-
-};
-
-
-
-int main()
-{
-    vector<float> output;
-    vector<vector<vector<float>>> imagenes_2D;
-    vector<vector<float>> imagen_2D{{1.0, 2.0, 3.0, 4.0},
-                                      {5.0, 6.0, 7.0, 8.0},
-                                      {9.0, 10.0, 11.0, 12.0},
-                                      {13.0, 14.0, 15.0, 16.0}};
-
-    imagenes_2D.push_back(imagen_2D);
-
-    for(int i=0; i<imagen_2D.size(); i++)
-    {
-        for(int j=0; j<imagen_2D[i].size(); j++)
-        {
-            imagen_2D[i][j] += imagen_2D.size()*imagen_2D[i].size();
-        }
-    }
-
-    imagenes_2D.push_back(imagen_2D);
-
-    cout << endl << "------------ Imagen 3D inicial -------------" << endl;
-    mostrar_imagenes_2D(imagenes_2D);
-
-    
-    Flatten flt(imagenes_2D);
-    flt.forwardPropagation(imagenes_2D, output);
-
-    cout << "------------ Forward Propagation de la capa Flatten -------------" << endl;
-    cout << endl << "Imagen 1D: " << endl;
-    for(int i=0; i<output.size(); i++)
-    {
-        cout << output[i] << " ";
-    }
-    
-    
-    cout << "------------ Back Propagation de la capa Flatten -------------" << endl;
-    flt.backPropagation(imagenes_2D, output);
-
-    mostrar_imagenes_2D(imagenes_2D);
-    
-
-    return 0;
-}
-*/

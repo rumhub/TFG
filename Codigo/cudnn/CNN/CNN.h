@@ -21,7 +21,8 @@ using namespace std::chrono;
 class CNN
 {
     private:
-        // ------------------- CUDNN ---------------------------------
+
+        // Descriptores cuDNN
         cudnnHandle_t cudnnHandle;
         cudnnTensorDescriptor_t dataTensor;
         cudnnTensorDescriptor_t *convBiasTensor = nullptr;
@@ -40,8 +41,6 @@ class CNN
         float *d_dconv_a = nullptr;
         float *d_dconv_a_copy = nullptr;
         float *d_dkernel = nullptr;
-        // ------------------- CUDNN ---------------------------------
-
 
         Convolutional * convs = nullptr;      // Capas convolucionales
         PoolingMax * plms = nullptr;          // Capas MaxPool
@@ -50,13 +49,15 @@ class CNN
         vector<vector<vector<vector<float>>>> test_imgs;   // Imágenes de test
         vector<vector<float>> test_labels;             // Etiqueta de cada imagen de test
         int *padding = nullptr;                        // Nivel de padding en cada capa convolucional
-        float lr;                           // Learning rate o Tasa ded Aprendizaje
+        float lr;                           // Learning rate o Tasa de Aprendizaje
         int n_capas_conv;                   // Número de capas convolucionales
-        int n_imagenes;
-        int n_clases;
-        int mini_batch;
-        int n_batches;
-        int max_H, max_W, max_C;
+        int n_imagenes;                     // Número de imágenes
+        int n_clases;                       // Número de clases
+        int mini_batch;                     // Tamaño del minibatch
+        int n_batches;                      // Número de batches
+        int max_H, max_W, max_C;            // Dimensiones máximas de una imagen 3D
+
+        // Índices
         int *i_conv_out = nullptr;
         int *i_conv_in = nullptr;
         int *i_plm_out = nullptr;
@@ -64,8 +65,10 @@ class CNN
         int *i_w = nullptr;
         int *i_b = nullptr;
         int *indices = nullptr;
-        int *batch = nullptr;
-        int *tam_batches = nullptr;
+
+        // Batches
+        int *batch = nullptr;           // Batches
+        int *tam_batches = nullptr;     // Tamaño de los batches
 
 
         // Punteros device -------------------------------
@@ -92,18 +95,21 @@ class CNN
         int *d_indices = nullptr;
         int *d_batch = nullptr;
 
-
+        // Bloques y Grids
         dim3 block_1D;
         dim3 block_2D;
         dim3 grid_1D;
         dim3 grid_2D;
 
+        // Tamaños
         int tam_in_convs, tam_out_convs, tam_in_pools, tam_out_pools, tam_kernels_conv,
             tam_flat_out, n_bias_conv;
 
     public:
         // Constructor
         CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *capas_fully, int n_capas_fully, int C, int H, int W, const float &lr, const int n_datos, const int mini_batch);
+        
+        // Destructor
         ~CNN(){free(padding); free(i_conv_out); free(i_conv_in); free(i_plm_out); free(i_plm_in); free(i_w);
                free(i_b); free(indices); free(batch); free(tam_batches);
                cudaFree(d_img_in); cudaFree(d_img_in_copy); cudaFree(d_img_out); cudaFree(d_conv_a_eval); cudaFree(d_flat_outs);
@@ -122,15 +128,13 @@ class CNN
 
         // Evaluar el modelo
         void evaluar_modelo();
-        void evaluar_modelo_en_test();
 
+        // Establecer conjunto de entrenamiento y de test
         void set_train(float *x, float *y, int n_imgs, int n_clases, int C, int H, int W);
-        void set_test(const vector<vector<vector<vector<float>>>> &x, const vector<vector<float>> &y){this->test_imgs = x; this->test_labels = y;};
 
+        // Manejo de handles
         void crear_handles(int mini_batch);
         void destruir_handles();
-
-        void prueba_cudnn();
 };
 
 #endif

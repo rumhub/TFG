@@ -69,7 +69,6 @@ class Convolutional
         int bytes_input_back_unroll;
         int bytes_bias;
 
-        // GPU -------------------
         // Punteros device
         float *d_input_unroll = nullptr;        // Volumen de entrada 'desenrrollado'
         float *d_w = nullptr;
@@ -91,39 +90,37 @@ class Convolutional
 
     public:
 
-        // GPU ------------------------------------------
-        Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr, int pad);
-        void forwardPropagation_vectores_externos(float *input, float *output, float *a);
-        void backPropagation_vectores_externos(float *input, float *output, float *a, float *grad_w, float *grad_bias);
-        void generar_pesos_ptr(float *w);
-        void actualizar_grads_vectores_externos(float *grad_w, float *grad_bias, int mini_batch);
-        void escalar_pesos_vectores_externos(float clip_value);
-        void aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad);
-        void copiar(const Convolutional & conv);
-        ~Convolutional();
-        /*
-        ~Convolutional(){free(h_input_unroll); free(output_pad); free(grad_w_it); free(h_output_unroll); free(h_matriz_pesos); free(h_input_back_unroll);
-                               free(w_ptr); free(bias_ptr); cudaFree(d_input_unroll); cudaFree(d_a); cudaFree(d_w); cudaFree(d_output_unroll);
-                               cudaFree(d_matriz_pesos); cudaFree(d_input); cudaFree(d_input_back_unroll); cudaFree(d_output); cudaFree(d_grad_w);};
-        */
-
-        // CPU ------------------------------------------
-
         // Constructores
+        Convolutional(int n_kernels, int kernel_fils, int kernel_cols, int C, int H, int W, float lr, int pad);
         Convolutional(){};
+        
+        // Propagación hacia delante
+        void forwardPropagation_vectores_externos(float *input, float *output, float *a);
+        
+        // Retropropagación
+        void backPropagation_vectores_externos(float *input, float *output, float *a, float *grad_w, float *grad_bias);
+        
+        // Generar pesos
+        void generar_pesos_ptr(float *w);
+        
+        // Actualizar pesos
+        void actualizar_grads_vectores_externos(float *grad_w, float *grad_bias, int mini_batch);
+        
+        // Escalar pesos
+        void escalar_pesos_vectores_externos(float clip_value);
+        
+        // Aplicar padding
+        void aplicar_padding_ptr(float *imagen_3D, int C, int H, int W, int pad);
+        
+        // Copiar de una capa convolucional a otra
+        void copiar(const Convolutional & conv);
+
+        // Destructor
+        ~Convolutional();
 
         // Funciones de activación
-		    float activationFunction(float x);
+        float activationFunction(float x);
         float deriv_activationFunction(float x);
-
-        // Propagación hacia delante
-
-        // Retropropagación
-
-
-        // Modificación de parámetros
-
-        // Aplicar padding
 
         // Gets
         int get_kernel_fils(){return this->kernel_fils;};
@@ -136,8 +133,6 @@ class Convolutional
         int get_W_out(){return this->W_out;};
         int get_cols_input_unroll(){return this->cols_input_unroll;};
         float * get_dw(){return this->d_w;};
-
-        // https://calvinfeng.gitbook.io/machine-learning-notebook/supervised-learning/convolutional-neural-network/convolution_operation
 
         // Debug
         void checkCudaErrors(cudaError_t err);
