@@ -420,6 +420,11 @@ Piotr Skalski.
   \url{https://towardsdatascience.com/lets-code-convolutional-neural-network-in-plain-numpy-ce48e732f5d5}
   [Accessed:24/03/2024].
 
+\bibitem{opencv}
+OpenCV team.
+\newblock Opencv, 2024.
+\newblock \url{https://opencv.org/} [Accessed:04/09/2024].
+
 \bibitem{openmp_intro}
 Arnab Chakraborty.
 \newblock What is openmp?, 2019.

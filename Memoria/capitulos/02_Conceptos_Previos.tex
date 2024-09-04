@@ -1,8 +1,8 @@
 \chapter{Conceptos previos}
 
-Este segundo capítulo, establece los fundamentos teóricos esenciales para el desarrollo del proyecto. Comienza con una introducción al Machine Learning y el aprendizaje supervisado, explicando la importancia de dividir los datos en conjuntos de entrenamiento y test. Posteriormente, se profundiza en las Redes Neuronales Totalmente Conectadas, detallando desde la estructura de una neurona hasta conceptos avanzados como funciones de activación, retropropagación, y optimización mediante el descenso del gradiente.
+Este segundo capítulo,establece los fundamentos teóricos esenciales para el desarrollo del proyecto. Comienza con una introducción al Machine Learning y el aprendizaje supervisado, explicando la importancia de dividir los datos en conjuntos de entrenamiento y test. Posteriormente, se profundiza en las Redes Neuronales Totalmente Conectadas, detallando desde la estructura de una neurona hasta conceptos avanzados como funciones de activación, retropropagación, y optimización mediante el descenso del gradiente.
 
-El capítulo también aborda las Redes Neuronales Convolucionales (CNNs), describiendo su estructura y funcionamiento, incluyendo tanto la retropropagación en capas convolucionales, como la retropropagación en capas de agrupación máxima. Además, se exploran tecnologías clave para la implementación eficiente de redes neuronales, como OpenMP, CUDA y cuDNN, explicando su gestión de memoria, jerarquía de hebras y principales funciones. Este capítulo, proporciona una base teórica sólida que sustentará las implementaciones y experimentos presentados en el resto del proyecto.
+El capítulo también aborda las Redes Neuronales Convolucionales (CNNs), describiendo su estructura y funcionamiento, incluyendo tanto la retropropagación en capas convolucionales, como la retropropagación en capas de agrupación máxima. Además, se exploran tecnologías clave para la implementación eficiente de redes neuronales, como OpenMP, CUDA y cuDNN, explicando su gestión de memoria, jerarquía de hebras y principales funciones. Este capítulo proporciona una base teórica sólida que sustentará las implementaciones y experimentos presentados en el resto del proyecto.
 
 \section{Machine Learning}
 
@@ -903,6 +903,10 @@ Como solo se modifica la forma en la que se agrupan los datos, no requiere la pr
 En la retropropagación de una capa de aplanado, se parte de un array 1D y se convierte en un volumen 3D que pueda ser usado para seguir la retropropagación en capas anteriores convolucionales o de agrupación máxima
 \cite{flatten_forward}.
 
+\section{OpenCV}
+
+En secciones anteriores se ha indicado que el desarrollo y la implementación de las redes neuronales convolucionales se realizarán exclusivamente mediante el uso de C++, OpenMP, CUDA y cuDNN. Con el fin de optimizar la asignación de recursos y enfocar los esfuerzos en la comprensión y construcción de estas redes, se ha optado por utilizar OpenCV \cite{opencv} para la tarea específica de lectura de las imágenes de entrada. En consecuencia, OpenCV se empleará para convertir las imágenes de entrada en formato PNG o JPG, en un vector de cuatro dimensiones en C++, siguiendo la estructura NCHW (Número de muestras, Canales de profundidad, Altura y Anchura).
+
 \section{OpenMP}
 
 OpenMP \cite{openmp_intro}, es una interfaz de programación de aplicaciones (API), que proporciona directivas de compilador, y rutinas de biblioteca, facilitando así la programación paralela en sistemas con memoria compartida. Diseñada para lenguajes como C, C++ y FORTRAN, OpenMP permite a los desarrolladores escribir código que se ejecute de manera concurrente en múltiples procesadores, optimizando así el rendimiento de las aplicaciones en entornos de multiprocesamiento. \cite{openmp_intro}. \\
@@ -951,7 +955,7 @@ CUDA C++ (el empleado en este proyecto) extiende el lenguaje C++ al permitir al 
 	\label{fig:cuda_grid}
 \end{figure}
 
-Las hebras CUDA se organizan en una cuadrícula o grid compuesta por varios bloques de hebras (véase la Figura \ref{fig:cuda_grid}). De esta manera, cada hebra pertenece a un bloque de hebras, y cada bloque de un mismo kernel pertenece a un mismo grid. Todas las hebras de un mismo grid comparten la misma memoria global. Por tanto, hebras de distintos grids no pueden cooperar. A su vez, las hebras de un mismo bloque se pueden sincronizar y compartir memoria a nivel de bloque, siendo esta más escasa pero presentando una latencia considerablemente menor que la memoria global. CUDA organiza los grids y bloques mediante estructuras que pueden ser 1D, 2D o incluso 3D \cite{Professional_CUDA_C}.
+Las hebras CUDA se organizan en una cuadrícula o grid compuesta por varios bloques de hebras (véase la Figura \ref{fig:cuda_grid}). De esta manera, cada hebra pertenece a un bloque de hebras, y cada bloque de un mismo kernel pertenece a un mismo grid. Todas las hebras de un mismo grid comparten la misma memoria global. A su vez, las hebras de un mismo bloque se pueden sincronizar y compartir memoria a nivel de bloque, siendo esta más escasa pero presentando una latencia considerablemente menor que la memoria global. CUDA organiza los grids y bloques mediante estructuras que pueden ser 1D, 2D o incluso 3D \cite{Professional_CUDA_C}.
 
 \section{cuDNN (Deep Neural Network)}
 
@@ -979,7 +983,7 @@ Un tensor 3D se suele emplear para representar un volumen 3D como podría ser un
 	\item \textbf{N}: Columnas por imagen 2D
 \end{enumerate}
 
-\subsubsection{Tensor 4D}
+\subsubsection{Tensor 4D \label{NCHW}}
 Suele representar conjuntos de imágenes 2D. Sus dimensiones son N, C, H, W
 
 \begin{enumerate}

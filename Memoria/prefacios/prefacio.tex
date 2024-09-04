@@ -26,7 +26,7 @@ David Sánchez Pérez\\
 
 Este \textit{Trabajo de Fin de Grado} se centra en la aplicación de la computación heterogénea a bajo nivel para optimizar el rendimiento de redes neuronales convolucionales (CNNs). Las CNNs son esenciales en una variedad de campos, incluyendo el reconocimiento de imágenes, la visión artificial, la detección de objetos y el procesamiento del lenguaje natural. 
 
-El enfoque del proyecto es diseñar y desarrollar diversas implementaciones para optimizar la combinación de CPUs y GPUs en algoritmos de aprendizaje profundo. En primer lugar, se diseñará la arquitectura de las redes neuronales convolucionales a implementar. A continuación, se llevará a cabo una implementación secuencial en CPU, seguida de una implementación paralela en CPU utilizando OpenMP. Posteriormente, se desarrollará un sistema heterogéneo empleando CUDA, y, finalmente, se implementará otro sistema heterogéneo utilizando la biblioteca cuDNN.
+El enfoque del proyecto es diseñar y desarrollar diversas implementaciones para optimizar la combinación de CPUs y GPUs en algoritmos de aprendizaje profundo. En primer lugar, se diseñará la arquitectura de las redes neuronales convolucionales a implementar. A continuación, se llevará a cabo una implementación secuencial en CPU, seguida de una implementación multihebra para CPU utilizando OpenMP. Posteriormente, se desarrollará un sistema heterogéneo empleando CUDA, y, finalmente, se implementará otro sistema heterogéneo utilizando la biblioteca cuDNN.
 
 Cada implementación será construida desde cero, sin depender de bibliotecas o frameworks externos, salvo por OpenMP, CUDA y cuDNN, con el objetivo de consolidar los conocimientos sobre CNNs y su optimización en sistemas heterogéneos.
 \cleardoublepage
@@ -43,14 +43,14 @@ David Sánchez Pérez\\
 \end{center}
 
 %\vspace{0.7cm}
-\noindent{\textbf{Keywords}: Artificial Intelligence, Machine Learning, Deep Learning, Computer Vision, Neural Network Architecture, Image Processing, Machine Learning Algorithms, C++ Implementation, OpenMP Parallelization, Miltithreading, GPU Computing, CUDA Programming, NVIDIA CUDA, cuDNN Library, Custom Implementations}\\
+\noindent{\textbf{Keywords}: Artificial Intelligence, Machine Learning, Deep Learning, Computer Vision, Neural Network Architecture, Image Processing, Machine Learning Algorithms, C++ Implementation, OpenMP Parallelization, Multithreading, GPU Computing, CUDA Programming, NVIDIA CUDA, cuDNN Library, Custom Implementations}\\
 
 \vspace{0.7cm}
 \noindent{\textbf{Abstract}}\\
 
 This \textit{Bachelor's Thesis} focuses on the application of low-level heterogeneous computing to optimize the performance of convolutional neural networks (CNNs). CNNs are crucial in various fields, including image recognition, computer vision, object detection, and natural language processing.
 
-The project's approach is to design and develop several implementations to enhance the synergy between CPUs and GPUs in deep learning algorithms. First, the architecture of the convolutional neural networks to be implemented will be designed. Next, a sequential implementation on CPU will be carried out, followed by a parallel CPU implementation using OpenMP. Subsequently, a heterogeneous system using CUDA will be developed, and finally, another heterogeneous system utilizing the cuDNN library will be implemented.
+The project's approach is to design and develop several implementations to enhance the synergy between CPUs and GPUs in deep learning algorithms. First, the architecture of the convolutional neural networks to be implemented will be designed. Next, a sequential implementation on CPU will be carried out, followed by a multithreading CPU implementation using OpenMP. Subsequently, a heterogeneous system using CUDA will be developed, and finally, another heterogeneous system utilizing the cuDNN library will be implemented.
 
 Each implementation will be built from scratch, without relying on external libraries or frameworks, except for OpenMP, CUDA, and cuDNN, with the aim of consolidating knowledge about CNNs and their optimization on heterogeneous systems.
 

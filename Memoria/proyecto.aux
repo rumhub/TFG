@@ -272,17 +272,20 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {2.27}{\ignorespaces Propagación hacia delante en una capa de aplanado}}{40}{figure.caption.60}\protected@file@percent }
 \newlabel{fig:forward_prop_flatten_canales_profundidad}{{2.27}{40}{Propagación hacia delante en una capa de aplanado}{figure.caption.60}{}}
 \citation{flatten_forward}
+\citation{opencv}
 \citation{openmp_intro}
 \citation{openmp_intro}
-\citation{openmp_directivas}
 \@writefile{toc}{\contentsline {subsubsection}{Retropropagación}{41}{section*.61}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {2.28}{\ignorespaces Retropropagación en una capa de aplanado}}{41}{figure.caption.62}\protected@file@percent }
 \newlabel{fig:back_prop_flatten_canales_profundidad}{{2.28}{41}{Retropropagación en una capa de aplanado}{figure.caption.62}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.6}OpenMP}{41}{section.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.6}OpenCV}{41}{section.2.6}\protected@file@percent }
+\citation{openmp_directivas}
 \citation{cuda_forum}
+\@writefile{toc}{\contentsline {section}{\numberline {2.7}OpenMP}{42}{section.2.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.8}CUDA}{42}{section.2.8}\protected@file@percent }
 \citation{cuda_kernels}
-\@writefile{toc}{\contentsline {section}{\numberline {2.7}CUDA}{42}{section.2.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.1}Gestión de memoria}{42}{subsection.2.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.1}Gestión de memoria}{43}{subsection.2.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.2}Kernels}{43}{subsection.2.8.2}\protected@file@percent }
 \citation{Professional_CUDA_C}
 \citation{cuDNN}
 \citation{Caffe2}
@@ -291,32 +294,32 @@
 \citation{Pytorch}
 \citation{Tensorflow}
 \citation{cuDNN_librerias}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.2}Kernels}{43}{subsection.2.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.7.3}Jerarquía de hebras}{43}{subsection.2.7.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2.29}{\ignorespaces Jerarquía de hebras en un grid CUDA}}{43}{figure.caption.63}\protected@file@percent }
-\newlabel{fig:cuda_grid}{{2.29}{43}{Jerarquía de hebras en un grid CUDA}{figure.caption.63}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.3}Jerarquía de hebras}{44}{subsection.2.8.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2.29}{\ignorespaces Jerarquía de hebras en un grid CUDA}}{44}{figure.caption.63}\protected@file@percent }
+\newlabel{fig:cuda_grid}{{2.29}{44}{Jerarquía de hebras en un grid CUDA}{figure.caption.63}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.9}cuDNN (Deep Neural Network)}{44}{section.2.9}\protected@file@percent }
 \citation{cuDNN_core_concepts}
 \citation{cuDNN_core_concepts}
-\@writefile{toc}{\contentsline {section}{\numberline {2.8}cuDNN (Deep Neural Network)}{44}{section.2.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.1}Manejador}{44}{subsection.2.8.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.2}Tensores}{44}{subsection.2.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.9.1}Manejador}{45}{subsection.2.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.9.2}Tensores}{45}{subsection.2.9.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Tensor 3D}{45}{section*.64}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Tensor 4D}{45}{section*.65}\protected@file@percent }
+\newlabel{NCHW}{{2.9.2}{46}{Tensor 4D}{section*.65}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Tensor 4D }{46}{section*.65}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Representación de un tensor 4D}{46}{section*.66}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {2.30}{\ignorespaces Ejemplo de tensor 4D con dimensiones: N=1, C=1, H=5, y W=6}}{46}{figure.caption.67}\protected@file@percent }
 \newlabel{fig:ejemplo_tensor}{{2.30}{46}{Ejemplo de tensor 4D con dimensiones: N=1, C=1, H=5, y W=6}{figure.caption.67}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2.31}{\ignorespaces Ejemplo de tensor 4D NCHW con dimensiones: N=1, C=1, H=5, y W=6}}{46}{figure.caption.68}\protected@file@percent }
-\newlabel{fig:tensor_nchw}{{2.31}{46}{Ejemplo de tensor 4D NCHW con dimensiones: N=1, C=1, H=5, y W=6}{figure.caption.68}{}}
 \citation{cuDNN_conv_fwd}
 \citation{cuDNN_pool_fwd}
 \citation{cuDNN_pool_fwd}
-\citation{cuDNN_conv_back_w}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.8.3}Principales funciones}{47}{subsection.2.8.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2.31}{\ignorespaces Ejemplo de tensor 4D NCHW con dimensiones: N=1, C=1, H=5, y W=6}}{47}{figure.caption.68}\protected@file@percent }
+\newlabel{fig:tensor_nchw}{{2.31}{47}{Ejemplo de tensor 4D NCHW con dimensiones: N=1, C=1, H=5, y W=6}{figure.caption.68}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.9.3}Principales funciones}{47}{subsection.2.9.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionForward}{47}{section*.69}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{cudnnPoolingForward}{47}{section*.70}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{cudnnPoolingBackward}{47}{section*.71}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{47}{section*.72}\protected@file@percent }
+\citation{cuDNN_conv_back_w}
 \citation{cuDNN_conv_back_x}
+\@writefile{toc}{\contentsline {subsubsection}{cudnnPoolingBackward}{48}{section*.71}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{48}{section*.72}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionBackwardData}{48}{section*.73}\protected@file@percent }
 \citation{data_model_parallelism}
 \citation{model_parallelism}
@@ -332,8 +335,8 @@
 \citation{GEMM_definition}
 \citation{conv_GEMM_FFT_comparacion}
 \citation{Programming_Massively}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Flujo de las hebras en la implementación con OpenMP}}{51}{figure.caption.74}\protected@file@percent }
-\newlabel{fig:openmp_flujo}{{3.1}{51}{Flujo de las hebras en la implementación con OpenMP}{figure.caption.74}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Flujo de datos entre las hebras en la implementación con OpenMP}}{51}{figure.caption.74}\protected@file@percent }
+\newlabel{fig:openmp_flujo}{{3.1}{51}{Flujo de datos entre las hebras en la implementación con OpenMP}{figure.caption.74}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.3}Paralelización en sistemas heterogéneos}{51}{section.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}GEMM}{51}{subsection.3.3.1}\protected@file@percent }
 \newlabel{Intro_GEMMM}{{3.3.2}{51}{Convolución como GEMM}{subsection.3.3.2}{}}
@@ -384,341 +387,342 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.0.1}Modelos a emplear}{67}{subsection.4.0.1}\protected@file@percent }
 \citation{cifar10}
 \citation{10_big_cats}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.0.2}Bases de datos}{70}{subsection.4.0.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.0.3}Resultados en entrenamiento}{70}{subsection.4.0.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.0.2}Recursos utilizados}{70}{subsection.4.0.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.0.3}Bases de datos}{70}{subsection.4.0.3}\protected@file@percent }
 \citation{cifar10}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.0.4}Resultados en entrenamiento}{71}{subsection.4.0.4}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Entrenamiento con CIFAR10}}{71}{figure.caption.91}\protected@file@percent }
 \newlabel{fig:cifar10}{{4.1}{71}{Entrenamiento con CIFAR10}{figure.caption.91}{}}
 \citation{10_big_cats}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Entrenamiento con 10 Big Cats}}{72}{figure.caption.92}\protected@file@percent }
 \newlabel{fig:10_big_cats}{{4.2}{72}{Entrenamiento con 10 Big Cats}{figure.caption.92}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.0.4}Comparación de rendimiento}{72}{subsection.4.0.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.0.5}Comparación de rendimiento}{72}{subsection.4.0.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{Implementaciones CPU}{73}{section*.93}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces Secuencial vs OpenMP}}{73}{figure.caption.94}\protected@file@percent }
 \newlabel{fig:sec_openmp}{{4.3}{73}{Secuencial vs OpenMP}{figure.caption.94}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{73}{figure.caption.95}\protected@file@percent }
-\newlabel{fig:ganancia_sec_openmp}{{4.4}{73}{Ganancia de OpenMP respecto a secuencial}{figure.caption.95}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces Ganancia de OpenMP respecto a secuencial}}{74}{figure.caption.95}\protected@file@percent }
+\newlabel{fig:ganancia_sec_openmp}{{4.4}{74}{Ganancia de OpenMP respecto a secuencial}{figure.caption.95}{}}
 \@writefile{toc}{\contentsline {subsubsection}{Implementaciones GPU}{74}{section*.96}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {4.5}{\ignorespaces OpenMP vs CUDA vs CUDNN}}{74}{figure.caption.97}\protected@file@percent }
 \newlabel{fig:openmp_cuda_cudnn}{{4.5}{74}{OpenMP vs CUDA vs CUDNN}{figure.caption.97}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {4.6}{\ignorespaces Ganancia de CUDA y cuDNN sobre OpenMP}}{75}{figure.caption.98}\protected@file@percent }
 \newlabel{fig:ganancia_cuda_cudnn_openmp}{{4.6}{75}{Ganancia de CUDA y cuDNN sobre OpenMP}{figure.caption.98}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces CUDA vs CUDNN}}{75}{figure.caption.99}\protected@file@percent }
-\newlabel{fig:cuda_cudnn_1}{{4.7}{75}{CUDA vs CUDNN}{figure.caption.99}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.7}{\ignorespaces CUDA vs CUDNN}}{76}{figure.caption.99}\protected@file@percent }
+\newlabel{fig:cuda_cudnn_1}{{4.7}{76}{CUDA vs CUDNN}{figure.caption.99}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Comparación rendimiento CuDNN vs CUDA}}{76}{table.caption.100}\protected@file@percent }
 \newlabel{tabla_resultados}{{4.1}{76}{Comparación rendimiento CuDNN vs CUDA}{table.caption.100}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusiones y trabajo futuro}{77}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusiones y trabajo futuro}{79}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {chapter}{\numberline {A}cuDNN, Principales funciones}{79}{appendix.Alph1}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}cuDNN, Principales funciones}{81}{appendix.Alph1}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{apendice_cuDNN_principales_funciones}{{A}{79}{cuDNN, Principales funciones}{appendix.Alph1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionForward}{79}{section*.101}\protected@file@percent }
-\newlabel{cudnnConvolutionForward}{{A}{79}{cudnnConvolutionForward}{section*.101}{}}
+\newlabel{apendice_cuDNN_principales_funciones}{{A}{81}{cuDNN, Principales funciones}{appendix.Alph1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionForward}{81}{section*.101}\protected@file@percent }
+\newlabel{cudnnConvolutionForward}{{A}{81}{cudnnConvolutionForward}{section*.101}{}}
 \citation{cuDNN_conv_fwd}
-\@writefile{toc}{\contentsline {subsubsection}{cudnnPoolingForward}{80}{section*.102}\protected@file@percent }
-\newlabel{cudnnPoolingForward}{{A}{80}{cudnnPoolingForward}{section*.102}{}}
+\@writefile{toc}{\contentsline {subsubsection}{cudnnPoolingForward}{82}{section*.102}\protected@file@percent }
+\newlabel{cudnnPoolingForward}{{A}{82}{cudnnPoolingForward}{section*.102}{}}
 \citation{cuDNN_pool_fwd}
-\@writefile{toc}{\contentsline {subsubsection}{cudnnPoolingBackward}{81}{section*.103}\protected@file@percent }
-\newlabel{cudnnPoolingBackward}{{A}{81}{cudnnPoolingBackward}{section*.103}{}}
+\@writefile{toc}{\contentsline {subsubsection}{cudnnPoolingBackward}{83}{section*.103}\protected@file@percent }
+\newlabel{cudnnPoolingBackward}{{A}{83}{cudnnPoolingBackward}{section*.103}{}}
 \citation{cuDNN_pool_fwd}
-\@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{82}{section*.104}\protected@file@percent }
-\newlabel{cudnnConvolutionBackwardFilter}{{A}{82}{cudnnConvolutionBackwardFilter}{section*.104}{}}
+\@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionBackwardFilter}{84}{section*.104}\protected@file@percent }
+\newlabel{cudnnConvolutionBackwardFilter}{{A}{84}{cudnnConvolutionBackwardFilter}{section*.104}{}}
 \citation{cuDNN_conv_back_w}
-\@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionBackwardData}{83}{section*.105}\protected@file@percent }
-\newlabel{cudnnConvolutionBackwardData}{{A}{83}{cudnnConvolutionBackwardData}{section*.105}{}}
+\@writefile{toc}{\contentsline {subsubsection}{cudnnConvolutionBackwardData}{85}{section*.105}\protected@file@percent }
+\newlabel{cudnnConvolutionBackwardData}{{A}{85}{cudnnConvolutionBackwardData}{section*.105}{}}
 \citation{cuDNN_conv_back_x}
-\@writefile{toc}{\contentsline {chapter}{\numberline {B}Planificación detallada}{85}{appendix.Alph2}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {B}Planificación detallada}{87}{appendix.Alph2}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{planificacion}{{B}{85}{Planificación detallada}{appendix.Alph2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {B.1}{\ignorespaces Planificación del proyecto}}{89}{table.caption.106}\protected@file@percent }
-\newlabel{tabla_planificación_aprendice}{{B.1}{89}{Planificación del proyecto}{table.caption.106}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {C}Retropropagación en capa SoftMax}{91}{appendix.Alph3}\protected@file@percent }
+\newlabel{planificacion}{{B}{87}{Planificación detallada}{appendix.Alph2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {B.1}{\ignorespaces Planificación del proyecto}}{91}{table.caption.106}\protected@file@percent }
+\newlabel{tabla_planificación_aprendice}{{B.1}{91}{Planificación del proyecto}{table.caption.106}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {C}Retropropagación en capa SoftMax}{93}{appendix.Alph3}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{softmax_apendice}{{C}{91}{Retropropagación en capa SoftMax}{appendix.Alph3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {C.1}{\ignorespaces Estructura de una red totalmente conectada con softmax en la última capa}}{91}{figure.caption.107}\protected@file@percent }
-\newlabel{cross_entropy_notacion_apendice}{{C.1}{91}{Retropropagación en capa SoftMax}{equation.Alph3.0.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C.1}Cálculo del gradiente de la función de error}{91}{section.Alph3.1}\protected@file@percent }
-\newlabel{grad_H_Z}{{C.2}{92}{Cálculo del gradiente de la función de error}{equation.Alph3.1.2}{}}
-\newlabel{gradiente_Oi_Zk_1}{{C.3}{92}{Cálculo del gradiente de la función de error}{equation.Alph3.1.3}{}}
-\newlabel{gradiente_Oi_Zk_2}{{C.4}{92}{Cálculo del gradiente de la función de error}{equation.Alph3.1.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C.2}Derivada de softmax con respecto a su entrada, $\frac  {\partial O_i}{\partial Z_k}$}{92}{section.Alph3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {C.3}Caso $\frac  {\partial S(Z_i)}{\partial Z_i}$}{92}{section.Alph3.3}\protected@file@percent }
-\newlabel{grad_Oi_Zk_drch}{{C.7}{93}{Caso $\frac {\partial S(Z_i)}{\partial Z_i}$}{equation.Alph3.3.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.3.1}Caso $\frac  {\partial S(Z_i)}{\partial Z_j}$, con i $\neq  $ j}{93}{subsection.Alph3.3.1}\protected@file@percent }
-\newlabel{grad_Oi_Zk_izq}{{C.8}{93}{Caso $\frac {\partial S(Z_i)}{\partial Z_j}$, con i $\neq $ j}{equation.Alph3.3.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C.4}Combinación de casos}{93}{section.Alph3.4}\protected@file@percent }
+\newlabel{softmax_apendice}{{C}{93}{Retropropagación en capa SoftMax}{appendix.Alph3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {C.1}{\ignorespaces Estructura de una red totalmente conectada con softmax en la última capa}}{93}{figure.caption.107}\protected@file@percent }
+\newlabel{cross_entropy_notacion_apendice}{{C.1}{93}{Retropropagación en capa SoftMax}{equation.Alph3.0.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C.1}Cálculo del gradiente de la función de error}{93}{section.Alph3.1}\protected@file@percent }
+\newlabel{grad_H_Z}{{C.2}{94}{Cálculo del gradiente de la función de error}{equation.Alph3.1.2}{}}
+\newlabel{gradiente_Oi_Zk_1}{{C.3}{94}{Cálculo del gradiente de la función de error}{equation.Alph3.1.3}{}}
+\newlabel{gradiente_Oi_Zk_2}{{C.4}{94}{Cálculo del gradiente de la función de error}{equation.Alph3.1.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C.2}Derivada de softmax con respecto a su entrada, $\frac  {\partial O_i}{\partial Z_k}$}{94}{section.Alph3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {C.3}Caso $\frac  {\partial S(Z_i)}{\partial Z_i}$}{94}{section.Alph3.3}\protected@file@percent }
+\newlabel{grad_Oi_Zk_drch}{{C.7}{95}{Caso $\frac {\partial S(Z_i)}{\partial Z_i}$}{equation.Alph3.3.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.3.1}Caso $\frac  {\partial S(Z_i)}{\partial Z_j}$, con i $\neq  $ j}{95}{subsection.Alph3.3.1}\protected@file@percent }
+\newlabel{grad_Oi_Zk_izq}{{C.8}{95}{Caso $\frac {\partial S(Z_i)}{\partial Z_j}$, con i $\neq $ j}{equation.Alph3.3.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C.4}Combinación de casos}{95}{section.Alph3.4}\protected@file@percent }
 \citation{Cross_entropy_backprop}
 \citation{Cross_entropy_backprop_grad_input}
-\newlabel{comb_casos}{{C.9}{94}{Combinación de casos}{equation.Alph3.4.9}{}}
-\newlabel{simplificacion_Oi_Ok}{{C.10}{94}{Combinación de casos}{equation.Alph3.4.10}{}}
-\newlabel{simplificar}{{C.11}{94}{Combinación de casos}{equation.Alph3.4.11}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C.5}Simplificación One-Hot}{94}{section.Alph3.5}\protected@file@percent }
-\newlabel{one_hot_simplif_1}{{C.12}{94}{Simplificación One-Hot}{equation.Alph3.5.12}{}}
-\newlabel{one_hot_simplif_2}{{C.13}{94}{Simplificación One-Hot}{equation.Alph3.5.13}{}}
-\newlabel{one_hot_simplif_3}{{C.14}{94}{Simplificación One-Hot}{equation.Alph3.5.14}{}}
-\newlabel{one_hot_simplif_4}{{C.15}{94}{Simplificación One-Hot}{equation.Alph3.5.15}{}}
-\newlabel{gradiente_softmax_apendice}{{C.16}{95}{Simplificación One-Hot}{equation.Alph3.5.16}{}}
+\newlabel{comb_casos}{{C.9}{96}{Combinación de casos}{equation.Alph3.4.9}{}}
+\newlabel{simplificacion_Oi_Ok}{{C.10}{96}{Combinación de casos}{equation.Alph3.4.10}{}}
+\newlabel{simplificar}{{C.11}{96}{Combinación de casos}{equation.Alph3.4.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C.5}Simplificación One-Hot}{96}{section.Alph3.5}\protected@file@percent }
+\newlabel{one_hot_simplif_1}{{C.12}{96}{Simplificación One-Hot}{equation.Alph3.5.12}{}}
+\newlabel{one_hot_simplif_2}{{C.13}{96}{Simplificación One-Hot}{equation.Alph3.5.13}{}}
+\newlabel{one_hot_simplif_3}{{C.14}{96}{Simplificación One-Hot}{equation.Alph3.5.14}{}}
+\newlabel{one_hot_simplif_4}{{C.15}{96}{Simplificación One-Hot}{equation.Alph3.5.15}{}}
+\newlabel{gradiente_softmax_apendice}{{C.16}{97}{Simplificación One-Hot}{equation.Alph3.5.16}{}}
 \citation{NN_backpropagation}
 \citation{NN_backprop_2}
-\@writefile{toc}{\contentsline {chapter}{\numberline {D}Retropropagación en redes neuronales rotalmente conectadas}{97}{appendix.Alph4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {D}Retropropagación en redes neuronales rotalmente conectadas}{99}{appendix.Alph4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{backprop_fully_apendice}{{D}{97}{Retropropagación en redes neuronales rotalmente conectadas}{appendix.Alph4}{}}
-\newlabel{backprop_1_capa}{{D.1}{97}{Retropropagación con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2}}{section.Alph4.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {D.1}Retropropagación con 1 capa oculta \cite  {NN_backpropagation} \cite  {NN_backprop_2} }{97}{section.Alph4.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{97}{figure.caption.108}\protected@file@percent }
-\newlabel{fig:nn_1_capa}{{D.1}{97}{Red Neuronal totalmente conectada con 1 capa oculta}{figure.caption.108}{}}
+\newlabel{backprop_fully_apendice}{{D}{99}{Retropropagación en redes neuronales rotalmente conectadas}{appendix.Alph4}{}}
+\newlabel{backprop_1_capa}{{D.1}{99}{Retropropagación con 1 capa oculta \cite {NN_backpropagation} \cite {NN_backprop_2}}{section.Alph4.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D.1}Retropropagación con 1 capa oculta \cite  {NN_backpropagation} \cite  {NN_backprop_2} }{99}{section.Alph4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.1}{\ignorespaces Red Neuronal totalmente conectada con 1 capa oculta}}{99}{figure.caption.108}\protected@file@percent }
+\newlabel{fig:nn_1_capa}{{D.1}{99}{Red Neuronal totalmente conectada con 1 capa oculta}{figure.caption.108}{}}
 \citation{NN_backpropagation}
 \citation{NN_backprop_2}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.1}Capa SoftMax}{98}{subsection.Alph4.1.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.2}{\ignorespaces Retropropagación en la capa softmax}}{98}{figure.caption.109}\protected@file@percent }
-\newlabel{fig:nn_1_capa_output}{{D.2}{98}{Retropropagación en la capa softmax}{figure.caption.109}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.2}Pesos capas h1-SoftMax}{99}{subsection.Alph4.1.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.3}{\ignorespaces Retropropagación con respecto a pesos entre la capa oculta y la capa SoftMax}}{99}{figure.caption.110}\protected@file@percent }
-\newlabel{fig:nn_1_pesos_h1_output}{{D.3}{99}{Retropropagación con respecto a pesos entre la capa oculta y la capa SoftMax}{figure.caption.110}{}}
-\newlabel{grad_w1pk_1}{{D.1}{99}{Pesos capas h1-SoftMax}{equation.Alph4.1.1}{}}
-\newlabel{grad_w1pk_2}{{D.2}{99}{Pesos capas h1-SoftMax}{equation.Alph4.1.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.3}Sesgos capa softmax}{99}{subsection.Alph4.1.3}\protected@file@percent }
-\newlabel{grad_b_h1_1}{{D.3}{99}{Sesgos capa softmax}{equation.Alph4.1.3}{}}
-\newlabel{grad_b_h1_2}{{D.4}{99}{Sesgos capa softmax}{equation.Alph4.1.4}{}}
-\newlabel{grad_b_h1_3}{{D.5}{99}{Sesgos capa softmax}{equation.Alph4.1.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.1}Capa SoftMax}{100}{subsection.Alph4.1.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.2}{\ignorespaces Retropropagación en la capa softmax}}{100}{figure.caption.109}\protected@file@percent }
+\newlabel{fig:nn_1_capa_output}{{D.2}{100}{Retropropagación en la capa softmax}{figure.caption.109}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.2}Pesos capas h1-SoftMax}{101}{subsection.Alph4.1.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.3}{\ignorespaces Retropropagación con respecto a pesos entre la capa oculta y la capa SoftMax}}{101}{figure.caption.110}\protected@file@percent }
+\newlabel{fig:nn_1_pesos_h1_output}{{D.3}{101}{Retropropagación con respecto a pesos entre la capa oculta y la capa SoftMax}{figure.caption.110}{}}
+\newlabel{grad_w1pk_1}{{D.1}{101}{Pesos capas h1-SoftMax}{equation.Alph4.1.1}{}}
+\newlabel{grad_w1pk_2}{{D.2}{101}{Pesos capas h1-SoftMax}{equation.Alph4.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.3}Sesgos capa softmax}{101}{subsection.Alph4.1.3}\protected@file@percent }
+\newlabel{grad_b_h1_1}{{D.3}{101}{Sesgos capa softmax}{equation.Alph4.1.3}{}}
+\newlabel{grad_b_h1_2}{{D.4}{101}{Sesgos capa softmax}{equation.Alph4.1.4}{}}
+\newlabel{grad_b_h1_3}{{D.5}{101}{Sesgos capa softmax}{equation.Alph4.1.5}{}}
 \citation{NN_backpropagation}
 \citation{NN_backprop_2}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.4}Capa oculta h1}{100}{subsection.Alph4.1.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.4}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}}{100}{figure.caption.111}\protected@file@percent }
-\newlabel{nn_caminos_posibles}{{D.4}{100}{Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}{figure.caption.111}{}}
-\newlabel{E_total_a1p}{{D.6}{100}{Capa oculta h1}{equation.Alph4.1.6}{}}
-\newlabel{deriv_Zk_z1p}{{D.7}{100}{Capa oculta h1}{equation.Alph4.1.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.5}{\ignorespaces Retropropagación con respecto a neuronas de la capa oculta h1}}{100}{figure.caption.112}\protected@file@percent }
-\newlabel{fig:nn_1_capa_h1}{{D.5}{100}{Retropropagación con respecto a neuronas de la capa oculta h1}{figure.caption.112}{}}
-\newlabel{grad_sig_1}{{D.8}{101}{Capa oculta h1}{equation.Alph4.1.8}{}}
-\newlabel{grad_sig_2}{{D.9}{101}{Capa oculta h1}{equation.Alph4.1.9}{}}
-\newlabel{deriv_z1p_a1p}{{D.10}{101}{Capa oculta h1}{equation.Alph4.1.10}{}}
-\newlabel{grad_E_a1p}{{D.11}{101}{Capa oculta h1}{equation.Alph4.1.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.5}Pesos capas entrada-h1}{101}{subsection.Alph4.1.5}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.6}{\ignorespaces Retropropagación con respecto a los pesos entre la capa de entrada y la capa oculta h1}}{101}{figure.caption.113}\protected@file@percent }
-\newlabel{fig:nn_1_pesos_input_h1}{{D.6}{101}{Retropropagación con respecto a los pesos entre la capa de entrada y la capa oculta h1}{figure.caption.113}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.4}Capa oculta h1}{102}{subsection.Alph4.1.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.4}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}}{102}{figure.caption.111}\protected@file@percent }
+\newlabel{nn_caminos_posibles}{{D.4}{102}{Imagen de los 'caminos' desde la capa softmax hasta la neurona $n^1_0$}{figure.caption.111}{}}
+\newlabel{E_total_a1p}{{D.6}{102}{Capa oculta h1}{equation.Alph4.1.6}{}}
+\newlabel{deriv_Zk_z1p}{{D.7}{102}{Capa oculta h1}{equation.Alph4.1.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.5}{\ignorespaces Retropropagación con respecto a neuronas de la capa oculta h1}}{102}{figure.caption.112}\protected@file@percent }
+\newlabel{fig:nn_1_capa_h1}{{D.5}{102}{Retropropagación con respecto a neuronas de la capa oculta h1}{figure.caption.112}{}}
+\newlabel{grad_sig_1}{{D.8}{103}{Capa oculta h1}{equation.Alph4.1.8}{}}
+\newlabel{grad_sig_2}{{D.9}{103}{Capa oculta h1}{equation.Alph4.1.9}{}}
+\newlabel{deriv_z1p_a1p}{{D.10}{103}{Capa oculta h1}{equation.Alph4.1.10}{}}
+\newlabel{grad_E_a1p}{{D.11}{103}{Capa oculta h1}{equation.Alph4.1.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.5}Pesos capas entrada-h1}{103}{subsection.Alph4.1.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.6}{\ignorespaces Retropropagación con respecto a los pesos entre la capa de entrada y la capa oculta h1}}{103}{figure.caption.113}\protected@file@percent }
+\newlabel{fig:nn_1_pesos_input_h1}{{D.6}{103}{Retropropagación con respecto a los pesos entre la capa de entrada y la capa oculta h1}{figure.caption.113}{}}
 \citation{NN_backpropagation}
 \citation{NN_backprop_2}
-\newlabel{grad_w0ip_1}{{D.12}{102}{Pesos capas entrada-h1}{equation.Alph4.1.12}{}}
-\newlabel{grad_w0ip_2}{{D.13}{102}{Pesos capas entrada-h1}{equation.Alph4.1.13}{}}
-\newlabel{grad_w0ip_3}{{D.14}{102}{Pesos capas entrada-h1}{equation.Alph4.1.14}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.6}Sesgos capa h1}{102}{subsection.Alph4.1.6}\protected@file@percent }
-\newlabel{grad_b1p_1}{{D.15}{102}{Sesgos capa h1}{equation.Alph4.1.15}{}}
-\newlabel{grad_b1p_2}{{D.16}{102}{Sesgos capa h1}{equation.Alph4.1.16}{}}
-\newlabel{grad_b1p_3}{{D.17}{102}{Sesgos capa h1}{equation.Alph4.1.17}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.7}Capa de entrada}{102}{subsection.Alph4.1.7}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.7}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{102}{figure.caption.114}\protected@file@percent }
-\newlabel{nn_caminos_posibles_input}{{D.7}{102}{Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.caption.114}{}}
-\newlabel{grad_a_2}{{D.18}{103}{Capa de entrada}{equation.Alph4.1.18}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.8}{\ignorespaces Retropropagación en la capa input}}{103}{figure.caption.115}\protected@file@percent }
-\newlabel{fig:nn_1_capa_input}{{D.8}{103}{Retropropagación en la capa input}{figure.caption.115}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {D.2}Retropropagación con 2 capas ocultas}{104}{section.Alph4.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.9}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{104}{figure.caption.116}\protected@file@percent }
-\newlabel{fig:nn_2_capas}{{D.9}{104}{Red Neuronal totalmente conectada con 2 capas ocultas}{figure.caption.116}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.1}Capa SoftMax}{104}{subsection.Alph4.2.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.10}{\ignorespaces Retropropagación en la capa softmax}}{104}{figure.caption.117}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.2}Pesos capas h2-SoftMax}{105}{subsection.Alph4.2.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.11}{\ignorespaces Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}}{105}{figure.caption.118}\protected@file@percent }
-\newlabel{fig:nn_2_capa_pesos_h2_output}{{D.11}{105}{Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}{figure.caption.118}{}}
-\newlabel{grad_w2pk_1}{{D.21}{105}{Pesos capas h2-SoftMax}{equation.Alph4.2.21}{}}
-\newlabel{grad_w2pk_2}{{D.22}{105}{Pesos capas h2-SoftMax}{equation.Alph4.2.22}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.3}Sesgos capa softmax}{105}{subsection.Alph4.2.3}\protected@file@percent }
-\newlabel{grad_b_h2_1}{{D.23}{105}{Sesgos capa softmax}{equation.Alph4.2.23}{}}
-\newlabel{grad_b_h2_2}{{D.24}{105}{Sesgos capa softmax}{equation.Alph4.2.24}{}}
-\newlabel{grad_b_h2_3}{{D.25}{105}{Sesgos capa softmax}{equation.Alph4.2.25}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.4}Capa oculta h2}{106}{subsection.Alph4.2.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.12}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{106}{figure.caption.119}\protected@file@percent }
-\newlabel{nn_h2_caminos_posibles}{{D.12}{106}{Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}{figure.caption.119}{}}
-\newlabel{E_total_a2p}{{D.26}{106}{Capa oculta h2}{equation.Alph4.2.26}{}}
-\newlabel{deriv_Zk_z2p}{{D.27}{106}{Capa oculta h2}{equation.Alph4.2.27}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.13}{\ignorespaces Retropropagación en la capa oculta h2}}{106}{figure.caption.120}\protected@file@percent }
-\newlabel{fig:nn_2_capa_h2}{{D.13}{106}{Retropropagación en la capa oculta h2}{figure.caption.120}{}}
-\newlabel{grad_sig_h2_1}{{D.28}{107}{Capa oculta h2}{equation.Alph4.2.28}{}}
-\newlabel{grad_sig_h2_2}{{D.29}{107}{Capa oculta h2}{equation.Alph4.2.29}{}}
-\newlabel{deriv_z2p_a2p}{{D.30}{107}{Capa oculta h2}{equation.Alph4.2.30}{}}
-\newlabel{grad_E_a2p}{{D.31}{107}{Capa oculta h2}{equation.Alph4.2.31}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.5}Pesos capas h1-h2}{107}{subsection.Alph4.2.5}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.14}{\ignorespaces Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}}{107}{figure.caption.121}\protected@file@percent }
-\newlabel{fig:nn_2_pesos_h1_h2}{{D.14}{107}{Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}{figure.caption.121}{}}
-\newlabel{grad_w1jp}{{D.32}{108}{Pesos capas h1-h2}{equation.Alph4.2.32}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.6}Sesgos capa h2}{108}{subsection.Alph4.2.6}\protected@file@percent }
-\newlabel{grad_b2p}{{D.33}{108}{Sesgos capa h2}{equation.Alph4.2.33}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.7}Capa oculta h1}{108}{subsection.Alph4.2.7}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.15}{\ignorespaces 'Caminos' desde la capa softmax hasta $n^1_0$}}{108}{figure.caption.122}\protected@file@percent }
-\newlabel{nn_h1_caminos_posibles}{{D.15}{108}{'Caminos' desde la capa softmax hasta $n^1_0$}{figure.caption.122}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.16}{\ignorespaces Retropropagación en la capa oculta h1}}{109}{figure.caption.123}\protected@file@percent }
-\newlabel{relu}{{D.34}{109}{Capa oculta h1}{equation.Alph4.2.34}{}}
-\newlabel{deriv_relu}{{D.35}{109}{Capa oculta h1}{equation.Alph4.2.35}{}}
-\newlabel{grad_E_a1j_1}{{D.36}{109}{Capa oculta h1}{equation.Alph4.2.36}{}}
-\newlabel{grad_E_a1j_2}{{D.37}{109}{Capa oculta h1}{equation.Alph4.2.37}{}}
-\newlabel{grad_E_a1j_3}{{D.38}{109}{Capa oculta h1}{equation.Alph4.2.38}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.8}Pesos capa input-h1}{110}{subsection.Alph4.2.8}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.17}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}}{110}{figure.caption.124}\protected@file@percent }
-\newlabel{fig:nn_2_pesos_input_h1}{{D.17}{110}{Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}{figure.caption.124}{}}
-\newlabel{grad_w0ip_h2_1}{{D.39}{110}{Pesos capa input-h1}{equation.Alph4.2.39}{}}
-\newlabel{grad_w0ip_h2_2}{{D.40}{110}{Pesos capa input-h1}{equation.Alph4.2.40}{}}
-\newlabel{grad_w0ip_h2_3}{{D.41}{110}{Pesos capa input-h1}{equation.Alph4.2.41}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.9}Sesgos capa h1}{110}{subsection.Alph4.2.9}\protected@file@percent }
-\newlabel{grad_b1j_h2_1}{{D.42}{110}{Sesgos capa h1}{equation.Alph4.2.42}{}}
-\newlabel{grad_b1j_h2_2}{{D.43}{110}{Sesgos capa h1}{equation.Alph4.2.43}{}}
-\newlabel{grad_b1j_h2_3}{{D.44}{110}{Sesgos capa h1}{equation.Alph4.2.44}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.10}Capa input}{111}{subsection.Alph4.2.10}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.18}{\ignorespaces 'Caminos' desde la capa oculta h1 hasta $n^0_0$}}{111}{figure.caption.125}\protected@file@percent }
-\newlabel{nn_2_capas_caminos_posibles_input}{{D.18}{111}{'Caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.caption.125}{}}
-\newlabel{grad_a_h2_1}{{D.45}{111}{Capa input}{equation.Alph4.2.45}{}}
-\newlabel{grad_a_h2_2}{{D.46}{111}{Capa input}{equation.Alph4.2.46}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {D.19}{\ignorespaces Retropropagación en la capa input}}{111}{figure.caption.126}\protected@file@percent }
-\newlabel{fig:nn_2_capa_input}{{D.19}{111}{Retropropagación en la capa input}{figure.caption.126}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {D.3}Conclusiones}{112}{section.Alph4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.3.1}Gradiente respecto a la entrada de la capa}{112}{subsection.Alph4.3.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.20}{\ignorespaces Retropropagación en la capa l}}{112}{figure.caption.127}\protected@file@percent }
-\newlabel{fig:conclusion_capa_l_apendice}{{D.20}{112}{Retropropagación en la capa l}{figure.caption.127}{}}
-\newlabel{grad_input_l_1}{{D.47}{112}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.47}{}}
-\newlabel{grad_input_l_2}{{D.48}{112}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.48}{}}
-\newlabel{grad_input_l_3}{{D.49}{112}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.49}{}}
-\newlabel{grad_input_l_4_apendice}{{D.50}{112}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.50}{}}
-\newlabel{grad_input_l_5}{{D.51}{112}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.51}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.3.2}Gradiente respecto a los pesos}{113}{subsection.Alph4.3.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {D.21}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{113}{figure.caption.128}\protected@file@percent }
-\newlabel{fig:conclusion_pesos_apendice}{{D.21}{113}{Retropropagación respecto a los pesos entre la capa l-1 y l}{figure.caption.128}{}}
-\newlabel{grad_w_l_1}{{D.52}{113}{Gradiente respecto a los pesos}{equation.Alph4.3.52}{}}
-\newlabel{grad_w_l_2}{{D.53}{113}{Gradiente respecto a los pesos}{equation.Alph4.3.53}{}}
-\newlabel{grad_w_l_3_apendice}{{D.54}{113}{Gradiente respecto a los pesos}{equation.Alph4.3.54}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {D.3.3}Gradiente respecto a sesgos}{113}{subsection.Alph4.3.3}\protected@file@percent }
-\newlabel{grad_b_l_1}{{D.55}{113}{Gradiente respecto a sesgos}{equation.Alph4.3.55}{}}
-\newlabel{grad_b_l_2}{{D.56}{113}{Gradiente respecto a sesgos}{equation.Alph4.3.56}{}}
-\newlabel{grad_b_l_3_apendice}{{D.57}{113}{Gradiente respecto a sesgos}{equation.Alph4.3.57}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {E}Retropropagación en capas convolucionales}{115}{appendix.Alph5}\protected@file@percent }
+\newlabel{grad_w0ip_1}{{D.12}{104}{Pesos capas entrada-h1}{equation.Alph4.1.12}{}}
+\newlabel{grad_w0ip_2}{{D.13}{104}{Pesos capas entrada-h1}{equation.Alph4.1.13}{}}
+\newlabel{grad_w0ip_3}{{D.14}{104}{Pesos capas entrada-h1}{equation.Alph4.1.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.6}Sesgos capa h1}{104}{subsection.Alph4.1.6}\protected@file@percent }
+\newlabel{grad_b1p_1}{{D.15}{104}{Sesgos capa h1}{equation.Alph4.1.15}{}}
+\newlabel{grad_b1p_2}{{D.16}{104}{Sesgos capa h1}{equation.Alph4.1.16}{}}
+\newlabel{grad_b1p_3}{{D.17}{104}{Sesgos capa h1}{equation.Alph4.1.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.1.7}Capa de entrada}{104}{subsection.Alph4.1.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.7}{\ignorespaces Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}}{104}{figure.caption.114}\protected@file@percent }
+\newlabel{nn_caminos_posibles_input}{{D.7}{104}{Imagen de los 'caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.caption.114}{}}
+\newlabel{grad_a_2}{{D.18}{105}{Capa de entrada}{equation.Alph4.1.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.8}{\ignorespaces Retropropagación en la capa input}}{105}{figure.caption.115}\protected@file@percent }
+\newlabel{fig:nn_1_capa_input}{{D.8}{105}{Retropropagación en la capa input}{figure.caption.115}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D.2}Retropropagación con 2 capas ocultas}{106}{section.Alph4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.9}{\ignorespaces Red Neuronal totalmente conectada con 2 capas ocultas}}{106}{figure.caption.116}\protected@file@percent }
+\newlabel{fig:nn_2_capas}{{D.9}{106}{Red Neuronal totalmente conectada con 2 capas ocultas}{figure.caption.116}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.1}Capa SoftMax}{106}{subsection.Alph4.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.10}{\ignorespaces Retropropagación en la capa softmax}}{106}{figure.caption.117}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.2}Pesos capas h2-SoftMax}{107}{subsection.Alph4.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.11}{\ignorespaces Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}}{107}{figure.caption.118}\protected@file@percent }
+\newlabel{fig:nn_2_capa_pesos_h2_output}{{D.11}{107}{Retropropagación respecto a los pesos entre la capa oculta h2 y la capa SoftMax}{figure.caption.118}{}}
+\newlabel{grad_w2pk_1}{{D.21}{107}{Pesos capas h2-SoftMax}{equation.Alph4.2.21}{}}
+\newlabel{grad_w2pk_2}{{D.22}{107}{Pesos capas h2-SoftMax}{equation.Alph4.2.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.3}Sesgos capa softmax}{107}{subsection.Alph4.2.3}\protected@file@percent }
+\newlabel{grad_b_h2_1}{{D.23}{107}{Sesgos capa softmax}{equation.Alph4.2.23}{}}
+\newlabel{grad_b_h2_2}{{D.24}{107}{Sesgos capa softmax}{equation.Alph4.2.24}{}}
+\newlabel{grad_b_h2_3}{{D.25}{107}{Sesgos capa softmax}{equation.Alph4.2.25}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.4}Capa oculta h2}{108}{subsection.Alph4.2.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.12}{\ignorespaces Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}}{108}{figure.caption.119}\protected@file@percent }
+\newlabel{nn_h2_caminos_posibles}{{D.12}{108}{Imagen de los 'caminos' desde la capa softmax hasta $n^2_0$}{figure.caption.119}{}}
+\newlabel{E_total_a2p}{{D.26}{108}{Capa oculta h2}{equation.Alph4.2.26}{}}
+\newlabel{deriv_Zk_z2p}{{D.27}{108}{Capa oculta h2}{equation.Alph4.2.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.13}{\ignorespaces Retropropagación en la capa oculta h2}}{108}{figure.caption.120}\protected@file@percent }
+\newlabel{fig:nn_2_capa_h2}{{D.13}{108}{Retropropagación en la capa oculta h2}{figure.caption.120}{}}
+\newlabel{grad_sig_h2_1}{{D.28}{109}{Capa oculta h2}{equation.Alph4.2.28}{}}
+\newlabel{grad_sig_h2_2}{{D.29}{109}{Capa oculta h2}{equation.Alph4.2.29}{}}
+\newlabel{deriv_z2p_a2p}{{D.30}{109}{Capa oculta h2}{equation.Alph4.2.30}{}}
+\newlabel{grad_E_a2p}{{D.31}{109}{Capa oculta h2}{equation.Alph4.2.31}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.5}Pesos capas h1-h2}{109}{subsection.Alph4.2.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.14}{\ignorespaces Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}}{109}{figure.caption.121}\protected@file@percent }
+\newlabel{fig:nn_2_pesos_h1_h2}{{D.14}{109}{Retropropagación respecto a los pesos entre las capas ocultas h1 y h2}{figure.caption.121}{}}
+\newlabel{grad_w1jp}{{D.32}{110}{Pesos capas h1-h2}{equation.Alph4.2.32}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.6}Sesgos capa h2}{110}{subsection.Alph4.2.6}\protected@file@percent }
+\newlabel{grad_b2p}{{D.33}{110}{Sesgos capa h2}{equation.Alph4.2.33}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.7}Capa oculta h1}{110}{subsection.Alph4.2.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.15}{\ignorespaces 'Caminos' desde la capa softmax hasta $n^1_0$}}{110}{figure.caption.122}\protected@file@percent }
+\newlabel{nn_h1_caminos_posibles}{{D.15}{110}{'Caminos' desde la capa softmax hasta $n^1_0$}{figure.caption.122}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.16}{\ignorespaces Retropropagación en la capa oculta h1}}{111}{figure.caption.123}\protected@file@percent }
+\newlabel{relu}{{D.34}{111}{Capa oculta h1}{equation.Alph4.2.34}{}}
+\newlabel{deriv_relu}{{D.35}{111}{Capa oculta h1}{equation.Alph4.2.35}{}}
+\newlabel{grad_E_a1j_1}{{D.36}{111}{Capa oculta h1}{equation.Alph4.2.36}{}}
+\newlabel{grad_E_a1j_2}{{D.37}{111}{Capa oculta h1}{equation.Alph4.2.37}{}}
+\newlabel{grad_E_a1j_3}{{D.38}{111}{Capa oculta h1}{equation.Alph4.2.38}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.8}Pesos capa input-h1}{112}{subsection.Alph4.2.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.17}{\ignorespaces Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}}{112}{figure.caption.124}\protected@file@percent }
+\newlabel{fig:nn_2_pesos_input_h1}{{D.17}{112}{Retropropagación respecto a los pesos entre la capa de entrada y la capa oculta h1}{figure.caption.124}{}}
+\newlabel{grad_w0ip_h2_1}{{D.39}{112}{Pesos capa input-h1}{equation.Alph4.2.39}{}}
+\newlabel{grad_w0ip_h2_2}{{D.40}{112}{Pesos capa input-h1}{equation.Alph4.2.40}{}}
+\newlabel{grad_w0ip_h2_3}{{D.41}{112}{Pesos capa input-h1}{equation.Alph4.2.41}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.9}Sesgos capa h1}{112}{subsection.Alph4.2.9}\protected@file@percent }
+\newlabel{grad_b1j_h2_1}{{D.42}{112}{Sesgos capa h1}{equation.Alph4.2.42}{}}
+\newlabel{grad_b1j_h2_2}{{D.43}{112}{Sesgos capa h1}{equation.Alph4.2.43}{}}
+\newlabel{grad_b1j_h2_3}{{D.44}{112}{Sesgos capa h1}{equation.Alph4.2.44}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.2.10}Capa input}{113}{subsection.Alph4.2.10}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.18}{\ignorespaces 'Caminos' desde la capa oculta h1 hasta $n^0_0$}}{113}{figure.caption.125}\protected@file@percent }
+\newlabel{nn_2_capas_caminos_posibles_input}{{D.18}{113}{'Caminos' desde la capa oculta h1 hasta $n^0_0$}{figure.caption.125}{}}
+\newlabel{grad_a_h2_1}{{D.45}{113}{Capa input}{equation.Alph4.2.45}{}}
+\newlabel{grad_a_h2_2}{{D.46}{113}{Capa input}{equation.Alph4.2.46}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {D.19}{\ignorespaces Retropropagación en la capa input}}{113}{figure.caption.126}\protected@file@percent }
+\newlabel{fig:nn_2_capa_input}{{D.19}{113}{Retropropagación en la capa input}{figure.caption.126}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {D.3}Conclusiones}{114}{section.Alph4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.3.1}Gradiente respecto a la entrada de la capa}{114}{subsection.Alph4.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.20}{\ignorespaces Retropropagación en la capa l}}{114}{figure.caption.127}\protected@file@percent }
+\newlabel{fig:conclusion_capa_l_apendice}{{D.20}{114}{Retropropagación en la capa l}{figure.caption.127}{}}
+\newlabel{grad_input_l_1}{{D.47}{114}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.47}{}}
+\newlabel{grad_input_l_2}{{D.48}{114}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.48}{}}
+\newlabel{grad_input_l_3}{{D.49}{114}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.49}{}}
+\newlabel{grad_input_l_4_apendice}{{D.50}{114}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.50}{}}
+\newlabel{grad_input_l_5}{{D.51}{114}{Gradiente respecto a la entrada de la capa}{equation.Alph4.3.51}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.3.2}Gradiente respecto a los pesos}{115}{subsection.Alph4.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {D.21}{\ignorespaces Retropropagación respecto a los pesos entre la capa l-1 y l}}{115}{figure.caption.128}\protected@file@percent }
+\newlabel{fig:conclusion_pesos_apendice}{{D.21}{115}{Retropropagación respecto a los pesos entre la capa l-1 y l}{figure.caption.128}{}}
+\newlabel{grad_w_l_1}{{D.52}{115}{Gradiente respecto a los pesos}{equation.Alph4.3.52}{}}
+\newlabel{grad_w_l_2}{{D.53}{115}{Gradiente respecto a los pesos}{equation.Alph4.3.53}{}}
+\newlabel{grad_w_l_3_apendice}{{D.54}{115}{Gradiente respecto a los pesos}{equation.Alph4.3.54}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {D.3.3}Gradiente respecto a sesgos}{115}{subsection.Alph4.3.3}\protected@file@percent }
+\newlabel{grad_b_l_1}{{D.55}{115}{Gradiente respecto a sesgos}{equation.Alph4.3.55}{}}
+\newlabel{grad_b_l_2}{{D.56}{115}{Gradiente respecto a sesgos}{equation.Alph4.3.56}{}}
+\newlabel{grad_b_l_3_apendice}{{D.57}{115}{Gradiente respecto a sesgos}{equation.Alph4.3.57}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {E}Retropropagación en capas convolucionales}{117}{appendix.Alph5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{backprop_conv_apendice}{{E}{115}{Retropropagación en capas convolucionales}{appendix.Alph5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {E.1}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{115}{figure.caption.129}\protected@file@percent }
-\newlabel{fig:ejemplo_forward_prop_convolucional_apendice}{{E.1}{115}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.129}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {E.1}Sumatoria de gradientes}{115}{section.Alph5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.1}Gradiente de $Y^c_{11}$}{116}{subsection.Alph5.1.1}\protected@file@percent }
-\newlabel{grad_y11_k_11_apendice}{{E.3}{116}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.3}{}}
-\newlabel{grad_y11_k_12_apendice}{{E.4}{116}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.4}{}}
-\newlabel{grad_y11_k_21_apendice}{{E.5}{116}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.5}{}}
-\newlabel{grad_y11_k_22_apendice}{{E.6}{116}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.6}{}}
-\newlabel{grad_y11_z_1}{{E.7}{116}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.7}{}}
-\newlabel{grad_y11_z_2}{{E.8}{116}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.8}{}}
-\newlabel{grad_y11_z_3}{{E.9}{116}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.2}Gradiente de $Y^c_{12}$}{117}{subsection.Alph5.1.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.2}{\ignorespaces Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}}{117}{figure.caption.130}\protected@file@percent }
-\newlabel{fig:ejemplo_2_forward_prop_convolucional}{{E.2}{117}{Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.130}{}}
-\newlabel{grad_y12_k_1}{{E.12}{117}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.12}{}}
-\newlabel{grad_y12_k_2}{{E.13}{117}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.13}{}}
-\newlabel{grad_y12_z_1}{{E.14}{117}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.14}{}}
-\newlabel{grad_y12_z_2}{{E.15}{117}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.15}{}}
-\newlabel{grad_y12_z_3}{{E.16}{117}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.16}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.3}Gradiente de $Y^c_{21}$}{118}{subsection.Alph5.1.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.3}{\ignorespaces Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}}{118}{figure.caption.131}\protected@file@percent }
-\newlabel{fig:ejemplo_3_forward_prop_convolucional}{{E.3}{118}{Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.131}{}}
-\newlabel{grad_y21_k_1}{{E.19}{118}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.19}{}}
-\newlabel{grad_y21_k_2}{{E.20}{118}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.20}{}}
-\newlabel{grad_y21_z_1}{{E.21}{118}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.21}{}}
-\newlabel{grad_y21_z_2}{{E.22}{118}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.22}{}}
-\newlabel{grad_y21_z_3}{{E.23}{118}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.23}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.4}Gradiente de $Y^c_{22}$}{119}{subsection.Alph5.1.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.4}{\ignorespaces Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}}{119}{figure.caption.132}\protected@file@percent }
-\newlabel{fig:ejemplo_4_forward_prop_convolucional}{{E.4}{119}{Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.132}{}}
-\newlabel{grad_y22_k_1}{{E.26}{119}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.26}{}}
-\newlabel{grad_y22_k_2}{{E.27}{119}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.27}{}}
-\newlabel{grad_y22_z_1}{{E.28}{119}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.28}{}}
-\newlabel{grad_y22_z_2}{{E.29}{119}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.29}{}}
-\newlabel{grad_y22_z_3}{{E.30}{119}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.30}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.5}Gradiente respecto a pesos como convolución}{119}{subsection.Alph5.1.5}\protected@file@percent }
+\newlabel{backprop_conv_apendice}{{E}{117}{Retropropagación en capas convolucionales}{appendix.Alph5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.1}{\ignorespaces Ejemplo de propagación hacia delante en una capa convolucional}}{117}{figure.caption.129}\protected@file@percent }
+\newlabel{fig:ejemplo_forward_prop_convolucional_apendice}{{E.1}{117}{Ejemplo de propagación hacia delante en una capa convolucional}{figure.caption.129}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {E.1}Sumatoria de gradientes}{117}{section.Alph5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.1}Gradiente de $Y^c_{11}$}{118}{subsection.Alph5.1.1}\protected@file@percent }
+\newlabel{grad_y11_k_11_apendice}{{E.3}{118}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.3}{}}
+\newlabel{grad_y11_k_12_apendice}{{E.4}{118}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.4}{}}
+\newlabel{grad_y11_k_21_apendice}{{E.5}{118}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.5}{}}
+\newlabel{grad_y11_k_22_apendice}{{E.6}{118}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.6}{}}
+\newlabel{grad_y11_z_1}{{E.7}{118}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.7}{}}
+\newlabel{grad_y11_z_2}{{E.8}{118}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.8}{}}
+\newlabel{grad_y11_z_3}{{E.9}{118}{Gradiente de $Y^c_{11}$}{equation.Alph5.1.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.2}Gradiente de $Y^c_{12}$}{119}{subsection.Alph5.1.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.2}{\ignorespaces Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}}{119}{figure.caption.130}\protected@file@percent }
+\newlabel{fig:ejemplo_2_forward_prop_convolucional}{{E.2}{119}{Cálculo de $Y^c_{12}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.130}{}}
+\newlabel{grad_y12_k_1}{{E.12}{119}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.12}{}}
+\newlabel{grad_y12_k_2}{{E.13}{119}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.13}{}}
+\newlabel{grad_y12_z_1}{{E.14}{119}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.14}{}}
+\newlabel{grad_y12_z_2}{{E.15}{119}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.15}{}}
+\newlabel{grad_y12_z_3}{{E.16}{119}{Gradiente de $Y^c_{12}$}{equation.Alph5.1.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.3}Gradiente de $Y^c_{21}$}{120}{subsection.Alph5.1.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.3}{\ignorespaces Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}}{120}{figure.caption.131}\protected@file@percent }
+\newlabel{fig:ejemplo_3_forward_prop_convolucional}{{E.3}{120}{Cálculo de $Y^c_{21}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.131}{}}
+\newlabel{grad_y21_k_1}{{E.19}{120}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.19}{}}
+\newlabel{grad_y21_k_2}{{E.20}{120}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.20}{}}
+\newlabel{grad_y21_z_1}{{E.21}{120}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.21}{}}
+\newlabel{grad_y21_z_2}{{E.22}{120}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.22}{}}
+\newlabel{grad_y21_z_3}{{E.23}{120}{Gradiente de $Y^c_{21}$}{equation.Alph5.1.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.4}Gradiente de $Y^c_{22}$}{121}{subsection.Alph5.1.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.4}{\ignorespaces Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}}{121}{figure.caption.132}\protected@file@percent }
+\newlabel{fig:ejemplo_4_forward_prop_convolucional}{{E.4}{121}{Cálculo de $Y^c_{22}$ mediante propagación hacia delante en una capa convolucional}{figure.caption.132}{}}
+\newlabel{grad_y22_k_1}{{E.26}{121}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.26}{}}
+\newlabel{grad_y22_k_2}{{E.27}{121}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.27}{}}
+\newlabel{grad_y22_z_1}{{E.28}{121}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.28}{}}
+\newlabel{grad_y22_z_2}{{E.29}{121}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.29}{}}
+\newlabel{grad_y22_z_3}{{E.30}{121}{Gradiente de $Y^c_{22}$}{equation.Alph5.1.30}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.5}Gradiente respecto a pesos como convolución}{121}{subsection.Alph5.1.5}\protected@file@percent }
 \citation{conv_backprop}
-\newlabel{grad_Y_K_1_apendice}{{E.31}{120}{Gradiente respecto a pesos como convolución}{equation.Alph5.1.31}{}}
-\newlabel{grad_Y_K_2_apendice}{{E.32}{120}{Gradiente respecto a pesos como convolución}{equation.Alph5.1.32}{}}
-\newlabel{grad_Y_K_3_apendice}{{E.33}{120}{Gradiente respecto a pesos como convolución}{equation.Alph5.1.33}{}}
-\newlabel{grad_Y_K_4_apendice}{{E.34}{120}{Gradiente respecto a pesos como convolución}{equation.Alph5.1.34}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {E.5}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{120}{figure.caption.133}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_X_Y_apendice}{{E.5}{120}{Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}{figure.caption.133}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.6}Gradiente respecto a entrada como convolución}{120}{subsection.Alph5.1.6}\protected@file@percent }
+\newlabel{grad_Y_K_1_apendice}{{E.31}{122}{Gradiente respecto a pesos como convolución}{equation.Alph5.1.31}{}}
+\newlabel{grad_Y_K_2_apendice}{{E.32}{122}{Gradiente respecto a pesos como convolución}{equation.Alph5.1.32}{}}
+\newlabel{grad_Y_K_3_apendice}{{E.33}{122}{Gradiente respecto a pesos como convolución}{equation.Alph5.1.33}{}}
+\newlabel{grad_Y_K_4_apendice}{{E.34}{122}{Gradiente respecto a pesos como convolución}{equation.Alph5.1.34}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.5}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{122}{figure.caption.133}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_X_Y_apendice}{{E.5}{122}{Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}{figure.caption.133}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.1.6}Gradiente respecto a entrada como convolución}{122}{subsection.Alph5.1.6}\protected@file@percent }
 \citation{conv_backprop}
-\@writefile{lof}{\contentsline {figure}{\numberline {E.6}{\ignorespaces Inversión de los pesos en K tanto horizontal como verticalmente}}{121}{figure.caption.134}\protected@file@percent }
-\newlabel{fig:flip_W_apendice}{{E.6}{121}{Inversión de los pesos en K tanto horizontal como verticalmente}{figure.caption.134}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {E.7}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre K e Y}}{122}{figure.caption.135}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Y_W_apendice}{{E.7}{122}{Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre K e Y}{figure.caption.135}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {E.2}Retropropagación con relleno}{123}{section.Alph5.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.8}{\ignorespaces Ejemplo de retropropagación en una capa convolucional con relleno}}{123}{figure.caption.136}\protected@file@percent }
-\newlabel{fig:conv_back_padding_intro}{{E.8}{123}{Ejemplo de retropropagación en una capa convolucional con relleno}{figure.caption.136}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.1}Gradiente de $Y^c_{11}$}{123}{subsection.Alph5.2.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.9}{\ignorespaces Retropropagación de $Y^c_{11}$}}{123}{figure.caption.137}\protected@file@percent }
-\newlabel{gradr_Y11_w_1}{{E.48}{124}{Gradiente de $Y^c_{11}$}{equation.Alph5.2.48}{}}
-\newlabel{gradr_Y11_w_2}{{E.49}{124}{Gradiente de $Y^c_{11}$}{equation.Alph5.2.49}{}}
-\newlabel{gradr_Y11_z_1}{{E.50}{124}{Gradiente de $Y^c_{11}$}{equation.Alph5.2.50}{}}
-\newlabel{gradr_Y11_z_2}{{E.51}{124}{Gradiente de $Y^c_{11}$}{equation.Alph5.2.51}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.2}Gradiente de $Y^c_{12}$}{124}{subsection.Alph5.2.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.10}{\ignorespaces Retropropagación de $Y^c_{12}$}}{124}{figure.caption.138}\protected@file@percent }
-\newlabel{gradr_Y12_w_1}{{E.54}{125}{Gradiente de $Y^c_{12}$}{equation.Alph5.2.54}{}}
-\newlabel{gradr_Y12_w_2}{{E.55}{125}{Gradiente de $Y^c_{12}$}{equation.Alph5.2.55}{}}
-\newlabel{gradr_Y12_z_1}{{E.56}{125}{Gradiente de $Y^c_{12}$}{equation.Alph5.2.56}{}}
-\newlabel{gradr_Y12_z_2}{{E.57}{125}{Gradiente de $Y^c_{12}$}{equation.Alph5.2.57}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.3}Gradiente de $Y^c_{13}$}{125}{subsection.Alph5.2.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.11}{\ignorespaces Retropropagación de $Y^c_{13}$}}{125}{figure.caption.139}\protected@file@percent }
-\newlabel{gradr_Y13_w_1}{{E.60}{125}{Gradiente de $Y^c_{13}$}{equation.Alph5.2.60}{}}
-\newlabel{gradr_Y13_w_2}{{E.2.3}{125}{Gradiente de $Y^c_{13}$}{equation.Alph5.2.61}{}}
-\newlabel{gradr_Y13_z_1}{{E.62}{126}{Gradiente de $Y^c_{13}$}{equation.Alph5.2.62}{}}
-\newlabel{gradr_Y13_z_2}{{E.63}{126}{Gradiente de $Y^c_{13}$}{equation.Alph5.2.63}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.4}Gradiente de $Y^c_{21}$}{126}{subsection.Alph5.2.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.12}{\ignorespaces Retropropagación de $Y^c_{21}$}}{126}{figure.caption.140}\protected@file@percent }
-\newlabel{gradr_Y21_w_1}{{E.66}{126}{Gradiente de $Y^c_{21}$}{equation.Alph5.2.66}{}}
-\newlabel{gradr_Y21_w_2}{{E.67}{126}{Gradiente de $Y^c_{21}$}{equation.Alph5.2.67}{}}
-\newlabel{gradr_Y21_z_1}{{E.68}{126}{Gradiente de $Y^c_{21}$}{equation.Alph5.2.68}{}}
-\newlabel{gradr_Y21_z_2}{{E.2.4}{126}{Gradiente de $Y^c_{21}$}{equation.Alph5.2.69}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.5}Gradiente de $Y^c_{22}$}{127}{subsection.Alph5.2.5}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.13}{\ignorespaces Retropropagación de $Y^c_{22}$}}{127}{figure.caption.141}\protected@file@percent }
-\newlabel{gradr_Y22_w_1}{{E.72}{127}{Gradiente de $Y^c_{22}$}{equation.Alph5.2.72}{}}
-\newlabel{gradr_Y22_w_2}{{E.73}{127}{Gradiente de $Y^c_{22}$}{equation.Alph5.2.73}{}}
-\newlabel{gradr_Y22_z_1}{{E.74}{127}{Gradiente de $Y^c_{22}$}{equation.Alph5.2.74}{}}
-\newlabel{gradr_Y22_z_2}{{E.75}{127}{Gradiente de $Y^c_{22}$}{equation.Alph5.2.75}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.6}Gradiente de $Y^c_{23}$}{127}{subsection.Alph5.2.6}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.14}{\ignorespaces Retropropagación de $Y^c_{23}$}}{127}{figure.caption.142}\protected@file@percent }
-\newlabel{gradr_Y23_w_1}{{E.78}{128}{Gradiente de $Y^c_{23}$}{equation.Alph5.2.78}{}}
-\newlabel{gradr_Y23_w_2}{{E.79}{128}{Gradiente de $Y^c_{23}$}{equation.Alph5.2.79}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.7}Gradiente de $Y^c_{31}$}{128}{subsection.Alph5.2.7}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.15}{\ignorespaces Retropropagación de $Y^c_{31}$}}{128}{figure.caption.143}\protected@file@percent }
-\newlabel{gradr_Y31_w_1}{{E.84}{128}{Gradiente de $Y^c_{31}$}{equation.Alph5.2.84}{}}
-\newlabel{gradr_Y31_w_2}{{E.85}{128}{Gradiente de $Y^c_{31}$}{equation.Alph5.2.85}{}}
-\newlabel{gradr_Y31_z_1}{{E.86}{129}{Gradiente de $Y^c_{31}$}{equation.Alph5.2.86}{}}
-\newlabel{gradr_Y31_z_2}{{E.87}{129}{Gradiente de $Y^c_{31}$}{equation.Alph5.2.87}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.8}Gradiente de $Y^c_{32}$}{129}{subsection.Alph5.2.8}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.16}{\ignorespaces Retropropagación de $Y^c_{32}$}}{129}{figure.caption.144}\protected@file@percent }
-\newlabel{gradr_Y32_w_1}{{E.90}{129}{Gradiente de $Y^c_{32}$}{equation.Alph5.2.90}{}}
-\newlabel{gradr_Y32_w_2}{{E.91}{129}{Gradiente de $Y^c_{32}$}{equation.Alph5.2.91}{}}
-\newlabel{gradr_Y32_z_1}{{E.92}{129}{Gradiente de $Y^c_{32}$}{equation.Alph5.2.92}{}}
-\newlabel{gradr_Y32_z_2}{{E.93}{129}{Gradiente de $Y^c_{32}$}{equation.Alph5.2.93}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.9}Gradiente de $Y^c_{33}$}{130}{subsection.Alph5.2.9}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {E.17}{\ignorespaces Retropropagación de $Y^c_{33}$}}{130}{figure.caption.145}\protected@file@percent }
-\newlabel{gradr_Y33_w_1}{{E.96}{130}{Gradiente de $Y^c_{33}$}{equation.Alph5.2.96}{}}
-\newlabel{gradr_Y33_w_2}{{E.97}{130}{Gradiente de $Y^c_{33}$}{equation.Alph5.2.97}{}}
-\newlabel{gradr_Y33_z_1}{{E.98}{130}{Gradiente de $Y^c_{33}$}{equation.Alph5.2.98}{}}
-\newlabel{gradr_Y33_z_2}{{E.99}{130}{Gradiente de $Y^c_{33}$}{equation.Alph5.2.99}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.10}Gradiente respecto a pesos como convolución}{130}{subsection.Alph5.2.10}\protected@file@percent }
-\newlabel{result_conv_1_apendice}{{E.100}{131}{Gradiente respecto a pesos como convolución}{equation.Alph5.2.100}{}}
-\newlabel{result_conv_2_apendice}{{E.101}{131}{Gradiente respecto a pesos como convolución}{equation.Alph5.2.101}{}}
-\newlabel{result_conv_3_apendice}{{E.102}{131}{Gradiente respecto a pesos como convolución}{equation.Alph5.2.102}{}}
-\newlabel{result_conv_4_apendice}{{E.103}{131}{Gradiente respecto a pesos como convolución}{equation.Alph5.2.103}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {E.18}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{131}{figure.caption.146}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Xpad_Y}{{E.18}{131}{Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}{figure.caption.146}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.11}Gradiente respecto a entrada como convolución}{131}{subsection.Alph5.2.11}\protected@file@percent }
-\newlabel{result_conv_x1}{{E.104}{132}{Gradiente respecto a entrada como convolución}{equation.Alph5.2.104}{}}
-\newlabel{result_conv_x2}{{E.105}{132}{Gradiente respecto a entrada como convolución}{equation.Alph5.2.105}{}}
-\newlabel{result_conv_x3}{{E.106}{132}{Gradiente respecto a entrada como convolución}{equation.Alph5.2.106}{}}
-\newlabel{result_conv_x4}{{E.107}{132}{Gradiente respecto a entrada como convolución}{equation.Alph5.2.107}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {E.19}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}}{132}{figure.caption.147}\protected@file@percent }
-\newlabel{fig:conv_backprop_como_convolucion_Y_K_pad}{{E.19}{132}{Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}{figure.caption.147}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.6}{\ignorespaces Inversión de los pesos en K tanto horizontal como verticalmente}}{123}{figure.caption.134}\protected@file@percent }
+\newlabel{fig:flip_W_apendice}{{E.6}{123}{Inversión de los pesos en K tanto horizontal como verticalmente}{figure.caption.134}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.7}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre K e Y}}{124}{figure.caption.135}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Y_W_apendice}{{E.7}{124}{Cálculo del gradiente de la pérdida con respecto a cada valor de entrada como convolución entre K e Y}{figure.caption.135}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {E.2}Retropropagación con relleno}{125}{section.Alph5.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.8}{\ignorespaces Ejemplo de retropropagación en una capa convolucional con relleno}}{125}{figure.caption.136}\protected@file@percent }
+\newlabel{fig:conv_back_padding_intro}{{E.8}{125}{Ejemplo de retropropagación en una capa convolucional con relleno}{figure.caption.136}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.1}Gradiente de $Y^c_{11}$}{125}{subsection.Alph5.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.9}{\ignorespaces Retropropagación de $Y^c_{11}$}}{125}{figure.caption.137}\protected@file@percent }
+\newlabel{gradr_Y11_w_1}{{E.48}{126}{Gradiente de $Y^c_{11}$}{equation.Alph5.2.48}{}}
+\newlabel{gradr_Y11_w_2}{{E.49}{126}{Gradiente de $Y^c_{11}$}{equation.Alph5.2.49}{}}
+\newlabel{gradr_Y11_z_1}{{E.50}{126}{Gradiente de $Y^c_{11}$}{equation.Alph5.2.50}{}}
+\newlabel{gradr_Y11_z_2}{{E.51}{126}{Gradiente de $Y^c_{11}$}{equation.Alph5.2.51}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.2}Gradiente de $Y^c_{12}$}{126}{subsection.Alph5.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.10}{\ignorespaces Retropropagación de $Y^c_{12}$}}{126}{figure.caption.138}\protected@file@percent }
+\newlabel{gradr_Y12_w_1}{{E.54}{127}{Gradiente de $Y^c_{12}$}{equation.Alph5.2.54}{}}
+\newlabel{gradr_Y12_w_2}{{E.55}{127}{Gradiente de $Y^c_{12}$}{equation.Alph5.2.55}{}}
+\newlabel{gradr_Y12_z_1}{{E.56}{127}{Gradiente de $Y^c_{12}$}{equation.Alph5.2.56}{}}
+\newlabel{gradr_Y12_z_2}{{E.57}{127}{Gradiente de $Y^c_{12}$}{equation.Alph5.2.57}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.3}Gradiente de $Y^c_{13}$}{127}{subsection.Alph5.2.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.11}{\ignorespaces Retropropagación de $Y^c_{13}$}}{127}{figure.caption.139}\protected@file@percent }
+\newlabel{gradr_Y13_w_1}{{E.60}{127}{Gradiente de $Y^c_{13}$}{equation.Alph5.2.60}{}}
+\newlabel{gradr_Y13_w_2}{{E.2.3}{127}{Gradiente de $Y^c_{13}$}{equation.Alph5.2.61}{}}
+\newlabel{gradr_Y13_z_1}{{E.62}{128}{Gradiente de $Y^c_{13}$}{equation.Alph5.2.62}{}}
+\newlabel{gradr_Y13_z_2}{{E.63}{128}{Gradiente de $Y^c_{13}$}{equation.Alph5.2.63}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.4}Gradiente de $Y^c_{21}$}{128}{subsection.Alph5.2.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.12}{\ignorespaces Retropropagación de $Y^c_{21}$}}{128}{figure.caption.140}\protected@file@percent }
+\newlabel{gradr_Y21_w_1}{{E.66}{128}{Gradiente de $Y^c_{21}$}{equation.Alph5.2.66}{}}
+\newlabel{gradr_Y21_w_2}{{E.67}{128}{Gradiente de $Y^c_{21}$}{equation.Alph5.2.67}{}}
+\newlabel{gradr_Y21_z_1}{{E.68}{128}{Gradiente de $Y^c_{21}$}{equation.Alph5.2.68}{}}
+\newlabel{gradr_Y21_z_2}{{E.2.4}{128}{Gradiente de $Y^c_{21}$}{equation.Alph5.2.69}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.5}Gradiente de $Y^c_{22}$}{129}{subsection.Alph5.2.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.13}{\ignorespaces Retropropagación de $Y^c_{22}$}}{129}{figure.caption.141}\protected@file@percent }
+\newlabel{gradr_Y22_w_1}{{E.72}{129}{Gradiente de $Y^c_{22}$}{equation.Alph5.2.72}{}}
+\newlabel{gradr_Y22_w_2}{{E.73}{129}{Gradiente de $Y^c_{22}$}{equation.Alph5.2.73}{}}
+\newlabel{gradr_Y22_z_1}{{E.74}{129}{Gradiente de $Y^c_{22}$}{equation.Alph5.2.74}{}}
+\newlabel{gradr_Y22_z_2}{{E.75}{129}{Gradiente de $Y^c_{22}$}{equation.Alph5.2.75}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.6}Gradiente de $Y^c_{23}$}{129}{subsection.Alph5.2.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.14}{\ignorespaces Retropropagación de $Y^c_{23}$}}{129}{figure.caption.142}\protected@file@percent }
+\newlabel{gradr_Y23_w_1}{{E.78}{130}{Gradiente de $Y^c_{23}$}{equation.Alph5.2.78}{}}
+\newlabel{gradr_Y23_w_2}{{E.79}{130}{Gradiente de $Y^c_{23}$}{equation.Alph5.2.79}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.7}Gradiente de $Y^c_{31}$}{130}{subsection.Alph5.2.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.15}{\ignorespaces Retropropagación de $Y^c_{31}$}}{130}{figure.caption.143}\protected@file@percent }
+\newlabel{gradr_Y31_w_1}{{E.84}{130}{Gradiente de $Y^c_{31}$}{equation.Alph5.2.84}{}}
+\newlabel{gradr_Y31_w_2}{{E.85}{130}{Gradiente de $Y^c_{31}$}{equation.Alph5.2.85}{}}
+\newlabel{gradr_Y31_z_1}{{E.86}{131}{Gradiente de $Y^c_{31}$}{equation.Alph5.2.86}{}}
+\newlabel{gradr_Y31_z_2}{{E.87}{131}{Gradiente de $Y^c_{31}$}{equation.Alph5.2.87}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.8}Gradiente de $Y^c_{32}$}{131}{subsection.Alph5.2.8}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.16}{\ignorespaces Retropropagación de $Y^c_{32}$}}{131}{figure.caption.144}\protected@file@percent }
+\newlabel{gradr_Y32_w_1}{{E.90}{131}{Gradiente de $Y^c_{32}$}{equation.Alph5.2.90}{}}
+\newlabel{gradr_Y32_w_2}{{E.91}{131}{Gradiente de $Y^c_{32}$}{equation.Alph5.2.91}{}}
+\newlabel{gradr_Y32_z_1}{{E.92}{131}{Gradiente de $Y^c_{32}$}{equation.Alph5.2.92}{}}
+\newlabel{gradr_Y32_z_2}{{E.93}{131}{Gradiente de $Y^c_{32}$}{equation.Alph5.2.93}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.9}Gradiente de $Y^c_{33}$}{132}{subsection.Alph5.2.9}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {E.17}{\ignorespaces Retropropagación de $Y^c_{33}$}}{132}{figure.caption.145}\protected@file@percent }
+\newlabel{gradr_Y33_w_1}{{E.96}{132}{Gradiente de $Y^c_{33}$}{equation.Alph5.2.96}{}}
+\newlabel{gradr_Y33_w_2}{{E.97}{132}{Gradiente de $Y^c_{33}$}{equation.Alph5.2.97}{}}
+\newlabel{gradr_Y33_z_1}{{E.98}{132}{Gradiente de $Y^c_{33}$}{equation.Alph5.2.98}{}}
+\newlabel{gradr_Y33_z_2}{{E.99}{132}{Gradiente de $Y^c_{33}$}{equation.Alph5.2.99}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.10}Gradiente respecto a pesos como convolución}{132}{subsection.Alph5.2.10}\protected@file@percent }
+\newlabel{result_conv_1_apendice}{{E.100}{133}{Gradiente respecto a pesos como convolución}{equation.Alph5.2.100}{}}
+\newlabel{result_conv_2_apendice}{{E.101}{133}{Gradiente respecto a pesos como convolución}{equation.Alph5.2.101}{}}
+\newlabel{result_conv_3_apendice}{{E.102}{133}{Gradiente respecto a pesos como convolución}{equation.Alph5.2.102}{}}
+\newlabel{result_conv_4_apendice}{{E.103}{133}{Gradiente respecto a pesos como convolución}{equation.Alph5.2.103}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.18}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}}{133}{figure.caption.146}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Xpad_Y}{{E.18}{133}{Cálculo del gradiente de la pérdida con respecto a cada filtro como convolución entre X e Y}{figure.caption.146}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {E.2.11}Gradiente respecto a entrada como convolución}{133}{subsection.Alph5.2.11}\protected@file@percent }
+\newlabel{result_conv_x1}{{E.104}{134}{Gradiente respecto a entrada como convolución}{equation.Alph5.2.104}{}}
+\newlabel{result_conv_x2}{{E.105}{134}{Gradiente respecto a entrada como convolución}{equation.Alph5.2.105}{}}
+\newlabel{result_conv_x3}{{E.106}{134}{Gradiente respecto a entrada como convolución}{equation.Alph5.2.106}{}}
+\newlabel{result_conv_x4}{{E.107}{134}{Gradiente respecto a entrada como convolución}{equation.Alph5.2.107}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.19}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}}{134}{figure.caption.147}\protected@file@percent }
+\newlabel{fig:conv_backprop_como_convolucion_Y_K_pad}{{E.19}{134}{Cálculo del gradiente de la pérdida con respecto a la entrada como convolución}{figure.caption.147}{}}
 \bibstyle{unsrt}
 \bibdata{bibliografia/bibliografia}
-\@writefile{lof}{\contentsline {figure}{\numberline {E.20}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{133}{figure.caption.148}\protected@file@percent }
-\newlabel{fig:conv_full_vs_normal_apendice}{{E.20}{133}{Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}{figure.caption.148}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {E.20}{\ignorespaces Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}}{135}{figure.caption.148}\protected@file@percent }
+\newlabel{fig:conv_full_vs_normal_apendice}{{E.20}{135}{Cálculo del gradiente de la pérdida con respecto a la entrada X con uno y dos niveles de relleno}{figure.caption.148}{}}
 \bibcite{nvidia_back_fully_GEMM}{1}
 \bibcite{NN_backpropagation}{2}
 \bibcite{NN_backprop_2}{3}
@@ -784,23 +788,24 @@
 \bibcite{max_pool_backprop}{63}
 \bibcite{max_pool_backprop_2}{64}
 \bibcite{flatten_forward}{65}
-\bibcite{openmp_intro}{66}
-\bibcite{openmp_directivas}{67}
-\bibcite{cuda_kernels}{68}
-\bibcite{cuDNN_core_concepts}{69}
-\bibcite{cuDNN_conv_fwd}{70}
-\bibcite{cuDNN_pool_fwd}{71}
-\bibcite{cuDNN_conv_back_w}{72}
-\bibcite{cuDNN_conv_back_x}{73}
-\bibcite{data_model_parallelism}{74}
-\bibcite{model_parallelism}{75}
-\bibcite{CNN_parallel_Stanford}{76}
-\bibcite{CNN_parallel_International_Conference}{77}
-\bibcite{CNN_parallel_Ome_Weird_Trick}{78}
-\bibcite{GEMM_definition}{79}
-\bibcite{conv_GEMM_FFT_comparacion}{80}
-\bibcite{cuda_mult_matrix_v3}{81}
-\bibcite{nvidia_mult_matrix_v4}{82}
-\bibcite{cifar10}{83}
-\bibcite{10_big_cats}{84}
-\gdef \@abspage@last{167}
+\bibcite{opencv}{66}
+\bibcite{openmp_intro}{67}
+\bibcite{openmp_directivas}{68}
+\bibcite{cuda_kernels}{69}
+\bibcite{cuDNN_core_concepts}{70}
+\bibcite{cuDNN_conv_fwd}{71}
+\bibcite{cuDNN_pool_fwd}{72}
+\bibcite{cuDNN_conv_back_w}{73}
+\bibcite{cuDNN_conv_back_x}{74}
+\bibcite{data_model_parallelism}{75}
+\bibcite{model_parallelism}{76}
+\bibcite{CNN_parallel_Stanford}{77}
+\bibcite{CNN_parallel_International_Conference}{78}
+\bibcite{CNN_parallel_Ome_Weird_Trick}{79}
+\bibcite{GEMM_definition}{80}
+\bibcite{conv_GEMM_FFT_comparacion}{81}
+\bibcite{cuda_mult_matrix_v3}{82}
+\bibcite{nvidia_mult_matrix_v4}{83}
+\bibcite{cifar10}{84}
+\bibcite{10_big_cats}{85}
+\gdef \@abspage@last{169}

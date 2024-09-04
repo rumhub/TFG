@@ -140,6 +140,37 @@ A continuación, se presenta la arquitectura general de algunos de los modelos q
 	
 \end{enumerate}
 
+\subsection{Recursos utilizados}
+
+En esta sección se detallan las especificaciones técnicas del equipo utilizado en el presente proyecto. A continuación, se proporciona un desglose de los componentes y las versiones de software que componen la infraestructura computacional empleada para la realización de las tareas y experimentos descritos. El hardware y el software seleccionados han sido elegidos para garantizar una compatibilidad adecuada con las herramientas y técnicas utilizadas. Las especificaciones incluyen tanto los elementos de hardware, como la CPU y la GPU, así como las versiones de las herramientas de desarrollo y bibliotecas de software relevantes. Este conjunto de especificaciones proporciona una visión del entorno en el que se han llevado a cabo las investigaciones y análisis. \\
+Adicionalmente, el código desarrollado en este proyecto se encuentra disponible en el siguiente repositorio \url{https://github.com/rumhub/TFG/tree/main/Codigo}. \\
+
+\begin{enumerate}[label=\textbullet, nosep]
+	\item \textbf{CPU}: Intel(R) Xeon(R) Silver 4214R CPU @ 2.40GHz
+	\begin{enumerate}[label=\textbullet, nosep]
+		\item \textbf{Familia CPU}: 6
+		\item \textbf{Modelo}: 85
+		\item \textbf{Hilos por core}: 2
+		\item \textbf{Cores por socket}: 12
+		\item \textbf{Sockets}: 2
+		\item \textbf{Caché}:
+		\begin{enumerate}[label=\textbullet, nosep]
+			\item \textbf{L1d}: 768 KiB
+			\item \textbf{L1i}: 768 KiB
+			\item \textbf{L2}:  24 MiB
+			\item \textbf{L3}:  33 MiB
+		\end{enumerate}
+	\end{enumerate}
+	\item \textbf{GPU}: NVIDIA GeForce RTX 2080 Ti
+	\item \textbf{RAM}: 62 GiB de RAM física
+	\item \textbf{Memoria de intercambio (Swap Memory)}: 2.0 GiB
+	\item \textbf{Versión de OpenMP}: 4.5
+	\item \textbf{Versión de CUDA}: 12.6
+	\item \textbf{Versión de cuDNN}: 9.2.1
+	\item \textbf{Versión de g++}: 12.3.0
+	\item \textbf{Versión de OpenCV}: 4.5.4
+\end{enumerate}
+
 \subsection{Bases de datos}
 
 Se utilizará una variedad de bases de datos en el presente estudio. Entre ellas, se incluyen los resultados obtenidos durante el entrenamiento con las bases de datos CIFAR10 \cite{cifar10}, y 10 Big Cats Of The Wild \cite{10_big_cats}, ambas caracterizadas por ser problemas de clasificación multiclase con 10 clases distintas. En CIFAR10, las 10 clases representan aviones, automóviles, pájaros, gatos, ciervos, perros, ranas, caballos, barcos y camiones. Por otro lado, en 10 Big Cats, las 10 clases representan el leopardo africano, caracal, guepardo, leopardo nublado, jaguar, leones, ocelote, puma, leopardo de las nieves y tigre. Además, para cada clase se utilizará el mismo número de imágenes.
