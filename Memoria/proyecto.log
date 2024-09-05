@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  4 SEP 2024 21:06
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.7.27)  5 SEP 2024 21:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1824,6 +1824,12 @@ LaTeX Info: Redefining \% on input line 1.
  [48]
 Cap\'{\i }tulo 3.
 
+Overfull \hbox (7.735pt too wide) in paragraph at lines 3--4
+[]\OT1/cmr/m/n/10.95 Este cap^^S^^Ptu-lo ex-plo-ra las t^^Secni-cas de pa-ra-le
+-li-za-ci^^Son en sis-te-mas ho-mog^^Seneos
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 12--13
 
  []
@@ -2079,7 +2085,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 145--147
  []
 
 
-Underfull \vbox (badness 3977) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Info: Redefining \. on input line 147.
 LaTeX Info: Redefining \% on input line 147.
@@ -4016,7 +4022,7 @@ cm/cmsy10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1/public/
 amsfonts/cm/cmsy8.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fonts/type1
 /public/amsfonts/cm/cmti10.pfb><C:/Users/boxyu/AppData/Local/Programs/MiKTeX/fo
 nts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on proyecto.pdf (169 pages, 9328347 bytes).
+Output written on proyecto.pdf (169 pages, 9328373 bytes).
 PDF statistics:
  3220 PDF objects out of 3580 (max. 8388607)
  975 named destinations out of 1000 (max. 500000)
