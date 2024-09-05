@@ -89,7 +89,7 @@ En la figura \ref{fig:conv_backprop_como_convolucion_Y_K_pad}, se observó cómo
 Dado que ambos gradientes se pueden implementar como convoluciones, y, considerando que en la sección \ref{Intro_GEMMM}, se demostró cómo implementar convoluciones utilizando el enfoque GEMM, es razonable asumir que la retropropagación en una capa convolucional, también se puede llevar a cabo mediante dicho enfoque.
 
 \begin{figure}[H]
-	\hspace{-40mm}
+	\hspace{-25mm}
 	\includegraphics[scale=0.3]{imagenes/conv_std_vs_gemm_backprop.jpg}  
 	\caption{Retropropagación respecto a la entrada en una capa convolucional de forma estándar frente a GEMM}
 	\label{fig:conv_std_vs_gemm_backprop}
@@ -98,6 +98,7 @@ Dado que ambos gradientes se pueden implementar como convoluciones, y, considera
 En la Figura \ref{fig:conv_std_vs_gemm_backprop}, es importante destacar que, dado que canal de profundidad c$\in$C de cada kernel, solo influye en el correspondiente canal c del volumen de entrada \textit{X}, en la retropropagación, únicamente recibirá el gradiente proveniente de dicho canal. De esta manera, dado que cada kernel se utilizó para producir un canal m$\in$M distinto en el volumen de salida \textit{Y}, es posible concatenar los \textit{M} diferentes kernels para un mismo canal de profundidad c, de modo que, cada canal c, de cada kernel m, se multiplique por su subconjunto correspondiente en el canal m de \textit{Y}, e influya sobre el canal c de \textit{X}, (véase la Figura \ref{fig:conv_std_vs_gemm_backprop}). 
 
 \begin{figure}[H]
+	\hspace{-25mm}
 	\includegraphics[scale=0.33]{imagenes/conv_std_vs_gemm_backprop_pesos.jpg}  
 	\caption{Retropropagación respecto a los pesos en una capa convolucional de forma estándar frente a GEMM}
 	\label{fig:conv_std_vs_gemm_backprop_pesos}
