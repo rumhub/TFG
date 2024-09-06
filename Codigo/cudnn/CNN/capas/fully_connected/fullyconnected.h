@@ -67,9 +67,11 @@ class FullyConnected
 
 
     public:
-        // GPU ---------------------------------------
+        // Constructores
         FullyConnected(int *capas, int n_capas, float lr, int mini_batch);
+        FullyConnected(){};
 
+        // Destructor
         ~FullyConnected()
         {
             if(liberar_memoria)
@@ -86,22 +88,15 @@ class FullyConnected
             }
         };
 
-        // CPU ---------------------------------------
-        // Constructores
-        FullyConnected(){};
-
         // Funciones de activación
         float deriv_relu(const float &x);
         float relu(const float &x);
         float sigmoid(const float &x);
 
         // Propagación hacia delante
-        void forwardPropagation_ptr(float *x, float *a, float *z);
         void forwardPropagationGEMM();
 
         // Cálculo de gradientes
-        void train_ptr(float *x, float *y, int *batch, const int &n_datos, float * grad_w_ptr, float * grad_bias_ptr, float *grad_x, float *a_ptr, float *z_ptr, float *grad_a_ptr);
-        void trainGEMM(float *grad_x);
         void train_vectores_externos(float *grad_x);
 
         // Medidas de evaluación
@@ -111,9 +106,7 @@ class FullyConnected
 
         // Modificación de parámetros
         void generar_pesos_ptr(const int &capa);
-        void escalar_pesos_ptr(float clip_value);
         void escalar_pesos_GEMM(float clip_value);
-        void actualizar_parametros_ptr(float *grad_pesos, float *grad_b);
         void actualizar_parametros_gpu();
 
         // Gets
@@ -129,10 +122,6 @@ class FullyConnected
         void set_wGEMM(float *w);
         void set_train(float *x, float *y, int mini_batch);
         void set_train_gpu(float *x, float *y, int mini_batch);
-
-        // Utilidades
-        void matrizTranspuesta(float* matrix, int rows, int cols);
-        void matrizTranspuesta(float* X, float *Y, int rows, int cols);
 
         // Debug
         void mostrar_neuronas_ptr(float *z_ptr);

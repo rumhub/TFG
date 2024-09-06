@@ -7,17 +7,12 @@
 #include <chrono>
 #include "random"
 #include "omp.h"
-//#include <cuda_runtime.h>
-//#include <device_launch_parameters.h>
-//#include <cublas_v2.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <cfloat>
 #include <limits>
 
 using namespace std;
-
-//#define BLOCK_SIZE 32
 
 class PoolingMax
 {
@@ -94,8 +89,5 @@ class PoolingMax
         int get_H_out(){return this->H_out;};
         int get_W_out(){return this->W_out;};
 };
-
-
-// https://www.linkedin.com/pulse/implementation-from-scratch-forward-back-propagation-layer-coy-ulloa
 
 #endif

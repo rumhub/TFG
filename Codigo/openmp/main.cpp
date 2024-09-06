@@ -53,9 +53,7 @@ int main()
     // Lectura de imágenes y entrenamiento
     cnn.leer_imagenes_cifar10(100, 100, 10);
     cnn.mostrar_arquitectura();
-    cnn.train(1, 32);
-    //cnn.train(20, 32);
-    //cnn.evaluar_modelo();
+    cnn.train(20, 32);
 
     return 0;
 }

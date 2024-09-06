@@ -339,9 +339,6 @@ CNN::CNN(int *capas_conv, int n_capas_conv, int *tams_pool, int *padding, int *c
 
     crear_handles(mini_batch);
 
-    // ------------------- CUDNN ---------------------------------
-
-
     checkCudaErrors(cudaGetLastError());
 }
 
